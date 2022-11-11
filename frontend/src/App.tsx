@@ -1,9 +1,10 @@
-import { css } from '@emotion/react';
 import React from 'react';
-// import Alert from 'assets/alert.svg';
+import { css } from '@emotion/react';
+import Test from '@component/Test';
+import { ReactComponent as Alert } from '@assets/alert.svg';
 
 const testCSS = () => css`
-	background-color: black;
+	background-color: green;
 	color: red;
 `;
 
@@ -11,7 +12,8 @@ function App() {
 	return (
 		<div css={testCSS} className="App">
 			hello world!
-			{/* <Alert /> */}
+			<Alert />
+			<Test />
 		</div>
 	);
 }
