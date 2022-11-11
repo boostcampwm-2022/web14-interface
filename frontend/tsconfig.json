@@ -20,7 +20,6 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "@emotion/react",
-    "types": ["@emotion/core"]
   },
   "extends": "./tsconfig.paths.json",
   "include": [
