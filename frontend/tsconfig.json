@@ -22,7 +22,8 @@
     "jsxImportSource": "@emotion/react",
     "types": ["@emotion/core"]
   },
+  "extends": "./tsconfig.paths.json",
   "include": [
     "src"
-  ]
+  ]  
 }
