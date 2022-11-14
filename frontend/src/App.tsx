@@ -1,6 +1,6 @@
 import React from 'react';
 import { css } from '@emotion/react';
-import Test from '@component/Test';
+import Test from 'src/components/Test/Test';
 import { ReactComponent as Alert } from '@assets/alert.svg';
 
 const testCSS = () => css`
@@ -13,7 +13,6 @@ function App() {
 		<div css={testCSS} className="App">
 			hello world!
 			<Alert />
-			<Test />
 		</div>
 	);
 }
