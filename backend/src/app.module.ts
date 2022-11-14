@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import envConfig from './config/env.config';
-import typeormConfig from './config/typeorm.config';
+import { envConfig, typeormConfig } from '@config';
 
 @Module({
 	imports: [ConfigModule.forRoot(envConfig), TypeOrmModule.forRootAsync(typeormConfig)],

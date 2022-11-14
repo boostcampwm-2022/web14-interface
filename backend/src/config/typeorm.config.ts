@@ -1,7 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
-const typeormConfig = {
+export const typeormConfig = {
 	useFactory: async (configService: ConfigService): Promise<TypeOrmModuleOptions> => ({
 		type: 'mysql',
 		host: 'localhost',
@@ -14,5 +14,3 @@ const typeormConfig = {
 	}),
 	inject: [ConfigService],
 };
-
-export default typeormConfig as TypeOrmModuleOptions;
