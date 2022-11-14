@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import React from 'react';
 
 export interface TestPropType {
@@ -5,7 +6,11 @@ export interface TestPropType {
 }
 
 const Test = ({ text }: TestPropType) => {
-	return <div>{text}</div>;
+	return <div css={testCss}>{text}</div>;
 };
 
 export default Test;
+
+const testCss = css`
+	background-color: red;
+`;
