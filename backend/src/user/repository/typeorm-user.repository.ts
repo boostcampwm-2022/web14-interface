@@ -12,7 +12,7 @@ export class TypeormUserRepository implements UserRepository<UserEntity> {
 		private readonly userRepository: Repository<UserEntity>
 	) {}
 
-	async saveUser(userInfo: UserInfo): Promise<string> {
+	async saveUser(userInfo: UserInfo): Promise<UserEntity> {
 		const { id, password, email, oauthType, nickname } = userInfo;
 		const user = new JoinUserBuilder()
 			.setId(id)
@@ -24,7 +24,7 @@ export class TypeormUserRepository implements UserRepository<UserEntity> {
 			.build();
 
 		await this.userRepository.save(user);
-		return user.id;
+		return user;
 	}
 
 	async findUserById(id: string): Promise<UserEntity> {
