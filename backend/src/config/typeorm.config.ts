@@ -11,6 +11,7 @@ export const typeormConfig = {
 		database: configService.get('DB_NAME'),
 		entities: [__dirname + '/../**/*.entity.{ts,js}'],
 		logging: ['query', 'error'],
+		synchronize: true,
 	}),
 	inject: [ConfigService],
 };

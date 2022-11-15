@@ -39,22 +39,22 @@ export class JoinUserBuilder extends BuilderCommon<UserEntity> {
 	}
 
 	setPassword(password: string): JoinUserBuilder {
-		this.instance.password = password || '';
+		this.instance.password = password;
 		return this;
 	}
 
 	setEmail(email: string): JoinUserBuilder {
-		this.instance.email = email || '';
+		this.instance.email = email;
 		return this;
 	}
 
 	setNickname(nickname: string): JoinUserBuilder {
-		this.instance.nickname = nickname || '';
+		this.instance.nickname = nickname;
 		return this;
 	}
 
 	setOauthType(oauthType: string): JoinUserBuilder {
-		this.instance.oauthType = oauthType || 'none';
+		this.instance.oauthType = oauthType;
 		return this;
 	}
 
@@ -63,7 +63,6 @@ export class JoinUserBuilder extends BuilderCommon<UserEntity> {
 		const dateString = `${now.getFullYear()}:${now.getMonth() + 1}:${now.getDate()}`;
 		this.instance.createdAt = dateString;
 		this.instance.updatedAt = dateString;
-		this.instance.isDeleted = false;
 		return this;
 	}
 }
