@@ -1,6 +1,8 @@
+import { Injectable } from '@nestjs/common';
 import { UserSocialDto } from 'src/types/auth.type';
 import { OauthService } from './interface-oauth.service';
 
+@Injectable()
 export class OauthNaverService implements OauthService {
 	getSocialUrl(): string {
 		throw new Error('Method not implemented.');
