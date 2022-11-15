@@ -1,6 +1,6 @@
 import { ClassProvider, Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
+import { AuthService } from './service/auth.service';
+import { AuthController } from './controller/auth.controller';
 import { TypeormUserRepository } from 'src/user/repository/user.typeorm.repository';
 import { USER_REPOSITORY_INTERFACE } from '@constant';
 import { UserModule } from 'src/user/user.module';
