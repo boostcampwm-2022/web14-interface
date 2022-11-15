@@ -1,7 +1,6 @@
 export interface UserSocialDto {
 	id: string;
-	email?: string;
-	password?: string;
+	oauthType: string;
 }
 
 export interface UserLocalDto {
@@ -10,9 +9,10 @@ export interface UserLocalDto {
 	email: string;
 }
 
-export interface UserInfo {
+export class UserInfo {
 	id: string;
 	password: string;
 	email: string;
 	oauthType: string;
+	nickname: string;
 }

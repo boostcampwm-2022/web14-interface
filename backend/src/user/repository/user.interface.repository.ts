@@ -5,7 +5,7 @@ export interface UserRepository<T> {
 	 * 유저 엔티티를 DB에 저장하는 메서드입니다.
 	 * @param user user entity
 	 */
-	saveUser(user: T): Promise<string>;
+	saveUser(user: UserInfo): Promise<string>;
 
 	/**
 	 * 유저 id로 유저 엔티디를 반환합니다.
@@ -17,6 +17,4 @@ export interface UserRepository<T> {
 	 * 모든 유저의 엔티티 배열을 반환합니다.
 	 */
 	findAllUser(): Promise<T[]>;
-
-	createUserEntity(userInfo: UserInfo): T;
 }
