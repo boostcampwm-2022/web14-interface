@@ -2,13 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserInfo } from 'src/types/auth.type';
 import { Repository } from 'typeorm';
-import { JoinUserBuilder, UserEntity } from '../entities/user.typeorm.entity';
-import { UserRepository } from './user.interface.repository';
+import { JoinUserBuilder, UserEntity } from '../entities/typeorm-user.entity';
+import { UserRepository } from './interface-user.repository';
 
 @Injectable()
 export class TypeormUserRepository implements UserRepository<UserEntity> {
 	constructor(
-		@InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>
+		@InjectRepository(UserEntity)
+		private readonly userRepository: Repository<UserEntity>
 	) {}
 
 	async saveUser(userInfo: UserInfo): Promise<string> {
@@ -21,6 +22,7 @@ export class TypeormUserRepository implements UserRepository<UserEntity> {
 			.setOauthType(oauthType)
 			.setDefaultValue()
 			.build();
+
 		await this.userRepository.insert(user);
 		return user.id;
 	}

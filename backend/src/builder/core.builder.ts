@@ -2,7 +2,7 @@ interface ConstructorType<T> {
 	new (): T;
 }
 
-class BuilderCommon<T> {
+export class BuilderCommon<T> {
 	public instance: T;
 
 	constructor(constructorType: ConstructorType<T>) {

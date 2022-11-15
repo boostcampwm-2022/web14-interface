@@ -1,7 +1,7 @@
 import { UserSocialDto } from 'src/types/auth.type';
-import { OauthService } from './oauth.service.interface';
+import { OauthService } from './interface-oauth.service';
 
-export class OauthGoogleService implements OauthService {
+export class OauthNaverService implements OauthService {
 	getSocialUrl(): string {
 		throw new Error('Method not implemented.');
 	}

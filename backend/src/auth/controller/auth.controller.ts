@@ -15,5 +15,8 @@ export class AuthController {
 	async socialJoin(
 		@Query('authorization_code') authorizationCode: string,
 		@Param('type') type: string
-	) {}
+	) {
+		const userId = await this.authService.socialJoin({ type, authorizationCode });
+		return userId;
+	}
 }

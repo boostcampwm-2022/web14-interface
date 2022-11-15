@@ -1,10 +1,13 @@
 import { OAUTH_TYPE } from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { UserRepository } from 'src/user/repository/user.interface.repository';
-import { OauthGoogleService } from './oauth/oauth.google.service';
-import { OauthNaverService } from './oauth/oauth.naver.service';
-import { OauthService } from './oauth/oauth.service.interface';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserInfo } from 'src/types/auth.type';
+import { UserEntity } from 'src/user/entities/typeorm-user.entity';
+import { UserRepository } from 'src/user/repository/interface-user.repository';
+import { EntityRepository, Repository } from 'typeorm';
+import { OauthGoogleService } from './oauth/google-oauth.service';
+import { OauthNaverService } from './oauth/naver-oauth.service';
+import { OauthService } from './oauth/interface-oauth.service';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +16,7 @@ export class AuthService {
 	constructor(
 		@Inject('UserRepository')
 		private readonly userRepository: UserRepository<UserEntity>,
+
 		private readonly oauthGoogleService: OauthGoogleService,
 		private readonly oauthNaverService: OauthNaverService
 	) {}
@@ -26,13 +30,16 @@ export class AuthService {
 	async socialJoin({ type, authorizationCode }: { type: string; authorizationCode: string }) {
 		this.setOauthInstanceByType(type);
 
-		const accessToken = await this.oauthInstance.getAccessTokenByAuthorizationCode(
-			authorizationCode
-		);
+		// const accessToken = await this.oauthInstance.getAccessTokenByAuthorizationCode(
+		// 	authorizationCode
+		// );
+		// const userSocialInfo = await this.oauthInstance.getSocialInfoByAccessToken(accessToken);
+		const userSocialInfo = { id: '1234', oauthType: type, email: '1234' };
 
-		const userSocialInfo = await this.oauthInstance.getSocialInfoByAccessToken(accessToken);
+		console.log(__dirname);
 
-		// userLocalInfo, userSocialInfo -> UserInfo-> UserEntity, moongoose
+		const userId = await this.userRepository.saveUser(userSocialInfo as UserInfo);
+		return userId;
 	}
 
 	setOauthInstanceByType(type: string) {

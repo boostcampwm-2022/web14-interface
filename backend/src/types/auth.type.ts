@@ -9,7 +9,7 @@ export interface UserLocalDto {
 	email: string;
 }
 
-export class UserInfo {
+export interface UserInfo {
 	id: string;
 	password: string;
 	email: string;

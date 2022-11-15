@@ -1,7 +1,7 @@
 import { BuilderCommon } from 'src/builder/core.builder';
 import { Entity, PrimaryColumn, Column } from 'typeorm';
 
-@Entity({ name: 'user' })
+@Entity('user')
 export class UserEntity {
 	@PrimaryColumn({ length: 45 })
 	id: string;
@@ -39,22 +39,22 @@ export class JoinUserBuilder extends BuilderCommon<UserEntity> {
 	}
 
 	setPassword(password: string): JoinUserBuilder {
-		this.instance.password = password;
+		this.instance.password = password || '';
 		return this;
 	}
 
 	setEmail(email: string): JoinUserBuilder {
-		this.instance.email = email;
+		this.instance.email = email || '';
 		return this;
 	}
 
 	setNickname(nickname: string): JoinUserBuilder {
-		this.instance.nickname = nickname;
+		this.instance.nickname = nickname || '';
 		return this;
 	}
 
 	setOauthType(oauthType: string): JoinUserBuilder {
-		this.instance.oauthType = oauthType;
+		this.instance.oauthType = oauthType || 'none';
 		return this;
 	}
 
