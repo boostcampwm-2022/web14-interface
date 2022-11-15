@@ -1,9 +1,9 @@
-export interface UserSocialDto {
+export interface UserSocialInfo {
 	id: string;
 	oauthType: string;
 }
 
-export interface UserLocalDto {
+export interface UserLocalInfo {
 	id: string;
 	password: string;
 	email: string;
