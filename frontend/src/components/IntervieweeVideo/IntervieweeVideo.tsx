@@ -1,21 +1,10 @@
 import React, { useRef, useEffect } from 'react';
+import { useRecoilState } from 'recoil';
 import Video, { VideoPropType } from '@components/Video/Video';
+import { currentTimeState } from '@store/feedbackStore';
 
-export interface IntervieweeVideoPropType extends VideoPropType {
-	second?: number;
-	callback?: (params: number) => void;
-}
-
-const IntervieweeVideo = ({
-	src,
-	width,
-	height,
-	autoplay,
-	controls,
-	muted,
-	second = 0,
-	callback,
-}: IntervieweeVideoPropType) => {
+const IntervieweeVideo = (props: VideoPropType) => {
+	const [currentTime, setCurrentTime] = useRecoilState(currentTimeState);
 	const videoRef = useRef<HTMLVideoElement>(null);
 
 	const sendPeriod = 1000;
@@ -23,32 +12,25 @@ const IntervieweeVideo = ({
 		if (!videoRef.current?.currentTime) return;
 
 		const currentTime = videoRef.current.currentTime;
-		callback(currentTime);
+		setCurrentTime(currentTime);
 	};
 
 	useEffect(() => {
-		if (!callback || !videoRef) return;
+		if (videoRef) {
+			const intervalId = setInterval(sendCurrentTime, sendPeriod);
 
-		setInterval(sendCurrentTime, sendPeriod);
+			return () => clearInterval(intervalId);
+		}
 	}, []);
 
 	useEffect(() => {
-		if (!videoRef) return;
+		if (videoRef) {
+			videoRef.current.currentTime = currentTime;
+			console.log(currentTime);
+		}
+	}, [currentTime]);
 
-		videoRef.current.currentTime = second;
-	}, [second]);
-
-	return (
-		<Video
-			src={src}
-			width={width}
-			height={height}
-			autoplay={autoplay}
-			controls={controls}
-			muted={muted}
-			ref={videoRef}
-		/>
-	);
+	return <Video {...props} ref={videoRef} />;
 };
 
 export default IntervieweeVideo;

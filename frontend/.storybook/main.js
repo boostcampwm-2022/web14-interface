@@ -21,6 +21,7 @@ module.exports = {
 			'@layout': path.resolve(__dirname, '../src/layout'),
 			'@pages': path.resolve(__dirname, '../src/pages'),
 			'@customType': path.resolve(__dirname, '../src/customType'),
+			'@store': path.resolve(__dirname, '../src/store'),
 		};
 
 		return config;
