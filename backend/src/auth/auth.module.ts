@@ -1,10 +1,9 @@
 import { ClassProvider, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { TypeormUserRepository } from 'src/user/repository/typeorm-user.repository';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { TypeormUserRepository } from 'src/user/repository/user.typeorm.repository';
 import { USER_REPOSITORY_INTERFACE } from '@constant';
+import { UserModule } from 'src/user/user.module';
 
 const userRepository: ClassProvider = {
 	provide: USER_REPOSITORY_INTERFACE,
@@ -12,7 +11,7 @@ const userRepository: ClassProvider = {
 };
 
 @Module({
-	imports: [TypeOrmModule.forFeature([UserEntity])],
+	imports: [UserModule],
 	controllers: [AuthController],
 	providers: [AuthService, userRepository],
 })
