@@ -1,4 +1,4 @@
-import { BuilderCommon } from 'src/builder/core.builder';
+import { BaseBuilder } from 'src/builder/core.builder';
 import { Entity, PrimaryColumn, Column } from 'typeorm';
 
 @Entity('user')
@@ -28,7 +28,7 @@ export class UserEntity {
 	isDeleted: boolean;
 }
 
-export class JoinUserBuilder extends BuilderCommon<UserEntity> {
+export class JoinUserBuilder extends BaseBuilder<UserEntity> {
 	constructor() {
 		super(UserEntity);
 	}

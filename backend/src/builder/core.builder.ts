@@ -1,12 +1,8 @@
-interface ConstructorType<T> {
-	new (): T;
-}
-
-export class BuilderCommon<T> {
+export class BaseBuilder<T> {
 	public instance: T;
 
-	constructor(constructorType: ConstructorType<T>) {
-		this.instance = new constructorType();
+	constructor(builder: new () => T) {
+		this.instance = new builder();
 	}
 
 	build(): T {
