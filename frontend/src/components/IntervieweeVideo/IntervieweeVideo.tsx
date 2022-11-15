@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
-import Video, { VideoPropType } from '@components/Video/Video';
+import Video, { VideoPropType } from '@components/@shared/Video/Video';
 import { currentTimeState } from '@store/feedbackStore';
 
 const IntervieweeVideo = (props: VideoPropType) => {

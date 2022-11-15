@@ -1,7 +1,7 @@
 import React from 'react';
 import { Story } from '@storybook/react';
 import IntervieweeVideo from './IntervieweeVideo';
-import { VideoPropType } from '@components/Video/Video';
+import { VideoPropType } from '@components/@shared/Video/Video';
 
 export default {
 	component: IntervieweeVideo,
