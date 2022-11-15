@@ -11,7 +11,8 @@ export class TypeormUserRepository implements UserRepository {
 	) {}
 
 	async saveUser(user: UserEntity): Promise<string> {
-		await this.userRepository.insert(user);
+		console.log(user);
+		// await this.userRepository.insert(user);
 		return user.id;
 	}
 
