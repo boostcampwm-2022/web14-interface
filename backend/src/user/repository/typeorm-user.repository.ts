@@ -23,7 +23,7 @@ export class TypeormUserRepository implements UserRepository<UserEntity> {
 			.setDefaultValue()
 			.build();
 
-		await this.userRepository.insert(user);
+		await this.userRepository.save(user);
 		return user.id;
 	}
 
