@@ -1,5 +1,5 @@
 import { OAUTH_TYPE } from '@constant';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Type } from '@nestjs/common';
 import { UserInfo } from 'src/types/auth.type';
 import { UserEntity } from 'src/user/entities/typeorm-user.entity';
 import { UserRepository } from 'src/user/repository/interface-user.repository';
@@ -19,13 +19,25 @@ export class AuthService {
 		private readonly oauthNaverService: OauthNaverService
 	) {}
 
-	getSocialUrl(type: string) {
+	/**
+	 * oauth type에 따라 해당되는 oauth page url을 반환합니다.
+	 * @param type oauth type (naver, google etc...)
+	 * @returns oauth type에 따른 social authentication page url
+	 */
+	getSocialUrl(type: string): string {
 		this.setOauthInstanceByType(type);
 
 		return this.oauthInstance.getSocialUrl();
 	}
 
-	async socialJoin({ type, authorizationCode }: { type: string; authorizationCode: string }) {
+	/**
+	 * oauth type과 사용자의 social 로그인으로 획득한 authorization code를 기반으로
+	 * user info를 얻은 후, 가입이 되어있지 않다면 회원 가입을 합니다.
+	 * @param type 해당 social oauth 이름
+	 * @param authorizationCode 해당 social oauth의 인증으로 얻은 authorizationCode
+	 * @returns 가입 된 user의 id
+	 */
+	async socialStart({ type, authorizationCode }: { type: string; authorizationCode: string }) {
 		this.setOauthInstanceByType(type);
 
 		const accessToken = await this.oauthInstance.getAccessTokenByAuthorizationCode(
@@ -37,6 +49,10 @@ export class AuthService {
 		return userId;
 	}
 
+	/**
+	 * oauthInstance 인터페이스에 type에 따라 oauth 구현체를 할당합니다.
+	 * @param type 해당 social oauth 이름
+	 */
 	setOauthInstanceByType(type: string) {
 		switch (type) {
 			case OAUTH_TYPE.NAVER:

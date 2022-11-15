@@ -12,11 +12,11 @@ export class AuthController {
 	}
 
 	@Get('oauth/callback/:type')
-	async socialJoin(
+	async socialStart(
 		@Query('authorization_code') authorizationCode: string,
 		@Param('type') type: string
 	) {
-		const userId = await this.authService.socialJoin({ type, authorizationCode });
+		const userId = await this.authService.socialStart({ type, authorizationCode });
 		return userId;
 	}
 }
