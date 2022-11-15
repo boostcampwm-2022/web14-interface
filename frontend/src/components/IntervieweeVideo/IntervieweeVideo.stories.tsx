@@ -1,13 +1,14 @@
 import React from 'react';
 import { Story } from '@storybook/react';
-import IntervieweeVideo, { IntervieweeVideoPropType } from './IntervieweeVideo';
+import IntervieweeVideo from './IntervieweeVideo';
+import { VideoPropType } from '@components/Video/Video';
 
 export default {
 	component: IntervieweeVideo,
 	title: 'IntervieweeVideo',
 };
 
-const Template: Story<IntervieweeVideoPropType> = (args, { loaded: { MediaStram } }) => (
+const Template: Story<VideoPropType> = (args, { loaded: { MediaStram } }) => (
 	<IntervieweeVideo {...args} {...MediaStram} />
 );
 
