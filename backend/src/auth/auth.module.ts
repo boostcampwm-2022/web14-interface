@@ -4,9 +4,10 @@ import { AuthController } from './auth.controller';
 import { TypeormUserRepository } from 'src/user/repository/typeorm-user.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
+import { USER_REPOSITORY_INTERFACE } from '@constant';
 
 const userRepository: ClassProvider = {
-	provide: 'UserRepository',
+	provide: USER_REPOSITORY_INTERFACE,
 	useClass: TypeormUserRepository,
 };
 
