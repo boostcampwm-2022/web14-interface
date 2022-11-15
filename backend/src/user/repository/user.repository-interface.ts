@@ -11,10 +11,10 @@ export interface UserRepository {
 	 * 유저 id로 유저 엔티디를 반환합니다.
 	 * @param id user의 id
 	 */
-	findUserById(id: string): UserEntity;
+	findUserById(id: string): Promise<UserEntity>;
 
 	/**
 	 * 모든 유저의 엔티티 배열을 반환합니다.
 	 */
-	findAllUser(): UserEntity[];
+	findAllUser(): Promise<UserEntity[]>;
 }
