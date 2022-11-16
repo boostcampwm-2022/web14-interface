@@ -1,6 +1,18 @@
-import { Controller, Get, Param, Query, Redirect, Res } from '@nestjs/common';
+import {
+	Controller,
+	Get,
+	HttpCode,
+	Param,
+	Query,
+	Redirect,
+	Req,
+	Res,
+	UseGuards,
+} from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
-import { Response } from 'express';
+import { Request, Response } from 'express';
+import { JwtGuard } from '../guard/jwt.guard';
+import { OK } from '@constant';
 
 @Controller('auth')
 export class AuthController {
@@ -23,7 +35,10 @@ export class AuthController {
 			this.authService.getCookieWithJwtAccessToken(user);
 
 		res.cookie('access-token', accessToken, cookieOptions);
-
-		return user;
 	}
+
+	@Get('login')
+	@UseGuards(JwtGuard)
+	@HttpCode(OK)
+	validate() {}
 }
