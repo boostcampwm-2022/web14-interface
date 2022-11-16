@@ -3,6 +3,7 @@ import { FeedbackBox } from '@components/@shared/FeedbackBox/FeedbackBox';
 import FeedbackArea from '@components/FeedbackArea/FeedbackArea';
 import { useRecoilState } from 'recoil';
 import { currentTimeState } from '@store/feedbackStore';
+import { findCurrentFeedback } from '@utils/utils';
 
 const Feedback = () => {
 	const dummyFeedback = [
@@ -24,30 +25,8 @@ const Feedback = () => {
 
 	const feedbackRef = useRef([]);
 
-	const findCurrentFeedback = () => {
-		let start = 0;
-		let end = dummyFeedback.length - 1;
-		let mid;
-
-		while (start <= end) {
-			mid = Math.floor((start + end) / 2);
-
-			if (currentTime === dummyFeedback[mid].startTime) {
-				return mid;
-			} else {
-				if (currentTime < dummyFeedback[mid].startTime) {
-					end = mid - 1;
-				} else {
-					start = mid + 1;
-				}
-			}
-		}
-
-		return start <= 0 ? 0 : start - 1;
-	};
-
 	useEffect(() => {
-		const nearestIndex = findCurrentFeedback();
+		const nearestIndex = findCurrentFeedback(dummyFeedback, currentTime);
 		console.log(nearestIndex, dummyFeedback[nearestIndex].startTime);
 		if (nearestIndex !== focusIndex) setFocusIndex(nearestIndex);
 	}, [currentTime]);
