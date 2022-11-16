@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FeedbackBox } from '@components/@shared/FeedbackBox/FeedbackBox';
 import FeedbackArea from '@components/FeedbackArea/FeedbackArea';
-import { useRecoilState } from 'recoil';
-import { currentTimeState } from '@store/feedbackStore';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { currentTimeState, isFbClickedState } from '@store/feedbackStore';
 import { findCurrentFeedback } from '@utils/utils';
 
 const Feedback = () => {
@@ -20,6 +20,7 @@ const Feedback = () => {
 	];
 
 	// const [currentTime, setCurrentTime] = useRecoilState(currentTimeState);
+	const setIsFbClicked = useSetRecoilState(isFbClickedState);
 	const currentTime = 16;
 	const [focusIndex, setFocusIndex] = useState(0);
 	const [inputValue, setInputValue] = useState('');
@@ -36,8 +37,9 @@ const Feedback = () => {
 		feedbackRef.current[focusIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
 	}, [focusIndex]);
 
-	const onClickFeedback = (e) => {
+	const handleClickFeedback = (e) => {
 		e.target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		setIsFbClicked(true);
 	};
 
 	return (
@@ -46,7 +48,7 @@ const Feedback = () => {
 				{dummyFeedback.map((feedback, idx) => (
 					<FeedbackBox
 						key={feedback.id}
-						onClick={onClickFeedback}
+						onClick={handleClickFeedback}
 						ref={(elem) => (feedbackRef.current[idx] = elem)}
 					>
 						<FeedbackBox.StartTime>{feedback.startTime}</FeedbackBox.StartTime>
