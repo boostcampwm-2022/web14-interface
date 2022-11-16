@@ -10,30 +10,28 @@ function getStartTime(children: React.ReactNode[]) {
 	);
 }
 
-function getEditBtn(children: React.ReactNode[]) {
-	return children.filter((child) => React.isValidElement(child) && child.type === FbEditBtnType);
+function getBtn(children: React.ReactNode[]) {
+	return children.filter((child) => React.isValidElement(child) && child.type === FbBtnType);
 }
 
-function getDeleteBtn(children: React.ReactNode[]) {
-	return children.filter(
-		(child) => React.isValidElement(child) && child.type === FbDeleteBtnType
-	);
-}
-
-const FbMain = ({ children }: { children: React.ReactNode }) => {
+const FbMain = ({
+	children,
+	handleClick,
+}: {
+	children: React.ReactNode;
+	handleClick: React.MouseEventHandler<HTMLElement>;
+}) => {
 	const childrenArr = React.Children.toArray(children);
 
 	const FbContent = getContent(childrenArr);
 	const FbStartTime = getStartTime(childrenArr);
-	const FbEditBtn = getEditBtn(childrenArr);
-	const FbDeleteBtn = getDeleteBtn(childrenArr);
+	const FbBtns = getBtn(childrenArr);
 
 	return (
-		<div>
+		<div onClick={handleClick}>
 			<div>{FbStartTime}</div>
 			<div>{FbContent}</div>
-			{FbEditBtn && <div>{FbEditBtn}</div>}
-			{FbDeleteBtn && <div>{FbDeleteBtn}</div>}
+			<div>{FbBtns}</div>
 		</div>
 	);
 };
@@ -48,19 +46,19 @@ const FbStartTime = ({ children }: { children?: React.ReactNode }) => {
 };
 const FbStartTimeType = (<FbStartTime />).type;
 
-const FbEditBtn = () => {
-	return <button>edit</button>;
+const FbBtn = ({
+	children,
+	handleClick,
+}: {
+	children?: React.ReactNode;
+	handleClick?: React.MouseEventHandler<HTMLButtonElement>;
+}) => {
+	return <button onClick={handleClick}>{children}</button>;
 };
-const FbEditBtnType = (<FbEditBtn />).type;
-
-const FbDeleteBtn = () => {
-	return <button>delete</button>;
-};
-const FbDeleteBtnType = (<FbDeleteBtn />).type;
+const FbBtnType = (<FbBtn />).type;
 
 export const Feedbackbox = Object.assign(FbMain, {
 	Content: FbContent,
 	StartTime: FbStartTime,
-	EditBtn: FbEditBtn,
-	DeleteBtn: FbDeleteBtn,
+	Btn: FbBtn,
 });
