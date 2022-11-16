@@ -1,4 +1,11 @@
-import { NAVER_ACCESS_TOKEN_URL, NAVER_AUTHORIZE_PAGE_URL, OAUTH_TYPE } from '@constant';
+import {
+	AUTHORIZATION_TOKEN_TYPE,
+	NAVER_ACCESS_TOKEN_URL,
+	NAVER_AUTHORIZE_PAGE_URL,
+	NAVER_PROFILE_API_URL,
+	OAUTH_CALLBACK_URL,
+	OAUTH_TYPE,
+} from '@constant';
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { UserSocialInfo } from 'src/types/auth.type';
@@ -9,8 +16,8 @@ export class OauthNaverService implements OauthService {
 	private clientId = process.env.NAVER_CLIENT_ID;
 	private clientSecret = process.env.NAVER_CLIENT_SECRET;
 	private callbackUrl = [
-		process.env.SERVER_URL,
-		process.env.NAVER_CALLBACK_URL,
+		process.env.SERVER_ORIGIN_URL,
+		OAUTH_CALLBACK_URL,
 		OAUTH_TYPE.NAVER,
 	].join('/');
 
@@ -23,19 +30,24 @@ export class OauthNaverService implements OauthService {
 		const queryString =
 			`&client_id=${this.clientId}&client_secret=${this.clientSecret}` +
 			`&redirect_uri=${this.callbackUrl}&code=${authorizationCode}`;
+		const headers = {
+			'X-Naver-Client-Id': this.clientId,
+			'X-Naver-Client-Secret': this.clientSecret,
+		};
 
-		const res = await axios.get(NAVER_ACCESS_TOKEN_URL + queryString, {
-			headers: {
-				'X-Naver-Client-Id': this.clientId,
-				'X-Naver-Client-Secret': this.clientSecret,
-			},
-		});
-		const { access_token } = res.data.json();
+		const { access_token } = await axios
+			.get(NAVER_ACCESS_TOKEN_URL + queryString, { headers })
+			.then((res) => res.data.json());
 
 		return access_token;
 	}
 
-	getSocialInfoByAccessToken(accessToken: string): Promise<UserSocialInfo> {
-		throw new Error('Method not implemented.');
+	async getSocialInfoByAccessToken(accessToken: string): Promise<UserSocialInfo> {
+		const headers = { Authorization: `${AUTHORIZATION_TOKEN_TYPE} ${accessToken}` };
+		const userInfo = await axios
+			.get(NAVER_PROFILE_API_URL, { headers })
+			.then((res) => res.data.json());
+
+		return userInfo;
 	}
 }

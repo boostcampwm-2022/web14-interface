@@ -6,6 +6,7 @@ export enum OAUTH_TYPE {
 	GOOGLE = 'google',
 }
 export const OAUTH_CALLBACK_URL = 'api/auth/oauth/callback';
+export const AUTHORIZATION_TOKEN_TYPE = 'Bearer';
 
 // NAVER
 export const NAVER_AUTHORIZE_PAGE_URL =
