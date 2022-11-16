@@ -22,6 +22,7 @@ const Feedback = () => {
 	// const [currentTime, setCurrentTime] = useRecoilState(currentTimeState);
 	const currentTime = 16;
 	const [focusIndex, setFocusIndex] = useState(0);
+	const [inputValue, setInputValue] = useState('');
 
 	const feedbackRef = useRef([]);
 
@@ -53,7 +54,10 @@ const Feedback = () => {
 					</FeedbackBox>
 				))}
 			</FeedbackArea.FAScrollView>
-			<FeedbackArea.FATextArea></FeedbackArea.FATextArea>
+			<FeedbackArea.FATextArea
+				value={inputValue}
+				onChange={(e) => setInputValue(e.target.value)}
+			/>
 		</FeedbackArea>
 	);
 };

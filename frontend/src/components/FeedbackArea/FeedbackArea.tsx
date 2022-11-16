@@ -16,8 +16,13 @@ const getFAScrollView = (childArr: ReactNode[]) => {
 	return childArr.filter((child) => isValidElement(child) && child.type === FAScrollViewType);
 };
 
-const FATextArea = () => {
-	return <textarea></textarea>;
+// TODO: issue #17를 참고해서 추출
+interface FATextAreaType {
+	value?: string;
+	onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
+}
+const FATextArea = ({ value, onChange }: FATextAreaType) => {
+	return <textarea value={value} onChange={onChange}></textarea>;
 };
 const FATextAreaType = (<FATextArea />).type;
 const getFATextArea = (childArr: ReactNode[]) => {
