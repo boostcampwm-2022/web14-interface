@@ -18,10 +18,10 @@ function getBtns(children: React.ReactNode[]) {
 const FbMain = (
 	{
 		children,
-		handleClick,
+		onClick,
 	}: {
 		children: React.ReactNode;
-		handleClick?: React.MouseEventHandler<HTMLElement>;
+		onClick?: React.MouseEventHandler<HTMLElement>;
 	},
 	ref
 ) => {
@@ -32,7 +32,7 @@ const FbMain = (
 	const FbBtns = getBtns(childrenArr);
 
 	return (
-		<div onClick={handleClick} ref={ref}>
+		<div onClick={onClick} ref={ref}>
 			<div>{FbStartTime}</div>
 			<div>{FbContent}</div>
 			<div>{FbBtns}</div>
@@ -52,12 +52,12 @@ const FbStartTimeType = (<FbStartTime />).type;
 
 const FbBtn = ({
 	children,
-	handleClick,
+	onClick,
 }: {
 	children?: React.ReactNode;
-	handleClick?: React.MouseEventHandler<HTMLElement>;
+	onClick?: React.MouseEventHandler<HTMLElement>;
 }) => {
-	return <button onClick={handleClick}>{children}</button>;
+	return <button onClick={onClick}>{children}</button>;
 };
 const FbBtnType = (<FbBtn />).type;
 

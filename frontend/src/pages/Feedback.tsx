@@ -66,7 +66,7 @@ const Feedback = () => {
 				{dummyFeedback.map((feedback, idx) => (
 					<FeedbackBox
 						key={feedback.id}
-						handleClick={onClickFeedback}
+						onClick={onClickFeedback}
 						ref={(elem) => (feedbackRef.current[idx] = elem)}
 					>
 						<FeedbackBox.StartTime>{feedback.startTime}</FeedbackBox.StartTime>
