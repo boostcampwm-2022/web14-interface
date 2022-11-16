@@ -44,6 +44,11 @@ export class OauthNaverService implements OauthService {
 		return access_token;
 	}
 
+	/**
+	 * @link https://developers.naver.com/docs/login/profile/profile.md
+	 * @param accessToken
+	 * @returns userInfo
+	 */
 	async getSocialInfoByAccessToken(accessToken: string): Promise<UserSocialInfo> {
 		const headers = { Authorization: `${AUTHORIZATION_TOKEN_TYPE} ${accessToken}` };
 		const res = await axios.get(NAVER_PROFILE_API_URL, { headers }).then((res) => res.data);
