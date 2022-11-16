@@ -33,6 +33,7 @@
     "@types/helmet": "^4.0.0",
     "cookie-parser": "^1.4.6",
     "helmet": "^6.0.0",
+    "joi": "^17.7.0",
     "mysql2": "^2.3.3",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",

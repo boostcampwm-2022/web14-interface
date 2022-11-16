@@ -1,4 +1,4 @@
-import { OAUTH_TYPE, USER_REPOSITORY_INTERFACE } from '@constant';
+import { JWT_ACCESS_TOKEN_EXPIRATION_TIME, JWT_ACCESS_TOKEN_SECRET, JWT_REFRESH_TOKEN_EXPIRATION_TIME, JWT_REFRESH_TOKEN_SECRET, OAUTH_TYPE, USER_REPOSITORY_INTERFACE } from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
 import { UserInfo } from 'src/types/auth.type';
 import { UserEntity } from 'src/user/entities/typeorm-user.entity';
@@ -7,6 +7,7 @@ import { OauthGoogleService } from './oauth/google-oauth.service';
 import { OauthNaverService } from './oauth/naver-oauth.service';
 import { OauthService } from './oauth/interface-oauth.service';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +20,8 @@ export class AuthService {
 		private readonly oauthGoogleService: OauthGoogleService,
 		private readonly oauthNaverService: OauthNaverService,
 
-		private jwtService: JwtService
+		private jwtService: JwtService,
+		private configService: ConfigService
 	) {}
 
 	/**
@@ -52,10 +54,31 @@ export class AuthService {
 		return user;
 	}
 
-	async login(user: UserEntity) {
+	getCookieWithJwtAccessToken(user: UserEntity) {
 		const payload = { id: user.id, oauthType: user.oauthType };
+		const token = this.jwtService.sign(payload, {
+			secret: this.configService.get(JWT_ACCESS_TOKEN_SECRET),
+			expiresIn: `${this.configService.get(JWT_ACCESS_TOKEN_EXPIRATION_TIME)}s`,
+		})
+
 		return {
-			accessToken: this.jwtService.sign(payload),
+			accessToken: token,
+			httpOnly: true,
+			maxAge: Number(this.configService.get(JWT_ACCESS_TOKEN_EXPIRATION_TIME)) * 1000,
+		}
+	}
+
+	getCookieWithJwtRefreshToken(user: UserEntity) {
+		const payload = { id: user.id, oauthType: user.oauthType };
+		const token = this.jwtService.sign(payload, {
+			secret: this.configService.get(JWT_REFRESH_TOKEN_SECRET),
+			expiresIn: `${this.configService.get(JWT_REFRESH_TOKEN_EXPIRATION_TIME)}s`,
+		})
+
+		return {
+			refreshToken: token,
+			httpOnly: true,
+			maxAge: Number(this.configService.get(JWT_REFRESH_TOKEN_EXPIRATION_TIME)) * 1000,
 		}
 	}
 
