@@ -39,46 +39,50 @@ describe('AuthService', () => {
 		oauthGoogleService = module.get(OauthGoogleService);
 	});
 
-	it('의존성 주입 테스트', () => {
-		expect(authService).toBeDefined();
-		expect(userRepository).toBeDefined();
-		expect(oauthNaverService).toBeDefined();
-		expect(oauthGoogleService).toBeDefined();
-	});
-
-	it('유저의 OAuth로 시작 테스트', async () => {
-		const user = makeMockUser({ id: 'testId', oauthType: 'naver' } as UserInfo);
-
-		jest.spyOn(oauthNaverService, 'getAccessTokenByAuthorizationCode').mockResolvedValue(
-			'success'
-		);
-		jest.spyOn(oauthNaverService, 'getSocialInfoByAccessToken').mockResolvedValue(user);
-		jest.spyOn(userRepository, 'saveUser').mockResolvedValue(user);
-
-		const joinedUser = await authService.socialStart({
-			type: 'naver',
-			authorizationCode: 'test',
+	describe('valid case', () => {
+		it('의존성 주입 테스트', () => {
+			expect(authService).toBeDefined();
+			expect(userRepository).toBeDefined();
+			expect(oauthNaverService).toBeDefined();
+			expect(oauthGoogleService).toBeDefined();
 		});
 
-		expect(user).toEqual(joinedUser);
+		it('유저의 OAuth로 시작 테스트', async () => {
+			const user = makeMockUser({ id: 'testId', oauthType: 'naver' } as UserInfo);
+
+			jest.spyOn(oauthNaverService, 'getAccessTokenByAuthorizationCode').mockResolvedValue(
+				'success'
+			);
+			jest.spyOn(oauthNaverService, 'getSocialInfoByAccessToken').mockResolvedValue(user);
+			jest.spyOn(userRepository, 'saveUser').mockResolvedValue(user);
+
+			const joinedUser = await authService.socialStart({
+				type: 'naver',
+				authorizationCode: 'test',
+			});
+
+			expect(user).toEqual(joinedUser);
+		});
 	});
 
-	it('유저의 OAuth 승인 취소 테스트', async () => {
-		try {
-			await authService.socialStart({ type: 'naver', authorizationCode: undefined });
-		} catch (err) {
-			expect(err).toBeInstanceOf(Error);
-			expect(err.message).toBe('social 인증이 되지 않았습니다.');
-		}
-	});
+	describe('error case', () => {
+		it('유저의 OAuth 승인 취소 테스트', async () => {
+			try {
+				await authService.socialStart({ type: 'naver', authorizationCode: undefined });
+			} catch (err) {
+				expect(err).toBeInstanceOf(Error);
+				expect(err.message).toBe('social 인증이 되지 않았습니다.');
+			}
+		});
 
-	it('옳바른 OAuth타입이 아닐 때의 오류 테스트', async () => {
-		try {
-			await authService.socialStart({ type: 'invalid', authorizationCode: 'authCode' });
-		} catch (err) {
-			expect(err).toBeInstanceOf(Error);
-			expect(err.message).toBe('');
-		}
+		it('옳바른 OAuth타입이 아닐 때의 오류 테스트', async () => {
+			try {
+				await authService.socialStart({ type: 'invalid', authorizationCode: 'authCode' });
+			} catch (err) {
+				expect(err).toBeInstanceOf(Error);
+				expect(err.message).toBe('');
+			}
+		});
 	});
 
 	const makeMockUser = (userInfo: UserInfo): UserEntity => {
