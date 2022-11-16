@@ -19,7 +19,22 @@ export class OauthNaverService implements OauthService {
 		return NAVER_AUTHORIZE_PAGE_URL + queryString;
 	}
 
-	async getAccessTokenByAuthorizationCode(authorizationCode: string): Promise<string> {}
+	async getAccessTokenByAuthorizationCode(authorizationCode: string): Promise<string> {
+		const queryString =
+			`&client_id=${this.clientId}&client_secret=${this.clientSecret}` +
+			`&redirect_uri=${this.callbackUrl}&code=${authorizationCode}`;
+
+		const res = await axios.get(NAVER_ACCESS_TOKEN_URL + queryString, {
+			headers: {
+				'X-Naver-Client-Id': this.clientId,
+				'X-Naver-Client-Secret': this.clientSecret,
+			},
+		});
+		const { access_token } = res.data.json();
+
+		return access_token;
+	}
+
 	getSocialInfoByAccessToken(accessToken: string): Promise<UserSocialInfo> {
 		throw new Error('Method not implemented.');
 	}
