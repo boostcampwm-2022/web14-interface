@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Feedbackbox } from '@components/Feedbackbox/Feedbackbox';
+import { FeedbackBox } from '@components/@shared/FeedbackBox/FeedbackBox';
 import FeedbackArea from '@components/FeedbackArea/FeedbackArea';
 
 const Feedback = () => {
@@ -29,14 +29,14 @@ const Feedback = () => {
 		<FeedbackArea>
 			<FeedbackArea.FBAScrollView>
 				{dummyFeedback.map((feedback, idx) => (
-					<Feedbackbox
+					<FeedbackBox
 						key={feedback.id}
-						onClickFeedback={onClickFeedback}
+						handleClick={onClickFeedback}
 						ref={(elem) => (feedbackRef.current[idx] = elem)}
 					>
-						<Feedbackbox.StartTime>{feedback.startTime}</Feedbackbox.StartTime>
-						<Feedbackbox.Content>{feedback.content}</Feedbackbox.Content>
-					</Feedbackbox>
+						<FeedbackBox.StartTime>{feedback.startTime}</FeedbackBox.StartTime>
+						<FeedbackBox.Content>{feedback.content}</FeedbackBox.Content>
+					</FeedbackBox>
 				))}
 			</FeedbackArea.FBAScrollView>
 			<FeedbackArea.FBATextArea></FeedbackArea.FBATextArea>
