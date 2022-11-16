@@ -13,5 +13,5 @@ export const envConfig: ConfigModuleOptions = {
 		JWT_ACCESS_TOKEN_EXPIRATION_TIME: Joi.string().required(),
 		JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
 		JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.string().required(),
-	})
+	}),
 };

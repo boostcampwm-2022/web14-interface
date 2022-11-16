@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Query, Redirect } from '@nestjs/common';
+import { Controller, Get, Param, Query, Redirect, Res } from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -14,9 +15,15 @@ export class AuthController {
 	@Get('oauth/callback/:type')
 	async socialStart(
 		@Query('authorization_code') authorizationCode: string,
-		@Param('type') type: string
+		@Param('type') type: string,
+		@Res({ passthrough: true }) res: Response
 	) {
-		const userId = await this.authService.socialStart({ type, authorizationCode });
-		return userId;
+		const user = await this.authService.socialStart({ type, authorizationCode });
+		const { accessToken, ...cookieOptions } =
+			this.authService.getCookieWithJwtAccessToken(user);
+
+		res.cookie('access-token', accessToken, cookieOptions);
+
+		return user;
 	}
 }

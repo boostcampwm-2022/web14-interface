@@ -1,4 +1,11 @@
-import { JWT_ACCESS_TOKEN_EXPIRATION_TIME, JWT_ACCESS_TOKEN_SECRET, JWT_REFRESH_TOKEN_EXPIRATION_TIME, JWT_REFRESH_TOKEN_SECRET, OAUTH_TYPE, USER_REPOSITORY_INTERFACE } from '@constant';
+import {
+	JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+	JWT_ACCESS_TOKEN_SECRET,
+	JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+	JWT_REFRESH_TOKEN_SECRET,
+	OAUTH_TYPE,
+	USER_REPOSITORY_INTERFACE,
+} from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
 import { UserInfo } from 'src/types/auth.type';
 import { UserEntity } from 'src/user/entities/typeorm-user.entity';
@@ -55,31 +62,17 @@ export class AuthService {
 	}
 
 	getCookieWithJwtAccessToken(user: UserEntity) {
-		const payload = { id: user.id, oauthType: user.oauthType };
+		const payload = { id: user.id };
 		const token = this.jwtService.sign(payload, {
 			secret: this.configService.get(JWT_ACCESS_TOKEN_SECRET),
 			expiresIn: `${this.configService.get(JWT_ACCESS_TOKEN_EXPIRATION_TIME)}s`,
-		})
+		});
 
 		return {
 			accessToken: token,
 			httpOnly: true,
 			maxAge: Number(this.configService.get(JWT_ACCESS_TOKEN_EXPIRATION_TIME)) * 1000,
-		}
-	}
-
-	getCookieWithJwtRefreshToken(user: UserEntity) {
-		const payload = { id: user.id, oauthType: user.oauthType };
-		const token = this.jwtService.sign(payload, {
-			secret: this.configService.get(JWT_REFRESH_TOKEN_SECRET),
-			expiresIn: `${this.configService.get(JWT_REFRESH_TOKEN_EXPIRATION_TIME)}s`,
-		})
-
-		return {
-			refreshToken: token,
-			httpOnly: true,
-			maxAge: Number(this.configService.get(JWT_REFRESH_TOKEN_EXPIRATION_TIME)) * 1000,
-		}
+		};
 	}
 
 	/**
