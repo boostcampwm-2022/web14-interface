@@ -10,22 +10,23 @@ function getStartTime(children: React.ReactNode[]) {
 	);
 }
 
-function getBtn(children: React.ReactNode[]) {
+function getBtns(children: React.ReactNode[]) {
 	return children.filter((child) => React.isValidElement(child) && child.type === FbBtnType);
 }
 
+// TODO: handler optional 삭제
 const FbMain = ({
 	children,
 	handleClick,
 }: {
 	children: React.ReactNode;
-	handleClick: React.MouseEventHandler<HTMLElement>;
+	handleClick?: React.MouseEventHandler<HTMLElement>;
 }) => {
 	const childrenArr = React.Children.toArray(children);
 
 	const FbContent = getContent(childrenArr);
 	const FbStartTime = getStartTime(childrenArr);
-	const FbBtns = getBtn(childrenArr);
+	const FbBtns = getBtns(childrenArr);
 
 	return (
 		<div onClick={handleClick}>
@@ -51,13 +52,13 @@ const FbBtn = ({
 	handleClick,
 }: {
 	children?: React.ReactNode;
-	handleClick?: React.MouseEventHandler<HTMLButtonElement>;
+	handleClick?: React.MouseEventHandler<HTMLElement>;
 }) => {
 	return <button onClick={handleClick}>{children}</button>;
 };
 const FbBtnType = (<FbBtn />).type;
 
-export const Feedbackbox = Object.assign(FbMain, {
+export const FeedbackBox = Object.assign(FbMain, {
 	Content: FbContent,
 	StartTime: FbStartTime,
 	Btn: FbBtn,

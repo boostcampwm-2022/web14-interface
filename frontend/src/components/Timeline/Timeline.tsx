@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Feedbackbox } from '@components/Feedbackbox/Feedbackbox';
+import { FeedbackBox } from '@components/@shared/FeedbackBox/FeedbackBox';
+import { ReactComponent as EditIcon } from '@assets/icon/edit.svg';
 
 const initialTimeline = [
 	{ id: '1', startTime: 1, endTime: 2, content: '목소리가 조으시네용' },
@@ -26,11 +27,12 @@ const Timeline = () => {
 	return (
 		<>
 			{timeline.map(({ id, content, startTime }) => (
-				<Feedbackbox key={id}>
-					<Feedbackbox.Content>{content}</Feedbackbox.Content>
-					<Feedbackbox.StartTime>{startTime}</Feedbackbox.StartTime>
-				</Feedbackbox>
+				<FeedbackBox key={id}>
+					<FeedbackBox.Content>{content}</FeedbackBox.Content>
+					<FeedbackBox.StartTime>{startTime}</FeedbackBox.StartTime>
+				</FeedbackBox>
 			))}
+			<EditIcon width={20} />
 		</>
 	);
 };
