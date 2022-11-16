@@ -1,48 +1,46 @@
 import { css } from '@emotion/react';
 import React, { Children, ReactNode, isValidElement } from 'react';
 
-const FVAScrollViewStyle = css`
+const FAScrollViewStyle = css`
 	width: 100%;
 	height: 200px;
 	background-color: red;
 	overflow-y: scroll;
 `;
 
-const FBAScrollView = ({ children }: { children?: ReactNode }) => {
-	return <div css={FVAScrollViewStyle}>{children}</div>;
+const FAScrollView = ({ children }: { children?: ReactNode }) => {
+	return <div css={FAScrollViewStyle}>{children}</div>;
+};
+const FAScrollViewType = (<FAScrollView />).type;
+const getFAScrollView = (childArr: ReactNode[]) => {
+	return childArr.filter((child) => isValidElement(child) && child.type === FAScrollViewType);
 };
 
-const FBAScrollViewType = (<FBAScrollView />).type;
-
-const getFBAScrollView = (childArr: ReactNode[]) => {
-	return childArr.filter((child) => isValidElement(child) && child.type === FBAScrollViewType);
-};
-
-const FBATextArea = () => {
+const FATextArea = () => {
 	return <textarea></textarea>;
 };
-const FBATextAreaType = (<FBATextArea />).type;
-const getFBATextArea = (childArr: ReactNode[]) => {
-	return childArr.filter((child) => isValidElement(child) && child.type === FBATextAreaType);
+const FATextAreaType = (<FATextArea />).type;
+const getFATextArea = (childArr: ReactNode[]) => {
+	return childArr.filter((child) => isValidElement(child) && child.type === FATextAreaType);
 };
 
 const FBAMain = ({ children }: { children: ReactNode }) => {
 	const childArr = Children.toArray(children);
 
-	const FBAScrollView = getFBAScrollView(childArr);
-	const FBATextArea = getFBATextArea(childArr);
+	const FAScrollView = getFAScrollView(childArr);
+	const FATextArea = getFATextArea(childArr);
 
 	return (
 		<div>
-			{FBAScrollView}
-			{FBATextArea}
+			{FAScrollView}
+			{FATextArea}
 		</div>
 	);
 };
 
 const FeedbackArea = Object.assign(FBAMain, {
-	FBAScrollView,
-	FBATextArea,
+	FAScrollView,
+	FATextArea,
 });
 
 export default FeedbackArea;

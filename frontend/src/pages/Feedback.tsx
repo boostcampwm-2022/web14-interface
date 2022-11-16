@@ -62,7 +62,7 @@ const Feedback = () => {
 
 	return (
 		<FeedbackArea>
-			<FeedbackArea.FBAScrollView>
+			<FeedbackArea.FAScrollView>
 				{dummyFeedback.map((feedback, idx) => (
 					<FeedbackBox
 						key={feedback.id}
@@ -73,8 +73,8 @@ const Feedback = () => {
 						<FeedbackBox.Content>{feedback.content}</FeedbackBox.Content>
 					</FeedbackBox>
 				))}
-			</FeedbackArea.FBAScrollView>
-			<FeedbackArea.FBATextArea></FeedbackArea.FBATextArea>
+			</FeedbackArea.FAScrollView>
+			<FeedbackArea.FATextArea></FeedbackArea.FATextArea>
 		</FeedbackArea>
 	);
 };
