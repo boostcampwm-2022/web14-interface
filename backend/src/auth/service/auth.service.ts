@@ -40,6 +40,8 @@ export class AuthService {
 	async socialStart({ type, authorizationCode }: { type: string; authorizationCode: string }) {
 		this.setOauthInstanceByType(type);
 
+		if (!authorizationCode) throw new Error('social 인증이 되지 않았습니다.');
+
 		const accessToken = await this.oauthInstance.getAccessTokenByAuthorizationCode(
 			authorizationCode
 		);

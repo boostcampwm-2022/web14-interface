@@ -1,5 +1,6 @@
 import { USER_REPOSITORY_INTERFACE } from '@constant';
 import { Test, TestingModule } from '@nestjs/testing';
+import { UserInfo } from 'src/types/auth.type';
 import { MockRepository } from 'src/types/mock.type';
 import { JoinUserBuilder, UserEntity } from 'src/user/entities/typeorm-user.entity';
 import { UserRepository } from 'src/user/repository/interface-user.repository';
@@ -44,4 +45,52 @@ describe('AuthService', () => {
 		expect(oauthNaverService).toBeDefined();
 		expect(oauthGoogleService).toBeDefined();
 	});
+
+	it('유저의 OAuth로 시작 테스트', async () => {
+		const user = makeMockUser({ id: 'testId', oauthType: 'naver' } as UserInfo);
+
+		jest.spyOn(oauthNaverService, 'getAccessTokenByAuthorizationCode').mockResolvedValue(
+			'success'
+		);
+		jest.spyOn(oauthNaverService, 'getSocialInfoByAccessToken').mockResolvedValue(user);
+		jest.spyOn(userRepository, 'saveUser').mockResolvedValue(user);
+
+		const joinedUser = await authService.socialStart({
+			type: 'naver',
+			authorizationCode: 'test',
+		});
+
+		expect(user).toEqual(joinedUser);
+	});
+
+	it('유저의 OAuth 승인 취소 테스트', async () => {
+		try {
+			await authService.socialStart({ type: 'naver', authorizationCode: undefined });
+		} catch (err) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe('social 인증이 되지 않았습니다.');
+		}
+	});
+
+	it('옳바른 OAuth타입이 아닐 때의 오류 테스트', async () => {
+		try {
+			await authService.socialStart({ type: 'invalid', authorizationCode: 'authCode' });
+		} catch (err) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe('');
+		}
+	});
+
+	const makeMockUser = (userInfo: UserInfo): UserEntity => {
+		const { id, email, password, nickname, oauthType } = userInfo;
+		const userEntity = new JoinUserBuilder()
+			.setId(id)
+			.setEmail(email)
+			.setPassword(password)
+			.setNickname(nickname)
+			.setOauthType(oauthType)
+			.setDefaultValue()
+			.build();
+		return userEntity;
+	};
 });
