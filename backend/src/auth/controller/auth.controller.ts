@@ -14,10 +14,7 @@ export class AuthController {
 	}
 
 	@Get('oauth/callback/:type')
-	async socialStart(
-		@Query('authorization_code') authorizationCode: string,
-		@Param('type') type: string
-	) {
+	async socialStart(@Query('code') authorizationCode: string, @Param('type') type: string) {
 		const userId = await this.authService.socialStart({ type, authorizationCode });
 		return userId;
 	}

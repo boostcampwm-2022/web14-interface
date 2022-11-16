@@ -37,17 +37,19 @@ export class OauthNaverService implements OauthService {
 
 		const { access_token } = await axios
 			.get(NAVER_ACCESS_TOKEN_URL + queryString, { headers })
-			.then((res) => res.data.json());
+			.then((res) => res.data);
 
 		return access_token;
 	}
 
 	async getSocialInfoByAccessToken(accessToken: string): Promise<UserSocialInfo> {
 		const headers = { Authorization: `${AUTHORIZATION_TOKEN_TYPE} ${accessToken}` };
-		const userInfo = await axios
-			.get(NAVER_PROFILE_API_URL, { headers })
-			.then((res) => res.data.json());
+		const res = await axios.get(NAVER_PROFILE_API_URL, { headers }).then((res) => res.data);
 
-		return userInfo;
+		if (res.resultcode !== '00') {
+			throw new Error(res.message);
+		}
+
+		return res.response;
 	}
 }
