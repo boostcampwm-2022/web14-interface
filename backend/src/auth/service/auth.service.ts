@@ -6,6 +6,7 @@ import { UserRepository } from 'src/user/repository/interface-user.repository';
 import { OauthGoogleService } from './oauth/google-oauth.service';
 import { OauthNaverService } from './oauth/naver-oauth.service';
 import { OauthService } from './oauth/interface-oauth.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,9 @@ export class AuthService {
 		private readonly userRepository: UserRepository<UserEntity>,
 
 		private readonly oauthGoogleService: OauthGoogleService,
-		private readonly oauthNaverService: OauthNaverService
+		private readonly oauthNaverService: OauthNaverService,
+
+		private jwtService: JwtService
 	) {}
 
 	/**
@@ -45,8 +48,15 @@ export class AuthService {
 		);
 		const userSocialInfo = await this.oauthInstance.getSocialInfoByAccessToken(accessToken);
 
-		const userId = await this.userRepository.saveUser(userSocialInfo as UserInfo);
-		return userId;
+		const user = await this.userRepository.saveUser(userSocialInfo as UserInfo);
+		return user;
+	}
+
+	async login(user: UserEntity) {
+		const payload = { id: user.id, oauthType: user.oauthType };
+		return {
+			accessToken: this.jwtService.sign(payload),
+		}
 	}
 
 	/**
