@@ -7,7 +7,7 @@ import { UserModule } from 'src/user/user.module';
 import { OauthGoogleService } from './service/oauth/google-oauth.service';
 import { OauthNaverService } from './service/oauth/naver-oauth.service';
 
-const userRepository: ClassProvider = {
+export const UserRepository: ClassProvider = {
 	provide: USER_REPOSITORY_INTERFACE,
 	useClass: TypeormUserRepository,
 };
@@ -15,6 +15,6 @@ const userRepository: ClassProvider = {
 @Module({
 	imports: [UserModule],
 	controllers: [AuthController],
-	providers: [AuthService, userRepository, OauthGoogleService, OauthNaverService],
+	providers: [AuthService, UserRepository, OauthGoogleService, OauthNaverService],
 })
 export class AuthModule {}
