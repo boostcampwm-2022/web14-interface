@@ -5,7 +5,7 @@ export const currentTimeState = atom({
 	default: 0,
 });
 
-export const isFbClicekd = atom({
-	key: 'isFbClicekd',
+export const isFbClickedState = atom({
+	key: 'isFbClicked',
 	default: false,
 });
