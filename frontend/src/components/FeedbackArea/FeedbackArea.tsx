@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import React, { Children, ReactNode, isValidElement, useRef } from 'react';
+import React, { Children, ReactNode, isValidElement } from 'react';
 
 const FVAScrollViewStyle = css`
 	width: 100%;
@@ -11,6 +11,7 @@ const FVAScrollViewStyle = css`
 const FBAScrollView = ({ children }: { children?: ReactNode }) => {
 	return <div css={FVAScrollViewStyle}>{children}</div>;
 };
+
 const FBAScrollViewType = (<FBAScrollView />).type;
 
 const getFBAScrollView = (childArr: ReactNode[]) => {

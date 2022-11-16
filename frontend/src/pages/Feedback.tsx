@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FeedbackBox } from '@components/@shared/FeedbackBox/FeedbackBox';
 import FeedbackArea from '@components/FeedbackArea/FeedbackArea';
+import { useRecoilState } from 'recoil';
+import { currentTimeState } from '@store/feedbackStore';
 
 const Feedback = () => {
-	const feedbackRef = useRef([]);
 	const dummyFeedback = [
 		{ id: 0, content: '테스트 피드백1', startTime: 3, endTime: 4 },
 		{ id: 1, content: '테스트 피드백2', startTime: 6, endTime: 9 },
@@ -17,9 +18,43 @@ const Feedback = () => {
 		{ id: 9, content: '테스트 피드백10', startTime: 56, endTime: 57 },
 	];
 
+	// const [currentTime, setCurrentTime] = useRecoilState(currentTimeState);
+	const currentTime = 16;
+	const [focusIndex, setFocusIndex] = useState(0);
+
+	const feedbackRef = useRef([]);
+
+	const findCurrentFeedback = () => {
+		let start = 0;
+		let end = dummyFeedback.length - 1;
+		let mid;
+
+		while (start <= end) {
+			mid = Math.floor((start + end) / 2);
+
+			if (currentTime === dummyFeedback[mid].startTime) {
+				return mid;
+			} else {
+				if (currentTime < dummyFeedback[mid].startTime) {
+					end = mid - 1;
+				} else {
+					start = mid + 1;
+				}
+			}
+		}
+
+		return start <= 0 ? 0 : start - 1;
+	};
+
 	useEffect(() => {
-		console.log(feedbackRef);
-	}, []);
+		const nearestIndex = findCurrentFeedback();
+		console.log(nearestIndex, dummyFeedback[nearestIndex].startTime);
+		if (nearestIndex !== focusIndex) setFocusIndex(nearestIndex);
+	}, [currentTime]);
+
+	useEffect(() => {
+		feedbackRef.current[focusIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+	}, [focusIndex]);
 
 	const onClickFeedback = (e) => {
 		e.target.scrollIntoView({ behavior: 'smooth', block: 'start' });
