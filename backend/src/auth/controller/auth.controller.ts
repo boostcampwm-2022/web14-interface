@@ -41,4 +41,10 @@ export class AuthController {
 	@UseGuards(JwtGuard)
 	@HttpCode(OK)
 	validate() {}
+
+	@Get('logout')
+	@UseGuards(JwtGuard)
+	logout(@Res() res: Response) {
+		res.clearCookie('access-token');
+	}
 }
