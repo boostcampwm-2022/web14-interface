@@ -6,6 +6,7 @@ import { USER_REPOSITORY_INTERFACE } from '@constant';
 import { UserModule } from 'src/user/user.module';
 import { OauthGoogleService } from './service/oauth/google-oauth.service';
 import { OauthNaverService } from './service/oauth/naver-oauth.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 export const UserRepository: ClassProvider = {
 	provide: USER_REPOSITORY_INTERFACE,
@@ -13,7 +14,7 @@ export const UserRepository: ClassProvider = {
 };
 
 @Module({
-	imports: [UserModule],
+	imports: [UserModule, TypeOrmModule.forFeature([TypeormUserRepository])],
 	controllers: [AuthController],
 	providers: [AuthService, UserRepository, OauthGoogleService, OauthNaverService],
 })
