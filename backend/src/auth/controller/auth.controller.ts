@@ -1,4 +1,5 @@
-import { Controller, Get, Param, Query, Redirect } from '@nestjs/common';
+import { Controller, Get, HttpCode, Param, Query, Redirect, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthService } from '../service/auth.service';
 
 @Controller('auth')
@@ -6,9 +7,10 @@ export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
 	@Get('oauth/redirect/:type')
-	@Redirect('/', 301)
-	redirectOauthPage(@Param('type') type: string) {
-		return this.authService.getSocialUrl(type);
+	@HttpCode(301)
+	redirectOauthPage(@Param('type') type: string, @Res() res: Response) {
+		const pageUrl = this.authService.getSocialUrl(type);
+		res.redirect(pageUrl);
 	}
 
 	@Get('oauth/callback/:type')
