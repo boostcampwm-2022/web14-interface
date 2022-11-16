@@ -1,4 +1,10 @@
-import React from 'react';
+import { css } from '@emotion/react';
+import React, { forwardRef } from 'react';
+
+const mainStyle = css`
+	width: 100%;
+	height: 70px;
+`;
 
 function getContent(children: React.ReactNode[]) {
 	return children.filter((child) => React.isValidElement(child) && child.type === FbContentType);
@@ -20,7 +26,10 @@ function getDeleteBtn(children: React.ReactNode[]) {
 	);
 }
 
-const FbMain = ({ children }: { children: React.ReactNode }) => {
+const FbMain = (
+	{ children, onClickFeedback }: { children: React.ReactNode; onClickFeedback?: any },
+	ref
+) => {
 	const childrenArr = React.Children.toArray(children);
 
 	const FbContent = getContent(childrenArr);
@@ -29,22 +38,20 @@ const FbMain = ({ children }: { children: React.ReactNode }) => {
 	const FbDeleteBtn = getDeleteBtn(childrenArr);
 
 	return (
-		<div>
-			<div>{FbStartTime}</div>
-			<div>{FbContent}</div>
-			{FbEditBtn && <div>{FbEditBtn}</div>}
-			{FbDeleteBtn && <div>{FbDeleteBtn}</div>}
+		<div css={mainStyle} ref={ref} onClick={onClickFeedback}>
+			{FbStartTime}
+			{FbContent}
 		</div>
 	);
 };
 
 const FbContent = ({ children }: { children?: React.ReactNode }) => {
-	return <div>{children}</div>;
+	return <span>{children}</span>;
 };
 const FbContentType = (<FbContent />).type;
 
 const FbStartTime = ({ children }: { children?: React.ReactNode }) => {
-	return <div>{children}</div>;
+	return <span>{children}</span>;
 };
 const FbStartTimeType = (<FbStartTime />).type;
 
@@ -58,7 +65,7 @@ const FbDeleteBtn = () => {
 };
 const FbDeleteBtnType = (<FbDeleteBtn />).type;
 
-export const Feedbackbox = Object.assign(FbMain, {
+export const Feedbackbox = Object.assign(forwardRef(FbMain), {
 	Content: FbContent,
 	StartTime: FbStartTime,
 	EditBtn: FbEditBtn,
