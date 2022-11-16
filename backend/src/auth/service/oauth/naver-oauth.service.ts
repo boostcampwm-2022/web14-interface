@@ -27,6 +27,8 @@ export class OauthNaverService implements OauthService {
 	}
 
 	async getAccessTokenByAuthorizationCode(authorizationCode: string): Promise<string> {
+		if (!authorizationCode) throw new Error();
+
 		const queryString =
 			`&client_id=${this.clientId}&client_secret=${this.clientSecret}` +
 			`&redirect_uri=${this.callbackUrl}&code=${authorizationCode}`;
