@@ -1,4 +1,9 @@
-import { PickType } from '@nestjs/swagger';
-import { UserInfo } from 'src/types/auth.type';
+import { IsEmail, IsString } from 'class-validator';
 
-export class CreateJwtDto extends PickType(UserInfo, ['email', 'nickname'] as const) {}
+export class CreateJwtDto {
+	@IsString()
+	nickname: string;
+
+	@IsEmail()
+	email: string;
+}
