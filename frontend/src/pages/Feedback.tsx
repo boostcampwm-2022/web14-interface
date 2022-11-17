@@ -2,24 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FeedbackBox } from '@components/@shared/FeedbackBox/FeedbackBox';
 import FeedbackArea from '@components/FeedbackArea/FeedbackArea';
 import { useRecoilState } from 'recoil';
-import { currentTimeState } from '@store/feedbackStore';
+import { currentTimeState, feedbackListState } from '@store/feedbackStore';
 import { findCurrentFeedback } from '@utils/utils';
 import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
 
 const Feedback = () => {
-	const dummyFeedback = [
-		{ id: 0, content: '테스트 피드백1', startTime: 3, endTime: 4 },
-		{ id: 1, content: '테스트 피드백2', startTime: 6, endTime: 9 },
-		{ id: 2, content: '테스트 피드백3', startTime: 10, endTime: 15 },
-		{ id: 3, content: '테스트 피드백4', startTime: 16, endTime: 20 },
-		{ id: 4, content: '테스트 피드백5', startTime: 23, endTime: 30 },
-		{ id: 5, content: '테스트 피드백6', startTime: 31, endTime: 33 },
-		{ id: 6, content: '테스트 피드백7', startTime: 34, endTime: 40 },
-		{ id: 7, content: '테스트 피드백8', startTime: 45, endTime: 50 },
-		{ id: 8, content: '테스트 피드백9', startTime: 51, endTime: 53 },
-		{ id: 9, content: '테스트 피드백10', startTime: 56, endTime: 57 },
-	];
-
+	const [feedbackList, setFeedbackList] = useRecoilState(feedbackListState);
 	const [currentTime, setCurrentTime] = useRecoilState(currentTimeState);
 	const [isFbClicked, setIsFbClicked] = useState(false);
 	const [focusIndex, setFocusIndex] = useState(0);
@@ -28,8 +16,8 @@ const Feedback = () => {
 	const feedbackRef = useRef([]);
 
 	useEffect(() => {
-		const nearestIndex = findCurrentFeedback(dummyFeedback, currentTime);
-		console.log(nearestIndex, dummyFeedback[nearestIndex].startTime);
+		const nearestIndex = findCurrentFeedback(feedbackList, currentTime);
+		console.log(nearestIndex, feedbackList[nearestIndex].startTime);
 		if (nearestIndex !== focusIndex) setFocusIndex(nearestIndex);
 	}, [currentTime]);
 
@@ -54,7 +42,7 @@ const Feedback = () => {
 			/>
 			<FeedbackArea>
 				<FeedbackArea.FAScrollView>
-					{dummyFeedback.map((feedback, idx) => (
+					{feedbackList.map((feedback, idx) => (
 						<FeedbackBox
 							key={feedback.id}
 							onClick={(e) => handleClickFeedback(e, feedback.startTime)}
