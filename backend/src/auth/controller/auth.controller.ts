@@ -1,7 +1,7 @@
 import { Controller, Get, HttpCode, Param, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import { Request, Response } from 'express';
-import { ACCESS_TOKEN, JWT_VALUE, HTTP_STATUS, REFRESH_TOKEN, tokenCookieOptions } from '@constant';
+import { JWT_VALUE, HTTP_STATUS, tokenCookieOptions } from '@constant';
 import { JwtAuthGuard } from '../guard/jwt.guard';
 
 @Controller('auth')
@@ -33,8 +33,8 @@ export class AuthController {
 			expirationTime: JWT_VALUE.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
 		});
 
-		res.cookie(ACCESS_TOKEN, accessToken, tokenCookieOptions);
-		res.cookie(REFRESH_TOKEN, refreshToken, tokenCookieOptions);
+		res.cookie(JWT_VALUE.ACCESS_TOKEN, accessToken, tokenCookieOptions);
+		res.cookie(JWT_VALUE.REFRESH_TOKEN, refreshToken, tokenCookieOptions);
 	}
 
 	@UseGuards(JwtAuthGuard)
@@ -42,11 +42,8 @@ export class AuthController {
 	@HttpCode(HTTP_STATUS.HTTP_OK)
 	loginValidate(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
 		const { accessToken, refreshToken } = req.cookies;
-		res.cookie(ACCESS_TOKEN, accessToken, tokenCookieOptions).cookie(
-			REFRESH_TOKEN,
-			refreshToken,
-			tokenCookieOptions
-		);
+		res.cookie(JWT_VALUE.ACCESS_TOKEN, accessToken, tokenCookieOptions);
+		res.cookie(JWT_VALUE.REFRESH_TOKEN, refreshToken, tokenCookieOptions);
 	}
 
 	@UseGuards(JwtAuthGuard)

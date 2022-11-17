@@ -1,7 +1,4 @@
 export const USER_REPOSITORY_INTERFACE = 'UserRepository';
-
-export const ACCESS_TOKEN = 'accessToken';
-export const REFRESH_TOKEN = 'refreshToken';
 export const MAX_AGE = 2592000;
 
 // OAUTH
@@ -25,6 +22,8 @@ export const KAKAO_PROFILE_API_URL = 'https://kapi.kakao.com/v2/user/me';
 
 // JWT
 export enum JWT_VALUE {
+	ACCESS_TOKEN = 'accessToken',
+	REFRESH_TOKEN = 'refreshToken',
 	JWT_ACCESS_TOKEN_SECRET = 'JWT_ACCESS_TOKEN_SECRET',
 	JWT_ACCESS_TOKEN_EXPIRATION_TIME = 'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
 	JWT_REFRESH_TOKEN_SECRET = 'JWT_REFRESH_TOKEN_SECRET',
