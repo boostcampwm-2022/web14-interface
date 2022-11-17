@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { currentTimeState, isFbClickedState } from '@store/feedbackStore';
-
 import { FeedbackBox } from '@components/@shared/FeedbackBox/FeedbackBox';
 import FeedbackArea from '@components/FeedbackArea/FeedbackArea';
-import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
+import { useRecoilState } from 'recoil';
+import { currentTimeState } from '@store/feedbackStore';
 import { findCurrentFeedback } from '@utils/utils';
+import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
 
 const Feedback = () => {
 	const dummyFeedback = [
@@ -22,7 +21,7 @@ const Feedback = () => {
 	];
 
 	const [currentTime, setCurrentTime] = useRecoilState(currentTimeState);
-	const setIsFbClicked = useSetRecoilState(isFbClickedState);
+	const [isFbClicked, setIsFbClicked] = useState(false);
 	const [focusIndex, setFocusIndex] = useState(0);
 	const [inputValue, setInputValue] = useState('');
 
@@ -46,7 +45,13 @@ const Feedback = () => {
 
 	return (
 		<>
-			<IntervieweeVideo src="assets/test.mp4" width={400} controls />
+			<IntervieweeVideo
+				isFbClicked={isFbClicked}
+				setIsFbClicked={setIsFbClicked}
+				src="assets/test.mp4"
+				width={400}
+				controls
+			/>
 			<FeedbackArea>
 				<FeedbackArea.FAScrollView>
 					{dummyFeedback.map((feedback, idx) => (
