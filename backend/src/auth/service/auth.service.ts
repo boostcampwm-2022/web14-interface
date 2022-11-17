@@ -1,12 +1,5 @@
-import {
-	JWT_ACCESS_TOKEN_EXPIRATION_TIME,
-	JWT_ACCESS_TOKEN_SECRET,
-	JWT_REFRESH_TOKEN_EXPIRATION_TIME,
-	JWT_REFRESH_TOKEN_SECRET,
-	OAUTH_TYPE,
-	USER_REPOSITORY_INTERFACE,
-} from '@constant';
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { OAUTH_TYPE, USER_REPOSITORY_INTERFACE } from '@constant';
+import { Inject, Injectable } from '@nestjs/common';
 import { UserInfo } from 'src/types/auth.type';
 import { UserEntity } from 'src/user/entities/typeorm-user.entity';
 import { UserRepository } from 'src/user/repository/interface-user.repository';
@@ -61,6 +54,13 @@ export class AuthService {
 		return user;
 	}
 
+	/**
+	 * 비밀키와 만료 시간을 기반으로 access token 또는 refresh token을 발급합니다.
+	 * @param payload jwt payload에 입력될 값
+	 * @param secret 서명에 사용될 비밀키
+	 * @param expirationTime token의 만료시간
+	 * @returns access token 또는 refresh token
+	 */
 	getJwt({
 		payload,
 		secret,
