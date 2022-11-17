@@ -20,11 +20,10 @@ export const UserRepository: ClassProvider = {
 @Module({
 	imports: [UserModule, TypeOrmModule.forFeature([TypeormUserRepository])],
 	controllers: [AuthController],
-	providers: [AuthService, UserRepository, OauthKakaoService, OauthNaverService],
 	providers: [
 		AuthService,
-		userRepository,
-		OauthGoogleService,
+		UserRepository,
+		OauthKakaoService,
 		OauthNaverService,
 		JwtService,
 		ConfigService,

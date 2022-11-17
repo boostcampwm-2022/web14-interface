@@ -19,7 +19,7 @@ export class AuthService {
 		private readonly userRepository: UserRepository<UserEntity>,
 
 		private readonly oauthKakaoService: OauthKakaoService,
-		private readonly oauthNaverService: OauthNaverService
+		private readonly oauthNaverService: OauthNaverService,
 
 		private jwtService: JwtService,
 		private configService: ConfigService
