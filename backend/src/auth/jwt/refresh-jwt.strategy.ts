@@ -3,13 +3,11 @@ import {
 	JWT_ACCESS_TOKEN_SECRET,
 	JWT_REFRESH_TOKEN_SECRET,
 } from '@constant';
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
-import { jwtConfig } from '@config';
-import { JwtService } from '@nestjs/jwt';
 import { AuthService } from '../service/auth.service';
 
 @Injectable()
@@ -43,7 +41,6 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 		});
 
 		req.cookies = { ...req.cookies, accessToken };
-		console.log(req.cookies);
 
 		return payload;
 	}

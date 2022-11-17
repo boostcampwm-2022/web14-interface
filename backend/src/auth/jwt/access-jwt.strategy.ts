@@ -1,18 +1,13 @@
-import { JWT_ACCESS_TOKEN_SECRET, JWT_REFRESH_TOKEN_SECRET } from '@constant';
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { JWT_ACCESS_TOKEN_SECRET } from '@constant';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
-import { jwtConfig } from '@config';
-import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class JwtAccessStrategy extends PassportStrategy(Strategy, 'jwt-access') {
-	constructor(
-		private readonly configService: ConfigService, // private readonly userRepository: UserRepository<UserEntity>
-		private jwtService: JwtService
-	) {
+	constructor(private readonly configService: ConfigService) {
 		super({
 			ignoreExpiration: false,
 			jwtFromRequest: ExtractJwt.fromExtractors([
