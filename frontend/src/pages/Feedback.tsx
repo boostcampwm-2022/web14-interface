@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FeedbackBox } from '@components/@shared/FeedbackBox/FeedbackBox';
 import FeedbackArea from '@components/FeedbackArea/FeedbackArea';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { currentTimeState, isFbClickedState } from '@store/feedbackStore';
+import { useRecoilState } from 'recoil';
+import { currentTimeState } from '@store/feedbackStore';
 import { findCurrentFeedback } from '@utils/utils';
 
 const Feedback = () => {
@@ -19,9 +19,8 @@ const Feedback = () => {
 		{ id: 9, content: '테스트 피드백10', startTime: 56, endTime: 57 },
 	];
 
-	// const [currentTime, setCurrentTime] = useRecoilState(currentTimeState);
-	const setIsFbClicked = useSetRecoilState(isFbClickedState);
-	const currentTime = 16;
+	const [currentTime, setCurrentTime] = useRecoilState(currentTimeState);
+	const [isFbClicked, setIsFbClicked] = useState(false);
 	const [focusIndex, setFocusIndex] = useState(0);
 	const [inputValue, setInputValue] = useState('');
 
