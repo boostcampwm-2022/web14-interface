@@ -3,14 +3,12 @@ import { useRecoilState } from 'recoil';
 import Video, { VideoPropType } from '@components/@shared/Video/Video';
 import { currentTimeState } from '@store/feedbackStore';
 
-interface IntervieweeVideoTyppe {
+interface IntervieweeVideoType extends VideoPropType {
 	isFbClicked: boolean;
 	setIsFbClicked: Dispatch<SetStateAction<boolean>>;
 }
-const IntervieweeVideo = (
-	props: VideoPropType,
-	{ isFbClicked, setIsFbClicked }: IntervieweeVideoTyppe
-) => {
+const IntervieweeVideo = (props: IntervieweeVideoType) => {
+	const { isFbClicked, setIsFbClicked } = props;
 	const [currentTime, setCurrentTime] = useRecoilState(currentTimeState);
 	const videoRef = useRef<HTMLVideoElement>(null);
 

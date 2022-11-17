@@ -4,6 +4,7 @@ import FeedbackArea from '@components/FeedbackArea/FeedbackArea';
 import { useRecoilState } from 'recoil';
 import { currentTimeState } from '@store/feedbackStore';
 import { findCurrentFeedback } from '@utils/utils';
+import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
 
 const Feedback = () => {
 	const dummyFeedback = [
@@ -36,30 +37,40 @@ const Feedback = () => {
 		feedbackRef.current[focusIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
 	}, [focusIndex]);
 
-	const handleClickFeedback = (e) => {
+	const handleClickFeedback = (e, startTime: number) => {
 		e.target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		setCurrentTime(startTime);
 		setIsFbClicked(true);
 	};
 
 	return (
-		<FeedbackArea>
-			<FeedbackArea.FAScrollView>
-				{dummyFeedback.map((feedback, idx) => (
-					<FeedbackBox
-						key={feedback.id}
-						onClick={handleClickFeedback}
-						ref={(elem) => (feedbackRef.current[idx] = elem)}
-					>
-						<FeedbackBox.StartTime>{feedback.startTime}</FeedbackBox.StartTime>
-						<FeedbackBox.Content>{feedback.content}</FeedbackBox.Content>
-					</FeedbackBox>
-				))}
-			</FeedbackArea.FAScrollView>
-			<FeedbackArea.FATextArea
-				value={inputValue}
-				onChange={(e) => setInputValue(e.target.value)}
+		<>
+			<IntervieweeVideo
+				isFbClicked={isFbClicked}
+				setIsFbClicked={setIsFbClicked}
+				src="assets/test.mp4"
+				width={400}
+				controls
 			/>
-		</FeedbackArea>
+			<FeedbackArea>
+				<FeedbackArea.FAScrollView>
+					{dummyFeedback.map((feedback, idx) => (
+						<FeedbackBox
+							key={feedback.id}
+							onClick={(e) => handleClickFeedback(e, feedback.startTime)}
+							ref={(elem) => (feedbackRef.current[idx] = elem)}
+						>
+							<FeedbackBox.StartTime>{feedback.startTime}</FeedbackBox.StartTime>
+							<FeedbackBox.Content>{feedback.content}</FeedbackBox.Content>
+						</FeedbackBox>
+					))}
+				</FeedbackArea.FAScrollView>
+				<FeedbackArea.FATextArea
+					value={inputValue}
+					onChange={(e) => setInputValue(e.target.value)}
+				/>
+			</FeedbackArea>
+		</>
 	);
 };
 
