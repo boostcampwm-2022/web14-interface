@@ -12,7 +12,7 @@ const useSyncFeedbackList = () => {
 	const feedbackRef = useRef([]);
 
 	const handleClickFeedback = (e, startTime: number) => {
-		e.target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		feedbackRef.current[focusIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
 		setCurrentTime(startTime);
 		setIsFbClicked(true);
 	};
