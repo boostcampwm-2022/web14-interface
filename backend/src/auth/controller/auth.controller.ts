@@ -39,14 +39,14 @@ export class AuthController {
 		@Param('type') type: string,
 		@Res({ passthrough: true }) res: Response
 	) {
-		// const user = await this.authService.socialStart({ type, authorizationCode });
+		const user = await this.authService.socialStart({ type, authorizationCode });
 		const accessToken = this.authService.getJwt({
-			payload: 'user.nickname',
+			payload: user.nickname,
 			secret: JWT_ACCESS_TOKEN_SECRET,
 			expirationTime: JWT_ACCESS_TOKEN_EXPIRATION_TIME,
 		});
 		const refreshToken = this.authService.getJwt({
-			payload: 'user.nickname',
+			payload: user.nickname,
 			secret: JWT_REFRESH_TOKEN_SECRET,
 			expirationTime: JWT_REFRESH_TOKEN_EXPIRATION_TIME,
 		});
