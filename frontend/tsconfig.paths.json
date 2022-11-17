@@ -7,7 +7,9 @@
         "@hooks/*": ["./src/hooks/*"],
         "@layout/*": ["./src/layout/*"],
         "@pages/*": ["./src/pages/*"],
-        "@types/*": ["./src/types/*"]
+        "@customType/*": ["./src/customType/*"],
+        "@store/*": ["./src/store/*"],
+        "@utils/*": ["./src/utils/*"]
       }
   }
 }

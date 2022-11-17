@@ -6,6 +6,9 @@ import { UserRepository } from 'src/user/repository/interface-user.repository';
 import { OauthNaverService } from './oauth/naver-oauth.service';
 import { OauthService } from './oauth/interface-oauth.service';
 import { OauthKakaoService } from './oauth/kakao-oauth.service';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { CreateJwtDto } from '../dto/create-jwt.dto';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +20,9 @@ export class AuthService {
 
 		private readonly oauthKakaoService: OauthKakaoService,
 		private readonly oauthNaverService: OauthNaverService
+
+		private jwtService: JwtService,
+		private configService: ConfigService
 	) {}
 
 	/**
@@ -47,8 +53,32 @@ export class AuthService {
 		);
 		const userSocialInfo = await this.oauthInstance.getSocialInfoByAccessToken(accessToken);
 
-		const userId = await this.userRepository.saveUser(userSocialInfo as UserInfo);
-		return userId;
+		const user = await this.userRepository.saveUser(userSocialInfo as UserInfo);
+		return user;
+	}
+
+	/**
+	 * 비밀키와 만료 시간을 기반으로 access token 또는 refresh token을 발급합니다.
+	 * @param payload jwt payload에 입력될 값
+	 * @param secret 서명에 사용될 비밀키
+	 * @param expirationTime token의 만료시간
+	 * @returns access token 또는 refresh token
+	 */
+	createJwt({
+		payload,
+		secret,
+		expirationTime,
+	}: {
+		payload: CreateJwtDto;
+		secret: string;
+		expirationTime: string;
+	}) {
+		const token = this.jwtService.sign(payload, {
+			secret: this.configService.get(secret),
+			expiresIn: `${this.configService.get(expirationTime)}s`,
+		});
+
+		return token;
 	}
 
 	/**
