@@ -6,7 +6,7 @@ import {
 	OAUTH_TYPE,
 	USER_REPOSITORY_INTERFACE,
 } from '@constant';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserInfo } from 'src/types/auth.type';
 import { UserEntity } from 'src/user/entities/typeorm-user.entity';
 import { UserRepository } from 'src/user/repository/interface-user.repository';
@@ -61,18 +61,24 @@ export class AuthService {
 		return user;
 	}
 
-	getCookieWithJwtAccessToken(user: UserEntity) {
-		const payload = { id: user.id };
-		const token = this.jwtService.sign(payload, {
-			secret: this.configService.get(JWT_ACCESS_TOKEN_SECRET),
-			expiresIn: `${this.configService.get(JWT_ACCESS_TOKEN_EXPIRATION_TIME)}s`,
-		});
+	getJwt({
+		payload,
+		secret,
+		expirationTime,
+	}: {
+		payload: string;
+		secret: string;
+		expirationTime: string;
+	}) {
+		const token = this.jwtService.sign(
+			{ payload },
+			{
+				secret: this.configService.get(secret),
+				expiresIn: `${this.configService.get(expirationTime)}s`,
+			}
+		);
 
-		return {
-			accessToken: token,
-			httpOnly: true,
-			maxAge: Number(this.configService.get(JWT_ACCESS_TOKEN_EXPIRATION_TIME)) * 1000,
-		};
+		return token;
 	}
 
 	/**

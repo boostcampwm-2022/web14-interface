@@ -9,7 +9,8 @@ import { OauthNaverService } from './service/oauth/naver-oauth.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { jwtConfig } from '@config';
-import { JwtStrategy } from './jwt/jwt.strategy';
+import { JwtAccessStrategy } from './jwt/access-jwt.strategy';
+import { JwtRefreshStrategy } from './jwt/refresh-jwt.strategy';
 
 const userRepository: ClassProvider = {
 	provide: USER_REPOSITORY_INTERFACE,
@@ -26,7 +27,8 @@ const userRepository: ClassProvider = {
 		OauthNaverService,
 		JwtService,
 		ConfigService,
-		JwtStrategy,
+		JwtAccessStrategy,
+		JwtRefreshStrategy,
 	],
 })
 export class AuthModule {}

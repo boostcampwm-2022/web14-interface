@@ -11,8 +11,17 @@ import {
 } from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import { Request, Response } from 'express';
-import { JwtGuard } from '../guard/jwt.guard';
-import { OK } from '@constant';
+import {
+	ACCESS_TOKEN,
+	JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+	JWT_ACCESS_TOKEN_SECRET,
+	JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+	JWT_REFRESH_TOKEN_SECRET,
+	OK,
+	REFRESH_TOKEN,
+} from '@constant';
+import { JwtAuthGuard } from '../guard/jwt.guard';
+import { accessTokenCookieOptions, refreshTokenCookieOptions } from '@config';
 
 @Controller('auth')
 export class AuthController {
@@ -30,21 +39,39 @@ export class AuthController {
 		@Param('type') type: string,
 		@Res({ passthrough: true }) res: Response
 	) {
-		const user = await this.authService.socialStart({ type, authorizationCode });
-		const { accessToken, ...cookieOptions } =
-			this.authService.getCookieWithJwtAccessToken(user);
+		// const user = await this.authService.socialStart({ type, authorizationCode });
+		const accessToken = this.authService.getJwt({
+			payload: 'user.nickname',
+			secret: JWT_ACCESS_TOKEN_SECRET,
+			expirationTime: JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+		});
+		const refreshToken = this.authService.getJwt({
+			payload: 'user.nickname',
+			secret: JWT_REFRESH_TOKEN_SECRET,
+			expirationTime: JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+		});
 
-		res.cookie('access-token', accessToken, cookieOptions);
+		res.cookie(ACCESS_TOKEN, accessToken, accessTokenCookieOptions);
+		res.cookie(REFRESH_TOKEN, refreshToken, refreshTokenCookieOptions);
 	}
 
+	@UseGuards(JwtAuthGuard)
 	@Get('login')
-	@UseGuards(JwtGuard)
 	@HttpCode(OK)
-	validate() {}
+	validate(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+		const { accessToken, refreshToken } = req.cookies;
+		res.cookie(ACCESS_TOKEN, accessToken, { httpOnly: true }).cookie(
+			REFRESH_TOKEN,
+			refreshToken,
+			{ httpOnly: true }
+		);
+	}
 
+	@UseGuards(JwtAuthGuard)
 	@Get('logout')
-	@UseGuards(JwtGuard)
+	@Redirect('/')
 	logout(@Res() res: Response) {
-		res.clearCookie('access-token');
+		res.clearCookie(ACCESS_TOKEN);
+		res.clearCookie(REFRESH_TOKEN);
 	}
 }
