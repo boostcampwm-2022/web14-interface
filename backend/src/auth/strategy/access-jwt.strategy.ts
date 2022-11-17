@@ -1,5 +1,5 @@
-import { JWT_ACCESS_TOKEN_SECRET } from '@constant';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JWT_VALUE } from '@constant';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -17,7 +17,7 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'jwt-access') 
 					return token ?? null;
 				},
 			]),
-			secretOrKey: configService.get(JWT_ACCESS_TOKEN_SECRET),
+			secretOrKey: configService.get(JWT_VALUE.JWT_ACCESS_TOKEN_SECRET),
 			passReqToCallback: true,
 		});
 	}

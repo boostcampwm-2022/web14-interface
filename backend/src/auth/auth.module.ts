@@ -9,8 +9,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { OauthKakaoService } from './service/oauth/kakao-oauth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { JwtAccessStrategy } from './jwt/access-jwt.strategy';
-import { JwtRefreshStrategy } from './jwt/refresh-jwt.strategy';
+import { JwtAccessStrategy } from './strategy/access-jwt.strategy';
+import { JwtRefreshStrategy } from './strategy/refresh-jwt.strategy';
 
 export const UserRepository: ClassProvider = {
 	provide: USER_REPOSITORY_INTERFACE,
