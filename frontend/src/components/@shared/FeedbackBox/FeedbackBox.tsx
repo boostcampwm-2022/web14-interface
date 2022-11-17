@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import React, { forwardRef } from 'react';
 
 function getContent(children: React.ReactNode[]) {
@@ -50,6 +51,9 @@ const FbStartTime = ({ children }: { children?: React.ReactNode }) => {
 };
 const FbStartTimeType = (<FbStartTime />).type;
 
+const FbBtnStyle = css`
+	width: 80px;
+`;
 const FbBtn = ({
 	children,
 	onClick,
@@ -57,7 +61,11 @@ const FbBtn = ({
 	children?: React.ReactNode;
 	onClick?: React.MouseEventHandler<HTMLElement>;
 }) => {
-	return <button onClick={onClick}>{children}</button>;
+	return (
+		<button css={FbBtnStyle} onClick={onClick}>
+			{children}
+		</button>
+	);
 };
 const FbBtnType = (<FbBtn />).type;
 

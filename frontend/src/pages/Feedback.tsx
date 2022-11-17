@@ -5,6 +5,7 @@ import { useRecoilState } from 'recoil';
 import { currentTimeState, feedbackListState } from '@store/feedbackStore';
 import { findCurrentFeedback } from '@utils/utils';
 import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
+import { ReactComponent as DeleteIcon } from '@assets/icon/delete.svg';
 
 const Feedback = () => {
 	const [feedbackList, setFeedbackList] = useRecoilState(feedbackListState);
@@ -22,6 +23,10 @@ const Feedback = () => {
 		].sort((a, b) => a.startTime - b.startTime);
 
 		setFeedbackList(newFeedbackList);
+	};
+
+	const deleteFeedback = (id: number) => {
+		setFeedbackList(feedbackList.filter((feedback) => feedback.id !== id));
 	};
 
 	useEffect(() => {
@@ -59,6 +64,9 @@ const Feedback = () => {
 						>
 							<FeedbackBox.StartTime>{feedback.startTime}</FeedbackBox.StartTime>
 							<FeedbackBox.Content>{feedback.content}</FeedbackBox.Content>
+							<FeedbackBox.Btn onClick={() => deleteFeedback(feedback.id)}>
+								<DeleteIcon />
+							</FeedbackBox.Btn>
 						</FeedbackBox>
 					))}
 				</FeedbackArea.FAScrollView>
