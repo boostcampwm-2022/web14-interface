@@ -23,18 +23,15 @@ interface FATextAreaType {
 const FATextArea = ({ onInsertFeedback }: FATextAreaType) => {
 	const [input, setInput] = useState('');
 
-	//TODO 좋은 명명법을 찾습니다.
-	const onKeyDown = (e) => {
-		if (e.key === 'Enter') {
-			if (!e.shiftKey) {
-				e.preventDefault();
-				onInsertFeedback(input);
-				setInput('');
-			}
+	const createFeedback = (e) => {
+		if (e.key === 'Enter' && !e.shiftKey) {
+			e.preventDefault();
+			onInsertFeedback(input);
+			setInput('');
 		}
 	};
 
-	return <TextArea value={input} onChange={setInput} onKeyDown={onKeyDown} />;
+	return <TextArea value={input} onChange={setInput} onKeyDown={createFeedback} />;
 };
 const FATextAreaType = (<FATextArea />).type;
 const getFATextArea = (childArr: ReactNode[]) => {
