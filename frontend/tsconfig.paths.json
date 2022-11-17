@@ -8,7 +8,8 @@
         "@layout/*": ["./src/layout/*"],
         "@pages/*": ["./src/pages/*"],
         "@customType/*": ["./src/customType/*"],
-        "@store/*": ["./src/store/*"]
+        "@store/*": ["./src/store/*"],
+        "@utils/*": ["./src/utils/*"]
       }
   }
 }

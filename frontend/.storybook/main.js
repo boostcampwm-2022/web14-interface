@@ -22,6 +22,7 @@ module.exports = {
 			'@pages': path.resolve(__dirname, '../src/pages'),
 			'@customType': path.resolve(__dirname, '../src/customType'),
 			'@store': path.resolve(__dirname, '../src/store'),
+			'@utils': path.resolve(__dirname, '../src/utils'),
 		};
 
 		return config;

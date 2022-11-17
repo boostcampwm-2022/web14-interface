@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 
 function getContent(children: React.ReactNode[]) {
 	return children.filter((child) => React.isValidElement(child) && child.type === FbContentType);
@@ -15,13 +15,16 @@ function getBtns(children: React.ReactNode[]) {
 }
 
 // TODO: handler optional 삭제
-const FbMain = ({
-	children,
-	handleClick,
-}: {
-	children: React.ReactNode;
-	handleClick?: React.MouseEventHandler<HTMLElement>;
-}) => {
+const FbMain = (
+	{
+		children,
+		onClick,
+	}: {
+		children: React.ReactNode;
+		onClick?: React.MouseEventHandler<HTMLElement>;
+	},
+	ref
+) => {
 	const childrenArr = React.Children.toArray(children);
 
 	const FbContent = getContent(childrenArr);
@@ -29,7 +32,7 @@ const FbMain = ({
 	const FbBtns = getBtns(childrenArr);
 
 	return (
-		<div onClick={handleClick}>
+		<div onClick={onClick} ref={ref}>
 			<div>{FbStartTime}</div>
 			<div>{FbContent}</div>
 			<div>{FbBtns}</div>
@@ -49,16 +52,16 @@ const FbStartTimeType = (<FbStartTime />).type;
 
 const FbBtn = ({
 	children,
-	handleClick,
+	onClick,
 }: {
 	children?: React.ReactNode;
-	handleClick?: React.MouseEventHandler<HTMLElement>;
+	onClick?: React.MouseEventHandler<HTMLElement>;
 }) => {
-	return <button onClick={handleClick}>{children}</button>;
+	return <button onClick={onClick}>{children}</button>;
 };
 const FbBtnType = (<FbBtn />).type;
 
-export const FeedbackBox = Object.assign(FbMain, {
+export const FeedbackBox = Object.assign(forwardRef(FbMain), {
 	Content: FbContent,
 	StartTime: FbStartTime,
 	Btn: FbBtn,
