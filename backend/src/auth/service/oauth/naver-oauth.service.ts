@@ -22,7 +22,7 @@ export class OauthNaverService implements OauthService {
 	].join('/');
 
 	getSocialUrl(): string {
-		const queryString = `&client_id=${this.clientId}&redirect_uri=${this.callbackUrl}`;
+		const queryString = `?response_type=token&client_id=${this.clientId}&redirect_uri=${this.callbackUrl}`;
 		return NAVER_AUTHORIZE_PAGE_URL + queryString;
 	}
 
@@ -30,6 +30,7 @@ export class OauthNaverService implements OauthService {
 		if (!authorizationCode) throw new Error();
 
 		const queryString =
+			`?grant_type=authorization_code` +
 			`&client_id=${this.clientId}&client_secret=${this.clientSecret}` +
 			`&redirect_uri=${this.callbackUrl}&code=${authorizationCode}`;
 		const headers = {
