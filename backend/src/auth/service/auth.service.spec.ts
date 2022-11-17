@@ -1,5 +1,4 @@
 import { JWT_VALUE, USER_REPOSITORY_INTERFACE } from '@constant';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserInfo } from 'src/types/auth.type';
@@ -26,7 +25,6 @@ describe('AuthService', () => {
 	let oauthGoogleService: OauthKakaoService;
 	let oauthNaverService: OauthNaverService;
 	let jwtService: JwtService;
-	let configService: ConfigService;
 
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
@@ -38,7 +36,6 @@ describe('AuthService', () => {
 				},
 				OauthKakaoService,
 				OauthNaverService,
-				ConfigService,
 				{
 					provide: JwtService,
 					useValue: mockJwtService(),
@@ -51,7 +48,6 @@ describe('AuthService', () => {
 		oauthNaverService = module.get(OauthNaverService);
 		oauthGoogleService = module.get(OauthKakaoService);
 		jwtService = module.get(JwtService);
-		configService = module.get(ConfigService);
 	});
 
 	describe('valid case', () => {
