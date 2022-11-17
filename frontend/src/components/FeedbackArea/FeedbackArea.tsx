@@ -1,5 +1,6 @@
+import TextArea from '@components/@shared/TextArea/TextArea';
 import { css } from '@emotion/react';
-import React, { Children, ReactNode, isValidElement } from 'react';
+import React, { Children, ReactNode, isValidElement, useState } from 'react';
 
 const FAScrollViewStyle = css`
 	width: 100%;
@@ -18,11 +19,23 @@ const getFAScrollView = (childArr: ReactNode[]) => {
 
 // TODO: issue #17를 참고해서 추출
 interface FATextAreaType {
-	value?: string;
-	onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
+	onInsertFeedback?: (feedback: string) => void;
 }
-const FATextArea = ({ value, onChange }: FATextAreaType) => {
-	return <textarea value={value} onChange={onChange}></textarea>;
+const FATextArea = ({ onInsertFeedback }: FATextAreaType) => {
+	const [input, setInput] = useState('');
+
+	//TODO 좋은 명명법을 찾습니다.
+	const onKeyDown = (e) => {
+		if (e.key === 'Enter') {
+			if (!e.shiftKey) {
+				e.preventDefault();
+				onInsertFeedback(input);
+				setInput('');
+			}
+		}
+	};
+
+	return <TextArea value={input} onChange={setInput} onKeyDown={onKeyDown} />;
 };
 const FATextAreaType = (<FATextArea />).type;
 const getFATextArea = (childArr: ReactNode[]) => {
