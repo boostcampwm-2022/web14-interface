@@ -1,4 +1,4 @@
-import { OAUTH_CALLBACK_URL, OAUTH_TYPE } from '@constant';
+import { GOOGLE_AUTHORIZE_PAGE_URL, OAUTH_CALLBACK_URL, OAUTH_TYPE } from '@constant';
 import { Injectable } from '@nestjs/common';
 import { UserSocialInfo } from 'src/types/auth.type';
 import { OauthService } from './interface-oauth.service';
@@ -14,7 +14,8 @@ export class OauthGoogleService implements OauthService {
 	].join('/');
 
 	getSocialUrl(): string {
-		throw new Error('Method not implemented.');
+		const queryString = `?response_type=token&client_id=${this.clientId}&redirect_uri=${this.callbackUrl}`;
+		return GOOGLE_AUTHORIZE_PAGE_URL + queryString;
 	}
 	getAccessTokenByAuthorizationCode(authorizationCode: string): Promise<string> {
 		throw new Error('Method not implemented.');

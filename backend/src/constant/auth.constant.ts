@@ -14,3 +14,6 @@ export const NAVER_AUTHORIZE_PAGE_URL =
 export const NAVER_ACCESS_TOKEN_URL =
 	'https://nid.naver.com/oauth2.0/token?grant_type=authorization_code';
 export const NAVER_PROFILE_API_URL = 'https://openapi.naver.com/v1/nid/me';
+
+// GOOGLE
+export const GOOGLE_AUTHORIZE_PAGE_URL = 'https://accounts.google.com/o/oauth2/auth';
