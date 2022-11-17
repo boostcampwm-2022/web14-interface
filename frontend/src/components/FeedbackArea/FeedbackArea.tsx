@@ -17,7 +17,6 @@ const getFAScrollView = (childArr: ReactNode[]) => {
 	return childArr.filter((child) => isValidElement(child) && child.type === FAScrollViewType);
 };
 
-// TODO: issue #17를 참고해서 추출
 interface FATextAreaType {
 	onInsertFeedback?: (feedback: string) => void;
 }
