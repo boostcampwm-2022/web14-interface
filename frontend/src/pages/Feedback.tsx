@@ -100,7 +100,7 @@ const Feedback = () => {
 								<DeleteIcon width={20} />
 							</FeedbackBox.Btn>
 							<FeedbackBox.Btn onClick={() => handleToggleEditFeedback(feedback.id)}>
-								<EditIcon width={20} />
+								{ feedback.readOnly ? <EditIcon width={20} /> : '수정완료'}
 							</FeedbackBox.Btn>
 						</FeedbackBox>
 					))}
