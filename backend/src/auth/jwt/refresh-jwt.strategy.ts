@@ -1,9 +1,5 @@
-import {
-	JWT_ACCESS_TOKEN_EXPIRATION_TIME,
-	JWT_ACCESS_TOKEN_SECRET,
-	JWT_REFRESH_TOKEN_SECRET,
-} from '@constant';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JWT_VALUE } from '@constant';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -25,7 +21,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 					return token ?? null;
 				},
 			]),
-			secretOrKey: configService.get(JWT_REFRESH_TOKEN_SECRET),
+			secretOrKey: configService.get(JWT_VALUE.JWT_REFRESH_TOKEN_SECRET),
 			passReqToCallback: true,
 		});
 	}
@@ -33,8 +29,8 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 	async validate(req: Request, payload: Payload) {
 		const accessToken = this.authService.createJwt({
 			payload: { nickname: payload.nickname, email: payload.email },
-			secret: JWT_ACCESS_TOKEN_SECRET,
-			expirationTime: JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+			secret: JWT_VALUE.JWT_ACCESS_TOKEN_SECRET,
+			expirationTime: JWT_VALUE.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
 		});
 
 		req.cookies = { ...req.cookies, accessToken };

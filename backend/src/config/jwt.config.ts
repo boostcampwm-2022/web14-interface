@@ -1,4 +1,4 @@
-import { JWT_ACCESS_TOKEN_EXPIRATION_TIME, JWT_ACCESS_TOKEN_SECRET } from '@constant';
+import { JWT_VALUE } from '@constant';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 export const jwtConfig = {
@@ -6,7 +6,7 @@ export const jwtConfig = {
 	inject: [ConfigService],
 	useFactory: async (configService: ConfigService) => ({
 		signOptions: {
-			expiresIn: `${configService.get(JWT_ACCESS_TOKEN_EXPIRATION_TIME)}s`,
+			expiresIn: `${configService.get(JWT_VALUE.JWT_ACCESS_TOKEN_EXPIRATION_TIME)}s`,
 		},
 	}),
 };
