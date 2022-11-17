@@ -3,9 +3,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { UserInfo } from 'src/types/auth.type';
 import { UserEntity } from 'src/user/entities/typeorm-user.entity';
 import { UserRepository } from 'src/user/repository/interface-user.repository';
-import { OauthGoogleService } from './oauth/google-oauth.service';
 import { OauthNaverService } from './oauth/naver-oauth.service';
 import { OauthService } from './oauth/interface-oauth.service';
+import { OauthKakaoService } from './oauth/kakao-oauth.service';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +15,7 @@ export class AuthService {
 		@Inject(USER_REPOSITORY_INTERFACE)
 		private readonly userRepository: UserRepository<UserEntity>,
 
-		private readonly oauthGoogleService: OauthGoogleService,
+		private readonly oauthKakaoService: OauthKakaoService,
 		private readonly oauthNaverService: OauthNaverService
 	) {}
 
@@ -60,8 +60,8 @@ export class AuthService {
 			case OAUTH_TYPE.NAVER:
 				this.oauthInstance = this.oauthNaverService;
 				break;
-			case OAUTH_TYPE.GOOGLE:
-				this.oauthInstance = this.oauthGoogleService;
+			case OAUTH_TYPE.KAKAO:
+				this.oauthInstance = this.oauthKakaoService;
 				break;
 			default:
 				throw new Error();

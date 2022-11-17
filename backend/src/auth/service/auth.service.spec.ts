@@ -5,7 +5,7 @@ import { MockRepository } from 'src/types/mock.type';
 import { JoinUserBuilder, UserEntity } from 'src/user/entities/typeorm-user.entity';
 import { UserRepository } from 'src/user/repository/interface-user.repository';
 import { AuthService } from './auth.service';
-import { OauthGoogleService } from './oauth/google-oauth.service';
+import { OauthKakaoService } from './oauth/kakao-oauth.service';
 import { OauthNaverService } from './oauth/naver-oauth.service';
 
 const mockUserRepository = () => ({
@@ -17,7 +17,7 @@ const mockUserRepository = () => ({
 describe('AuthService', () => {
 	let authService: AuthService;
 	let userRepository: MockRepository<UserRepository<UserEntity>>;
-	let oauthGoogleService: OauthGoogleService;
+	let oauthGoogleService: OauthKakaoService;
 	let oauthNaverService: OauthNaverService;
 
 	beforeEach(async () => {
@@ -28,7 +28,7 @@ describe('AuthService', () => {
 					provide: USER_REPOSITORY_INTERFACE,
 					useValue: mockUserRepository(),
 				},
-				OauthGoogleService,
+				OauthKakaoService,
 				OauthNaverService,
 			],
 		}).compile();
@@ -36,7 +36,7 @@ describe('AuthService', () => {
 		authService = module.get(AuthService);
 		userRepository = module.get(USER_REPOSITORY_INTERFACE);
 		oauthNaverService = module.get(OauthNaverService);
-		oauthGoogleService = module.get(OauthGoogleService);
+		oauthGoogleService = module.get(OauthKakaoService);
 	});
 
 	describe('valid case', () => {
