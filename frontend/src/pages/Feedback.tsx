@@ -14,6 +14,7 @@ const Feedback = () => {
 		isFbClicked,
 		feedbackRef,
 		setFeedbackList,
+		setCurrentTime,
 		setIsFbClicked,
 		handleClickFeedback,
 	} = useSyncFeedbackList();
@@ -21,13 +22,15 @@ const Feedback = () => {
 	const {
 		handleInsertFeedback,
 		handleDeleteFeedback,
-		handleToggleEditFeedback,
-		handleChangeFeedback,
+		handleStartEditFeedback,
+		handleEndEditFeedback,
 	} = useEditableFeedbackList(feedbackList, setFeedbackList, currentTime);
 
 	return (
 		<>
 			<IntervieweeVideo
+				currentTime={currentTime}
+				setCurrentTime={setCurrentTime}
 				isFbClicked={isFbClicked}
 				setIsFbClicked={setIsFbClicked}
 				src="assets/test.mp4"
@@ -42,8 +45,8 @@ const Feedback = () => {
 							feedback={feedback}
 							handleClickFeedback={handleClickFeedback}
 							handleDeleteFeedback={handleDeleteFeedback}
-							handleToggleEditFeedback={handleToggleEditFeedback}
-							handleChangeFeedback={handleChangeFeedback}
+							handleStartEditFeedback={handleStartEditFeedback}
+							handleEndEditFeedback={handleEndEditFeedback}
 							feedbackRef={feedbackRef}
 							idx={idx}
 						/>

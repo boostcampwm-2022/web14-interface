@@ -1,15 +1,14 @@
 import React, { useRef, useEffect, Dispatch, SetStateAction } from 'react';
-import { useRecoilState } from 'recoil';
 import Video, { VideoPropType } from '@components/@shared/Video/Video';
-import { currentTimeState } from '@store/feedbackStore';
 
 interface IntervieweeVideoType extends VideoPropType {
+	currentTime: number;
+	setCurrentTime: Dispatch<SetStateAction<number>>;
 	isFbClicked: boolean;
 	setIsFbClicked: Dispatch<SetStateAction<boolean>>;
 }
 const IntervieweeVideo = (props: IntervieweeVideoType) => {
-	const { isFbClicked, setIsFbClicked } = props;
-	const [currentTime, setCurrentTime] = useRecoilState(currentTimeState);
+	const { currentTime, setCurrentTime, isFbClicked, setIsFbClicked } = props;
 	const videoRef = useRef<HTMLVideoElement>(null);
 
 	const sendPeriod = 1000;
