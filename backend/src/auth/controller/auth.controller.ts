@@ -1,16 +1,7 @@
 import { Controller, Get, HttpCode, Param, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import { Request, Response } from 'express';
-import {
-	ACCESS_TOKEN,
-	JWT_ACCESS_TOKEN_EXPIRATION_TIME,
-	JWT_ACCESS_TOKEN_SECRET,
-	JWT_REFRESH_TOKEN_EXPIRATION_TIME,
-	JWT_REFRESH_TOKEN_SECRET,
-	HTTP_STATUS,
-	REFRESH_TOKEN,
-	tokenCookieOptions,
-} from '@constant';
+import { ACCESS_TOKEN, JWT_VALUE, HTTP_STATUS, REFRESH_TOKEN, tokenCookieOptions } from '@constant';
 import { JwtAuthGuard } from '../guard/jwt.guard';
 
 @Controller('auth')
@@ -33,13 +24,13 @@ export class AuthController {
 		const user = await this.authService.socialStart({ type, authorizationCode });
 		const accessToken = this.authService.createJwt({
 			payload: { nickname: user.nickname, email: user.email },
-			secret: JWT_ACCESS_TOKEN_SECRET,
-			expirationTime: JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+			secret: JWT_VALUE.JWT_ACCESS_TOKEN_SECRET,
+			expirationTime: JWT_VALUE.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
 		});
 		const refreshToken = this.authService.createJwt({
 			payload: { nickname: user.nickname, email: user.email },
-			secret: JWT_REFRESH_TOKEN_SECRET,
-			expirationTime: JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+			secret: JWT_VALUE.JWT_REFRESH_TOKEN_SECRET,
+			expirationTime: JWT_VALUE.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
 		});
 
 		res.cookie(ACCESS_TOKEN, accessToken, tokenCookieOptions);
