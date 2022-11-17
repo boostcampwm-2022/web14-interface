@@ -19,8 +19,8 @@ const Feedback = () => {
 		{ id: 9, content: '테스트 피드백10', startTime: 56, endTime: 57 },
 	];
 
-	// const [currentTime, setCurrentTime] = useRecoilState(currentTimeState);
-	const currentTime = 16;
+	const [currentTime, setCurrentTime] = useRecoilState(currentTimeState);
+	const [isFbClicked, setIsFbClicked] = useState(false);
 	const [focusIndex, setFocusIndex] = useState(0);
 	const [inputValue, setInputValue] = useState('');
 
@@ -36,8 +36,9 @@ const Feedback = () => {
 		feedbackRef.current[focusIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
 	}, [focusIndex]);
 
-	const onClickFeedback = (e) => {
+	const handleClickFeedback = (e) => {
 		e.target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		setIsFbClicked(true);
 	};
 
 	return (
@@ -46,7 +47,7 @@ const Feedback = () => {
 				{dummyFeedback.map((feedback, idx) => (
 					<FeedbackBox
 						key={feedback.id}
-						onClick={onClickFeedback}
+						onClick={handleClickFeedback}
 						ref={(elem) => (feedbackRef.current[idx] = elem)}
 					>
 						<FeedbackBox.StartTime>{feedback.startTime}</FeedbackBox.StartTime>
