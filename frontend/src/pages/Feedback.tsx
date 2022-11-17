@@ -1,5 +1,5 @@
 import React from 'react';
-import FeedbackArea from '@components/FeedbackArea/FeedbackArea';
+import FeedbackArea from '@components/@shared/FeedbackArea/FeedbackArea';
 
 import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
 import EditableFeedbackBox from '@components/EditableFeedbackBox/EditableFeedbackBox';
