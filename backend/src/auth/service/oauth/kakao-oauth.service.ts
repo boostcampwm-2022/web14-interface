@@ -1,5 +1,11 @@
-import { KAKAO_AUTHORIZE_PAGE_URL, OAUTH_CALLBACK_URL, OAUTH_TYPE } from '@constant';
+import {
+	KAKAO_ACCESS_TOKEN_URL,
+	KAKAO_AUTHORIZE_PAGE_URL,
+	OAUTH_CALLBACK_URL,
+	OAUTH_TYPE,
+} from '@constant';
 import { Injectable } from '@nestjs/common';
+import axios from 'axios';
 import { UserSocialInfo } from 'src/types/auth.type';
 import { OauthService } from './interface-oauth.service';
 
@@ -17,8 +23,18 @@ export class OauthKakaoService implements OauthService {
 		const queryString = `?response_type=code&client_id=${this.clientId}&redirect_uri=${this.callbackUrl}`;
 		return KAKAO_AUTHORIZE_PAGE_URL + queryString;
 	}
-	getAccessTokenByAuthorizationCode(authorizationCode: string): Promise<string> {
-		throw new Error('Method not implemented.');
+
+	async getAccessTokenByAuthorizationCode(authorizationCode: string): Promise<string> {
+		const queryString =
+			`?grant_type=authorization_code` +
+			`&client_id=${this.clientId}&client_secret=${this.clientSecret}` +
+			`&redirect_uri=${this.callbackUrl}&code=${authorizationCode}`;
+
+		const { access_token } = await axios
+			.get(KAKAO_ACCESS_TOKEN_URL + queryString)
+			.then((res) => res.data);
+		console.log(access_token);
+		return access_token;
 	}
 	getSocialInfoByAccessToken(accessToken: string): Promise<UserSocialInfo> {
 		throw new Error('Method not implemented.');
