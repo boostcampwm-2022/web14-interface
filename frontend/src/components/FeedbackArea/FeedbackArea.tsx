@@ -21,17 +21,19 @@ interface FATextAreaType {
 	onInsertFeedback?: (feedback: string) => void;
 }
 const FATextArea = ({ onInsertFeedback }: FATextAreaType) => {
-	const [input, setInput] = useState('');
+	const [feeddbackInput, setFeedbackInput] = useState('');
 
 	const createFeedback = (e) => {
 		if (e.key === 'Enter' && !e.shiftKey) {
 			e.preventDefault();
-			onInsertFeedback(input);
-			setInput('');
+			onInsertFeedback(feeddbackInput);
+			setFeedbackInput('');
 		}
 	};
 
-	return <TextArea value={input} onChange={setInput} onKeyDown={createFeedback} />;
+	return (
+		<TextArea value={feeddbackInput} onChange={setFeedbackInput} onKeyDown={createFeedback} />
+	);
 };
 const FATextAreaType = (<FATextArea />).type;
 const getFATextArea = (childArr: ReactNode[]) => {
