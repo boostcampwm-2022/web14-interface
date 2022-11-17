@@ -16,3 +16,4 @@ export const NAVER_PROFILE_API_URL = 'https://openapi.naver.com/v1/nid/me';
 // KAKAO
 export const KAKAO_AUTHORIZE_PAGE_URL = 'https://kauth.kakao.com/oauth/authorize';
 export const KAKAO_ACCESS_TOKEN_URL = 'https://kauth.kakao.com/oauth/token';
+export const KAKAO_PROFILE_API_URL = 'https://kapi.kakao.com/v2/user/me';

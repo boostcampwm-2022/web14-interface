@@ -22,13 +22,11 @@ export class OauthNaverService implements OauthService {
 	].join('/');
 
 	getSocialUrl(): string {
-		const queryString = `?response_type=token&client_id=${this.clientId}&redirect_uri=${this.callbackUrl}`;
+		const queryString = `?response_type=code&client_id=${this.clientId}&redirect_uri=${this.callbackUrl}`;
 		return NAVER_AUTHORIZE_PAGE_URL + queryString;
 	}
 
 	async getAccessTokenByAuthorizationCode(authorizationCode: string): Promise<string> {
-		if (!authorizationCode) throw new Error();
-
 		const queryString =
 			`?grant_type=authorization_code` +
 			`&client_id=${this.clientId}&client_secret=${this.clientSecret}` +
@@ -57,7 +55,8 @@ export class OauthNaverService implements OauthService {
 		if (res.resultcode !== '00') {
 			throw new Error(res.message);
 		}
-
-		return res.response;
+		const user = res.response as UserSocialInfo;
+		user.oauthType = OAUTH_TYPE.NAVER;
+		return user;
 	}
 }

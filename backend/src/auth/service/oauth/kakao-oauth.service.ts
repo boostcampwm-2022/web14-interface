@@ -1,6 +1,8 @@
 import {
+	AUTHORIZATION_TOKEN_TYPE,
 	KAKAO_ACCESS_TOKEN_URL,
 	KAKAO_AUTHORIZE_PAGE_URL,
+	KAKAO_PROFILE_API_URL,
 	OAUTH_CALLBACK_URL,
 	OAUTH_TYPE,
 } from '@constant';
@@ -36,7 +38,19 @@ export class OauthKakaoService implements OauthService {
 		console.log(access_token);
 		return access_token;
 	}
-	getSocialInfoByAccessToken(accessToken: string): Promise<UserSocialInfo> {
-		throw new Error('Method not implemented.');
+
+	/**
+	 * @link https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#req-user-info
+	 * @param accessToken
+	 * @returns userInfo
+	 */
+	async getSocialInfoByAccessToken(accessToken: string): Promise<UserSocialInfo> {
+		const headers = { Authorization: `${AUTHORIZATION_TOKEN_TYPE} ${accessToken}` };
+		const res = await axios.get(KAKAO_PROFILE_API_URL, { headers }).then((res) => res.data);
+
+		const user = res['kakao_account'] as UserSocialInfo;
+		user.id = res.id;
+		user.oauthType = OAUTH_TYPE.KAKAO;
+		return user;
 	}
 }
