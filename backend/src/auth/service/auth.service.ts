@@ -3,9 +3,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { UserInfo } from 'src/types/auth.type';
 import { UserEntity } from 'src/user/entities/typeorm-user.entity';
 import { UserRepository } from 'src/user/repository/interface-user.repository';
-import { OauthGoogleService } from './oauth/google-oauth.service';
 import { OauthNaverService } from './oauth/naver-oauth.service';
 import { OauthService } from './oauth/interface-oauth.service';
+import { OauthKakaoService } from './oauth/kakao-oauth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { CreateJwtDto } from '../dto/create-jwt.dto';
@@ -18,8 +18,8 @@ export class AuthService {
 		@Inject(USER_REPOSITORY_INTERFACE)
 		private readonly userRepository: UserRepository<UserEntity>,
 
-		private readonly oauthGoogleService: OauthGoogleService,
-		private readonly oauthNaverService: OauthNaverService,
+		private readonly oauthKakaoService: OauthKakaoService,
+		private readonly oauthNaverService: OauthNaverService
 
 		private jwtService: JwtService,
 		private configService: ConfigService
@@ -45,6 +45,8 @@ export class AuthService {
 	 */
 	async socialStart({ type, authorizationCode }: { type: string; authorizationCode: string }) {
 		this.setOauthInstanceByType(type);
+
+		if (!authorizationCode) throw new Error('social 인증이 되지 않았습니다.');
 
 		const accessToken = await this.oauthInstance.getAccessTokenByAuthorizationCode(
 			authorizationCode
@@ -88,8 +90,8 @@ export class AuthService {
 			case OAUTH_TYPE.NAVER:
 				this.oauthInstance = this.oauthNaverService;
 				break;
-			case OAUTH_TYPE.GOOGLE:
-				this.oauthInstance = this.oauthGoogleService;
+			case OAUTH_TYPE.KAKAO:
+				this.oauthInstance = this.oauthKakaoService;
 				break;
 			default:
 				throw new Error();

@@ -4,21 +4,23 @@ import { AuthController } from './controller/auth.controller';
 import { TypeormUserRepository } from 'src/user/repository/typeorm-user.repository';
 import { USER_REPOSITORY_INTERFACE } from '@constant';
 import { UserModule } from 'src/user/user.module';
-import { OauthGoogleService } from './service/oauth/google-oauth.service';
 import { OauthNaverService } from './service/oauth/naver-oauth.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { OauthKakaoService } from './service/oauth/kakao-oauth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { JwtAccessStrategy } from './jwt/access-jwt.strategy';
 import { JwtRefreshStrategy } from './jwt/refresh-jwt.strategy';
 
-const userRepository: ClassProvider = {
+export const UserRepository: ClassProvider = {
 	provide: USER_REPOSITORY_INTERFACE,
 	useClass: TypeormUserRepository,
 };
 
 @Module({
-	imports: [UserModule],
+	imports: [UserModule, TypeOrmModule.forFeature([TypeormUserRepository])],
 	controllers: [AuthController],
+	providers: [AuthService, UserRepository, OauthKakaoService, OauthNaverService],
 	providers: [
 		AuthService,
 		userRepository,

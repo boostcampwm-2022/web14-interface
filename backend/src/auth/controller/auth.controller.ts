@@ -1,3 +1,4 @@
+import { Response } from 'express';
 import {
 	Controller,
 	Get,
@@ -28,18 +29,19 @@ export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
 	@Get('oauth/redirect/:type')
-	@Redirect('/', 301)
-	redirectOauthPage(@Param('type') type: string) {
-		return this.authService.getSocialUrl(type);
+	@HttpCode(301)
+	redirectOauthPage(@Param('type') type: string, @Res() res: Response) {
+		const pageUrl = this.authService.getSocialUrl(type);
+		res.redirect(pageUrl);
 	}
 
 	@Get('oauth/callback/:type')
 	async socialStart(
-		@Query('authorization_code') authorizationCode: string,
+		@Query('code') authorizationCode: string,
 		@Param('type') type: string,
 		@Res({ passthrough: true }) res: Response
 	) {
-		// const user = await this.authService.socialStart({ type, authorizationCode });
+		const user = await this.authService.socialStart({ type, authorizationCode });
 		const accessToken = this.authService.createJwt({
 			payload: { nickname: 'user.nickname', email: 'user.email' },
 			secret: JWT_ACCESS_TOKEN_SECRET,

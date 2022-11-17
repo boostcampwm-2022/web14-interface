@@ -1,8 +1,8 @@
 import {
 	AUTHORIZATION_TOKEN_TYPE,
-	NAVER_ACCESS_TOKEN_URL,
-	NAVER_AUTHORIZE_PAGE_URL,
-	NAVER_PROFILE_API_URL,
+	KAKAO_ACCESS_TOKEN_URL,
+	KAKAO_AUTHORIZE_PAGE_URL,
+	KAKAO_PROFILE_API_URL,
 	OAUTH_CALLBACK_URL,
 	OAUTH_TYPE,
 } from '@constant';
@@ -12,18 +12,18 @@ import { UserSocialInfo } from 'src/types/auth.type';
 import { OauthService } from './interface-oauth.service';
 
 @Injectable()
-export class OauthNaverService implements OauthService {
-	private clientId = process.env.NAVER_CLIENT_ID;
-	private clientSecret = process.env.NAVER_CLIENT_SECRET;
+export class OauthKakaoService implements OauthService {
+	private clientId = process.env.KAKAO_CLIENT_ID;
+	private clientSecret = process.env.KAKAO_CLIENT_SECRET;
 	private callbackUrl = [
 		process.env.SERVER_ORIGIN_URL,
 		OAUTH_CALLBACK_URL,
-		OAUTH_TYPE.NAVER,
+		OAUTH_TYPE.KAKAO,
 	].join('/');
 
 	getSocialUrl(): string {
 		const queryString = `?response_type=code&client_id=${this.clientId}&redirect_uri=${this.callbackUrl}`;
-		return NAVER_AUTHORIZE_PAGE_URL + queryString;
+		return KAKAO_AUTHORIZE_PAGE_URL + queryString;
 	}
 
 	async getAccessTokenByAuthorizationCode(authorizationCode: string): Promise<string> {
@@ -31,32 +31,26 @@ export class OauthNaverService implements OauthService {
 			`?grant_type=authorization_code` +
 			`&client_id=${this.clientId}&client_secret=${this.clientSecret}` +
 			`&redirect_uri=${this.callbackUrl}&code=${authorizationCode}`;
-		const headers = {
-			'X-Naver-Client-Id': this.clientId,
-			'X-Naver-Client-Secret': this.clientSecret,
-		};
 
 		const { access_token } = await axios
-			.get(NAVER_ACCESS_TOKEN_URL + queryString, { headers })
+			.get(KAKAO_ACCESS_TOKEN_URL + queryString)
 			.then((res) => res.data);
-
+		console.log(access_token);
 		return access_token;
 	}
 
 	/**
-	 * @link https://developers.naver.com/docs/login/profile/profile.md
+	 * @link https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#req-user-info
 	 * @param accessToken
 	 * @returns userInfo
 	 */
 	async getSocialInfoByAccessToken(accessToken: string): Promise<UserSocialInfo> {
 		const headers = { Authorization: `${AUTHORIZATION_TOKEN_TYPE} ${accessToken}` };
-		const res = await axios.get(NAVER_PROFILE_API_URL, { headers }).then((res) => res.data);
+		const res = await axios.get(KAKAO_PROFILE_API_URL, { headers }).then((res) => res.data);
 
-		if (res.resultcode !== '00') {
-			throw new Error(res.message);
-		}
-		const user = res.response as UserSocialInfo;
-		user.oauthType = OAUTH_TYPE.NAVER;
+		const user = res['kakao_account'] as UserSocialInfo;
+		user.id = res.id;
+		user.oauthType = OAUTH_TYPE.KAKAO;
 		return user;
 	}
 }
