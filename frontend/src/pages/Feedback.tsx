@@ -6,6 +6,7 @@ import { currentTimeState, feedbackListState } from '@store/feedbackStore';
 import { findCurrentFeedback } from '@utils/utils';
 import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
 import { ReactComponent as DeleteIcon } from '@assets/icon/delete.svg';
+import { ReactComponent as EditIcon } from '@assets/icon/edit.svg';
 
 const Feedback = () => {
 	const [feedbackList, setFeedbackList] = useRecoilState(feedbackListState);
@@ -19,14 +20,41 @@ const Feedback = () => {
 	const addFeedback = (content: string) => {
 		const newFeedbackList = [
 			...feedbackList,
-			{ id: idRef.current++, content, startTime: Math.floor(currentTime), endTime: 0 },
+			{
+				id: idRef.current++,
+				content,
+				startTime: Math.floor(currentTime),
+				endTime: 0,
+				readOnly: true,
+			},
 		].sort((a, b) => a.startTime - b.startTime);
 
 		setFeedbackList(newFeedbackList);
 	};
 
-	const deleteFeedback = (id: number) => {
+	const handleDeleteFeedback = (id: number) => {
 		setFeedbackList(feedbackList.filter((feedback) => feedback.id !== id));
+	};
+	const handleToggleEditFeedback = (id: number) => {
+		setFeedbackList(
+			feedbackList.map((feedback) => {
+				if (feedback.id === id) return { ...feedback, readOnly: !feedback.readOnly };
+				return feedback;
+			})
+		);
+	};
+	const handleChangeFeedback = (e, id: number) => {
+		setFeedbackList(
+			feedbackList.map((feedback) => {
+				if (feedback.id === id) {
+					return {
+						...feedback,
+						content: e.target.value,
+					};
+				}
+				return feedback;
+			})
+		);
 	};
 
 	useEffect(() => {
@@ -63,9 +91,16 @@ const Feedback = () => {
 							ref={(elem) => (feedbackRef.current[idx] = elem)}
 						>
 							<FeedbackBox.StartTime>{feedback.startTime}</FeedbackBox.StartTime>
-							<FeedbackBox.Content>{feedback.content}</FeedbackBox.Content>
-							<FeedbackBox.Btn onClick={() => deleteFeedback(feedback.id)}>
-								<DeleteIcon />
+							<FeedbackBox.Content
+								value={feedback.content}
+								onChange={(e) => handleChangeFeedback(e, feedback.id)}
+								readOnly={feedback.readOnly}
+							/>
+							<FeedbackBox.Btn onClick={() => handleDeleteFeedback(feedback.id)}>
+								<DeleteIcon width={20} />
+							</FeedbackBox.Btn>
+							<FeedbackBox.Btn onClick={() => handleToggleEditFeedback(feedback.id)}>
+								<EditIcon width={20} />
 							</FeedbackBox.Btn>
 						</FeedbackBox>
 					))}
