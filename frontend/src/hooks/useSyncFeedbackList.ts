@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 import { currentTimeState, feedbackListState } from '@store/feedbackStore';
@@ -11,11 +11,11 @@ const useSyncFeedbackList = () => {
 	const [isFbClicked, setIsFbClicked] = useState(false);
 	const feedbackRef = useRef([]);
 
-	const handleClickFeedback = (e, startTime: number) => {
+	const handleClickFeedback = useCallback((e, startTime: number) => {
 		feedbackRef.current[focusIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
 		setCurrentTime(startTime);
 		setIsFbClicked(true);
-	};
+	}, []);
 
 	useEffect(() => {
 		const nearestIndex = findCurrentFeedback(feedbackList, currentTime);
@@ -31,7 +31,7 @@ const useSyncFeedbackList = () => {
 		feedbackList,
 		currentTime,
 		isFbClicked,
-        feedbackRef,
+		feedbackRef,
 		setFeedbackList,
 		setIsFbClicked,
 		handleClickFeedback,

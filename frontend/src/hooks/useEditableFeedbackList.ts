@@ -1,9 +1,9 @@
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 const useEditableFeedbackList = (feedbackList, setFeedbackList, currentTime) => {
 	const idRef = useRef<number>(10);
 
-	const handleInsertFeedback = (content: string) => {
+	const handleInsertFeedback = useCallback((content: string) => {
 		const newFeedbackList = [
 			...feedbackList,
 			{
@@ -16,38 +16,43 @@ const useEditableFeedbackList = (feedbackList, setFeedbackList, currentTime) => 
 		].sort((a, b) => a.startTime - b.startTime);
 
 		setFeedbackList(newFeedbackList);
-	};
+	}, []);
 
-	const handleDeleteFeedback = (id: number) => {
-		setFeedbackList(feedbackList.filter((feedback) => feedback.id !== id));
-	};
-	const handleToggleEditFeedback = (id: number) => {
-		setFeedbackList(
-			feedbackList.map((feedback) => {
-				if (feedback.id === id) return { ...feedback, readOnly: !feedback.readOnly };
-				return feedback;
-			})
-		);
-	};
-	const handleChangeFeedback = (e, id: number) => {
-		setFeedbackList(
-			feedbackList.map((feedback) => {
-				if (feedback.id === id) {
-					return {
-						...feedback,
-						content: e.target.value,
-					};
-				}
-				return feedback;
-			})
-		);
-	};
+	const handleDeleteFeedback = useCallback(
+		(id: number) => {
+			setFeedbackList(feedbackList.filter((feedback) => feedback.id !== id));
+		},
+		[feedbackList]
+	);
+	const handleStartEditFeedback = useCallback(
+		(id: number) => {
+			setFeedbackList(
+				feedbackList.map((feedback) => {
+					if (feedback.id === id) return { ...feedback, readOnly: false };
+					return feedback;
+				})
+			);
+		},
+		[feedbackList]
+	);
+	const handleEndEditFeedback = useCallback(
+		(id, newContent) => {
+			setFeedbackList(
+				feedbackList.map((feedback) => {
+					if (feedback.id === id)
+						return { ...feedback, content: newContent, readOnly: true };
+					return feedback;
+				})
+			);
+		},
+		[feedbackList]
+	);
 
-    return {
+	return {
 		handleInsertFeedback,
 		handleDeleteFeedback,
-		handleToggleEditFeedback,
-		handleChangeFeedback,
+		handleStartEditFeedback,
+		handleEndEditFeedback,
 	};
 };
 

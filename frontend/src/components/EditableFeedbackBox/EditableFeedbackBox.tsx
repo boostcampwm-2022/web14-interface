@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FeedbackBox } from '@components/@shared/FeedbackBox/FeedbackBox';
 import { EditableFeedbackType } from '@customType/common';
 
@@ -9,8 +9,8 @@ interface PropsType {
 	feedback: EditableFeedbackType;
 	handleClickFeedback: (e, startTime: number) => void;
 	handleDeleteFeedback: (id: number) => void;
-	handleToggleEditFeedback: (id: number) => void;
-	handleChangeFeedback: (e, id: number) => void;
+	handleStartEditFeedback: (id: number) => void;
+	handleEndEditFeedback: (id: number, newContent: string) => void;
 
 	feedbackRef: React.MutableRefObject<any[]>;
 	idx: number;
@@ -20,12 +20,17 @@ const EditableFeedbackBox = (props: PropsType) => {
 		feedback,
 		handleClickFeedback,
 		handleDeleteFeedback,
-		handleToggleEditFeedback,
-		handleChangeFeedback,
+		handleStartEditFeedback,
+		handleEndEditFeedback,
 		feedbackRef,
 		idx,
 	} = props;
 	const { id, startTime, content, readOnly } = feedback;
+
+	const [editableContent, setEditableContent] = useState('');
+	useEffect(() => {
+		setEditableContent(content);
+	}, [feedback]);
 
 	return (
 		<FeedbackBox
@@ -34,15 +39,21 @@ const EditableFeedbackBox = (props: PropsType) => {
 		>
 			<FeedbackBox.StartTime>{startTime}</FeedbackBox.StartTime>
 			<FeedbackBox.Content
-				value={content}
-				onChange={(e) => handleChangeFeedback(e, id)}
+				value={editableContent}
+				onChange={(e) => setEditableContent(e.target.value)}
 				readOnly={readOnly}
 			/>
 			<FeedbackBox.Btn onClick={() => handleDeleteFeedback(id)}>
 				<DeleteIcon width={20} />
 			</FeedbackBox.Btn>
-			<FeedbackBox.Btn onClick={() => handleToggleEditFeedback(id)}>
-				{readOnly ? <EditIcon width={20} /> : '수정완료'}
+			<FeedbackBox.Btn>
+				{readOnly ? (
+					<EditIcon onClick={() => handleStartEditFeedback(id)} width={20} />
+				) : (
+					<button onClick={() => handleEndEditFeedback(id, editableContent)}>
+						수정완료
+					</button>
+				)}
 			</FeedbackBox.Btn>
 		</FeedbackBox>
 	);

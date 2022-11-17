@@ -21,8 +21,8 @@ const Feedback = () => {
 	const {
 		handleInsertFeedback,
 		handleDeleteFeedback,
-		handleToggleEditFeedback,
-		handleChangeFeedback,
+		handleStartEditFeedback,
+		handleEndEditFeedback,
 	} = useEditableFeedbackList(feedbackList, setFeedbackList, currentTime);
 
 	return (
@@ -42,8 +42,8 @@ const Feedback = () => {
 							feedback={feedback}
 							handleClickFeedback={handleClickFeedback}
 							handleDeleteFeedback={handleDeleteFeedback}
-							handleToggleEditFeedback={handleToggleEditFeedback}
-							handleChangeFeedback={handleChangeFeedback}
+							handleStartEditFeedback={handleStartEditFeedback}
+							handleEndEditFeedback={handleEndEditFeedback}
 							feedbackRef={feedbackRef}
 							idx={idx}
 						/>
