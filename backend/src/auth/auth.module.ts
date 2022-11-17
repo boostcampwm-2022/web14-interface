@@ -6,9 +6,8 @@ import { USER_REPOSITORY_INTERFACE } from '@constant';
 import { UserModule } from 'src/user/user.module';
 import { OauthGoogleService } from './service/oauth/google-oauth.service';
 import { OauthNaverService } from './service/oauth/naver-oauth.service';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { jwtConfig } from '@config';
 import { JwtAccessStrategy } from './jwt/access-jwt.strategy';
 import { JwtRefreshStrategy } from './jwt/refresh-jwt.strategy';
 
@@ -18,7 +17,7 @@ const userRepository: ClassProvider = {
 };
 
 @Module({
-	imports: [UserModule, JwtModule.registerAsync(jwtConfig)],
+	imports: [UserModule],
 	controllers: [AuthController],
 	providers: [
 		AuthService,
