@@ -13,6 +13,16 @@ const Feedback = () => {
 	const [focusIndex, setFocusIndex] = useState(0);
 
 	const feedbackRef = useRef([]);
+	const idRef = useRef<number>(10);
+
+	const addFeedback = (content: string) => {
+		const newFeedbackList = [
+			...feedbackList,
+			{ id: idRef.current++, content, startTime: Math.floor(currentTime), endTime: 0 },
+		].sort((a, b) => a.startTime - b.startTime);
+
+		setFeedbackList(newFeedbackList);
+	};
 
 	useEffect(() => {
 		const nearestIndex = findCurrentFeedback(feedbackList, currentTime);
@@ -52,10 +62,7 @@ const Feedback = () => {
 						</FeedbackBox>
 					))}
 				</FeedbackArea.FAScrollView>
-				<FeedbackArea.FATextArea
-					value={inputValue}
-					onChange={(e) => setInputValue(e.target.value)}
-				/>
+				<FeedbackArea.FATextArea onInsertFeedback={addFeedback} />
 			</FeedbackArea>
 		</>
 	);
