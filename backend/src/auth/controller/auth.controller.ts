@@ -19,9 +19,9 @@ import {
 	JWT_REFRESH_TOKEN_SECRET,
 	OK,
 	REFRESH_TOKEN,
+	tokenCookieOptions,
 } from '@constant';
 import { JwtAuthGuard } from '../guard/jwt.guard';
-import { accessTokenCookieOptions, refreshTokenCookieOptions } from '@config';
 
 @Controller('auth')
 export class AuthController {
@@ -40,37 +40,36 @@ export class AuthController {
 		@Res({ passthrough: true }) res: Response
 	) {
 		const user = await this.authService.socialStart({ type, authorizationCode });
-		const accessToken = this.authService.getJwt({
-			payload: user.nickname,
+		const accessToken = this.authService.createJwt({
+			payload: { nickname: user.nickname, email: user.email },
 			secret: JWT_ACCESS_TOKEN_SECRET,
 			expirationTime: JWT_ACCESS_TOKEN_EXPIRATION_TIME,
 		});
-		const refreshToken = this.authService.getJwt({
-			payload: user.nickname,
+		const refreshToken = this.authService.createJwt({
+			payload: { nickname: user.nickname, email: user.email },
 			secret: JWT_REFRESH_TOKEN_SECRET,
 			expirationTime: JWT_REFRESH_TOKEN_EXPIRATION_TIME,
 		});
 
-		res.cookie(ACCESS_TOKEN, accessToken, accessTokenCookieOptions);
-		res.cookie(REFRESH_TOKEN, refreshToken, refreshTokenCookieOptions);
+		res.cookie(ACCESS_TOKEN, accessToken, tokenCookieOptions);
+		res.cookie(REFRESH_TOKEN, refreshToken, tokenCookieOptions);
 	}
 
 	@UseGuards(JwtAuthGuard)
 	@Get('login')
 	@HttpCode(OK)
-	validate(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+	loginValidate(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
 		const { accessToken, refreshToken } = req.cookies;
-		res.cookie(ACCESS_TOKEN, accessToken, { httpOnly: true }).cookie(
+		res.cookie(ACCESS_TOKEN, accessToken, tokenCookieOptions).cookie(
 			REFRESH_TOKEN,
 			refreshToken,
-			{ httpOnly: true }
+			tokenCookieOptions
 		);
 	}
 
 	@UseGuards(JwtAuthGuard)
 	@Get('logout')
-	@Redirect('/')
-	logout(@Res() res: Response) {
+	logout(@Res({ passthrough: true }) res: Response) {
 		res.clearCookie(ACCESS_TOKEN);
 		res.clearCookie(REFRESH_TOKEN);
 	}

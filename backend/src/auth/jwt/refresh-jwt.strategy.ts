@@ -9,6 +9,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
 import { AuthService } from '../service/auth.service';
+import { Payload } from 'src/types/auth.type';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
@@ -19,23 +20,16 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 		super({
 			ignoreExpiration: false,
 			jwtFromRequest: ExtractJwt.fromExtractors([
-				(req) => {
-					const token = req?.cookies.refreshToken;
-					if (!token) return null;
-					return token;
-				},
+				(req) => (req?.cookies.refreshToken ? req.cookies.refreshToken : null),
 			]),
 			secretOrKey: configService.get(JWT_REFRESH_TOKEN_SECRET),
 			passReqToCallback: true,
 		});
 	}
 
-	async validate(req: Request, payload: string) {
-		const { refreshToken } = req.cookies;
-		if (!refreshToken) throw new UnauthorizedException('no token');
-
-		const accessToken = this.authService.getJwt({
-			payload,
+	async validate(req: Request, payload: Payload) {
+		const accessToken = this.authService.createJwt({
+			payload: { nickname: payload.nickname, email: payload.email },
 			secret: JWT_ACCESS_TOKEN_SECRET,
 			expirationTime: JWT_ACCESS_TOKEN_EXPIRATION_TIME,
 		});

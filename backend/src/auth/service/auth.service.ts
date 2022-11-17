@@ -8,6 +8,7 @@ import { OauthNaverService } from './oauth/naver-oauth.service';
 import { OauthService } from './oauth/interface-oauth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { CreateJwtDto } from '../dto/create-jwt.dto';
 
 @Injectable()
 export class AuthService {
@@ -61,22 +62,19 @@ export class AuthService {
 	 * @param expirationTime token의 만료시간
 	 * @returns access token 또는 refresh token
 	 */
-	getJwt({
+	createJwt({
 		payload,
 		secret,
 		expirationTime,
 	}: {
-		payload: string;
+		payload: CreateJwtDto;
 		secret: string;
 		expirationTime: string;
 	}) {
-		const token = this.jwtService.sign(
-			{ payload },
-			{
-				secret: this.configService.get(secret),
-				expiresIn: `${this.configService.get(expirationTime)}s`,
-			}
-		);
+		const token = this.jwtService.sign(payload, {
+			secret: this.configService.get(secret),
+			expiresIn: `${this.configService.get(expirationTime)}s`,
+		});
 
 		return token;
 	}

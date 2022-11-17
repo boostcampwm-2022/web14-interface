@@ -9,10 +9,17 @@ export interface UserLocalInfo {
 	email: string;
 }
 
-export interface UserInfo {
+export class UserInfo {
 	id: string;
 	password: string;
 	email: string;
 	oauthType: string;
 	nickname: string;
+}
+
+export interface Payload {
+	nickname: string;
+	email: string;
+	iat: number;
+	exp: number;
 }
