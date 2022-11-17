@@ -38,4 +38,4 @@ const IntervieweeVideo = (props: IntervieweeVideoType) => {
 	return <Video {...props} ref={videoRef} />;
 };
 
-export default IntervieweeVideo;
+export default React.memo(IntervieweeVideo);
