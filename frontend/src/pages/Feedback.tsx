@@ -11,7 +11,6 @@ const Feedback = () => {
 	const [currentTime, setCurrentTime] = useRecoilState(currentTimeState);
 	const [isFbClicked, setIsFbClicked] = useState(false);
 	const [focusIndex, setFocusIndex] = useState(0);
-	const [inputValue, setInputValue] = useState('');
 
 	const feedbackRef = useRef([]);
 
