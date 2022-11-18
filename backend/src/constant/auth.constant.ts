@@ -21,9 +21,12 @@ export const KAKAO_ACCESS_TOKEN_URL = 'https://kauth.kakao.com/oauth/token';
 export const KAKAO_PROFILE_API_URL = 'https://kapi.kakao.com/v2/user/me';
 
 // JWT
-export enum JWT_VALUE {
+export enum JWT_TYPE {
 	ACCESS_TOKEN = 'accessToken',
 	REFRESH_TOKEN = 'refreshToken',
+}
+
+export enum JWT_ENV {
 	JWT_ACCESS_TOKEN_SECRET = 'JWT_ACCESS_TOKEN_SECRET',
 	JWT_ACCESS_TOKEN_EXPIRATION_TIME = 'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
 	JWT_REFRESH_TOKEN_SECRET = 'JWT_REFRESH_TOKEN_SECRET',
@@ -31,13 +34,13 @@ export enum JWT_VALUE {
 }
 
 export const accessTokenOptions = {
-	secret: JWT_VALUE.JWT_ACCESS_TOKEN_SECRET,
-	expirationTime: JWT_VALUE.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+	secret: JWT_ENV.JWT_ACCESS_TOKEN_SECRET,
+	expirationTime: JWT_ENV.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
 };
 
 export const refreshTokenOptions = {
-	secret: JWT_VALUE.JWT_REFRESH_TOKEN_SECRET,
-	expirationTime: JWT_VALUE.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+	secret: JWT_ENV.JWT_REFRESH_TOKEN_SECRET,
+	expirationTime: JWT_ENV.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
 };
 
 export const tokenCookieOptions = {

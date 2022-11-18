@@ -1,4 +1,4 @@
-import { JWT_VALUE, USER_REPOSITORY_INTERFACE } from '@constant';
+import { JWT_ENV, USER_REPOSITORY_INTERFACE } from '@constant';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -108,14 +108,14 @@ describe('AuthService', () => {
 
 			const token = authService.createJwt({
 				payload,
-				secret: JWT_VALUE.JWT_ACCESS_TOKEN_SECRET,
-				expirationTime: JWT_VALUE.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+				secret: JWT_ENV.JWT_ACCESS_TOKEN_SECRET,
+				expirationTime: JWT_ENV.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
 			});
 
 			expect(jwtService.sign).toHaveBeenCalledTimes(1);
 			expect(jwtService.sign).toHaveBeenCalledWith(payload, {
-				secret: process.env[JWT_VALUE.JWT_ACCESS_TOKEN_SECRET],
-				expiresIn: `${process.env[JWT_VALUE.JWT_ACCESS_TOKEN_EXPIRATION_TIME]}s`,
+				secret: process.env[JWT_ENV.JWT_ACCESS_TOKEN_SECRET],
+				expiresIn: `${process.env[JWT_ENV.JWT_ACCESS_TOKEN_EXPIRATION_TIME]}s`,
 			});
 			expect(token).toBe('TOKEN');
 		});
@@ -125,14 +125,14 @@ describe('AuthService', () => {
 
 			const token = authService.createJwt({
 				payload,
-				secret: JWT_VALUE.JWT_REFRESH_TOKEN_SECRET,
-				expirationTime: JWT_VALUE.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+				secret: JWT_ENV.JWT_REFRESH_TOKEN_SECRET,
+				expirationTime: JWT_ENV.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
 			});
 
 			expect(jwtService.sign).toHaveBeenCalledTimes(1);
 			expect(jwtService.sign).toHaveBeenCalledWith(payload, {
-				secret: process.env[JWT_VALUE.JWT_REFRESH_TOKEN_SECRET],
-				expiresIn: `${process.env[JWT_VALUE.JWT_REFRESH_TOKEN_EXPIRATION_TIME]}s`,
+				secret: process.env[JWT_ENV.JWT_REFRESH_TOKEN_SECRET],
+				expiresIn: `${process.env[JWT_ENV.JWT_REFRESH_TOKEN_EXPIRATION_TIME]}s`,
 			});
 			expect(token).toBe('TOKEN');
 		});
