@@ -16,7 +16,7 @@ interface FeedbackDefaultPropType {
 const TemplateDefault: Story<FeedbackDefaultPropType> = (args) => (
 	<FeedbackBox>
 		<FeedbackBox.StartTime>{args.startTime}</FeedbackBox.StartTime>
-		<FeedbackBox.Content>{args.content}</FeedbackBox.Content>
+		<FeedbackBox.Content value={args.content} />
 	</FeedbackBox>
 );
 export const Default = TemplateDefault.bind({});
@@ -32,7 +32,7 @@ interface FeedbackWithBtnsPropType extends FeedbackDefaultPropType {
 const TemplateWithBtns: Story<FeedbackWithBtnsPropType> = (args) => (
 	<FeedbackBox>
 		<FeedbackBox.StartTime>{args.startTime}</FeedbackBox.StartTime>
-		<FeedbackBox.Content>{args.content}</FeedbackBox.Content>
+		<FeedbackBox.Content value={args.content} />
 		<FeedbackBox.Btn>{args.editIcon}</FeedbackBox.Btn>
 		<FeedbackBox.Btn>{args.deleteIcon}</FeedbackBox.Btn>
 	</FeedbackBox>

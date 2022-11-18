@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import React, { forwardRef } from 'react';
 
 function getContent(children: React.ReactNode[]) {
@@ -40,8 +41,13 @@ const FbMain = (
 	);
 };
 
-const FbContent = ({ children }: { children?: React.ReactNode }) => {
-	return <div>{children}</div>;
+interface FbContentProps {
+	value?: string;
+	onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
+	readOnly?: boolean;
+}
+const FbContent = ({ value, onChange, readOnly }: FbContentProps) => {
+	return <textarea value={value} readOnly={readOnly} onChange={onChange} />;
 };
 const FbContentType = (<FbContent />).type;
 
@@ -50,6 +56,9 @@ const FbStartTime = ({ children }: { children?: React.ReactNode }) => {
 };
 const FbStartTimeType = (<FbStartTime />).type;
 
+const FbBtnStyle = css`
+	width: 80px;
+`;
 const FbBtn = ({
 	children,
 	onClick,
@@ -57,7 +66,11 @@ const FbBtn = ({
 	children?: React.ReactNode;
 	onClick?: React.MouseEventHandler<HTMLElement>;
 }) => {
-	return <button onClick={onClick}>{children}</button>;
+	return (
+		<button css={FbBtnStyle} onClick={onClick}>
+			{children}
+		</button>
+	);
 };
 const FbBtnType = (<FbBtn />).type;
 
