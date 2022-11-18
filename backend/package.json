@@ -78,13 +78,17 @@
     "typescript": "^4.7.4"
   },
   "jest": {
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
     "moduleFileExtensions": [
       "js",
       "json",
       "ts"
     ],
     "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
+    "testRegex": ".spec.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
@@ -97,7 +101,7 @@
       "@config": "<rootDir>/config/index",
       "@constant": "<rootDir>/constant/index",
       "@types": "<rootDir>/types/index",
-      "^src/(.*)$": "<rootDir>/$1"
+      "src": "<rootDir>/"
     }
   }
 }
