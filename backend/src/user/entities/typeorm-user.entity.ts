@@ -1,8 +1,8 @@
-import { BaseBuilder } from 'src/builder/core.builder';
 import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { UserEntity } from './interface-user.entity';
 
 @Entity('user')
-export class UserEntity {
+export class TypeormUserEntity implements UserEntity {
 	@PrimaryColumn({ length: 100 })
 	id: string;
 

@@ -5,8 +5,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
 import { AuthService } from '../service/auth.service';
-import { Payload } from 'src/types/auth.type';
-import { JwtPayloadBuiler } from 'src/builder/auth/create-jwt-payload.dto';
+import { JwtPayload } from 'src/types/auth.type';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
@@ -27,7 +26,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 		});
 	}
 
-	async validate(req: Request, payload: Payload) {
+	async validate(req: Request, payload: JwtPayload) {
 		const accessToken = this.authService.createJwt({ payload, ...accessTokenOptions });
 		req.cookies = { ...req.cookies, accessToken };
 

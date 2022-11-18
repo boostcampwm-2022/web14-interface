@@ -1,9 +1,9 @@
-import { UserEntity } from 'src/user/entities/typeorm-user.entity';
+import { TypeormUserEntity } from 'src/user/entities/typeorm-user.entity';
 import { BaseBuilder } from '../core.builder';
 
-export class JoinUserBuilder extends BaseBuilder<UserEntity> {
+export class JoinUserBuilder extends BaseBuilder<TypeormUserEntity> {
 	constructor() {
-		super(UserEntity);
+		super(TypeormUserEntity);
 	}
 
 	setId(id: string): JoinUserBuilder {

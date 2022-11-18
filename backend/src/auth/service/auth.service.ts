@@ -1,13 +1,11 @@
 import {
 	accessTokenOptions,
-	JWT_VALUE,
 	OAUTH_TYPE,
 	refreshTokenOptions,
 	USER_REPOSITORY_INTERFACE,
 } from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
 import { UserInfo } from 'src/types/auth.type';
-import { UserEntity } from 'src/user/entities/typeorm-user.entity';
 import { UserRepository } from 'src/user/repository/interface-user.repository';
 import { OauthNaverService } from './oauth/naver-oauth.service';
 import { OauthService } from './oauth/interface-oauth.service';
@@ -23,7 +21,7 @@ export class AuthService {
 
 	constructor(
 		@Inject(USER_REPOSITORY_INTERFACE)
-		private readonly userRepository: UserRepository<UserEntity>,
+		private readonly userRepository: UserRepository,
 
 		private readonly oauthKakaoService: OauthKakaoService,
 		private readonly oauthNaverService: OauthNaverService,

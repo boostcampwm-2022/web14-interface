@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { JoinUserBuilder } from 'src/builder/auth/typeorm-user.builder';
 import { UserInfo } from 'src/types/auth.type';
 import { MockRepository } from 'src/types/mock.type';
-import { UserEntity } from 'src/user/entities/typeorm-user.entity';
+import { TypeormUserEntity } from 'src/user/entities/typeorm-user.entity';
 import { UserRepository } from 'src/user/repository/interface-user.repository';
 import { AuthService } from './auth.service';
 import { OauthKakaoService } from './oauth/kakao-oauth.service';
@@ -22,7 +22,7 @@ const mockJwtService = () => ({
 
 describe('AuthService', () => {
 	let authService: AuthService;
-	let userRepository: MockRepository<UserRepository<UserEntity>>;
+	let userRepository: MockRepository<UserRepository>;
 	let oauthGoogleService: OauthKakaoService;
 	let oauthNaverService: OauthNaverService;
 	let jwtService: JwtService;
@@ -134,7 +134,7 @@ describe('AuthService', () => {
 		});
 	});
 
-	const makeMockUser = (userInfo: UserInfo): UserEntity => {
+	const makeMockUser = (userInfo: UserInfo): TypeormUserEntity => {
 		const { id, email, password, nickname, oauthType } = userInfo;
 		const userEntity = new JoinUserBuilder()
 			.setId(id)

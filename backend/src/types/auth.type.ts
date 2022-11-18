@@ -9,7 +9,7 @@ export interface UserLocalInfo {
 	email: string;
 }
 
-export class UserInfo {
+export interface UserInfo {
 	id: string;
 	password: string;
 	email: string;
@@ -17,7 +17,7 @@ export class UserInfo {
 	nickname: string;
 }
 
-export interface Payload {
+export interface JwtPayload {
 	id: string;
 	nickname: string;
 	email: string;
