@@ -9,11 +9,7 @@ export interface UserLocalInfo {
 	email: string;
 }
 
-export interface UserInfo {
-	id: string;
-	password: string;
-	email: string;
-	oauthType: string;
+export interface UserInfo extends UserSocialInfo, UserLocalInfo {
 	nickname: string;
 }
 

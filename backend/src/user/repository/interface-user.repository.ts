@@ -1,4 +1,4 @@
-import { UserInfo } from 'src/types/auth.type';
+import { UserInfo } from '@types';
 
 export interface UserRepository {
 	/**

@@ -5,7 +5,7 @@ import {
 	USER_REPOSITORY_INTERFACE,
 } from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
-import { UserInfo } from 'src/types/auth.type';
+import { UserInfo } from '@types';
 import { UserRepository } from 'src/user/repository/interface-user.repository';
 import { OauthNaverService } from './oauth/naver-oauth.service';
 import { OauthService } from './oauth/interface-oauth.service';
