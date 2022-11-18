@@ -87,11 +87,11 @@ export class AuthService {
 	}
 
 	/**
-	 * user info로 access token or refresh token을 반환합니다.
+	 * user info로 access token과 refresh token을 반환합니다.
 	 * @param user UserInfo
 	 * @returns {} { accessToken, refreshToken }
 	 */
-	createJsonWebToken(user: UserInfo) {
+	createAccessTokenAndRefreshToken(user: UserInfo) {
 		const { id, nickname, email } = user;
 		const payload = new JwtPayloadBuiler()
 			.setId(id)

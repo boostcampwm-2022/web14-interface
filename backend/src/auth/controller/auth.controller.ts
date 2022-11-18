@@ -22,7 +22,8 @@ export class AuthController {
 		@Res({ passthrough: true }) res: Response
 	) {
 		const user = await this.authService.socialStart({ type, authorizationCode });
-		const { accessToken, refreshToken } = this.authService.createJsonWebToken(user);
+		const { accessToken, refreshToken } =
+			this.authService.createAccessTokenAndRefreshToken(user);
 
 		res.cookie(JWT_VALUE.ACCESS_TOKEN, accessToken, tokenCookieOptions);
 		res.cookie(JWT_VALUE.REFRESH_TOKEN, refreshToken, tokenCookieOptions);
