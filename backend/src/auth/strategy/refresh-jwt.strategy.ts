@@ -6,6 +6,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
 import { AuthService } from '../service/auth.service';
 import { Payload } from 'src/types/auth.type';
+import { JwtPayloadBuiler } from 'src/builder/auth/create-jwt-payload.dto';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
@@ -16,7 +17,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 		super({
 			ignoreExpiration: false,
 			jwtFromRequest: ExtractJwt.fromExtractors([
-				(req) => {
+				(req: Request) => {
 					const token = req?.cookies.accessToken;
 					return token ?? null;
 				},
@@ -27,11 +28,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 	}
 
 	async validate(req: Request, payload: Payload) {
-		const accessToken = this.authService.createJwt({
-			payload: { nickname: payload.nickname, email: payload.email },
-			...accessTokenOptions,
-		});
-
+		const accessToken = this.authService.createJwt({ payload, ...accessTokenOptions });
 		req.cookies = { ...req.cookies, accessToken };
 
 		return payload;

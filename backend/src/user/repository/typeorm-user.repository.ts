@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { JoinUserBuilder } from 'src/builder/auth/typeorm-user.builder';
 import { UserInfo } from 'src/types/auth.type';
 import { Repository } from 'typeorm';
-import { JoinUserBuilder, UserEntity } from '../entities/typeorm-user.entity';
+import { UserEntity } from '../entities/typeorm-user.entity';
 import { UserRepository } from './interface-user.repository';
 
 @Injectable()

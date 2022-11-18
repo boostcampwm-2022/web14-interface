@@ -18,6 +18,7 @@ export class UserInfo {
 }
 
 export interface Payload {
+	id: string;
 	nickname: string;
 	email: string;
 	iat: number;

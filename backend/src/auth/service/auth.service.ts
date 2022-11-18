@@ -14,7 +14,8 @@ import { OauthService } from './oauth/interface-oauth.service';
 import { OauthKakaoService } from './oauth/kakao-oauth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { CreateJwtDto } from '../dto/create-jwt.dto';
+import { CreateJwtPayloadDto } from '../dto/create-jwt.dto';
+import { JwtPayloadBuiler } from 'src/builder/auth/create-jwt-payload.dto';
 
 @Injectable()
 export class AuthService {
@@ -75,7 +76,7 @@ export class AuthService {
 		secret,
 		expirationTime,
 	}: {
-		payload: CreateJwtDto;
+		payload: CreateJwtPayloadDto;
 		secret: string;
 		expirationTime: string;
 	}) {
@@ -93,7 +94,13 @@ export class AuthService {
 	 * @returns {} { accessToken, refreshToken }
 	 */
 	createJsonWebToken(user: UserInfo) {
-		const payload = { nickname: user.nickname, email: user.email };
+		const { id, nickname, email } = user;
+		const payload = new JwtPayloadBuiler()
+			.setId(id)
+			.setNickname(nickname)
+			.setEmail(email)
+			.build();
+
 		const accessToken = this.createJwt({ payload, ...accessTokenOptions });
 		const refreshToken = this.createJwt({ payload, ...refreshTokenOptions });
 		return { accessToken, refreshToken };

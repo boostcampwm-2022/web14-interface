@@ -1,9 +1,10 @@
 import { JWT_VALUE, USER_REPOSITORY_INTERFACE } from '@constant';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+import { JoinUserBuilder } from 'src/builder/auth/typeorm-user.builder';
 import { UserInfo } from 'src/types/auth.type';
 import { MockRepository } from 'src/types/mock.type';
-import { JoinUserBuilder, UserEntity } from 'src/user/entities/typeorm-user.entity';
+import { UserEntity } from 'src/user/entities/typeorm-user.entity';
 import { UserRepository } from 'src/user/repository/interface-user.repository';
 import { AuthService } from './auth.service';
 import { OauthKakaoService } from './oauth/kakao-oauth.service';
@@ -99,7 +100,7 @@ describe('AuthService', () => {
 
 	describe('token 발급 테스트', () => {
 		it('access token 발급 테스트', () => {
-			const payload = { nickname: 'test', email: 'test@test.com' };
+			const payload = { id: 'test', nickname: 'test', email: 'test@test.com' };
 
 			const token = authService.createJwt({
 				payload,
@@ -116,7 +117,7 @@ describe('AuthService', () => {
 		});
 
 		it('refresh token 발급 테스트', () => {
-			const payload = { nickname: 'test', email: 'test@test.com' };
+			const payload = { id: 'test', nickname: 'test', email: 'test@test.com' };
 
 			const token = authService.createJwt({
 				payload,
