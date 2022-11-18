@@ -1,4 +1,5 @@
 import { JWT_VALUE, USER_REPOSITORY_INTERFACE } from '@constant';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserInfo } from 'src/types/auth.type';
@@ -40,6 +41,7 @@ describe('AuthService', () => {
 					provide: JwtService,
 					useValue: mockJwtService(),
 				},
+				ConfigService,
 			],
 		}).compile();
 

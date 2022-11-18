@@ -33,7 +33,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 			expirationTime: JWT_VALUE.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
 		});
 
-		req.cookies = { ...req.cookies, accessToken };
+		req.cookies.accessToken = accessToken;
 
 		return payload;
 	}
