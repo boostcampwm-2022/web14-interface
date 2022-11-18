@@ -1,4 +1,4 @@
-import { BaseBuilder } from 'src/builder/core.builder';
+import { BaseBuilder } from '../../builder/core.builder';
 import { Entity, PrimaryColumn, Column } from 'typeorm';
 
 @Entity('user')
