@@ -8,6 +8,7 @@
   },
   "moduleNameMapper": {
     "@config": "<rootDir>/../src/config/index",
-    "@constant": "<rootDir>/../src/constant/index"
+    "@constant": "<rootDir>/../src/constant/index",
+    "^src/(.*)$": "<rootDir>/../src/$1"
   }
 }
