@@ -22,16 +22,7 @@ export class AuthController {
 		@Res({ passthrough: true }) res: Response
 	) {
 		const user = await this.authService.socialStart({ type, authorizationCode });
-		const accessToken = this.authService.createJwt({
-			payload: { nickname: user.nickname, email: user.email },
-			secret: JWT_VALUE.JWT_ACCESS_TOKEN_SECRET,
-			expirationTime: JWT_VALUE.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
-		});
-		const refreshToken = this.authService.createJwt({
-			payload: { nickname: user.nickname, email: user.email },
-			secret: JWT_VALUE.JWT_REFRESH_TOKEN_SECRET,
-			expirationTime: JWT_VALUE.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
-		});
+		const { accessToken, refreshToken } = this.authService.createJsonWebToken(user);
 
 		res.cookie(JWT_VALUE.ACCESS_TOKEN, accessToken, tokenCookieOptions);
 		res.cookie(JWT_VALUE.REFRESH_TOKEN, refreshToken, tokenCookieOptions);

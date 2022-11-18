@@ -1,4 +1,4 @@
-import { JWT_VALUE } from '@constant';
+import { accessTokenOptions, JWT_VALUE } from '@constant';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
@@ -29,8 +29,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 	async validate(req: Request, payload: Payload) {
 		const accessToken = this.authService.createJwt({
 			payload: { nickname: payload.nickname, email: payload.email },
-			secret: JWT_VALUE.JWT_ACCESS_TOKEN_SECRET,
-			expirationTime: JWT_VALUE.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+			...accessTokenOptions,
 		});
 
 		req.cookies = { ...req.cookies, accessToken };

@@ -1,4 +1,10 @@
-import { OAUTH_TYPE, USER_REPOSITORY_INTERFACE } from '@constant';
+import {
+	accessTokenOptions,
+	JWT_VALUE,
+	OAUTH_TYPE,
+	refreshTokenOptions,
+	USER_REPOSITORY_INTERFACE,
+} from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
 import { UserInfo } from 'src/types/auth.type';
 import { UserEntity } from 'src/user/entities/typeorm-user.entity';
@@ -79,6 +85,18 @@ export class AuthService {
 		});
 
 		return token;
+	}
+
+	/**
+	 * user info로 access token or refresh token을 반환합니다.
+	 * @param user UserInfo
+	 * @returns {} { accessToken, refreshToken }
+	 */
+	createJsonWebToken(user: UserInfo) {
+		const payload = { nickname: user.nickname, email: user.email };
+		const accessToken = this.createJwt({ payload, ...accessTokenOptions });
+		const refreshToken = this.createJwt({ payload, ...refreshTokenOptions });
+		return { accessToken, refreshToken };
 	}
 
 	/**

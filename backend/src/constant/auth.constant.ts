@@ -30,6 +30,16 @@ export enum JWT_VALUE {
 	JWT_REFRESH_TOKEN_EXPIRATION_TIME = 'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
 }
 
+export const accessTokenOptions = {
+	secret: JWT_VALUE.JWT_ACCESS_TOKEN_SECRET,
+	expirationTime: JWT_VALUE.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+};
+
+export const refreshTokenOptions = {
+	secret: JWT_VALUE.JWT_REFRESH_TOKEN_SECRET,
+	expirationTime: JWT_VALUE.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+};
+
 export const tokenCookieOptions = {
 	httpOnly: true,
 	maxAge: MAX_AGE,
