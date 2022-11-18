@@ -7,18 +7,18 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "nest build && tsc-alias",
+    "build": "cross-env NODE_ENV=dev nest build && tsc-alias",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "nest start --watch",
+    "start:dev": "cross-env NODE_ENV=dev nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "npx lint-staged",
-    "test": "jest",
+    "test": "cross-env NODE_ENV=test jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "cross-env NODE_ENV=test jest --config ./test/jest-e2e.json"
   },
   "lint-staged": {
     "{src,apps,libs,test}/**/*.ts": "eslint --fix"
@@ -38,6 +38,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
+    "cross-env": "^7.0.3",
     "helmet": "^6.0.0",
     "joi": "^17.7.0",
     "mysql2": "^2.3.3",
@@ -101,7 +102,7 @@
       "@config": "<rootDir>/config/index",
       "@constant": "<rootDir>/constant/index",
       "@types": "<rootDir>/types/index",
-      "src": "<rootDir>/"
+      "^src(.*)$": "<rootDir>/$1"
     }
   }
 }
