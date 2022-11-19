@@ -1,5 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 export const typeormConfig =
 	process.env.NODE_ENV === 'dev'
@@ -34,4 +35,8 @@ export const typeormConfig =
 					synchronize: true,
 				}),
 				inject: [ConfigService],
+				dataSourceFactory: async (options) => {
+					const dataSource = await new DataSource(options).initialize();
+					return dataSource;
+				},
 		  };
