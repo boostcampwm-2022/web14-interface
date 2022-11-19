@@ -8,11 +8,15 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { OauthNaverService } from 'src/auth/service/oauth/naver-oauth.service';
 import { typeormConfig } from '@config';
+import { getConnection } from 'typeorm';
+import { TestService } from './test.service';
+import { TypeormUserRepository } from 'src/user/repository/typeorm-user.repository';
 
 const authService = () => ({});
 
 describe('AuthController (e2e)', () => {
 	let app: INestApplication;
+	let typeorm: TypeormUserRepository;
 
 	const naverClientId = process.env.NAVER_CLIENT_ID;
 	const naverCallbackUrl = [
@@ -44,6 +48,8 @@ describe('AuthController (e2e)', () => {
 		app = moduleFixture.createNestApplication();
 		app.setGlobalPrefix('api');
 		app.use(cookieParser());
+
+		typeorm = moduleFixture.get(TypeormUserRepository);
 		await app.init();
 	});
 
@@ -68,15 +74,37 @@ describe('AuthController (e2e)', () => {
 				.expect(500);
 		});
 
-		it('social start', async () => {
-			return await request(app.getHttpServer())
+		it('access token, refresh token 발급 후 가드 테스트', async () => {
+			const res = await request(app.getHttpServer())
 				.get('/api/auth/oauth/callback/naver?code=test')
+				.expect(200);
+
+			const cookies = res.header['set-cookie'];
+			if (!cookies) throw new Error('쿠키 없음');
+			const tokenCount = cookies
+				.map((cookie) => {
+					return cookie.split(';').reduce((prev, val) => {
+						const keyValue = val.split('=');
+						prev = { ...prev, [keyValue[0].trim()]: keyValue[1] };
+						return prev;
+					}, {});
+				})
+				.reduce((prev, val) => {
+					if ('refreshToken' in val || 'accessToken' in val) return prev + 1;
+					return prev;
+				}, 0);
+
+			if (tokenCount != 2) throw new Error('token이 정상적으로 발급되지 않음');
+
+			return request(app.getHttpServer())
+				.get('/api/auth/login')
+				.set('Cookie', cookies)
 				.expect(200);
 		});
 	});
 
 	// it('/api/auth/login (GET)', () => {
-	// 	return request(app.getHttpServer()).get('/api/auth/login').expect(200);
+
 	// });
 
 	afterAll(async () => {
