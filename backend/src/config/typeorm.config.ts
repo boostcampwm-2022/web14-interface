@@ -31,7 +31,7 @@ export const typeormConfig =
 					password: process.env.DB_PASSWORD,
 					database: process.env.DB_NAME,
 					entities: [__dirname + '/../**/*.entity.{ts,js}'],
-					logging: ['query', 'error'],
+					logging: [],
 					synchronize: true,
 				}),
 				inject: [ConfigService],

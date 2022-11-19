@@ -5,11 +5,8 @@ import { AppModule } from './../src/app.module';
 import cookieParser from 'cookie-parser';
 import { OAUTH_CALLBACK_URL, OAUTH_TYPE } from '@constant';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { ConfigService } from '@nestjs/config';
 import { OauthNaverService } from 'src/auth/service/oauth/naver-oauth.service';
 import { typeormConfig } from '@config';
-import { getConnection } from 'typeorm';
-import { TestService } from './test.service';
 import { TypeormUserRepository } from 'src/user/repository/typeorm-user.repository';
 
 const authService = () => ({});
@@ -17,6 +14,7 @@ const authService = () => ({});
 describe('AuthController (e2e)', () => {
 	let app: INestApplication;
 	let typeorm: TypeormUserRepository;
+	let cookies;
 
 	const naverClientId = process.env.NAVER_CLIENT_ID;
 	const naverCallbackUrl = [
@@ -76,12 +74,15 @@ describe('AuthController (e2e)', () => {
 				.expect(500);
 		});
 
-		it('access token, refresh token 발급 후 가드 테스트', async () => {
+		it('access token, refresh token 발급 후 가드 테스트 로그아웃 테스트', async () => {
 			const res = await request(app.getHttpServer())
 				.get('/api/auth/oauth/callback/naver?code=test')
 				.expect(200);
 
-			const cookies = res.header['set-cookie'];
+			cookies = res.header['set-cookie'];
+		});
+
+		it('jwt auth guard test', () => {
 			if (!cookies) throw new Error('쿠키 없음');
 			const tokenCount = cookies
 				.map((cookie) => {
@@ -98,15 +99,41 @@ describe('AuthController (e2e)', () => {
 
 			if (tokenCount != 2) throw new Error('token이 정상적으로 발급되지 않음');
 
-			return request(app.getHttpServer())
-				.get('/api/auth/login')
-				.set('Cookie', cookies)
-				.expect(200);
+			request(app.getHttpServer()).get('/api/auth/login').set('Cookie', cookies).expect(200);
 		});
 	});
 
 	it('/api/auth/login (GET)', () => {
 		return request(app.getHttpServer()).get('/api/auth/login').expect(401);
+	});
+
+	it('/api/auth/logout (GET)', async () => {
+		const res = await request(app.getHttpServer())
+			.get('/api/auth/logout')
+			.set('Cookie', cookies)
+			.expect(200);
+
+		const tokenCount = res.header['set-cookie'].map((cookie) => {
+			return cookie.split(';').reduce((prev, val) => {
+				const keyValue = val.split('=');
+				prev = { ...prev, [keyValue[0].trim()]: keyValue[1] };
+				return prev;
+			}, {});
+		});
+
+		const flag = tokenCount.reduce((prev: boolean, cookie) => {
+			if ('accessToken' in cookie && cookie['accessToken'] === '') {
+				prev = false;
+				return prev;
+			}
+			if ('refreshToken' in cookie && cookie['refreshToken'] === '') {
+				prev = false;
+				return prev;
+			}
+			return prev;
+		}, true);
+
+		if (flag) throw new Error('token이 정상적으로 로그아웃되지 않음');
 	});
 
 	afterAll(async () => {
