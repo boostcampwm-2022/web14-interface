@@ -50,6 +50,7 @@ describe('AuthController (e2e)', () => {
 		app.use(cookieParser());
 
 		typeorm = moduleFixture.get(TypeormUserRepository);
+		typeorm.cleanDatabase();
 		await app.init();
 	});
 
@@ -60,6 +61,7 @@ describe('AuthController (e2e)', () => {
 			return request(app.getHttpServer()).get('/api/auth/oauth/redirect/naver').expect(302);
 			// .expect('Location', pageUrl);
 		});
+
 		it('type: kakao', () => {
 			const pageUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${kakaoClientId}&redirect_uri=${kakaoCallbackUrl}`;
 
@@ -103,9 +105,9 @@ describe('AuthController (e2e)', () => {
 		});
 	});
 
-	// it('/api/auth/login (GET)', () => {
-
-	// });
+	it('/api/auth/login (GET)', () => {
+		return request(app.getHttpServer()).get('/api/auth/login').expect(401);
+	});
 
 	afterAll(async () => {
 		await app.close();
