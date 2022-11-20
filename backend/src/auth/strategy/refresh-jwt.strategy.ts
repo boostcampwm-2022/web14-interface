@@ -16,8 +16,8 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 		super({
 			ignoreExpiration: false,
 			jwtFromRequest: ExtractJwt.fromExtractors([
-				(req: Request) => {
-					const token = req?.cookies.accessToken;
+				(req) => {
+					const token = req?.cookies.refreshToken;
 					return token ?? null;
 				},
 			]),
@@ -26,9 +26,14 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 		});
 	}
 
-	async validate(req: Request, payload: JwtPayload) {
-		const accessToken = this.authService.createJwt({ payload, ...accessTokenOptions });
-		req.cookies = { ...req.cookies, accessToken };
+	async validate(req: Request, payload: Payload) {
+		const accessToken = this.authService.createJwt({
+			payload: { nickname: payload.nickname, email: payload.email },
+			secret: JWT_VALUE.JWT_ACCESS_TOKEN_SECRET,
+			expirationTime: JWT_VALUE.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+		});
+
+		req.cookies.accessToken = accessToken;
 
 		return payload;
 	}
