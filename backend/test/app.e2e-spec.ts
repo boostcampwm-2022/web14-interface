@@ -8,12 +8,12 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { OauthNaverService } from 'src/auth/service/oauth/naver-oauth.service';
 import { typeormConfig } from '@config';
 import { TypeormUserRepository } from 'src/user/repository/typeorm-user.repository';
-
-const authService = () => ({});
+import { AuthService } from 'src/auth/service/auth.service';
 
 describe('AuthController (e2e)', () => {
 	let app: INestApplication;
 	let typeorm: TypeormUserRepository;
+	let authService: AuthService;
 	let cookies;
 
 	const naverClientId = process.env.NAVER_CLIENT_ID;
@@ -46,6 +46,8 @@ describe('AuthController (e2e)', () => {
 		app = moduleFixture.createNestApplication();
 		app.setGlobalPrefix('api');
 		app.use(cookieParser());
+
+		authService = moduleFixture.get(AuthService);
 
 		typeorm = moduleFixture.get(TypeormUserRepository);
 		typeorm.cleanDatabase();
@@ -80,6 +82,7 @@ describe('AuthController (e2e)', () => {
 				.expect(200);
 
 			cookies = res.header['set-cookie'];
+			console.log(cookies);
 		});
 
 		it('jwt auth guard test', () => {
@@ -100,6 +103,36 @@ describe('AuthController (e2e)', () => {
 			if (tokenCount != 2) throw new Error('token이 정상적으로 발급되지 않음');
 
 			request(app.getHttpServer()).get('/api/auth/login').set('Cookie', cookies).expect(200);
+		});
+
+		it('access token 만료된 경우 재발급 테스트', async () => {
+			//given
+			const payload = { nickname: 'test', email: 'test@test.com' };
+			const accessToken = authService.createJwt({
+				payload,
+				secret: 'JWT_ACCESS_TOKEN_SECRET',
+				expirationTime: 'JWT_EXPIRED_ACCESS_TOKEN',
+			});
+
+			const refreshToken = authService.createJwt({
+				payload,
+				secret: 'JWT_REFRESH_TOKEN_SECRET',
+				expirationTime: 'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
+			});
+
+			const cookie = [
+				['accessToken', accessToken].join('='),
+				['refreshToken', refreshToken].join('='),
+			];
+
+			//when
+			const res = await request(app.getHttpServer())
+				.get('/api/auth/login')
+				.set('Cookie', cookie)
+				.expect(200);
+
+			//then
+			// console.log(res);
 		});
 	});
 
@@ -122,16 +155,16 @@ describe('AuthController (e2e)', () => {
 		});
 
 		const flag = tokenCount.reduce((prev: boolean, cookie) => {
-			if ('accessToken' in cookie && cookie['accessToken'] === '') {
-				prev = false;
+			if ('accessToken' in cookie && cookie['accessToken'] !== '') {
+				prev ||= true;
 				return prev;
 			}
-			if ('refreshToken' in cookie && cookie['refreshToken'] === '') {
-				prev = false;
+			if ('refreshToken' in cookie && cookie['refreshToken'] !== '') {
+				prev ||= true;
 				return prev;
 			}
 			return prev;
-		}, true);
+		}, false);
 
 		if (flag) throw new Error('token이 정상적으로 로그아웃되지 않음');
 	});
