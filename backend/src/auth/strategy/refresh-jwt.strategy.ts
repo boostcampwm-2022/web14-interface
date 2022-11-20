@@ -17,7 +17,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 			ignoreExpiration: false,
 			jwtFromRequest: ExtractJwt.fromExtractors([
 				(req) => {
-					const token = req?.cookies.accessToken;
+					const token = req?.cookies.refreshToken;
 					return token ?? null;
 				},
 			]),
@@ -27,6 +27,8 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 	}
 
 	async validate(req: Request, payload: Payload) {
+		console.log('refresh');
+
 		const accessToken = this.authService.createJwt({
 			payload: { nickname: payload.nickname, email: payload.email },
 			secret: JWT_VALUE.JWT_ACCESS_TOKEN_SECRET,

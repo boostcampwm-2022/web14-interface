@@ -23,6 +23,8 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'jwt-access') 
 	}
 
 	async validate(req: Request, payload: Payload) {
+		console.log('access');
+
 		return payload;
 	}
 }
