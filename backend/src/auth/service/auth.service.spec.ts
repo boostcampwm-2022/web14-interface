@@ -1,9 +1,10 @@
-import { JWT_VALUE, USER_REPOSITORY_INTERFACE } from '@constant';
+import { JWT_ENV, USER_REPOSITORY_INTERFACE } from '@constant';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserInfo } from 'src/types/auth.type';
-import { MockRepository } from 'src/types/mock.type';
-import { JoinUserBuilder, UserEntity } from 'src/user/entities/typeorm-user.entity';
+import { JoinUserBuilder } from '@builder';
+import { UserInfo, MockRepository } from '@types';
+import { TypeormUserEntity } from 'src/user/entities/typeorm-user.entity';
 import { UserRepository } from 'src/user/repository/interface-user.repository';
 import { AuthService } from './auth.service';
 import { OauthKakaoService } from './oauth/kakao-oauth.service';
@@ -21,10 +22,11 @@ const mockJwtService = () => ({
 
 describe('AuthService', () => {
 	let authService: AuthService;
-	let userRepository: MockRepository<UserRepository<UserEntity>>;
+	let userRepository: MockRepository<UserRepository>;
 	let oauthGoogleService: OauthKakaoService;
 	let oauthNaverService: OauthNaverService;
 	let jwtService: JwtService;
+	let configService: ConfigService;
 
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
@@ -40,6 +42,7 @@ describe('AuthService', () => {
 					provide: JwtService,
 					useValue: mockJwtService(),
 				},
+				ConfigService,
 			],
 		}).compile();
 
@@ -48,6 +51,7 @@ describe('AuthService', () => {
 		oauthNaverService = module.get(OauthNaverService);
 		oauthGoogleService = module.get(OauthKakaoService);
 		jwtService = module.get(JwtService);
+		configService = module.get(ConfigService);
 	});
 
 	describe('valid case', () => {
@@ -57,6 +61,7 @@ describe('AuthService', () => {
 			expect(oauthNaverService).toBeDefined();
 			expect(oauthGoogleService).toBeDefined();
 			expect(jwtService).toBeDefined();
+			expect(configService).toBeDefined();
 		});
 
 		it('유저의 OAuth로 시작 테스트', async () => {
@@ -99,41 +104,41 @@ describe('AuthService', () => {
 
 	describe('token 발급 테스트', () => {
 		it('access token 발급 테스트', () => {
-			const payload = { nickname: 'test', email: 'test@test.com' };
+			const payload = { id: 'test', nickname: 'test', email: 'test@test.com' };
 
 			const token = authService.createJwt({
 				payload,
-				secret: JWT_VALUE.JWT_ACCESS_TOKEN_SECRET,
-				expirationTime: JWT_VALUE.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+				secret: JWT_ENV.JWT_ACCESS_TOKEN_SECRET,
+				expirationTime: JWT_ENV.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
 			});
 
 			expect(jwtService.sign).toHaveBeenCalledTimes(1);
 			expect(jwtService.sign).toHaveBeenCalledWith(payload, {
-				secret: process.env[JWT_VALUE.JWT_ACCESS_TOKEN_SECRET],
-				expiresIn: `${process.env[JWT_VALUE.JWT_ACCESS_TOKEN_EXPIRATION_TIME]}s`,
+				secret: process.env[JWT_ENV.JWT_ACCESS_TOKEN_SECRET],
+				expiresIn: `${process.env[JWT_ENV.JWT_ACCESS_TOKEN_EXPIRATION_TIME]}s`,
 			});
 			expect(token).toBe('TOKEN');
 		});
 
 		it('refresh token 발급 테스트', () => {
-			const payload = { nickname: 'test', email: 'test@test.com' };
+			const payload = { id: 'test', nickname: 'test', email: 'test@test.com' };
 
 			const token = authService.createJwt({
 				payload,
-				secret: JWT_VALUE.JWT_REFRESH_TOKEN_SECRET,
-				expirationTime: JWT_VALUE.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+				secret: JWT_ENV.JWT_REFRESH_TOKEN_SECRET,
+				expirationTime: JWT_ENV.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
 			});
 
 			expect(jwtService.sign).toHaveBeenCalledTimes(1);
 			expect(jwtService.sign).toHaveBeenCalledWith(payload, {
-				secret: process.env[JWT_VALUE.JWT_REFRESH_TOKEN_SECRET],
-				expiresIn: `${process.env[JWT_VALUE.JWT_REFRESH_TOKEN_EXPIRATION_TIME]}s`,
+				secret: process.env[JWT_ENV.JWT_REFRESH_TOKEN_SECRET],
+				expiresIn: `${process.env[JWT_ENV.JWT_REFRESH_TOKEN_EXPIRATION_TIME]}s`,
 			});
 			expect(token).toBe('TOKEN');
 		});
 	});
 
-	const makeMockUser = (userInfo: UserInfo): UserEntity => {
+	const makeMockUser = (userInfo: UserInfo): TypeormUserEntity => {
 		const { id, email, password, nickname, oauthType } = userInfo;
 		const userEntity = new JoinUserBuilder()
 			.setId(id)

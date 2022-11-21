@@ -5,7 +5,6 @@ import { TypeormUserRepository } from 'src/user/repository/typeorm-user.reposito
 import { USER_REPOSITORY_INTERFACE } from '@constant';
 import { UserModule } from 'src/user/user.module';
 import { OauthNaverService } from './service/oauth/naver-oauth.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { OauthKakaoService } from './service/oauth/kakao-oauth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -18,7 +17,7 @@ export const UserRepository: ClassProvider = {
 };
 
 @Module({
-	imports: [UserModule, TypeOrmModule.forFeature([TypeormUserRepository])],
+	imports: [UserModule],
 	controllers: [AuthController],
 	providers: [
 		AuthService,

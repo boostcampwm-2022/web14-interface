@@ -1,6 +1,6 @@
-import { feedbackType } from '@customType/common';
+import { FeedbackType } from '@customType/common';
 
-export const findCurrentFeedback = (feedbackList: feedbackType[], currentTime: number) => {
+export const findCurrentFeedback = (feedbackList: FeedbackType[], currentTime: number) => {
 	let start = 0;
 	let end = feedbackList.length - 1;
 	let mid = end;

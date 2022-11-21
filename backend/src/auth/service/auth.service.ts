@@ -1,14 +1,19 @@
-import { OAUTH_TYPE, USER_REPOSITORY_INTERFACE } from '@constant';
+import {
+	accessTokenOptions,
+	OAUTH_TYPE,
+	refreshTokenOptions,
+	USER_REPOSITORY_INTERFACE,
+} from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
-import { UserInfo } from 'src/types/auth.type';
-import { UserEntity } from 'src/user/entities/typeorm-user.entity';
+import { UserInfo } from '@types';
 import { UserRepository } from 'src/user/repository/interface-user.repository';
 import { OauthNaverService } from './oauth/naver-oauth.service';
 import { OauthService } from './oauth/interface-oauth.service';
 import { OauthKakaoService } from './oauth/kakao-oauth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { CreateJwtDto } from '../dto/create-jwt.dto';
+import { CreateJwtPayloadDto } from '../dto/create-jwt.dto';
+import { JwtPayloadBuiler } from 'src/builder/auth/create-jwt-payload.dto';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +21,7 @@ export class AuthService {
 
 	constructor(
 		@Inject(USER_REPOSITORY_INTERFACE)
-		private readonly userRepository: UserRepository<UserEntity>,
+		private readonly userRepository: UserRepository,
 
 		private readonly oauthKakaoService: OauthKakaoService,
 		private readonly oauthNaverService: OauthNaverService,
@@ -69,7 +74,7 @@ export class AuthService {
 		secret,
 		expirationTime,
 	}: {
-		payload: CreateJwtDto;
+		payload: CreateJwtPayloadDto;
 		secret: string;
 		expirationTime: string;
 	}) {
@@ -79,6 +84,24 @@ export class AuthService {
 		});
 
 		return token;
+	}
+
+	/**
+	 * user info로 access token과 refresh token을 반환합니다.
+	 * @param user UserInfo
+	 * @returns {} { accessToken, refreshToken }
+	 */
+	createAccessTokenAndRefreshToken(user: UserInfo) {
+		const { id, nickname, email } = user;
+		const payload = new JwtPayloadBuiler()
+			.setId(id)
+			.setNickname(nickname)
+			.setEmail(email)
+			.build();
+
+		const accessToken = this.createJwt({ payload, ...accessTokenOptions });
+		const refreshToken = this.createJwt({ payload, ...refreshTokenOptions });
+		return { accessToken, refreshToken };
 	}
 
 	/**

@@ -9,15 +9,12 @@ export interface UserLocalInfo {
 	email: string;
 }
 
-export class UserInfo {
-	id: string;
-	password: string;
-	email: string;
-	oauthType: string;
+export interface UserInfo extends UserSocialInfo, UserLocalInfo {
 	nickname: string;
 }
 
-export interface Payload {
+export interface JwtPayload {
+	id: string;
 	nickname: string;
 	email: string;
 	iat: number;

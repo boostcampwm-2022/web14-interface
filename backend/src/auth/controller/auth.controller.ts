@@ -1,7 +1,7 @@
 import { Controller, Get, HttpCode, Param, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import { Request, Response } from 'express';
-import { JWT_VALUE, HTTP_STATUS, tokenCookieOptions } from '@constant';
+import { HTTP_STATUS, tokenCookieOptions, JWT_ENV, JWT_TYPE } from '@constant';
 import { JwtAuthGuard } from '../guard/jwt.guard';
 
 @Controller('auth')
@@ -22,19 +22,11 @@ export class AuthController {
 		@Res({ passthrough: true }) res: Response
 	) {
 		const user = await this.authService.socialStart({ type, authorizationCode });
-		const accessToken = this.authService.createJwt({
-			payload: { nickname: user.nickname, email: user.email },
-			secret: JWT_VALUE.JWT_ACCESS_TOKEN_SECRET,
-			expirationTime: JWT_VALUE.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
-		});
-		const refreshToken = this.authService.createJwt({
-			payload: { nickname: user.nickname, email: user.email },
-			secret: JWT_VALUE.JWT_REFRESH_TOKEN_SECRET,
-			expirationTime: JWT_VALUE.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
-		});
+		const { accessToken, refreshToken } =
+			this.authService.createAccessTokenAndRefreshToken(user);
 
-		res.cookie(JWT_VALUE.ACCESS_TOKEN, accessToken, tokenCookieOptions);
-		res.cookie(JWT_VALUE.REFRESH_TOKEN, refreshToken, tokenCookieOptions);
+		res.cookie(JWT_TYPE.ACCESS_TOKEN, accessToken, tokenCookieOptions);
+		res.cookie(JWT_TYPE.REFRESH_TOKEN, refreshToken, tokenCookieOptions);
 	}
 
 	@UseGuards(JwtAuthGuard)
@@ -42,14 +34,14 @@ export class AuthController {
 	@HttpCode(HTTP_STATUS.HTTP_OK)
 	loginValidate(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
 		const { accessToken, refreshToken } = req.cookies;
-		res.cookie(JWT_VALUE.ACCESS_TOKEN, accessToken, tokenCookieOptions);
-		res.cookie(JWT_VALUE.REFRESH_TOKEN, refreshToken, tokenCookieOptions);
+		res.cookie(JWT_TYPE.ACCESS_TOKEN, accessToken, tokenCookieOptions);
+		res.cookie(JWT_TYPE.REFRESH_TOKEN, refreshToken, tokenCookieOptions);
 	}
 
 	@UseGuards(JwtAuthGuard)
 	@Get('logout')
 	logout(@Res({ passthrough: true }) res: Response) {
-		res.clearCookie(JWT_VALUE.ACCESS_TOKEN);
-		res.clearCookie(JWT_VALUE.REFRESH_TOKEN);
+		res.clearCookie(JWT_TYPE.ACCESS_TOKEN);
+		res.clearCookie(JWT_TYPE.REFRESH_TOKEN);
 	}
 }
