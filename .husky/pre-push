@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-origin_url="<repo url>"
+origin_url="https://github.com/boostcampwm-2022/web14-interface.git"
 
 remote="$1"
 url="$2"
