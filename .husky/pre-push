@@ -6,12 +6,15 @@ origin_url="https://github.com/boostcampwm-2022/web14-interface.git"
 remote="$1"
 url="$2"
 
+echo $2
+
 if [ "$url" != "$origin_url" ]
 then
     exit 0
 fi
 
 current_branch=$(git rev-parse --abbrev-ref HEAD)
+echo $current_branch
 
 if [ "$current_branch" == "test" ]
 then
