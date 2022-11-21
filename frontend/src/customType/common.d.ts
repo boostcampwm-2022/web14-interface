@@ -8,3 +8,7 @@ export interface FeedbackType {
 export interface EditableFeedbackType extends FeedbackType {
 	readOnly: boolean;
 }
+
+export interface test {
+	hello: string;
+}
