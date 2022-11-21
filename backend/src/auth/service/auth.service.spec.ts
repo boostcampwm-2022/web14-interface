@@ -16,6 +16,23 @@ const mockUserRepository = () => ({
 	findAllUser: jest.fn(),
 });
 
+const mockConfigService = {
+	get: jest.fn((key: string) => {
+		switch (key) {
+			case JWT_VALUE.JWT_REFRESH_TOKEN_SECRET:
+				return CONFIG_JWT_SECRET;
+			case JWT_VALUE.JWT_REFRESH_TOKEN_EXPIRATION_TIME:
+				return CONFIG_JWT_EXPIRATION;
+			case JWT_VALUE.JWT_REFRESH_TOKEN_SECRET:
+				return CONFIG_JWT_SECRET;
+			case JWT_VALUE.JWT_REFRESH_TOKEN_EXPIRATION_TIME:
+				return CONFIG_JWT_EXPIRATION;
+			default:
+				return null;
+		}
+	}),
+};
+
 const CONFIG_JWT_SECRET = 'test';
 const CONFIG_JWT_EXPIRATION = '3600';
 
@@ -39,22 +56,7 @@ describe('AuthService', () => {
 				OauthNaverService,
 				{
 					provide: ConfigService,
-					useValue: {
-						get: jest.fn((key: string) => {
-							switch (key) {
-								case JWT_VALUE.JWT_REFRESH_TOKEN_SECRET:
-									return CONFIG_JWT_SECRET;
-								case JWT_VALUE.JWT_REFRESH_TOKEN_EXPIRATION_TIME:
-									return CONFIG_JWT_EXPIRATION;
-								case JWT_VALUE.JWT_REFRESH_TOKEN_SECRET:
-									return CONFIG_JWT_SECRET;
-								case JWT_VALUE.JWT_REFRESH_TOKEN_EXPIRATION_TIME:
-									return CONFIG_JWT_EXPIRATION;
-								default:
-									return null;
-							}
-						}),
-					},
+					useValue: mockConfigService,
 				},
 				JwtService,
 			],
