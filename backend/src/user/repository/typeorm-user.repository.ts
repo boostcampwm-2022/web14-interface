@@ -38,9 +38,4 @@ export class TypeormUserRepository implements UserRepository {
 		const users = this.userRepository.find();
 		return users;
 	}
-
-	async cleanDatabase() {
-		if (process.env.NODE_ENV !== 'test') return;
-		await this.userRepository.clear();
-	}
 }

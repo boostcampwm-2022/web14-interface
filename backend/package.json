@@ -103,6 +103,7 @@
       "@config": "<rootDir>/config/index",
       "@constant": "<rootDir>/constant/index",
       "@types": "<rootDir>/types/index",
+      "@builder": "<rootDir>/builder/index",
       "^src(.*)$": "<rootDir>/$1"
     }
   }

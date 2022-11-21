@@ -9,6 +9,8 @@
   "moduleNameMapper": {
     "@config": "<rootDir>/../src/config/index",
     "@constant": "<rootDir>/../src/constant/index",
+    "@types": "<rootDir>/../src/types/index",
+    "@builder": "<rootDir>/../src/builder/index",
     "^src/(.*)$": "<rootDir>/../src/$1"
   }
 }

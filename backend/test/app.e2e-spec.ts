@@ -4,7 +4,7 @@ import request from 'supertest';
 import { AppModule } from './../src/app.module';
 import cookieParser from 'cookie-parser';
 import { OAUTH_CALLBACK_URL, OAUTH_TYPE } from '@constant';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { OauthNaverService } from 'src/auth/service/oauth/naver-oauth.service';
 import { typeormConfig } from '@config';
 import { TypeormUserRepository } from 'src/user/repository/typeorm-user.repository';
@@ -50,7 +50,6 @@ describe('AuthController (e2e)', () => {
 		authService = moduleFixture.get(AuthService);
 
 		typeorm = moduleFixture.get(TypeormUserRepository);
-		typeorm.cleanDatabase();
 		await app.init();
 	});
 
@@ -107,7 +106,7 @@ describe('AuthController (e2e)', () => {
 
 		it('access token 만료된 경우 재발급 테스트', async () => {
 			//given
-			const payload = { nickname: 'test', email: 'test@test.com' };
+			const payload = { id: 'test', nickname: 'test', email: 'test@test.com' };
 			const accessToken = authService.createJwt({
 				payload,
 				secret: 'JWT_ACCESS_TOKEN_SECRET',
