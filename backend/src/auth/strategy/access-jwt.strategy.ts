@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
-import { Payload } from 'src/types/auth.type';
+import { JwtPayload } from 'src/types/auth.type';
 
 @Injectable()
 export class JwtAccessStrategy extends PassportStrategy(Strategy, 'jwt-access') {
@@ -12,7 +12,7 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'jwt-access') 
 		super({
 			ignoreExpiration: false,
 			jwtFromRequest: ExtractJwt.fromExtractors([
-				(req) => {
+				(req: Request) => {
 					const token = req?.cookies.accessToken;
 					return token ?? null;
 				},
@@ -22,7 +22,7 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'jwt-access') 
 		});
 	}
 
-	async validate(req: Request, payload: Payload) {
+	async validate(req: Request, payload: JwtPayload) {
 		return payload;
 	}
 }

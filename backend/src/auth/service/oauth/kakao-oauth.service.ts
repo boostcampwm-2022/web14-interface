@@ -8,7 +8,7 @@ import {
 } from '@constant';
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { UserSocialInfo } from 'src/types/auth.type';
+import { UserSocialInfo } from '@types';
 import { OauthService } from './interface-oauth.service';
 
 @Injectable()

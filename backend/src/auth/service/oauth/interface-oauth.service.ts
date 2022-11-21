@@ -1,4 +1,4 @@
-import { UserSocialInfo } from 'src/types/auth.type';
+import { UserSocialInfo } from '@types';
 
 export interface OauthService {
 	/**
