@@ -27,7 +27,11 @@
     "test": "craco test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "lint": "npx lint-staged"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": "eslint --fix"
   },
   "eslintConfig": {
     "extends": [
