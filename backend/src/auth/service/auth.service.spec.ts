@@ -16,9 +16,8 @@ const mockUserRepository = () => ({
 	findAllUser: jest.fn(),
 });
 
-const mockJwtService = () => ({
-	sign: jest.fn(() => 'TOKEN'),
-});
+const CONFIG_JWT_SECRET = 'test';
+const CONFIG_JWT_EXPIRATION = '3600';
 
 describe('AuthService', () => {
 	let authService: AuthService;
@@ -38,10 +37,25 @@ describe('AuthService', () => {
 				OauthKakaoService,
 				OauthNaverService,
 				{
-					provide: JwtService,
-					useValue: mockJwtService(),
+					provide: ConfigService,
+					useValue: {
+						get: jest.fn((key: string) => {
+							switch (key) {
+								case JWT_VALUE.JWT_REFRESH_TOKEN_SECRET:
+									return CONFIG_JWT_SECRET;
+								case JWT_VALUE.JWT_REFRESH_TOKEN_EXPIRATION_TIME:
+									return CONFIG_JWT_EXPIRATION;
+								case JWT_VALUE.JWT_REFRESH_TOKEN_SECRET:
+									return CONFIG_JWT_SECRET;
+								case JWT_VALUE.JWT_REFRESH_TOKEN_EXPIRATION_TIME:
+									return CONFIG_JWT_EXPIRATION;
+								default:
+									return null;
+							}
+						}),
+					},
 				},
-				ConfigService,
+				JwtService,
 			],
 		}).compile();
 
@@ -103,35 +117,35 @@ describe('AuthService', () => {
 		it('access token 발급 테스트', () => {
 			const payload = { nickname: 'test', email: 'test@test.com' };
 
-			const token = authService.createJwt({
-				payload,
-				secret: JWT_VALUE.JWT_ACCESS_TOKEN_SECRET,
-				expirationTime: JWT_VALUE.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
-			});
-
-			expect(jwtService.sign).toHaveBeenCalledTimes(1);
-			expect(jwtService.sign).toHaveBeenCalledWith(payload, {
-				secret: process.env[JWT_VALUE.JWT_ACCESS_TOKEN_SECRET],
-				expiresIn: `${process.env[JWT_VALUE.JWT_ACCESS_TOKEN_EXPIRATION_TIME]}s`,
-			});
-			expect(token).toBe('TOKEN');
-		});
-
-		it('refresh token 발급 테스트', () => {
-			const payload = { nickname: 'test', email: 'test@test.com' };
-
-			const token = authService.createJwt({
+			const spyFn = jest.spyOn(jwtService, 'sign');
+			authService.createJwt({
 				payload,
 				secret: JWT_VALUE.JWT_REFRESH_TOKEN_SECRET,
 				expirationTime: JWT_VALUE.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
 			});
 
-			expect(jwtService.sign).toHaveBeenCalledTimes(1);
-			expect(jwtService.sign).toHaveBeenCalledWith(payload, {
-				secret: process.env[JWT_VALUE.JWT_REFRESH_TOKEN_SECRET],
-				expiresIn: `${process.env[JWT_VALUE.JWT_REFRESH_TOKEN_EXPIRATION_TIME]}s`,
+			expect(spyFn).toHaveBeenCalledTimes(1);
+			expect(spyFn).toHaveBeenCalledWith(payload, {
+				secret: CONFIG_JWT_SECRET,
+				expiresIn: `${CONFIG_JWT_EXPIRATION}s`,
 			});
-			expect(token).toBe('TOKEN');
+		});
+
+		it('refresh token 발급 테스트', () => {
+			const payload = { nickname: 'test', email: 'test@test.com' };
+
+			const spyFn = jest.spyOn(jwtService, 'sign');
+			authService.createJwt({
+				payload,
+				secret: JWT_VALUE.JWT_REFRESH_TOKEN_SECRET,
+				expirationTime: JWT_VALUE.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+			});
+
+			expect(spyFn).toHaveBeenCalledTimes(1);
+			expect(spyFn).toHaveBeenCalledWith(payload, {
+				secret: CONFIG_JWT_SECRET,
+				expiresIn: `${CONFIG_JWT_EXPIRATION}s`,
+			});
 		});
 	});
 
