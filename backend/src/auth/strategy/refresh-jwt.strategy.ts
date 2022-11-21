@@ -40,7 +40,8 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 			payload: createJwtPayload,
 			...accessTokenOptions,
 		});
-		req.cookies = { ...req.cookies, accessToken };
+
+		req.cookies.accessToken = accessToken;
 
 		return payload;
 	}
