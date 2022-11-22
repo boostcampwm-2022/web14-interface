@@ -1,9 +1,11 @@
 import React from 'react';
 import { PHASE_TYPE } from '@constants/phase.constant';
 import useSafeNavigate from '@hooks/useSafeNavigate';
+import usePreventLeave from '@hooks/usePreventLeave';
 
 const Interviewer = () => {
 	const { safeNavigate } = useSafeNavigate();
+	usePreventLeave();
 	return (
 		<>
 			<div>Interviewer</div>

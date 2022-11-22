@@ -6,13 +6,13 @@ import { PATH_TYPE } from '@constants/path.constant';
 import { getPathWithPhase } from '@utils/getPathWithPhase';
 
 interface PropType {
-	path: string;
+	targetPath: string;
 }
-const StrictRoute = ({ path }: PropType) => {
+const StrictRoute = ({ targetPath }: PropType) => {
 	const phase = useRecoilValue(phaseState);
-	const isValid = getPathWithPhase(phase) === path;
-	console.log(phase, getPathWithPhase(phase), isValid);
-	return isValid ? <Outlet /> : <Navigate to={PATH_TYPE.LOBBY_PATH} replace={true} />;
+	const isValid = getPathWithPhase(phase) === targetPath;
+
+	return isValid ? <Outlet /> : <Navigate to={PATH_TYPE.LANDING_PATH} replace={true} />;
 };
 
 export default StrictRoute;
