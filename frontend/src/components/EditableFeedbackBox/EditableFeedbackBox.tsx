@@ -7,7 +7,7 @@ import { ReactComponent as EditIcon } from '@assets/icon/edit.svg';
 
 interface PropsType {
 	feedback: EditableFeedbackType;
-	handleClickFeedback: (e, startTime: number) => void;
+	handleClickFeedback: (e, startTime: number, idx: number) => void;
 	handleDeleteFeedback: (id: number) => void;
 	handleStartEditFeedback: (id: number) => void;
 	handleEndEditFeedback: (id: number, newContent: string) => void;
@@ -34,7 +34,7 @@ const EditableFeedbackBox = (props: PropsType) => {
 
 	return (
 		<FeedbackBox
-			onClick={(e) => handleClickFeedback(e, startTime)}
+			onClick={(e) => handleClickFeedback(e, startTime, idx)}
 			ref={(elem) => (feedbackRef.current[idx] = elem)}
 		>
 			<FeedbackBox.StartTime>{startTime}</FeedbackBox.StartTime>

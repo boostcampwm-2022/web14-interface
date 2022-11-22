@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import FeedbackArea from '@components/@shared/FeedbackArea/FeedbackArea';
 
 import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
@@ -17,6 +17,8 @@ const Feedback = () => {
 		setCurrentTime,
 		setIsFbClicked,
 		handleClickFeedback,
+		isFbSync,
+		setIsFbSync,
 	} = useSyncFeedbackList();
 
 	const {
@@ -37,6 +39,9 @@ const Feedback = () => {
 				width={400}
 				controls
 			/>
+			<button type="button" onClick={() => setIsFbSync((current) => !current)}>
+				{isFbSync ? '현재 Sync 중' : '현재 UnSync 중'}
+			</button>
 			<FeedbackArea>
 				<FeedbackArea.FAScrollView>
 					{feedbackList.map((feedback, idx) => (
