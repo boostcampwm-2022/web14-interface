@@ -17,12 +17,12 @@ const RootRoutes = () => {
 		<Routes>
 			<Route path="/login" element={<Login />} />
 			<Route path="/" element={<PrivateRoute />}>
-				<Route path="/feedback" element={<Feedback />} />
 				<Route path="/landing" element={<Landing />} />
 				<Route path="/lobby" element={<Lobby />} />
 				<Route path="/interviewee" element={<Interviewee />} />
 				<Route path="/interviewer" element={<Interviewer />} />
 				<Route path="/waitting" element={<Waitting />} />
+				<Route path="/feedback" element={<Feedback />} />
 			</Route>
 			<Route>
 				<Route path="*" element={<Navigate to="/login" replace />} />

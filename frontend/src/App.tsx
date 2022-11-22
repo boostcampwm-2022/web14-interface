@@ -3,7 +3,7 @@ import { RecoilRoot } from 'recoil';
 import { Global, ThemeProvider } from '@emotion/react';
 import { BrowserRouter } from 'react-router-dom';
 
-import RootRoutes from './RootRoutes';
+import RootRoutes from '@routes/RootRoutes';
 import globalStyle from './styles/globalStyle';
 import theme from './styles/theme';
 
