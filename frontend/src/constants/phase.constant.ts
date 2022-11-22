@@ -1,9 +1,9 @@
 export enum PHASE_TYPE {
-	LOGIN = 'login',
-	LANDING = 'landing',
-	LOBBY = 'lobby',
-	INTERVIEWER = 'interviewer',
-	INTERVIEWEE = 'interviewee',
-	FEEDBACK = 'feedback',
-	WAITTING = 'waitting',
+	LOGIN_PHASE = 'login',
+	LANDING_PHASE = 'landing',
+	LOBBY_PHASE = 'lobby',
+	INTERVIEWER_PHASE = 'interviewer',
+	INTERVIEWEE_PHASE = 'interviewee',
+	FEEDBACK_PHASE = 'feedback',
+	WAITTING_PHASE = 'waitting',
 }
