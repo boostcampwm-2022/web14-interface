@@ -28,8 +28,6 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 	}
 
 	async validate(req: Request, payload: JwtPayload) {
-		console.log('refresh');
-
 		const { id, email, nickname } = payload;
 		const createJwtPayload = new JwtPayloadBuiler()
 			.setId(id)
