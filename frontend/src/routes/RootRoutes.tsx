@@ -9,23 +9,42 @@ import Interviewer from '@pages/Interviewer';
 import Waitting from '@pages/Waitting';
 import Feedback from '@pages/Feedback';
 import PrivateRoute from './PrivateRoute';
+import StrictRoute from './StrictRoute';
+import { PATH_TYPE } from '@constants/path.constant';
+
+const {
+	LOGIN_PATH,
+	LANDING_PATH,
+	LOBBY_PATH,
+	INTERVIEWER_PATH,
+	INTERVIEWEE_PATH,
+	WAITTING_PATH,
+	FEEDBACK_PATH,
+} = PATH_TYPE;
 
 // TODO: barrel import 도입
-// TODO: 서비스의 phase를 전역 상태로 관리하고, 특정 상태일 때만 페이지를 허용 가능하도록 한다.
 const RootRoutes = () => {
 	return (
 		<Routes>
-			<Route path="/login" element={<Login />} />
+			<Route path={LOGIN_PATH} element={<Login />} />
 			<Route path="/" element={<PrivateRoute />}>
-				<Route path="/landing" element={<Landing />} />
-				<Route path="/lobby" element={<Lobby />} />
-				<Route path="/interviewee" element={<Interviewee />} />
-				<Route path="/interviewer" element={<Interviewer />} />
-				<Route path="/waitting" element={<Waitting />} />
-				<Route path="/feedback" element={<Feedback />} />
+				<Route path={LANDING_PATH} element={<Landing />} />
+				<Route path={LOBBY_PATH} element={<Lobby />} />
+				<Route element={<StrictRoute path={INTERVIEWER_PATH} />}>
+					<Route path={INTERVIEWER_PATH} element={<Interviewee />} />
+				</Route>
+				<Route element={<StrictRoute path={INTERVIEWEE_PATH} />}>
+					<Route path={INTERVIEWEE_PATH} element={<Interviewer />} />
+				</Route>
+				<Route element={<StrictRoute path={WAITTING_PATH} />}>
+					<Route path={WAITTING_PATH} element={<Waitting />} />
+				</Route>
+				<Route element={<StrictRoute path={FEEDBACK_PATH} />}>
+					<Route path={FEEDBACK_PATH} element={<Feedback />} />
+				</Route>
 			</Route>
 			<Route>
-				<Route path="*" element={<Navigate to="/login" replace />} />
+				<Route path="*" element={<Navigate to={LOGIN_PATH} replace />} />
 			</Route>
 		</Routes>
 	);
