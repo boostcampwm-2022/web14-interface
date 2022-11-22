@@ -1,10 +1,11 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-
-const isLogin = false;
+import { useRecoilValue } from 'recoil';
+import { authState } from '@store/auth.atom';
 
 const PrivateRoute = () => {
-	return isLogin ? <Outlet /> : <Navigate to="/login" replace={true} />;
+	const isAuth = useRecoilValue(authState);
+	return isAuth ? <Outlet /> : <Navigate to="/login" replace={true} />;
 };
 
 export default PrivateRoute;
