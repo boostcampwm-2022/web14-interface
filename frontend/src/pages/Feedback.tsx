@@ -6,8 +6,10 @@ import EditableFeedbackBox from '@components/EditableFeedbackBox/EditableFeedbac
 
 import useSyncFeedbackList from '@hooks/useSyncFeedbackList';
 import useEditableFeedbackList from '@hooks/useEditableFeedbackList';
+import usePreventLeave from '@hooks/usePreventLeave';
 
 const Feedback = () => {
+	usePreventLeave();
 	const {
 		feedbackList,
 		currentTime,
