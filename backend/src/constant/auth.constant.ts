@@ -1,5 +1,5 @@
 export const USER_REPOSITORY_INTERFACE = 'UserRepository';
-export const MAX_AGE = 2592000;
+export const MAX_AGE = 60 * 60 * 24 * 30 * 1000;
 
 // OAUTH
 export enum OAUTH_TYPE {

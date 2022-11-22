@@ -14,6 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { CreateJwtPayloadDto } from '../dto/create-jwt.dto';
 import { JwtPayloadBuiler } from 'src/builder/auth/create-jwt-payload.dto';
+import { UserEntity } from 'src/user/entities/interface-user.entity';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +22,7 @@ export class AuthService {
 
 	constructor(
 		@Inject(USER_REPOSITORY_INTERFACE)
-		private readonly userRepository: UserRepository,
+		private readonly userRepository: UserRepository<UserEntity>,
 
 		private readonly oauthKakaoService: OauthKakaoService,
 		private readonly oauthNaverService: OauthNaverService,
@@ -78,7 +79,9 @@ export class AuthService {
 		secret: string;
 		expirationTime: string;
 	}) {
-		const token = this.jwtService.sign(payload, {
+		const { id, nickname, email } = payload;
+		const createJwtPayload = { id, nickname, email };
+		const token = this.jwtService.sign(createJwtPayload, {
 			secret: this.configService.get(secret),
 			expiresIn: `${this.configService.get(expirationTime)}s`,
 		});

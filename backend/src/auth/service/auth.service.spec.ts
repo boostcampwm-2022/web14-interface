@@ -1,9 +1,11 @@
+import { JoinUserBuilder } from '@builder';
 import { JWT_ENV, USER_REPOSITORY_INTERFACE } from '@constant';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import { JoinUserBuilder } from '@builder';
-import { UserInfo, MockRepository } from '@types';
+import { UserInfo } from 'src/types/auth.type';
+import { MockRepository } from 'src/types/mock.type';
+import { UserEntity } from 'src/user/entities/interface-user.entity';
 import { TypeormUserEntity } from 'src/user/entities/typeorm-user.entity';
 import { UserRepository } from 'src/user/repository/interface-user.repository';
 import { AuthService } from './auth.service';
@@ -16,17 +18,32 @@ const mockUserRepository = () => ({
 	findAllUser: jest.fn(),
 });
 
-const mockJwtService = () => ({
-	sign: jest.fn(() => 'TOKEN'),
-});
+const CONFIG_JWT_SECRET = 'test';
+const CONFIG_JWT_EXPIRATION = '3600';
+
+const mockConfigService = {
+	get: jest.fn((key: string) => {
+		switch (key) {
+			case JWT_ENV.JWT_REFRESH_TOKEN_SECRET:
+				return CONFIG_JWT_SECRET;
+			case JWT_ENV.JWT_REFRESH_TOKEN_EXPIRATION_TIME:
+				return CONFIG_JWT_EXPIRATION;
+			case JWT_ENV.JWT_REFRESH_TOKEN_SECRET:
+				return CONFIG_JWT_SECRET;
+			case JWT_ENV.JWT_REFRESH_TOKEN_EXPIRATION_TIME:
+				return CONFIG_JWT_EXPIRATION;
+			default:
+				return null;
+		}
+	}),
+};
 
 describe('AuthService', () => {
 	let authService: AuthService;
-	let userRepository: MockRepository<UserRepository>;
+	let userRepository: MockRepository<UserRepository<UserEntity>>;
 	let oauthGoogleService: OauthKakaoService;
 	let oauthNaverService: OauthNaverService;
 	let jwtService: JwtService;
-	let configService: ConfigService;
 
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
@@ -39,10 +56,10 @@ describe('AuthService', () => {
 				OauthKakaoService,
 				OauthNaverService,
 				{
-					provide: JwtService,
-					useValue: mockJwtService(),
+					provide: ConfigService,
+					useValue: mockConfigService,
 				},
-				ConfigService,
+				JwtService,
 			],
 		}).compile();
 
@@ -51,7 +68,6 @@ describe('AuthService', () => {
 		oauthNaverService = module.get(OauthNaverService);
 		oauthGoogleService = module.get(OauthKakaoService);
 		jwtService = module.get(JwtService);
-		configService = module.get(ConfigService);
 	});
 
 	describe('valid case', () => {
@@ -61,7 +77,6 @@ describe('AuthService', () => {
 			expect(oauthNaverService).toBeDefined();
 			expect(oauthGoogleService).toBeDefined();
 			expect(jwtService).toBeDefined();
-			expect(configService).toBeDefined();
 		});
 
 		it('유저의 OAuth로 시작 테스트', async () => {
@@ -106,39 +121,39 @@ describe('AuthService', () => {
 		it('access token 발급 테스트', () => {
 			const payload = { id: 'test', nickname: 'test', email: 'test@test.com' };
 
-			const token = authService.createJwt({
-				payload,
-				secret: JWT_ENV.JWT_ACCESS_TOKEN_SECRET,
-				expirationTime: JWT_ENV.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
-			});
-
-			expect(jwtService.sign).toHaveBeenCalledTimes(1);
-			expect(jwtService.sign).toHaveBeenCalledWith(payload, {
-				secret: process.env[JWT_ENV.JWT_ACCESS_TOKEN_SECRET],
-				expiresIn: `${process.env[JWT_ENV.JWT_ACCESS_TOKEN_EXPIRATION_TIME]}s`,
-			});
-			expect(token).toBe('TOKEN');
-		});
-
-		it('refresh token 발급 테스트', () => {
-			const payload = { id: 'test', nickname: 'test', email: 'test@test.com' };
-
-			const token = authService.createJwt({
+			const spyFn = jest.spyOn(jwtService, 'sign');
+			authService.createJwt({
 				payload,
 				secret: JWT_ENV.JWT_REFRESH_TOKEN_SECRET,
 				expirationTime: JWT_ENV.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
 			});
 
-			expect(jwtService.sign).toHaveBeenCalledTimes(1);
-			expect(jwtService.sign).toHaveBeenCalledWith(payload, {
-				secret: process.env[JWT_ENV.JWT_REFRESH_TOKEN_SECRET],
-				expiresIn: `${process.env[JWT_ENV.JWT_REFRESH_TOKEN_EXPIRATION_TIME]}s`,
+			expect(spyFn).toHaveBeenCalledTimes(1);
+			expect(spyFn).toHaveBeenCalledWith(payload, {
+				secret: CONFIG_JWT_SECRET,
+				expiresIn: `${CONFIG_JWT_EXPIRATION}s`,
 			});
-			expect(token).toBe('TOKEN');
+		});
+
+		it('refresh token 발급 테스트', () => {
+			const payload = { id: 'test', nickname: 'test', email: 'test@test.com' };
+
+			const spyFn = jest.spyOn(jwtService, 'sign');
+			authService.createJwt({
+				payload,
+				secret: JWT_ENV.JWT_REFRESH_TOKEN_SECRET,
+				expirationTime: JWT_ENV.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+			});
+
+			expect(spyFn).toHaveBeenCalledTimes(1);
+			expect(spyFn).toHaveBeenCalledWith(payload, {
+				secret: CONFIG_JWT_SECRET,
+				expiresIn: `${CONFIG_JWT_EXPIRATION}s`,
+			});
 		});
 	});
 
-	const makeMockUser = (userInfo: UserInfo): TypeormUserEntity => {
+	const makeMockUser = (userInfo: UserInfo): UserEntity => {
 		const { id, email, password, nickname, oauthType } = userInfo;
 		const userEntity = new JoinUserBuilder()
 			.setId(id)
