@@ -1,0 +1,16 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".e2e-spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "@config": "<rootDir>/../src/config/index",
+    "@constant": "<rootDir>/../src/constant/index",
+    "@types": "<rootDir>/../src/types/index",
+    "@builder": "<rootDir>/../src/builder/index",
+    "^src/(.*)$": "<rootDir>/../src/$1"
+  }
+}
