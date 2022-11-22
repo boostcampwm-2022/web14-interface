@@ -19,17 +19,30 @@ const useSyncFeedbackList = () => {
 	const [currentTime, setCurrentTime] = useState(0);
 	const [focusIndex, setFocusIndex] = useState(0);
 	const [isFbClicked, setIsFbClicked] = useState(false);
+	const [isFbSync, setIsFbSync] = useState(true);
 	const feedbackRef = useRef([]);
 
-	const handleClickFeedback = useCallback((e, startTime: number) => {
-		feedbackRef.current[focusIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
-		setCurrentTime(startTime);
-		setIsFbClicked(true);
-	}, []);
+	//TODO 10초에 피드백 2개가 있다고한다면, 2번 째 10초 피드백 클릭 시에도 첫번째 10초 피드백 박스로 이동
+	const handleClickFeedback = useCallback(
+		(e, startTime: number, idx: number) => {
+			feedbackRef.current[focusIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
 
+			//CHECK 계속 if가 이렇게 추가되는게 좋은 로직인지 모르겠음???????
+			if (!isFbSync) {
+				setFocusIndex(idx);
+				return;
+			}
+			setCurrentTime(startTime);
+			setIsFbClicked(true);
+		},
+		[isFbSync]
+	);
+
+	//TODO (handleClickFeedback TODO과 같은 문제) 같은 초에서 nearestIndex가 무조건 최상위 feedback으로 설정되는 문제
 	useEffect(() => {
+		if (!isFbSync) return;
+
 		const nearestIndex = findCurrentFeedback(feedbackList, currentTime);
-		console.log(nearestIndex, feedbackList[nearestIndex].startTime);
 		if (nearestIndex !== focusIndex) setFocusIndex(nearestIndex);
 	}, [currentTime]);
 
@@ -46,6 +59,8 @@ const useSyncFeedbackList = () => {
 		setCurrentTime,
 		setIsFbClicked,
 		handleClickFeedback,
+		isFbSync,
+		setIsFbSync,
 	};
 };
 
