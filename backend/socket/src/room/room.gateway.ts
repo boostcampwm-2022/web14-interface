@@ -1,6 +1,7 @@
 import { Logger } from '@nestjs/common';
 import {
 	ConnectedSocket,
+	MessageBody,
 	OnGatewayConnection,
 	OnGatewayDisconnect,
 	SubscribeMessage,
@@ -25,8 +26,9 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage('enter_room')
-	handleEnterRoom(@ConnectedSocket() client: Socket): string {
-		return 'Hello world!';
+	handleEnterRoom(@ConnectedSocket() client: Socket, @MessageBody() data: string) {
+		const { nickname, uuid } = JSON.parse(data);
+		this.roomSerivce.enterRoom(client, nickname, uuid);
 	}
 
 	handleConnection(@ConnectedSocket() client: Socket) {
