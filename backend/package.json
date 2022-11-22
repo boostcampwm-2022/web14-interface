@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "cross-env NODE_ENV=dev nest build && tsc-alias",
+    "build": "cross-env NODE_ENV=production nest build && tsc-alias",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "cross-env NODE_ENV=dev nest start --watch",
@@ -18,8 +18,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "cross-env NODE_ENV=test jest --config ./test/jest-e2e.json",
-    "db:start": "sudo /etc/init.d/mysql start"
+    "test:e2e": "cross-env NODE_ENV=test jest --config ./test/jest-e2e.json"
   },
   "lint-staged": {
     "{src,apps,libs,test}/**/*.ts": "eslint --fix"

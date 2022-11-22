@@ -3,18 +3,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { JoinUserBuilder } from '@builder';
 import { UserInfo } from '@types';
 import { Repository } from 'typeorm';
-import { UserEntity } from '../entities/interface-user.entity';
 import { TypeormUserEntity } from '../entities/typeorm-user.entity';
 import { UserRepository } from './interface-user.repository';
 
 @Injectable()
-export class TypeormUserRepository implements UserRepository {
+export class TypeormUserRepository implements UserRepository<TypeormUserEntity> {
 	constructor(
 		@InjectRepository(TypeormUserEntity)
-		private readonly userRepository: Repository<UserEntity>
+		private readonly userRepository: Repository<TypeormUserEntity>
 	) {}
 
-	async saveUser(userInfo: UserInfo): Promise<UserEntity> {
+	async saveUser(userInfo: UserInfo): Promise<TypeormUserEntity> {
 		const { id, password, email, oauthType, nickname } = userInfo;
 		const user = new JoinUserBuilder()
 			.setId(id)
@@ -29,18 +28,13 @@ export class TypeormUserRepository implements UserRepository {
 		return user;
 	}
 
-	async findUserById(id: string): Promise<UserEntity> {
+	async findUserById(id: string): Promise<TypeormUserEntity> {
 		const user = this.userRepository.findOneBy({ id });
 		return user;
 	}
 
-	async findAllUser(): Promise<UserEntity[]> {
+	async findAllUser(): Promise<TypeormUserEntity[]> {
 		const users = this.userRepository.find();
 		return users;
-	}
-
-	async cleanDatabase() {
-		if (process.env.NODE_ENV !== 'test') return;
-		await this.userRepository.clear();
 	}
 }
