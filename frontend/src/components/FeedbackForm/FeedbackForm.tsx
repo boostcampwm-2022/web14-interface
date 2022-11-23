@@ -3,7 +3,7 @@ import { FeedbackType } from '@customType/feedback';
 import { currentVideoTimeState } from '@store/currentVideoTime.atom';
 import { feedbackIdsState, feedbackState } from '@store/feedback.atom';
 import React, { useState } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { useRecoilCallback, useRecoilTransaction_UNSTABLE, useRecoilValue } from 'recoil';
 
 const FeedbackForm = () => {
 	const [inputVal, setInputVal] = useState('');
@@ -14,22 +14,30 @@ const FeedbackForm = () => {
 		e.preventDefault();
 		const newFeedback = {
 			startTime: startTime,
-			endTime: currentVideoTime,
-			content: inputVal,
-			readOnly: true,
+			content: [inputVal],
+			readOnly: [true],
 		};
 
 		insertTodo(newFeedback);
 		setInputVal('');
 	};
 
-	const insertTodo = useRecoilCallback(
-		({ set }) =>
+	const insertTodo = useRecoilTransaction_UNSTABLE(
+		({ set, get }) =>
 			(newFeedback: FeedbackType) => {
-				set(feedbackIdsState, (curTodoIds) =>
-					curTodoIds.concat(newFeedback.startTime).sort()
-				);
-				set(feedbackState(newFeedback.startTime), newFeedback);
+				const targetFb = get(feedbackState(newFeedback.startTime));
+				if (!targetFb) {
+					set(feedbackIdsState, (curTodoIds) =>
+						curTodoIds.concat(newFeedback.startTime).sort()
+					);
+					set(feedbackState(newFeedback.startTime), newFeedback);
+				} else {
+					set(feedbackState(newFeedback.startTime), {
+						...targetFb,
+						content: targetFb.content.concat(newFeedback.content),
+						readOnly: targetFb.readOnly.concat(newFeedback.readOnly),
+					});
+				}
 			},
 		[currentVideoTime]
 	);

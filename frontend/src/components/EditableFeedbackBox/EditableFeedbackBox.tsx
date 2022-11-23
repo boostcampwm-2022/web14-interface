@@ -36,50 +36,82 @@ const EditableFeedbackBox = ({ startTime, index }: PropsType) => {
 		setCurrentVideoTime(feedback.startTime);
 	};
 
-	const handleStartEditFeedback = () => {
+	const handleStartEditFeedback = (i) => {
 		setFeedback((fb) => {
-			return { ...fb, readOnly: false };
+			const newReadOnlyList = fb.readOnly.slice();
+			newReadOnlyList[i] = false;
+			return { ...fb, readOnly: newReadOnlyList };
 		});
 	};
 
-	const handleEndEditFeedback = () => {
+	const handleEndEditFeedback = (i) => {
 		setFeedback((fb) => {
+			const newReadOnlyList = fb.readOnly.slice();
+			newReadOnlyList[i] = true;
 			return {
 				...fb,
-				readOnly: true,
+				readOnly: newReadOnlyList,
 			};
 		});
 	};
 
-	const handleFbChange = (e) => {
+	const handleFbChange = (e, i) => {
 		setFeedback((fb) => {
+			const newContentList = fb.content.slice();
+			newContentList[i] = e.target.value;
 			return {
 				...fb,
-				content: e.target.value,
+				content: newContentList,
 			};
 		});
 	};
 
-	const handleDeleteFeedback = () => {
-		deleteFeedback();
-		setfeedbackIdsState((fbIds) => fbIds.filter((st) => st !== startTime));
+	const handleDeleteFeedback = (idx) => {
+		if (feedback.content.length === 1) {
+			deleteFeedback();
+			setfeedbackIdsState((fbIds) => fbIds.filter((st) => st !== startTime));
+		} else {
+			setFeedback((fb) => {
+				const newContentList = fb.content.reduce((prev, cur, i) => {
+					if (idx === i) return prev;
+					return prev.concat(cur);
+				}, []);
+				const newReadOnlyList = fb.readOnly.reduce((prev, cur, i) => {
+					if (idx === i) return prev;
+					return prev.concat(cur);
+				}, []);
+				return {
+					...fb,
+					content: newContentList,
+					readOnly: newReadOnlyList,
+				};
+			});
+		}
 	};
-
+	console.log(content);
 	return (
-		<FeedbackBox id={'fb-' + index} onClick={handleClickFeedback}>
-			<FeedbackBox.StartTime>{startTime}</FeedbackBox.StartTime>
-			<FeedbackBox.Content value={content} onChange={handleFbChange} readOnly={readOnly} />
-			<FeedbackBox.Btn onClick={handleDeleteFeedback}>
-				<DeleteIcon width={20} />
-			</FeedbackBox.Btn>
-			<FeedbackBox.Btn>
-				{readOnly ? (
-					<EditIcon onClick={handleStartEditFeedback} width={20} />
-				) : (
-					<button onClick={handleEndEditFeedback}>수정완료</button>
-				)}
-			</FeedbackBox.Btn>
-		</FeedbackBox>
+		<div id={'fb-' + index} onClick={handleClickFeedback}>
+			<div>{startTime}</div>
+			{content.map((c, i) => (
+				<div key={i}>
+					<textarea
+						value={c}
+						readOnly={readOnly[i]}
+						onChange={(e) => handleFbChange(e, i)}
+					/>
+					<button onClick={() => handleDeleteFeedback(i)}>
+						<DeleteIcon width={20} />
+					</button>
+					<button>
+						{readOnly[i] ? (
+							<EditIcon onClick={() => handleStartEditFeedback(i)} width={20} />
+						) : (
+							<div onClick={() => handleEndEditFeedback(i)}>수정완료</div>
+						)}
+					</button>
+				</div>
+			))}
+		</div>
 	);
 };
 
