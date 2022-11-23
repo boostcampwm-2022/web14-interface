@@ -54,5 +54,5 @@ ProvideCallback.args = {
 	autoplay: true,
 	controls: true,
 	muted: true,
-	callback: printCurrentTime,
+	// callback: printCurrentTime,
 };

@@ -18,7 +18,7 @@ const FeedbackForm = () => {
 			content: inputVal,
 			readOnly: true,
 		};
-		console.log(JSON.stringify(newFeedback));
+		
 		insertTodo(newFeedback);
 		setInputVal('');
 	};
