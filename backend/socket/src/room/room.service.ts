@@ -1,4 +1,4 @@
-import { ROOM_REPOSITORY_INTERFACE } from '@constant';
+import { ROOM_EVENT, ROOM_REPOSITORY_INTERFACE, ROOM_STATE } from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { repositoryType } from 'src/types/room.type';
@@ -27,11 +27,16 @@ export class RoomService {
 
 		this.roomRepository.enterRoom(client.id, nickname, uuid);
 
-		this.roomRepository.broadcastUserList(client.id, server);
+		this.roomRepository.broadcastUserList(client.id, server, ROOM_EVENT.USER_ENTER);
 	}
 
 	leaveRoom(client: Socket, server: Server) {
 		this.roomRepository.leaveRoom(client);
-		this.roomRepository.broadcastUserList(client.id, server);
+		this.roomRepository.broadcastUserList(client.id, server, ROOM_EVENT.USER_ENTER);
+	}
+
+	startInterview(client: Socket, server: Server) {
+		this.roomRepository.startInterview(client);
+		return this.roomRepository.broadcastUserList(client.id, server, ROOM_EVENT.JOIN_INTERVIEW);
 	}
 }

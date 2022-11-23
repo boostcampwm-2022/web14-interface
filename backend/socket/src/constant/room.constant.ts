@@ -5,4 +5,11 @@ export enum ROOM_EVENT {
 	ENTER_ROOM = 'enter_room',
 	USER_ENTER = 'user_enter',
 	LEAVE_ROOM = 'leave_room',
+	START_INTERVIEW = 'start_interview',
+	JOIN_INTERVIEW = 'join_interview',
+}
+export enum ROOM_STATE {
+	LOBBY = 'lobby',
+	INTERVIEW = 'interview',
+	FEEDBACK = 'feedback',
 }

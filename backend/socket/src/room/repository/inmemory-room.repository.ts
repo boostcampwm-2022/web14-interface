@@ -1,4 +1,4 @@
-import { MAX_COUNT, ROOM_EVENT } from '@constant';
+import { MAX_COUNT, ROOM_EVENT, ROOM_STATE } from '@constant';
 import { WsException } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { repositoryType } from 'src/types/room.type';
@@ -7,8 +7,10 @@ import { RoomRepository } from './interface-room.repository';
 export class InmemoryRoomRepository implements RoomRepository<repositoryType> {
 	repository = {};
 	sockets = {};
+	roomState = {};
 	createRoom(uuid: string) {
 		this.repository[uuid] = {};
+		this.roomState[uuid] = ROOM_STATE.LOBBY;
 	}
 	enterRoom(clientId: string, nickname: string, uuid: string) {
 		if (Object.keys(this.repository[uuid]).length >= MAX_COUNT)
@@ -17,10 +19,17 @@ export class InmemoryRoomRepository implements RoomRepository<repositoryType> {
 		this.repository[uuid][clientId] = nickname;
 		this.sockets[clientId] = uuid;
 	}
-	broadcastUserList(clientId: string, server: Server): void {
+	broadcastUserList(clientId: string, server: Server, eventType: string): string {
 		const uuid = this.sockets[clientId];
+		const state = this.roomState[uuid];
 
-		server.to(uuid).emit(ROOM_EVENT.USER_ENTER, JSON.stringify(this.repository[uuid]));
+		const res = JSON.stringify({
+			data: this.repository[uuid],
+			state,
+		});
+
+		server.to(uuid).emit(eventType, res);
+		return res;
 	}
 
 	leaveRoom(client: Socket) {
@@ -34,5 +43,10 @@ export class InmemoryRoomRepository implements RoomRepository<repositoryType> {
 			delete this.repository[uuid];
 		}
 		// delete this.sockets[client.id];
+	}
+
+	startInterview(client: Socket) {
+		const uuid = this.sockets[client.id];
+		this.roomState[uuid] = ROOM_STATE.INTERVIEW;
 	}
 }
