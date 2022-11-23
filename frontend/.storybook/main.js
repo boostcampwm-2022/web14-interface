@@ -23,6 +23,8 @@ module.exports = {
 			'@customType': path.resolve(__dirname, '../src/customType'),
 			'@store': path.resolve(__dirname, '../src/store'),
 			'@utils': path.resolve(__dirname, '../src/utils'),
+			'@routes': path.resolve(__dirname, '../src/routes'),
+			'@constants': path.resolve(__dirname, '../src/constants'),
 		};
 
 		return config;

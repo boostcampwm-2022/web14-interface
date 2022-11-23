@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import FeedbackArea from '@components/@shared/FeedbackArea/FeedbackArea';
 
 import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
@@ -6,8 +6,10 @@ import EditableFeedbackBox from '@components/EditableFeedbackBox/EditableFeedbac
 
 import useSyncFeedbackList from '@hooks/useSyncFeedbackList';
 import useEditableFeedbackList from '@hooks/useEditableFeedbackList';
+import usePreventLeave from '@hooks/usePreventLeave';
 
 const Feedback = () => {
+	usePreventLeave();
 	const {
 		feedbackList,
 		currentTime,
@@ -17,6 +19,8 @@ const Feedback = () => {
 		setCurrentTime,
 		setIsFbClicked,
 		handleClickFeedback,
+		isFbSync,
+		setIsFbSync,
 	} = useSyncFeedbackList();
 
 	const {
@@ -37,6 +41,9 @@ const Feedback = () => {
 				width={400}
 				controls
 			/>
+			<button type="button" onClick={() => setIsFbSync((current) => !current)}>
+				{isFbSync ? '현재 Sync 중' : '현재 UnSync 중'}
+			</button>
 			<FeedbackArea>
 				<FeedbackArea.FAScrollView>
 					{feedbackList.map((feedback, idx) => (
