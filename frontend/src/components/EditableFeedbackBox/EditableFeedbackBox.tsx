@@ -4,13 +4,14 @@ import { FeedbackBox } from '@components/@shared/FeedbackBox/FeedbackBox';
 import { ReactComponent as DeleteIcon } from '@assets/icon/delete.svg';
 import { ReactComponent as EditIcon } from '@assets/icon/edit.svg';
 import { useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
-import { feedbackIdsState, feedbackState } from '@store/feedback.atom';
 import {
-	currentVideoTimeSelector,
-	focusIndexState,
+	feedbackIdsState,
+	feedbackState,
 	isFbClickedState,
 	isFbSyncState,
-} from '@store/currentVideoTime.atom';
+} from '@store/feedback.atom';
+import { currentVideoTimeSelector } from '@store/currentVideoTime.atom';
+import { focusIndexState } from '@store/focusIndex.atom';
 
 interface PropsType {
 	startTime: number;

@@ -1,36 +1,40 @@
-import { atom, selector, selectorFamily } from 'recoil';
-import { feedbackIdsState } from './feedback.atom';
+import { atom, selectorFamily } from 'recoil';
+import { feedbackIdsState, isFbClickedState } from './feedback.atom';
+import { focusIndexState } from './focusIndex.atom';
 import { lowerBound } from '@utils/lowerBound';
 
-const newFocusIndexEffect = ({ onSet }) => {
-	onSet((newVal) => {
-		const targetFb = document.querySelectorAll(`.feedbackBox :nth-child(${newVal})`)[0];
-		if (targetFb) targetFb.scrollIntoView({ behavior: 'smooth', block: 'start' });
-	});
+const handleVideoTimeChange =
+	(newVideoTime: number) =>
+	({ set, get }) => {
+		if (get(isFbClickedState)) {
+			set(currentVideoTimeState, newVideoTime);
+			setVideoElementTime(newVideoTime);
+			updateFocusIndex(get, set);
+
+			set(isFbClickedState, false);
+		} else {
+			setVideoTimeState(set);
+		}
+	};
+
+const setVideoElementTime = (newVideoTime) => {
+	const video = document.getElementsByTagName('video')[0] as HTMLVideoElement;
+	video.currentTime = newVideoTime;
 };
 
-export const focusIndexState = atom({
-	key: 'focusIndexState',
-	default: null,
-	effects: [newFocusIndexEffect],
-});
+const updateFocusIndex = (get, set) => {
+	const newFocusId = lowerBound(get(feedbackIdsState), get(currentVideoTimeState));
+	if (get(focusIndexState) !== newFocusId) set(focusIndexState, newFocusId);
+};
 
-export const isFbClickedState = atom({
-	key: 'isFbClickedState',
-	default: false,
-});
+const setVideoTimeState = (set) => {
+	const video = document.getElementsByTagName('video')[0] as HTMLVideoElement;
+	set(currentVideoTimeState, Math.round(video.currentTime));
+};
 
 export const currentVideoTimeState = atom({
 	key: 'currentVideoTimeState',
 	default: 0,
-	effects: [
-		({ onSet }) => {
-			onSet((newVal) => {
-				const video = document.getElementsByTagName('video')[0] as HTMLVideoElement;
-				video.currentTime = newVal;
-			});
-		},
-	],
 });
 
 export const currentVideoTimeSelector = selectorFamily({
@@ -40,25 +44,5 @@ export const currentVideoTimeSelector = selectorFamily({
 		({ get }) => {
 			return get(currentVideoTimeState);
 		},
-	set:
-		(newVideoTime) =>
-		({ set, get }) => {
-			if (get(isFbClickedState)) {
-				console.log('yes');
-				set(currentVideoTimeState, newVideoTime);
-				const newFocusId = lowerBound(get(feedbackIdsState), get(currentVideoTimeState));
-				console.log(newFocusId);
-				if (get(focusIndexState) !== newFocusId) set(focusIndexState, newFocusId);
-				set(isFbClickedState, false);
-			} else {
-				console.log('not');
-				const video = document.getElementsByTagName('video')[0] as HTMLVideoElement;
-				set(currentVideoTimeState, Math.round(video.currentTime));
-			}
-		},
-});
-
-export const isFbSyncState = atom({
-	key: 'isFbSyncState',
-	default: true,
+	set: handleVideoTimeChange,
 });
