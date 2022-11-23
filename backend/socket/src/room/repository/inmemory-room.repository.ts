@@ -1,26 +1,37 @@
 import { MAX_COUNT, ROOM_EVENT } from '@constant';
 import { WsException } from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { repositoryType } from 'src/types/room.type';
 import { RoomRepository } from './interface-room.repository';
 
 export class InmemoryRoomRepository implements RoomRepository<repositoryType> {
-	repository;
+	repository = {};
+	sockets = {};
 	createRoom(uuid: string) {
 		this.repository[uuid] = {};
 	}
 	enterRoom(clientId: string, nickname: string, uuid: string) {
-		if (Object.keys(this.repository).length >= MAX_COUNT) throw new WsException('인원 초과');
+		if (Object.keys(this.repository[uuid]).length >= MAX_COUNT)
+			throw new WsException('인원 초과');
 		if (clientId in this.repository[uuid]) throw new WsException('Internal Serval Error');
 		this.repository[uuid][clientId] = nickname;
+		this.sockets[clientId] = uuid;
+		console.log(this.repository);
+		console.log(this.sockets);
 	}
-	broadcastUserList(data: string, server: Server): void {
-		const { uuid } = JSON.parse(data);
-		server.to(uuid).emit(ROOM_EVENT.USER_ENTER, data);
+	broadcastUserList(clientId: string, server: Server): void {
+		const uuid = this.sockets[clientId];
+
+		server.to(uuid).emit(ROOM_EVENT.USER_ENTER, JSON.stringify(this.repository[uuid]));
 	}
 
-	leaveRoom(data: string, clientId: string) {
-		const { uuid } = JSON.parse(data);
-		delete this.repository[uuid][clientId];
+	leaveRoom(client: Socket) {
+		if (!(client.id in this.sockets)) return;
+		const uuid = this.sockets[client.id];
+
+		client.leave(uuid);
+
+		delete this.repository[uuid][client.id];
+		// delete this.sockets[client.id];
 	}
 }

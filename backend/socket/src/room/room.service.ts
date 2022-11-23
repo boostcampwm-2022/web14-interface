@@ -22,16 +22,16 @@ export class RoomService {
 
 	enterRoom(client: Socket, data: string, server: Server) {
 		const { nickname, uuid } = JSON.parse(data);
+
 		client.join(uuid);
+
 		this.roomRepository.enterRoom(client.id, nickname, uuid);
 
-		this.roomRepository.broadcastUserList(data, server);
+		this.roomRepository.broadcastUserList(client.id, server);
 	}
 
-	leaveRoom(client: Socket, data: string, server: Server) {
-		const { uuid } = JSON.parse(data);
-		client.leave(uuid);
-		this.roomRepository.leaveRoom(data, client.id);
-		this.roomRepository.broadcastUserList(data, server);
+	leaveRoom(client: Socket, server: Server) {
+		this.roomRepository.leaveRoom(client);
+		this.roomRepository.broadcastUserList(client.id, server);
 	}
 }
