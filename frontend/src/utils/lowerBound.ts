@@ -1,19 +1,19 @@
-export const lowerBound = (list: number[], _key: number) => {
-	const key = _key - 1;
+export const lowerBound = (list: number[], key: number) => {
 	let start = 0;
 	let end = list.length - 1;
-	let result = Math.max(0, end);
-	let mid: number;
+	let mid = end;
 
 	while (start <= end) {
 		mid = Math.floor((start + end) / 2);
-		if (list[mid] < key) {
-			start = mid + 1;
-			continue;
+		if (list[mid] === key) {
+			return mid;
+		} else {
+			if (key < list[mid]) {
+				end = mid - 1;
+			} else {
+				start = mid + 1;
+			}
 		}
-		result = Math.min(result, mid);
-		end = mid - 1;
 	}
-	console.log(list, key, result);
-	return result;
+	return start <= 0 ? 0 : start - 1;
 };

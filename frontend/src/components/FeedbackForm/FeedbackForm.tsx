@@ -18,7 +18,7 @@ const FeedbackForm = () => {
 			content: inputVal,
 			readOnly: true,
 		};
-		
+
 		insertTodo(newFeedback);
 		setInputVal('');
 	};
@@ -26,7 +26,9 @@ const FeedbackForm = () => {
 	const insertTodo = useRecoilCallback(
 		({ set }) =>
 			(newFeedback: FeedbackType) => {
-				set(feedbackIdsState, (curTodoIds) => curTodoIds.concat(newFeedback.startTime));
+				set(feedbackIdsState, (curTodoIds) =>
+					curTodoIds.concat(newFeedback.startTime).sort()
+				);
 				set(feedbackState(newFeedback.startTime), newFeedback);
 			},
 		[currentVideoTime]

@@ -7,7 +7,7 @@ export const focusIndexState = atom({
 		({ onSet }) => {
 			onSet((newVal) => {
 				console.log(newVal);
-				const targetFb = document.getElementById(`fb-${newVal - 1}`);
+				const targetFb = document.getElementById(`fb-${newVal}`);
 				console.log(targetFb);
 				if (targetFb) targetFb.scrollIntoView({ behavior: 'smooth', block: 'start' });
 			});
