@@ -16,8 +16,6 @@ export class InmemoryRoomRepository implements RoomRepository<repositoryType> {
 		if (clientId in this.repository[uuid]) throw new WsException('Internal Serval Error');
 		this.repository[uuid][clientId] = nickname;
 		this.sockets[clientId] = uuid;
-		console.log(this.repository);
-		console.log(this.sockets);
 	}
 	broadcastUserList(clientId: string, server: Server): void {
 		const uuid = this.sockets[clientId];
@@ -32,6 +30,9 @@ export class InmemoryRoomRepository implements RoomRepository<repositoryType> {
 		client.leave(uuid);
 
 		delete this.repository[uuid][client.id];
+		if (!Object.keys(this.repository[uuid])) {
+			delete this.repository[uuid];
+		}
 		// delete this.sockets[client.id];
 	}
 }
