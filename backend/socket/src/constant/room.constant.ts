@@ -7,6 +7,7 @@ export enum ROOM_EVENT {
 	LEAVE_ROOM = 'leave_room',
 	START_INTERVIEW = 'start_interview',
 	JOIN_INTERVIEW = 'join_interview',
+	END_INTERVIEW = 'end_interview',
 }
 export enum ROOM_STATE {
 	LOBBY = 'lobby',

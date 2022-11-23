@@ -45,8 +45,8 @@ export class InmemoryRoomRepository implements RoomRepository<repositoryType> {
 		// delete this.sockets[client.id];
 	}
 
-	startInterview(client: Socket) {
+	changeRoomState(client: Socket, state: string) {
 		const uuid = this.sockets[client.id];
-		this.roomState[uuid] = ROOM_STATE.INTERVIEW;
+		this.roomState[uuid] = state;
 	}
 }

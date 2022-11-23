@@ -36,7 +36,12 @@ export class RoomService {
 	}
 
 	startInterview(client: Socket, server: Server) {
-		this.roomRepository.startInterview(client);
+		this.roomRepository.changeRoomState(client, ROOM_STATE.INTERVIEW);
 		return this.roomRepository.broadcastUserList(client.id, server, ROOM_EVENT.JOIN_INTERVIEW);
+	}
+
+	endInterview(client: Socket, server: Server) {
+		this.roomRepository.changeRoomState(client, ROOM_STATE.FEEDBACK);
+		return this.roomRepository.broadcastUserList(client.id, server, ROOM_EVENT.END_INTERVIEW);
 	}
 }

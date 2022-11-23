@@ -6,5 +6,5 @@ export interface RoomRepository<T> {
 	enterRoom(clientId: string, nickname: string, uuid: string): void;
 	broadcastUserList(clientId: string, server: Server, eventType: string): string;
 	leaveRoom(clientId: Socket): void;
-	startInterview(client: Socket): void;
+	changeRoomState(client: Socket, state: string): void;
 }
