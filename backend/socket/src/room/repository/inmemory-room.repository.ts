@@ -1,4 +1,4 @@
-import { MAX_COUNT, ROOM_EVENT, ROOM_STATE } from '@constant';
+import { END_FLAG, MAX_COUNT, ROOM_EVENT, ROOM_STATE } from '@constant';
 import { WsException } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { repositoryType } from 'src/types/room.type';
@@ -8,9 +8,12 @@ export class InmemoryRoomRepository implements RoomRepository<repositoryType> {
 	repository = {};
 	sockets = {};
 	roomState = {};
+	feedbackCounter = {};
+
 	createRoom(uuid: string) {
 		this.repository[uuid] = {};
 		this.roomState[uuid] = ROOM_STATE.LOBBY;
+		this.feedbackCounter[uuid] = new Set();
 	}
 	enterRoom(clientId: string, nickname: string, uuid: string) {
 		if (Object.keys(this.repository[uuid]).length >= MAX_COUNT)
@@ -41,6 +44,8 @@ export class InmemoryRoomRepository implements RoomRepository<repositoryType> {
 		delete this.repository[uuid][client.id];
 		if (!Object.keys(this.repository[uuid])) {
 			delete this.repository[uuid];
+			delete this.roomState[uuid];
+			delete this.feedbackCounter[uuid];
 		}
 		// delete this.sockets[client.id];
 	}
@@ -48,5 +53,19 @@ export class InmemoryRoomRepository implements RoomRepository<repositoryType> {
 	changeRoomState(client: Socket, state: string) {
 		const uuid = this.sockets[client.id];
 		this.roomState[uuid] = state;
+	}
+
+	countFeedback(clientId: string, server: Server) {
+		const uuid = this.sockets[clientId];
+		if (this.feedbackCounter[uuid].has(clientId)) throw new WsException('이미 카운트되었음');
+
+		this.feedbackCounter[uuid].add(clientId);
+
+		server.to(uuid).emit(ROOM_EVENT.COUNT_FEEDBACK, this.feedbackCounter[uuid].size);
+		if (this.feedbackCounter[uuid].size == MAX_COUNT - 1) {
+			server.to(uuid).emit(ROOM_EVENT.TERMINATE_SESSION);
+			return END_FLAG;
+		}
+		return this.feedbackCounter[uuid].size;
 	}
 }

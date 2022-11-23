@@ -8,9 +8,13 @@ export enum ROOM_EVENT {
 	START_INTERVIEW = 'start_interview',
 	JOIN_INTERVIEW = 'join_interview',
 	END_INTERVIEW = 'end_interview',
+	END_FEEDBACK = 'end_feedback',
+	COUNT_FEEDBACK = 'count_feedback',
+	TERMINATE_SESSION = 'terminate_session',
 }
 export enum ROOM_STATE {
 	LOBBY = 'lobby',
 	INTERVIEW = 'interview',
 	FEEDBACK = 'feedback',
 }
+export const END_FLAG = -1;

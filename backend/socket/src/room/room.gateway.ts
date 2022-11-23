@@ -48,6 +48,11 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		return this.roomSerivce.endInterview(client, this.server);
 	}
 
+	@SubscribeMessage(ROOM_EVENT.END_FEEDBACK)
+	handleEndFeedback(@ConnectedSocket() client: Socket) {
+		this.roomSerivce.endFeedback(client, this.server);
+	}
+
 	handleConnection(@ConnectedSocket() client: Socket) {
 		this.logger.log(`connected: ${client.id}`);
 	}

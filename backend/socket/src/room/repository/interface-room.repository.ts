@@ -38,4 +38,12 @@ export interface RoomRepository<T> {
 	 * @param state room의 상태 (lobby -> interview -> feedback)
 	 */
 	changeRoomState(client: Socket, state: string): void;
+
+	/**
+	 * feedback을 완료한 interviewer를 저장하는 메서드입니다.
+	 * @param clientId socket id
+	 * @param server server instance
+	 * @return 완료한 interviewer의 수
+	 */
+	countFeedback(clientId: string, server: Server): number;
 }
