@@ -32,10 +32,10 @@ const RootRoutes = () => {
 				<Route path={LANDING_PATH} element={<Landing />} />
 				<Route path={LOBBY_PATH} element={<Lobby />} />
 				<Route element={<StrictRoute targetPath={INTERVIEWER_PATH} />}>
-					<Route path={INTERVIEWER_PATH} element={<Interviewee />} />
+					<Route path={INTERVIEWER_PATH} element={<Interviewer />} />
 				</Route>
 				<Route element={<StrictRoute targetPath={INTERVIEWEE_PATH} />}>
-					<Route path={INTERVIEWEE_PATH} element={<Interviewer />} />
+					<Route path={INTERVIEWEE_PATH} element={<Interviewee />} />
 				</Route>
 				<Route element={<StrictRoute targetPath={WAITTING_PATH} />}>
 					<Route path={WAITTING_PATH} element={<Waitting />} />
