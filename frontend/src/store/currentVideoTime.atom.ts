@@ -1,5 +1,5 @@
 import { atom, selectorFamily } from 'recoil';
-import { feedbackIdsState, isFbClickedState } from './feedback.atom';
+import { feedbackIdsState, isFbClickedState, isFbSyncState } from './feedback.atom';
 import { focusIndexState } from './focusIndex.atom';
 import { lowerBound } from '@utils/lowerBound';
 
@@ -11,7 +11,7 @@ const handleVideoTimeChange =
 			setVideoElementTime(newVideoTime);
 
 			set(isFbClickedState, false);
-		} else {
+		} else if (get(isFbSyncState)) {
 			setVideoTimeState(set);
 			updateFocusIndex(get, set);
 		}
