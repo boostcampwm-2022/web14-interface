@@ -9,9 +9,16 @@ const FeedbackArea = () => {
 	const feedbackIds = useRecoilValue(feedbackIdsState);
 	return (
 		<div>
-			{feedbackIds.map((startTime, i) => (
-				<EditableFeedbackBox key={startTime} startTime={startTime} index={i} />
-			))}
+			<div
+				style={{
+					overflow: 'scroll',
+					height: '400px',
+				}}
+			>
+				{feedbackIds.map((startTime, i) => (
+					<EditableFeedbackBox key={startTime} startTime={startTime} index={i} />
+				))}
+			</div>
 			<FeedbackForm />
 		</div>
 	);

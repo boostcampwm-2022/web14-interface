@@ -20,9 +20,11 @@ const FbMain = (
 	{
 		children,
 		onClick,
+		id,
 	}: {
 		children: React.ReactNode;
 		onClick?: React.MouseEventHandler<HTMLElement>;
+		id?: string;
 	},
 	ref
 ) => {
@@ -33,7 +35,7 @@ const FbMain = (
 	const FbBtns = getBtns(childrenArr);
 
 	return (
-		<div onClick={onClick} ref={ref}>
+		<div id={id} onClick={onClick} ref={ref}>
 			<div>{FbStartTime}</div>
 			<div>{FbContent}</div>
 			<div>{FbBtns}</div>

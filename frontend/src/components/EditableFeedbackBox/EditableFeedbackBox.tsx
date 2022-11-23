@@ -19,6 +19,7 @@ interface PropsType {
 }
 const EditableFeedbackBox = ({ startTime, index }: PropsType) => {
 	const [feedback, setFeedback] = useRecoilState(feedbackState(startTime));
+	if (!feedback) return;
 	const deleteFeedback = useResetRecoilState(feedbackState(startTime));
 	const isFbSync = useRecoilValue(isFbSyncState);
 	const setFocusIndex = useSetRecoilState(focusIndexState);
@@ -65,7 +66,7 @@ const EditableFeedbackBox = ({ startTime, index }: PropsType) => {
 	};
 
 	return (
-		<FeedbackBox onClick={handleClickFeedback}>
+		<FeedbackBox id={'fb-' + index} onClick={handleClickFeedback}>
 			<FeedbackBox.StartTime>{startTime}</FeedbackBox.StartTime>
 			<FeedbackBox.Content value={content} onChange={handleFbChange} readOnly={readOnly} />
 			<FeedbackBox.Btn onClick={handleDeleteFeedback}>

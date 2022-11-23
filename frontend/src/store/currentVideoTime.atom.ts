@@ -9,11 +9,11 @@ const handleVideoTimeChange =
 		if (get(isFbClickedState)) {
 			set(currentVideoTimeState, newVideoTime);
 			setVideoElementTime(newVideoTime);
-			updateFocusIndex(get, set);
 
 			set(isFbClickedState, false);
 		} else {
 			setVideoTimeState(set);
+			updateFocusIndex(get, set);
 		}
 	};
 
@@ -29,7 +29,7 @@ const updateFocusIndex = (get, set) => {
 
 const setVideoTimeState = (set) => {
 	const video = document.getElementsByTagName('video')[0] as HTMLVideoElement;
-	set(currentVideoTimeState, Math.round(video.currentTime));
+	set(currentVideoTimeState, Math.floor(video.currentTime));
 };
 
 export const currentVideoTimeState = atom({
