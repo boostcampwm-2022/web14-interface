@@ -25,13 +25,8 @@ const useSyncFeedbackList = () => {
 	//TODO 10초에 피드백 2개가 있다고한다면, 2번 째 10초 피드백 클릭 시에도 첫번째 10초 피드백 박스로 이동
 	const handleClickFeedback = useCallback(
 		(e, startTime: number, idx: number) => {
-			feedbackRef.current[focusIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+			if (!isFbSync) return;
 
-			//CHECK 계속 if가 이렇게 추가되는게 좋은 로직인지 모르겠음???????
-			if (!isFbSync) {
-				setFocusIndex(idx);
-				return;
-			}
 			setCurrentTime(startTime);
 			setIsFbClicked(true);
 		},
