@@ -31,7 +31,7 @@ const EditableFeedbackBox = ({ startTime, index }: PropsType) => {
 
 	const handleClickFeedback = () => {
 		if (!isFbSync) return;
-		setFocusIndex(index + 1);
+		setFocusIndex(index);
 		setIsFbClicked(true);
 		setCurrentVideoTime(feedback.startTime);
 	};

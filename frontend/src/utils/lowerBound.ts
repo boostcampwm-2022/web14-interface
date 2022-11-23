@@ -1,4 +1,5 @@
-export const lowerBound = (list: number[], key: number) => {
+export const lowerBound = (list: number[], _key: number) => {
+	const key = _key+1;
 	let start = 0;
 	let end = list.length - 1;
 	let mid = end;
