@@ -40,9 +40,10 @@ const RootRoutes = () => {
 				<Route element={<StrictRoute targetPath={WAITTING_PATH} />}>
 					<Route path={WAITTING_PATH} element={<Waitting />} />
 				</Route>
-				<Route element={<StrictRoute targetPath={FEEDBACK_PATH} />}>
+				{/* <Route element={<StrictRoute targetPath={FEEDBACK_PATH} />}>
 					<Route path={FEEDBACK_PATH} element={<Feedback />} />
-				</Route>
+				</Route> */}
+				<Route path="/" element={<Feedback />} />
 			</Route>
 			<Route path="/" element={<Navigate to={LANDING_PATH} replace />} />
 			<Route path="*" element={<NotFound />} />

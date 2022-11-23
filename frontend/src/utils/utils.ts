@@ -1,4 +1,4 @@
-import { FeedbackType } from '@customType/common';
+import { FeedbackType } from '@customType/feedback';
 
 export const findCurrentFeedback = (feedbackList: FeedbackType[], currentTime: number) => {
 	let start = 0;
