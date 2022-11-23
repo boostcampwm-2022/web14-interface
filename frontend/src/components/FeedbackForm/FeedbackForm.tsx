@@ -28,7 +28,7 @@ const FeedbackForm = () => {
 				const targetFb = get(feedbackState(newFeedback.startTime));
 				if (!targetFb) {
 					set(feedbackIdsState, (curTodoIds) =>
-						curTodoIds.concat(newFeedback.startTime).sort()
+						curTodoIds.concat(newFeedback.startTime).sort((a, b) => a - b)
 					);
 					set(feedbackState(newFeedback.startTime), newFeedback);
 				} else {
