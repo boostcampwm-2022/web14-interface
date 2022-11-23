@@ -1,3 +1,4 @@
+import { ROOM_EVENT } from '@constant';
 import { Logger } from '@nestjs/common';
 import {
 	ConnectedSocket,
@@ -16,7 +17,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer() server: Server;
 	private logger = new Logger('room');
 	constructor(private readonly roomSerivce: RoomService) {}
-	@SubscribeMessage('create_room')
+	@SubscribeMessage(ROOM_EVENT.CREATE_ROOM)
 	handleCreateRoom(): string {
 		const uuid = this.roomSerivce.createRoom();
 		return JSON.stringify({
@@ -27,14 +28,29 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		});
 	}
 
-	@SubscribeMessage('enter_room')
+	@SubscribeMessage(ROOM_EVENT.ENTER_ROOM)
 	handleEnterRoom(@ConnectedSocket() client: Socket, @MessageBody() data: string) {
 		this.roomSerivce.enterRoom(client, data, this.server);
 	}
 
-	@SubscribeMessage('leave_room')
-	handleLeaveRoom(@ConnectedSocket() client: Socket, @MessageBody() data: string) {
-		this.roomSerivce.leaveRoom(client, data, this.server);
+	@SubscribeMessage(ROOM_EVENT.LEAVE_ROOM)
+	handleLeaveRoom(@ConnectedSocket() client: Socket) {
+		this.roomSerivce.leaveRoom(client, this.server);
+	}
+
+	@SubscribeMessage(ROOM_EVENT.START_INTERVIEW)
+	handleStartInterview(@ConnectedSocket() client: Socket) {
+		return this.roomSerivce.startInterview(client, this.server);
+	}
+
+	@SubscribeMessage(ROOM_EVENT.END_INTERVIEW)
+	handleEndInterview(@ConnectedSocket() client: Socket) {
+		return this.roomSerivce.endInterview(client, this.server);
+	}
+
+	@SubscribeMessage(ROOM_EVENT.END_FEEDBACK)
+	handleEndFeedback(@ConnectedSocket() client: Socket) {
+		this.roomSerivce.endFeedback(client, this.server);
 	}
 
 	handleConnection(@ConnectedSocket() client: Socket) {
@@ -43,5 +59,6 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	handleDisconnect(@ConnectedSocket() client: Socket) {
 		this.logger.log(`disconnected: ${client.id}`);
+		this.roomSerivce.leaveRoom(client, this.server);
 	}
 }
