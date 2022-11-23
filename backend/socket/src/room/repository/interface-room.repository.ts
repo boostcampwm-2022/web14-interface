@@ -5,4 +5,5 @@ export interface RoomRepository<T> {
 	createRoom(uuid: string): void;
 	enterRoom(clientId: string, nickname: string, uuid: string): void;
 	broadcastUserList(data: string, server: Server): void;
+	leaveRoom(data: string, clientId: string): void;
 }

@@ -6,12 +6,14 @@ import {
 	OnGatewayDisconnect,
 	SubscribeMessage,
 	WebSocketGateway,
+	WebSocketServer,
 } from '@nestjs/websockets';
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { RoomService } from './room.service';
 
 @WebSocketGateway()
 export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
+	@WebSocketServer() server: Server;
 	private logger = new Logger('room');
 	constructor(private readonly roomSerivce: RoomService) {}
 	@SubscribeMessage('create_room')
@@ -27,8 +29,12 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('enter_room')
 	handleEnterRoom(@ConnectedSocket() client: Socket, @MessageBody() data: string) {
-		const { nickname, uuid } = JSON.parse(data);
-		this.roomSerivce.enterRoom(client, nickname, uuid);
+		this.roomSerivce.enterRoom(client, data, this.server);
+	}
+
+	@SubscribeMessage('leave_room')
+	handleLeaveRoom(@ConnectedSocket() client: Socket, @MessageBody() data: string) {
+		this.roomSerivce.leaveRoom(client, data, this.server);
 	}
 
 	handleConnection(@ConnectedSocket() client: Socket) {

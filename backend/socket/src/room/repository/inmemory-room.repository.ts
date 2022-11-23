@@ -16,6 +16,11 @@ export class InmemoryRoomRepository implements RoomRepository<repositoryType> {
 	}
 	broadcastUserList(data: string, server: Server): void {
 		const { uuid } = JSON.parse(data);
-		server.to(uuid).emit(ROOM_EVENT.GET_USERLIST, data);
+		server.to(uuid).emit(ROOM_EVENT.USER_ENTER, data);
+	}
+
+	leaveRoom(data: string, clientId: string) {
+		const { uuid } = JSON.parse(data);
+		delete this.repository[uuid][clientId];
 	}
 }

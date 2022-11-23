@@ -27,4 +27,11 @@ export class RoomService {
 
 		this.roomRepository.broadcastUserList(data, server);
 	}
+
+	leaveRoom(client: Socket, data: string, server: Server) {
+		const { uuid } = JSON.parse(data);
+		client.leave(uuid);
+		this.roomRepository.leaveRoom(data, client.id);
+		this.roomRepository.broadcastUserList(data, server);
+	}
 }
