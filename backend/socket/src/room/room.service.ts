@@ -1,7 +1,7 @@
 import { MAX_COUNT, ROOM_EVENT, ROOM_REPOSITORY_INTERFACE, ROOM_STATE } from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
-import { SocketResponseDto } from 'src/dto/socket-response.dto';
+import { SocketResponseDto } from 'src/room/dto/socket-response.dto';
 import { InmemoryRoom, User } from 'src/types/room.type';
 import { v4 as uuidv4 } from 'uuid';
 import { RoomRepository } from './repository/interface-room.repository';

@@ -10,7 +10,7 @@ import {
 	WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { SocketResponseDto } from 'src/dto/socket-response.dto';
+import { SocketResponseDto } from 'src/room/dto/socket-response.dto';
 import { RoomService } from './room.service';
 
 @WebSocketGateway({ namespace: 'socket' })
