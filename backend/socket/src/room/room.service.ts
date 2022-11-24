@@ -1,4 +1,4 @@
-import { END_FLAG, MAX_COUNT, ROOM_EVENT, ROOM_REPOSITORY_INTERFACE, ROOM_STATE } from '@constant';
+import { MAX_COUNT, ROOM_EVENT, ROOM_REPOSITORY_INTERFACE, ROOM_STATE } from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { SocketResponseDto } from 'src/dto/socket-response.dto';

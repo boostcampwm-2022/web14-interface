@@ -1,5 +1,4 @@
 import { InmemoryRoom, User } from '@types';
-import { Server, Socket } from 'socket.io';
 
 export interface RoomRepository {
 	/**

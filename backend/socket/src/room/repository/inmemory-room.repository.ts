@@ -1,6 +1,3 @@
-import { END_FLAG, MAX_COUNT, ROOM_EVENT, ROOM_STATE } from '@constant';
-import { WsException } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
 import { InmemoryRoom, User } from 'src/types/room.type';
 import { RoomRepository } from './interface-room.repository';
 
