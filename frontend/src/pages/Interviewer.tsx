@@ -4,30 +4,30 @@ import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import { io } from 'socket.io-client';
 
+const makeNewVideo = (stream) => {
+	const newVideo = document.createElement('video');
+
+	newVideo.srcObject = stream;
+	newVideo.width = 400;
+	newVideo.autoplay = true;
+	newVideo.playsInline = true;
+	document.body.appendChild(newVideo);
+};
+
 const socket = io(`ws://localhost:3000/`, {
 	transports: ['websocket'],
 });
 
 let stream;
-//p2p connection 인당 설정되어야함.
-let connection;
+const connectionList = new Map();
 
-const handleIce = (data) => {
-	console.log('candidate 보냄', data.candidate);
-	socket.emit('ice', data.candidate);
+const handleIce = (senderId, recieverID, data) => {
+	socket.emit('ice', data.candidate, senderId, recieverID);
 };
 
-const handleAddStream = (data) => {
-	console.log('stream 받음');
-	console.log("Peer's Stream", data.stream);
-	console.log('my Stream');
-	const newVideo = document.createElement('video');
-
-	newVideo.srcObject = data.stream;
-	newVideo.width = 400;
-	newVideo.autoplay = true;
-	newVideo.playsInline = true;
-	document.body.appendChild(newVideo);
+const handleAddStream = async (receiverId, data) => {
+	makeNewVideo(data.stream);
+	connectionList.set(receiverId, { ...connectionList.get(receiverId), stream: data.stream });
 };
 
 async function getMedia() {
@@ -37,22 +37,14 @@ async function getMedia() {
 			video: true,
 		});
 
-		const newVideo = document.createElement('video');
-
-		newVideo.srcObject = stream;
-		newVideo.width = 400;
-		newVideo.autoplay = true;
-		newVideo.playsInline = true;
-		document.body.appendChild(newVideo);
+		makeNewVideo(stream);
 	} catch (e) {
 		console.log(e);
 	}
 }
 
-const initConnection = async () => {
-	await getMedia();
-
-	connection = new RTCPeerConnection({
+const makeConnection = (senderID, recieverID) => {
+	const connection = new RTCPeerConnection({
 		iceServers: [
 			{
 				urls: [
@@ -66,13 +58,19 @@ const initConnection = async () => {
 		],
 	});
 
-	connection.addEventListener('icecandidate', handleIce);
-	connection.addEventListener('addstream', handleAddStream);
+	connection.addEventListener('icecandidate', (data) => handleIce(senderID, recieverID, data));
+	connection.addEventListener('addstream', (data) => handleAddStream(recieverID, data));
 
 	//내 stream을 가져와 conection에 track을 추가한다.
 	stream.getTracks().forEach((track) => connection.addTrack(track, stream));
 
-	socket.emit('join_room');
+	connectionList.set(recieverID, { connection });
+};
+
+const enterRoomInit = async (senderId) => {
+	await getMedia();
+
+	socket.emit('join_room', senderId);
 };
 
 const Interviewer = () => {
@@ -80,36 +78,38 @@ const Interviewer = () => {
 	usePreventLeave();
 
 	useEffect(() => {
-		initConnection();
+		const senderId = Math.random();
+		console.log('내 닉네임', senderId);
+		enterRoomInit(senderId);
 
-		socket.on('welcome', async () => {
+		socket.on('welcome', async (receiverId) => {
 			//알림을 받는 쪽에서 실행
-			const offer = await connection.createOffer(); //초대장 만들기
-			connection.setLocalDescription(offer);
-			console.log('offer를 보냄');
-			socket.emit('offer', offer);
+			console.log('상대방 닉네임', receiverId);
+			makeConnection(senderId, receiverId);
+			const offer = await connectionList.get(receiverId).connection.createOffer(); //초대장 만들기
+			connectionList.get(receiverId).connection.setLocalDescription(offer);
+			socket.emit('offer', offer, senderId, receiverId);
 		});
 
 		//새로운 참가자가 offer를 받으면 answer를 만들어서 기존 참가자들에게 보냄
-		socket.on('offer', async (offer) => {
-			console.log('offer 받음');
-			connection.setRemoteDescription(offer);
-			const answer = await connection.createAnswer();
-			connection.setLocalDescription(answer);
-			socket.emit('answer', answer);
-			console.log('answer 전송');
+		socket.on('offer', async (offer, receiverId) => {
+			makeConnection(senderId, receiverId);
+			connectionList.get(receiverId).connection.setRemoteDescription(offer);
+			const answer = await connectionList.get(receiverId).connection.createAnswer();
+			connectionList.get(receiverId).connection.setLocalDescription(answer);
+			socket.emit('answer', answer, senderId, receiverId);
 		});
 
 		//answer를 받으면 내꺼에 answer를 등록
-		socket.on('answer', (answer) => {
-			console.log('answer 받음');
-			connection.setRemoteDescription(answer);
+		socket.on('answer', (answer, receiverId) => {
+			connectionList.get(receiverId).connection.setRemoteDescription(answer);
+
+			console.log(connectionList);
 		});
 
 		//candicate를 받음.
-		socket.on('ice', (ice) => {
-			console.log('candidate 받음', ice);
-			connection.addIceCandidate(ice);
+		socket.on('ice', (ice, receiverId) => {
+			connectionList.get(receiverId).connection.addIceCandidate(ice);
 		});
 	}, []);
 
