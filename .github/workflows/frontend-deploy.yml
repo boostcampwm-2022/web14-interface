@@ -1,0 +1,43 @@
+name: Frontend Deploy 
+
+on:
+  push:
+    branches: [main] 
+      
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+          
+    steps: 
+      - name: repository의 파일을 가상 인스턴스로 복사합니다.
+        uses: actions/checkout@v3
+      
+      - name: node 패키지를 caching 합니다.
+        uses: actions/cache@v3
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+            
+      - name: caching된 node 패키지가 없으면 설치합니다.
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn install
+        
+      - name: front 파일을 build 합니다.
+        run: yarn build
+        
+      - name: build된 파일을 배포 서버에 복사합니다.
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.NGINX_SERVER_HOST }}
+          username: ${{ secrets.NGINX_SERVER_USER }}
+          password: ${{ secrets.NGINX_SERVER_PWD }}
+          port: ${{ secrets.NGINX_SERVER_PORT }}
+          source: './frontend/build/*'
+          target: '/root/interface/html'
+          strip_components: 2
+          rm: true
