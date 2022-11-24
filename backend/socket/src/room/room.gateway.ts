@@ -13,7 +13,7 @@ import { Server, Socket } from 'socket.io';
 import { SocketResponseDto } from 'src/dto/socket-response.dto';
 import { RoomService } from './room.service';
 
-@WebSocketGateway()
+@WebSocketGateway({ namespace: 'socket' })
 export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer() server: Server;
 	private logger = new Logger('room');
