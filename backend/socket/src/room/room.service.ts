@@ -14,6 +14,10 @@ export class RoomService {
 		private readonly roomRepository: RoomRepository
 	) {}
 
+	/**
+	 * uuid를 기반으로 방을 생성하고 저장하는 메서드입니다.
+	 * @returns uuid - 방의 uuid
+	 */
 	createRoom() {
 		const roomUUID = uuidv4();
 		const room = this.createDefaultRoom();
@@ -23,15 +27,23 @@ export class RoomService {
 		return roomUUID;
 	}
 
+	/**
+	 * default user를 생성하고 roomUUID에 해당하는 room에 유저가 들어가는 메서드입니다.
+	 * @param client - client socket
+	 * @param server - server 인스턴스
+	 * @param roomUUID - room uuid
+	 * @returns
+	 */
 	enterRoom({ client, server, roomUUID }: { client: Socket; server: Server; roomUUID: string }) {
 		client.join(roomUUID);
 
 		const room = this.roomRepository.getRoom(roomUUID);
 
-		const validateResult = this.IsInvalidEnterableRoom(room);
-		if (validateResult) return validateResult;
+		const exception = this.IsEnterableRoom(room);
+		if (exception) return exception;
 
 		const user = this.createDefaultUser(roomUUID);
+		this.roomRepository.setUserByClientId({ clientId: client.id, user });
 		this.roomRepository.saveUserInRoom({ roomUUID, user });
 
 		this.broadcastInRoom({
@@ -45,8 +57,13 @@ export class RoomService {
 		return { data: users };
 	}
 
-	IsInvalidEnterableRoom(room: InmemoryRoom) {
-		if (!room) {
+	/**
+	 * 해당 방이 실제로 들어갈 수 있는지 체크하는 메서드입니다.
+	 * @param room room instance
+	 * @returns
+	 */
+	IsEnterableRoom(room: InmemoryRoom): SocketResponseDto | null {
+		if (room === undefined) {
 			return new SocketResponseDto({ success: false, message: 'no room' });
 		}
 
@@ -59,14 +76,20 @@ export class RoomService {
 			return new SocketResponseDto({ success: false, message: 'full room' });
 		}
 
-		return false;
+		return null;
 	}
 
+	/**
+	 * 방에서 해당 유저를 제거하고, 나머지 유저들에게 emit을 하는 메서드입니다.
+	 * @param client - client socket
+	 * @param server - server instance
+	 */
 	leaveRoom(client: Socket, server: Server) {
 		const user = this.roomRepository.getUserByClientId(client.id);
 		const roomUUID = user.roomUUID;
 
 		this.roomRepository.removeUserInRoom({ roomUUID, user });
+		client.leave(roomUUID);
 
 		const users = this.roomRepository.getUsersInRoom(roomUUID);
 		this.broadcastInRoom({
@@ -77,6 +100,13 @@ export class RoomService {
 		});
 	}
 
+	/**
+	 * broad cast 메서드 입니다.
+	 * @param clientId - client socket id
+	 * @param server - server instance
+	 * @param eventType - emit event type
+	 * @param data - emit으로 전달할 data
+	 */
 	broadcastInRoom({
 		clientId,
 		server,
@@ -95,10 +125,18 @@ export class RoomService {
 		server.to(roomUUID).emit(eventType, response);
 	}
 
+	/**
+	 * default room을 생성해서 반환합니다.
+	 * @returns room
+	 */
 	createDefaultRoom(): InmemoryRoom {
 		return { users: new Map(), state: ROOM_STATE.LOBBY, feedbacked: new Set() };
 	}
 
+	/**
+	 * default user를 생성해서 반환합니다.
+	 * @returns user
+	 */
 	createDefaultUser(roomUUID: string): User {
 		const users = this.roomRepository.getUsersInRoom(roomUUID);
 
