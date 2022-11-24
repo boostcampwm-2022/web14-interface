@@ -10,22 +10,20 @@ import {
 	WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { SocketResponseDto } from 'src/dto/socket-response.dto';
 import { RoomService } from './room.service';
 
 @WebSocketGateway()
 export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer() server: Server;
 	private logger = new Logger('room');
+
 	constructor(private readonly roomSerivce: RoomService) {}
+
 	@SubscribeMessage(ROOM_EVENT.CREATE_ROOM)
-	handleCreateRoom(): string {
+	handleCreateRoom(): SocketResponseDto {
 		const uuid = this.roomSerivce.createRoom();
-		return JSON.stringify({
-			success: true,
-			data: {
-				uuid,
-			},
-		});
+		return new SocketResponseDto({ success: true, data: { uuid } });
 	}
 
 	@SubscribeMessage(ROOM_EVENT.ENTER_ROOM)
