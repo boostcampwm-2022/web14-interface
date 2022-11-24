@@ -62,29 +62,20 @@ export class RoomService {
 		return false;
 	}
 
-	// leaveRoom(client: Socket, server: Server) {
-	// 	this.roomRepository.leaveRoom(client);
-	// 	this.roomRepository.broadcastUserList(client.id, server, ROOM_EVENT.USER_ENTER);
-	// }
+	leaveRoom(client: Socket, server: Server) {
+		const user = this.roomRepository.getUserByClientId(client.id);
+		const roomUUID = user.roomUUID;
 
-	// startInterview(client: Socket, server: Server) {
-	// 	this.roomRepository.changeRoomState(client, ROOM_STATE.INTERVIEW);
-	// 	return this.roomRepository.broadcastUserList(client.id, server, ROOM_EVENT.JOIN_INTERVIEW);
-	// }
+		this.roomRepository.removeUserInRoom({ roomUUID, user });
 
-	// endInterview(client: Socket, server: Server) {
-	// 	this.roomRepository.changeRoomState(client, ROOM_STATE.FEEDBACK);
-	// 	return this.roomRepository.broadcastUserList(client.id, server, ROOM_EVENT.END_INTERVIEW);
-	// }
-
-	// endFeedback(client: Socket, server: Server) {
-	// 	// const feedbackCount = this.roomRepository.countFeedback(client.id, server);
-	// 	// if (feedbackCount == END_FLAG) {
-	// 	// 	client.emit(ROOM_EVENT.TERMINATE_SESSION);
-	// 	// } else {
-	// 	// 	client.emit(ROOM_EVENT.COUNT_FEEDBACK, feedbackCount);
-	// 	// }
-	// }
+		const users = this.roomRepository.getUsersInRoom(roomUUID);
+		this.broadcastInRoom({
+			clientId: client.id,
+			server,
+			eventType: ROOM_EVENT.USER_ENTER,
+			data: { users },
+		});
+	}
 
 	broadcastInRoom({
 		clientId,
@@ -104,20 +95,20 @@ export class RoomService {
 		server.to(roomUUID).emit(eventType, response);
 	}
 
-	// leaveRoom(client: Socket) {
-	// 	if (!(client.id in this.sockets)) return;
-	// 	const uuid = this.sockets[client.id];
+	createDefaultRoom(): InmemoryRoom {
+		return { users: new Map(), state: ROOM_STATE.LOBBY, feedbacked: new Set() };
+	}
 
-	// 	client.leave(uuid);
+	createDefaultUser(roomUUID: string): User {
+		const users = this.roomRepository.getUsersInRoom(roomUUID);
 
-	// 	delete this.repository[uuid][client.id];
-	// 	if (!Object.keys(this.repository[uuid])) {
-	// 		delete this.repository[uuid];
-	// 		delete this.roomState[uuid];
-	// 		delete this.feedbackCounter[uuid];
-	// 	}
-	// 	// delete this.sockets[client.id];
-	// }
+		let nickname = '';
+		do {
+			nickname = getRandomNickname('monsters');
+		} while (users.has(nickname));
+
+		return { nickname, role: '', roomUUID };
+	}
 
 	// changeRoomState(client: Socket, state: string) {
 	// 	const uuid = this.sockets[client.id];
@@ -138,18 +129,22 @@ export class RoomService {
 	// 	return this.feedbackCounter[uuid].size;
 	// }
 
-	createDefaultRoom(): InmemoryRoom {
-		return { users: new Map(), state: ROOM_STATE.LOBBY, feedbacked: new Set() };
-	}
+	// startInterview(client: Socket, server: Server) {
+	// 	this.roomRepository.changeRoomState(client, ROOM_STATE.INTERVIEW);
+	// 	return this.roomRepository.broadcastUserList(client.id, server, ROOM_EVENT.JOIN_INTERVIEW);
+	// }
 
-	createDefaultUser(roomUUID: string): User {
-		const users = this.roomRepository.getUsersInRoom(roomUUID);
+	// endInterview(client: Socket, server: Server) {
+	// 	this.roomRepository.changeRoomState(client, ROOM_STATE.FEEDBACK);
+	// 	return this.roomRepository.broadcastUserList(client.id, server, ROOM_EVENT.END_INTERVIEW);
+	// }
 
-		let nickname = '';
-		do {
-			nickname = getRandomNickname('monsters');
-		} while (users.has(nickname));
-
-		return { nickname, role: '', roomUUID };
-	}
+	// endFeedback(client: Socket, server: Server) {
+	// 	// const feedbackCount = this.roomRepository.countFeedback(client.id, server);
+	// 	// if (feedbackCount == END_FLAG) {
+	// 	// 	client.emit(ROOM_EVENT.TERMINATE_SESSION);
+	// 	// } else {
+	// 	// 	client.emit(ROOM_EVENT.COUNT_FEEDBACK, feedbackCount);
+	// 	// }
+	// }
 }

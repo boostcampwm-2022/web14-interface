@@ -12,4 +12,5 @@ export interface RoomRepository {
 	saveUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }): void;
 	getUserByClientId(clientId: string): User;
 	setUserByClientId({ clientId, user }: { clientId: string; user: User }): void;
+	removeUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }): void;
 }

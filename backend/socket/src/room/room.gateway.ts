@@ -32,10 +32,19 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		return new SocketResponseDto({ success: true, data: { users } });
 	}
 
-	// @SubscribeMessage(ROOM_EVENT.LEAVE_ROOM)
-	// handleLeaveRoom(@ConnectedSocket() client: Socket) {
-	// 	this.roomSerivce.leaveRoom(client, this.server);
-	// }
+	@SubscribeMessage(ROOM_EVENT.LEAVE_ROOM)
+	handleLeaveRoom(@ConnectedSocket() client: Socket) {
+		this.roomSerivce.leaveRoom(client, this.server);
+	}
+
+	handleConnection(@ConnectedSocket() client: Socket) {
+		this.logger.log(`connected: ${client.id}`);
+	}
+
+	handleDisconnect(@ConnectedSocket() client: Socket) {
+		this.logger.log(`disconnected: ${client.id}`);
+		this.roomSerivce.leaveRoom(client, this.server);
+	}
 
 	// @SubscribeMessage(ROOM_EVENT.START_INTERVIEW)
 	// handleStartInterview(@ConnectedSocket() client: Socket) {
@@ -51,13 +60,4 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	// handleEndFeedback(@ConnectedSocket() client: Socket) {
 	// 	this.roomSerivce.endFeedback(client, this.server);
 	// }
-
-	handleConnection(@ConnectedSocket() client: Socket) {
-		this.logger.log(`connected: ${client.id}`);
-	}
-
-	handleDisconnect(@ConnectedSocket() client: Socket) {
-		this.logger.log(`disconnected: ${client.id}`);
-		// this.roomSerivce.leaveRoom(client, this.server);
-	}
 }

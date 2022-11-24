@@ -31,4 +31,9 @@ export class InmemoryRoomRepository implements RoomRepository {
 	setUserByClientId({ clientId, user }: { clientId: string; user: User }) {
 		this.userMap.set(clientId, user);
 	}
+
+	removeUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }) {
+		const room = this.rooms.get(roomUUID);
+		room.users.delete(user.nickname);
+	}
 }
