@@ -28,28 +28,29 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage(ROOM_EVENT.ENTER_ROOM)
 	handleEnterRoom(@ConnectedSocket() client: Socket, @MessageBody() roomUUID: string) {
-		this.roomSerivce.enterRoom({ client, server, roomUUID });
+		const users = this.roomSerivce.enterRoom({ client, server: this.server, roomUUID });
+		return new SocketResponseDto({ success: true, data: { users } });
 	}
 
-	@SubscribeMessage(ROOM_EVENT.LEAVE_ROOM)
-	handleLeaveRoom(@ConnectedSocket() client: Socket) {
-		this.roomSerivce.leaveRoom(client, this.server);
-	}
+	// @SubscribeMessage(ROOM_EVENT.LEAVE_ROOM)
+	// handleLeaveRoom(@ConnectedSocket() client: Socket) {
+	// 	this.roomSerivce.leaveRoom(client, this.server);
+	// }
 
-	@SubscribeMessage(ROOM_EVENT.START_INTERVIEW)
-	handleStartInterview(@ConnectedSocket() client: Socket) {
-		return this.roomSerivce.startInterview(client, this.server);
-	}
+	// @SubscribeMessage(ROOM_EVENT.START_INTERVIEW)
+	// handleStartInterview(@ConnectedSocket() client: Socket) {
+	// 	return this.roomSerivce.startInterview(client, this.server);
+	// }
 
-	@SubscribeMessage(ROOM_EVENT.END_INTERVIEW)
-	handleEndInterview(@ConnectedSocket() client: Socket) {
-		return this.roomSerivce.endInterview(client, this.server);
-	}
+	// @SubscribeMessage(ROOM_EVENT.END_INTERVIEW)
+	// handleEndInterview(@ConnectedSocket() client: Socket) {
+	// 	return this.roomSerivce.endInterview(client, this.server);
+	// }
 
-	@SubscribeMessage(ROOM_EVENT.END_FEEDBACK)
-	handleEndFeedback(@ConnectedSocket() client: Socket) {
-		this.roomSerivce.endFeedback(client, this.server);
-	}
+	// @SubscribeMessage(ROOM_EVENT.END_FEEDBACK)
+	// handleEndFeedback(@ConnectedSocket() client: Socket) {
+	// 	this.roomSerivce.endFeedback(client, this.server);
+	// }
 
 	handleConnection(@ConnectedSocket() client: Socket) {
 		this.logger.log(`connected: ${client.id}`);
@@ -57,6 +58,6 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	handleDisconnect(@ConnectedSocket() client: Socket) {
 		this.logger.log(`disconnected: ${client.id}`);
-		this.roomSerivce.leaveRoom(client, this.server);
+		// this.roomSerivce.leaveRoom(client, this.server);
 	}
 }
