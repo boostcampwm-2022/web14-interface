@@ -22,10 +22,11 @@ const Login = () => {
 
 	useEffect(() => {
 		(async () => {
+			// TODO 응답, 처리 hook으로 빼기
 			const res = await axios
 				.get('/api/auth/login')
-				.then((res) => res.data.json())
-				.catch((err) => console.error(err));
+				.then((res) => res.data)
+				.catch((err) => err.response);
 
 			// TODO server에서 응답, 오류 구조화
 			if (res.statusCode === 200) {
@@ -36,7 +37,13 @@ const Login = () => {
 	}, []);
 
 	const startOauth = async (type: string) => {
-		await axios.get(`/api/auth/oauth/redirect/${type}`);
+		// TODO 응답, 처리 hook으로 빼기
+		const res = await axios
+			.get(`/api/auth/oauth/redirect/${type}`)
+			.then((res) => res.data)
+			.catch((err) => err.response);
+
+		location.href = res.data.url;
 	};
 
 	return (
