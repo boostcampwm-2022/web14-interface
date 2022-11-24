@@ -15,7 +15,7 @@ export class InmemoryRoomRepository implements RoomRepository<repositoryType> {
 		this.roomState[uuid] = ROOM_STATE.LOBBY;
 		this.feedbackCounter[uuid] = new Set();
 	}
-	enterRoom(clientId: string, nickname: string, uuid: string) {
+	enterRoom({ clientId, roomUUID }: { clientId: string; roomUUID: string }) {
 		if (Object.keys(this.repository[uuid]).length >= MAX_COUNT)
 			throw new WsException('인원 초과');
 		if (clientId in this.repository[uuid]) throw new WsException('Internal Serval Error');

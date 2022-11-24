@@ -12,10 +12,9 @@ export interface RoomRepository<T> {
 	/**
 	 * uuid로 방을 식별하여 유저의 socket id를 저장하는 메서드입니다.
 	 * @param clientId socket id
-	 * @param nickname user nickname
-	 * @param uuid room을 식별할 수 있는 고유한 key
+	 * @param roomUUID room을 식별할 수 있는 고유한 key
 	 */
-	enterRoom(clientId: string, nickname: string, uuid: string): void;
+	enterRoom({ clientId, roomUUID }: { clientId: string; roomUUID: string }): void;
 
 	/**
 	 * 같은 room에 속한 유저에게 broadcast하는 메서드입니다.

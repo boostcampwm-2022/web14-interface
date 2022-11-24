@@ -20,10 +20,8 @@ export class RoomService {
 		return uuid;
 	}
 
-	enterRoom(client: Socket, data: string, server: Server) {
-		const { nickname, uuid } = JSON.parse(data);
-
-		client.join(uuid);
+	enterRoom({ client, server, roomUUID }: { client: Socket; server: Server; roomUUID: string }) {
+		client.join(roomUUID);
 
 		this.roomRepository.enterRoom(client.id, nickname, uuid);
 

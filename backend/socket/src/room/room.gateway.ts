@@ -27,8 +27,8 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage(ROOM_EVENT.ENTER_ROOM)
-	handleEnterRoom(@ConnectedSocket() client: Socket, @MessageBody() data: string) {
-		this.roomSerivce.enterRoom(client, data, this.server);
+	handleEnterRoom(@ConnectedSocket() client: Socket, @MessageBody() roomUUID: string) {
+		this.roomSerivce.enterRoom({ client, server, roomUUID });
 	}
 
 	@SubscribeMessage(ROOM_EVENT.LEAVE_ROOM)
