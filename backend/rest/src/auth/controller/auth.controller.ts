@@ -10,9 +10,9 @@ export class AuthController {
 
 	@Get('oauth/redirect/:type')
 	@HttpCode(HTTP_STATUS.HTTP_REDIRECT)
-	redirectOauthPage(@Param('type') type: string, @Res() res: Response) {
+	redirectOauthPage(@Param('type') type: string) {
 		const pageUrl = this.authService.getSocialUrl(type);
-		res.redirect(pageUrl);
+		return { url: pageUrl };
 	}
 
 	@Get('oauth/callback/:type')

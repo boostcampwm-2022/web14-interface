@@ -16,7 +16,7 @@ export class OauthKakaoService implements OauthService {
 	private clientId = process.env.KAKAO_CLIENT_ID;
 	private clientSecret = process.env.KAKAO_CLIENT_SECRET;
 	private callbackUrl = [
-		process.env.SERVER_ORIGIN_URL,
+		process.env.CLIENT_ORIGIN_URL,
 		OAUTH_CALLBACK_URL,
 		OAUTH_TYPE.KAKAO,
 	].join('/');
