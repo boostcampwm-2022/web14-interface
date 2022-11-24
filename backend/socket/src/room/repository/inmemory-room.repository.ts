@@ -1,75 +1,37 @@
 import { END_FLAG, MAX_COUNT, ROOM_EVENT, ROOM_STATE } from '@constant';
 import { WsException } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { InmemoryRoom, repositoryType, User } from 'src/types/room.type';
+import { InmemoryRoom, User } from 'src/types/room.type';
 import { RoomRepository } from './interface-room.repository';
 
-export class InmemoryRoomRepository implements RoomRepository<repositoryType> {
+export class InmemoryRoomRepository implements RoomRepository {
 	private rooms = new Map<string, InmemoryRoom>();
-	private users = new Map<string, User>();
+	private userMap = new Map<string, User>();
 
-	repository = {};
-	sockets = {};
-	roomState = {};
-	feedbackCounter = {};
-
-	createRoom(uuid: string) {
-		const room: InmemoryRoom = { users: [], state: ROOM_STATE.LOBBY, feedbacked: new Set() };
-		this.rooms.set(uuid, room);
-		return uuid;
+	createRoom({ roomUUID, room }: { roomUUID: string; room: InmemoryRoom }) {
+		this.rooms.set(roomUUID, room);
+		return room;
 	}
 
-	enterRoom({ clientId, roomUUID }: { clientId: string; roomUUID: string }) {
-		if (Object.keys(this.repository[uuid]).length >= MAX_COUNT)
-			throw new WsException('인원 초과');
-		if (clientId in this.repository[uuid]) throw new WsException('Internal Serval Error');
-		this.repository[uuid][clientId] = nickname;
-		this.sockets[clientId] = uuid;
-	}
-	broadcastUserList(clientId: string, server: Server, eventType: string): string {
-		const uuid = this.sockets[clientId];
-		const state = this.roomState[uuid];
-
-		const res = JSON.stringify({
-			data: this.repository[uuid],
-			state,
-		});
-
-		server.to(uuid).emit(eventType, res);
-		return res;
+	getRoom(roomUUID: string) {
+		return this.rooms.get(roomUUID);
 	}
 
-	leaveRoom(client: Socket) {
-		if (!(client.id in this.sockets)) return;
-		const uuid = this.sockets[client.id];
-
-		client.leave(uuid);
-
-		delete this.repository[uuid][client.id];
-		if (!Object.keys(this.repository[uuid])) {
-			delete this.repository[uuid];
-			delete this.roomState[uuid];
-			delete this.feedbackCounter[uuid];
-		}
-		// delete this.sockets[client.id];
+	getUsersInRoom(roomUUID: string) {
+		const room = this.rooms.get(roomUUID);
+		return room.users;
 	}
 
-	changeRoomState(client: Socket, state: string) {
-		const uuid = this.sockets[client.id];
-		this.roomState[uuid] = state;
+	saveUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }) {
+		const room = this.rooms.get(roomUUID);
+		room.users.set(user.nickname, user);
 	}
 
-	countFeedback(clientId: string, server: Server) {
-		const uuid = this.sockets[clientId];
-		if (this.feedbackCounter[uuid].has(clientId)) throw new WsException('이미 카운트되었음');
+	getUserByClientId(clientId: string) {
+		return this.userMap.get(clientId);
+	}
 
-		this.feedbackCounter[uuid].add(clientId);
-
-		server.to(uuid).emit(ROOM_EVENT.COUNT_FEEDBACK, this.feedbackCounter[uuid].size);
-		if (this.feedbackCounter[uuid].size == MAX_COUNT - 1) {
-			server.to(uuid).emit(ROOM_EVENT.TERMINATE_SESSION);
-			return END_FLAG;
-		}
-		return this.feedbackCounter[uuid].size;
+	setUserByClientId({ clientId, user }: { clientId: string; user: User }) {
+		this.userMap.set(clientId, user);
 	}
 }
