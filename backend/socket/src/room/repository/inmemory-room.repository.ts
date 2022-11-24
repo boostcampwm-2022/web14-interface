@@ -1,20 +1,24 @@
 import { END_FLAG, MAX_COUNT, ROOM_EVENT, ROOM_STATE } from '@constant';
 import { WsException } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { repositoryType } from 'src/types/room.type';
+import { InmemoryRoom, repositoryType, User } from 'src/types/room.type';
 import { RoomRepository } from './interface-room.repository';
 
 export class InmemoryRoomRepository implements RoomRepository<repositoryType> {
+	private rooms = new Map<string, InmemoryRoom>();
+	private users = new Map<string, User>();
+
 	repository = {};
 	sockets = {};
 	roomState = {};
 	feedbackCounter = {};
 
 	createRoom(uuid: string) {
-		this.repository[uuid] = {};
-		this.roomState[uuid] = ROOM_STATE.LOBBY;
-		this.feedbackCounter[uuid] = new Set();
+		const room: InmemoryRoom = { users: [], state: ROOM_STATE.LOBBY, feedbacked: new Set() };
+		this.rooms.set(uuid, room);
+		return uuid;
 	}
+
 	enterRoom({ clientId, roomUUID }: { clientId: string; roomUUID: string }) {
 		if (Object.keys(this.repository[uuid]).length >= MAX_COUNT)
 			throw new WsException('인원 초과');
