@@ -1,17 +1,17 @@
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
-import Login from '@pages/Login';
-import Landing from '@pages/Landing';
-import Lobby from '@pages/Lobby';
-import Interviewee from '@pages/Interviewee';
-import Interviewer from '@pages/Interviewer';
-import Waitting from '@pages/Waitting';
-import Feedback from '@pages/Feedback';
+import Login from '@pages/Login/Login';
+import Landing from '@pages/Landing/Landing';
+import Lobby from '@pages/Lobby/Lobby';
+import Interviewee from '@pages/Interviewee/Interviewee';
+import Interviewer from '@pages/Interviewer/Interviewer';
+import Waitting from '@pages/Waitting/Waitting';
+import Feedback from '@pages/Feedback/Feedback';
 import PrivateRoute from './PrivateRoute';
 import StrictRoute from './StrictRoute';
 import { PATH_TYPE } from '@constants/path.constant';
-import NotFound from '@pages/NotFound';
+import NotFound from '@pages/NotFound/NotFound';
 
 const {
 	LOGIN_PATH,
