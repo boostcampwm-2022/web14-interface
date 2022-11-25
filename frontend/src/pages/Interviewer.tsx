@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { PHASE_TYPE } from '@constants/phase.constant';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
-import { io } from 'socket.io-client';
+import { socket } from '../service/socket';
 
 const Interviewer = () => {
 	const { safeNavigate } = useSafeNavigate();
@@ -17,10 +17,6 @@ const Interviewer = () => {
 		newVideo.playsInline = true;
 		document.body.appendChild(newVideo);
 	};
-
-	const socket = io(`ws://localhost:3000/`, {
-		transports: ['websocket'],
-	});
 
 	let stream;
 	const connectionList = new Map();
