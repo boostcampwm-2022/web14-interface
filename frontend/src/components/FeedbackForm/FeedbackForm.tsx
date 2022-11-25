@@ -3,7 +3,7 @@ import { FeedbackType } from '@customType/feedback';
 import { currentVideoTimeState } from '@store/currentVideoTime.atom';
 import { feedbackIdsState, feedbackState } from '@store/feedback.atom';
 import React, { useState } from 'react';
-import { useRecoilCallback, useRecoilTransaction_UNSTABLE, useRecoilValue } from 'recoil';
+import { useRecoilTransaction_UNSTABLE, useRecoilValue } from 'recoil';
 
 const FeedbackForm = () => {
 	const [inputVal, setInputVal] = useState('');

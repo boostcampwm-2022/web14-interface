@@ -12,7 +12,7 @@ const FeedbackArea = () => {
 			<div
 				style={{
 					overflow: 'scroll',
-					height: '400px',
+					height: '200px',
 				}}
 			>
 				{feedbackIds.map((startTime, i) => (

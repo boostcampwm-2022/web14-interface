@@ -1,5 +1,4 @@
 import React from 'react';
-import { FeedbackBox } from '@components/@shared/FeedbackBox/FeedbackBox';
 
 import { ReactComponent as DeleteIcon } from '@assets/icon/delete.svg';
 import { ReactComponent as EditIcon } from '@assets/icon/edit.svg';
@@ -19,14 +18,14 @@ interface PropsType {
 }
 const EditableFeedbackBox = ({ startTime, index }: PropsType) => {
 	const [feedback, setFeedback] = useRecoilState(feedbackState(startTime));
-	if (!feedback) return;
 	const deleteFeedback = useResetRecoilState(feedbackState(startTime));
 	const isFbSync = useRecoilValue(isFbSyncState);
 	const setFocusIndex = useSetRecoilState(focusIndexState);
 	const setIsFbClicked = useSetRecoilState(isFbClickedState);
-	const setCurrentVideoTime = useSetRecoilState(currentVideoTimeSelector(startTime));
+	const setCurrentVideoTime = useSetRecoilState(currentVideoTimeSelector);
 	const setfeedbackIdsState = useSetRecoilState(feedbackIdsState);
 
+	if (!feedback) return;
 	const { content, readOnly } = feedback;
 
 	const handleClickFeedback = () => {
@@ -88,7 +87,7 @@ const EditableFeedbackBox = ({ startTime, index }: PropsType) => {
 			});
 		}
 	};
-	console.log(content);
+
 	return (
 		<div id={'fb-' + index} onClick={handleClickFeedback}>
 			<div>{startTime}</div>

@@ -1,19 +1,28 @@
 import React, { useRef, useEffect } from 'react';
 import Video from '@components/@shared/Video/Video';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { currentVideoTimeSelector } from '@store/currentVideoTime.atom';
+import { isFbClickedState } from '@store/feedback.atom';
 
 const IntervieweeVideo = () => {
 	const videoRef = useRef<HTMLVideoElement>(null);
-	const setVideoTimeState = useSetRecoilState(currentVideoTimeSelector(0));
+	const [currentVideoTime, setCurrentVideoTime] = useRecoilState(currentVideoTimeSelector);
+	const [isFbClicked, setIsFbClicked] = useRecoilState(isFbClickedState);
 
 	const sendPeriod = 1000;
 	const sendCurrentTime = () => {
 		if (!videoRef.current?.currentTime) return;
 
 		const currentTime = videoRef.current.currentTime;
-		setVideoTimeState(currentTime);
+		setCurrentVideoTime(Math.floor(currentTime));
 	};
+
+	useEffect(() => {
+		if (!videoRef.current) return;
+		if (!isFbClicked) return;
+		videoRef.current.currentTime = currentVideoTime;
+		setIsFbClicked(false);
+	}, [currentVideoTime]);
 
 	useEffect(() => {
 		if (videoRef) {

@@ -1,35 +1,13 @@
-import { atom, selectorFamily } from 'recoil';
+import { atom, selector } from 'recoil';
 import { feedbackIdsState, isFbClickedState, isFbSyncState } from './feedback.atom';
 import { focusIndexState } from './focusIndex.atom';
 import { lowerBound } from '@utils/lowerBound';
 
-const handleVideoTimeChange =
-	(newVideoTime: number) =>
-	({ set, get }) => {
-		if (get(isFbClickedState)) {
-			set(currentVideoTimeState, newVideoTime);
-			setVideoElementTime(newVideoTime);
-
-			set(isFbClickedState, false);
-		} else if (get(isFbSyncState)) {
-			setVideoTimeState(set);
-			updateFocusIndex(get, set);
-		}
-	};
-
-const setVideoElementTime = (newVideoTime) => {
-	const video = document.getElementsByTagName('video')[0] as HTMLVideoElement;
-	video.currentTime = newVideoTime;
-};
-
-const updateFocusIndex = (get, set) => {
+const handleVideoTimeChange = ({ get, set }, newVideoTime) => {
+	if (!get(isFbSyncState)) return;
 	const newFocusId = lowerBound(get(feedbackIdsState), get(currentVideoTimeState));
 	if (get(focusIndexState) !== newFocusId) set(focusIndexState, newFocusId);
-};
-
-const setVideoTimeState = (set) => {
-	const video = document.getElementsByTagName('video')[0] as HTMLVideoElement;
-	set(currentVideoTimeState, Math.floor(video.currentTime));
+	set(currentVideoTimeState, newVideoTime);
 };
 
 export const currentVideoTimeState = atom({
@@ -37,12 +15,10 @@ export const currentVideoTimeState = atom({
 	default: 0,
 });
 
-export const currentVideoTimeSelector = selectorFamily({
+export const currentVideoTimeSelector = selector({
 	key: 'currentVideoTimeSelector',
-	get:
-		() =>
-		({ get }) => {
-			return get(currentVideoTimeState);
-		},
+	get: ({ get }) => {
+		return get(currentVideoTimeState);
+	},
 	set: handleVideoTimeChange,
 });
