@@ -61,7 +61,7 @@ const Login = () => {
 						/>
 						<KakaoOauthBtn
 							css={OauthButton}
-							onClick={() => startOauth(OAUTH_TYPE.NAVER)}
+							onClick={() => startOauth(OAUTH_TYPE.KAKAO)}
 						/>
 					</div>
 				</div>
