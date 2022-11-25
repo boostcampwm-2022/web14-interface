@@ -4,78 +4,80 @@ import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import { io } from 'socket.io-client';
 
-const makeNewVideo = (stream) => {
-	const newVideo = document.createElement('video');
-
-	newVideo.srcObject = stream;
-	newVideo.width = 400;
-	newVideo.autoplay = true;
-	newVideo.playsInline = true;
-	document.body.appendChild(newVideo);
-};
-
-const socket = io(`ws://localhost:3000/`, {
-	transports: ['websocket'],
-});
-
-let stream;
-const connectionList = new Map();
-
-const handleIce = (senderId, recieverID, data) => {
-	socket.emit('ice', data.candidate, senderId, recieverID);
-};
-
-const handleAddStream = async (receiverId, data) => {
-	makeNewVideo(data.stream);
-	connectionList.set(receiverId, { ...connectionList.get(receiverId), stream: data.stream });
-};
-
-async function getMedia() {
-	try {
-		stream = await navigator.mediaDevices.getUserMedia({
-			audio: true,
-			video: true,
-		});
-
-		makeNewVideo(stream);
-	} catch (e) {
-		console.log(e);
-	}
-}
-
-const makeConnection = (senderID, recieverID) => {
-	const connection = new RTCPeerConnection({
-		iceServers: [
-			{
-				urls: [
-					'stun:stun.l.google.com:19302',
-					'stun:stun1.l.google.com:19302',
-					'stun:stun2.l.google.com:19302',
-					'stun:stun3.l.google.com:19302',
-					'stun:stun4.l.google.com:19302',
-				],
-			},
-		],
-	});
-
-	connection.addEventListener('icecandidate', (data) => handleIce(senderID, recieverID, data));
-	connection.addEventListener('addstream', (data) => handleAddStream(recieverID, data));
-
-	//내 stream을 가져와 conection에 track을 추가한다.
-	stream.getTracks().forEach((track) => connection.addTrack(track, stream));
-
-	connectionList.set(recieverID, { connection });
-};
-
-const enterRoomInit = async (senderId) => {
-	await getMedia();
-
-	socket.emit('join_room', senderId);
-};
-
 const Interviewer = () => {
 	const { safeNavigate } = useSafeNavigate();
 	usePreventLeave();
+
+	const makeNewVideo = (stream) => {
+		const newVideo = document.createElement('video');
+
+		newVideo.srcObject = stream;
+		newVideo.width = 400;
+		newVideo.autoplay = true;
+		newVideo.playsInline = true;
+		document.body.appendChild(newVideo);
+	};
+
+	const socket = io(`ws://localhost:3000/`, {
+		transports: ['websocket'],
+	});
+
+	let stream;
+	const connectionList = new Map();
+
+	const handleIce = (senderId, recieverID, data) => {
+		socket.emit('ice', data.candidate, senderId, recieverID);
+	};
+
+	const handleAddStream = async (receiverId, data) => {
+		makeNewVideo(data.stream);
+		connectionList.set(receiverId, { ...connectionList.get(receiverId), stream: data.stream });
+	};
+
+	async function getMedia() {
+		try {
+			stream = await navigator.mediaDevices.getUserMedia({
+				audio: true,
+				video: true,
+			});
+
+			makeNewVideo(stream);
+		} catch (e) {
+			console.log(e);
+		}
+	}
+
+	const makeConnection = (senderID, recieverID) => {
+		const connection = new RTCPeerConnection({
+			iceServers: [
+				{
+					urls: [
+						'stun:stun.l.google.com:19302',
+						'stun:stun1.l.google.com:19302',
+						'stun:stun2.l.google.com:19302',
+						'stun:stun3.l.google.com:19302',
+						'stun:stun4.l.google.com:19302',
+					],
+				},
+			],
+		});
+
+		connection.addEventListener('icecandidate', (data) =>
+			handleIce(senderID, recieverID, data)
+		);
+		connection.addEventListener('addstream', (data) => handleAddStream(recieverID, data));
+
+		//내 stream을 가져와 conection에 track을 추가한다.
+		stream.getTracks().forEach((track) => connection.addTrack(track, stream));
+
+		connectionList.set(recieverID, { connection });
+	};
+
+	const enterRoomInit = async (senderId) => {
+		await getMedia();
+
+		socket.emit('join_room', senderId);
+	};
 
 	useEffect(() => {
 		const senderId = Math.random();
