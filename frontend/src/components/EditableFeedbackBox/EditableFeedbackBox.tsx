@@ -15,8 +15,9 @@ import { focusIndexState } from '@store/focusIndex.atom';
 interface PropsType {
 	startTime: number;
 	index: number;
+	feedbackRef: React.MutableRefObject<any[]>;
 }
-const EditableFeedbackBox = ({ startTime, index }: PropsType) => {
+const EditableFeedbackBox = ({ startTime, index, feedbackRef }: PropsType) => {
 	const [feedback, setFeedback] = useRecoilState(feedbackState(startTime));
 	const deleteFeedback = useResetRecoilState(feedbackState(startTime));
 	const isFbSync = useRecoilValue(isFbSyncState);
@@ -89,7 +90,7 @@ const EditableFeedbackBox = ({ startTime, index }: PropsType) => {
 	};
 
 	return (
-		<div id={'fb-' + index} onClick={handleClickFeedback}>
+		<div ref={(el) => (feedbackRef.current[index] = el)} onClick={handleClickFeedback}>
 			<div>{startTime}</div>
 			{content.map((c, i) => (
 				<div key={i}>
