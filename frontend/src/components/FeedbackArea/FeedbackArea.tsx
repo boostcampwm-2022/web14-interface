@@ -26,10 +26,10 @@ const FeedbackArea = () => {
 			>
 				{feedbackIds.map((startTime, i) => (
 					<EditableFeedbackBox
-						feedbackRef={feedbackRef}
 						key={startTime}
 						startTime={startTime}
 						index={i}
+						feedbackRef={feedbackRef}
 					/>
 				))}
 			</div>
