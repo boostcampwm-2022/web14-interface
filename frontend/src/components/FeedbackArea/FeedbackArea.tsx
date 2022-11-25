@@ -1,4 +1,3 @@
-/*  */
 import React, { useEffect, useRef } from 'react';
 import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
 import EditableFeedbackBox from '@components/EditableFeedbackBox/EditableFeedbackBox';

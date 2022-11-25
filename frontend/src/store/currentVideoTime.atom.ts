@@ -1,5 +1,5 @@
 import { atom, selector } from 'recoil';
-import { feedbackIdsState, isFbClickedState, isFbSyncState } from './feedback.atom';
+import { feedbackIdsState, isFbSyncState } from './feedback.atom';
 import { focusIndexState } from './focusIndex.atom';
 import { lowerBound } from '@utils/lowerBound';
 

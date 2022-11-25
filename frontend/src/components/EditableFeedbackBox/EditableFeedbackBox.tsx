@@ -2,15 +2,11 @@ import React from 'react';
 
 import { ReactComponent as DeleteIcon } from '@assets/icon/delete.svg';
 import { ReactComponent as EditIcon } from '@assets/icon/edit.svg';
-import { useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
-import {
-	feedbackIdsState,
-	feedbackState,
-	isFbClickedState,
-	isFbSyncState,
-} from '@store/feedback.atom';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { feedbackState, isFbClickedState, isFbSyncState } from '@store/feedback.atom';
 import { currentVideoTimeSelector } from '@store/currentVideoTime.atom';
 import { focusIndexState } from '@store/focusIndex.atom';
+import useCrudFeedback from '@hooks/useCrudFeedback';
 
 interface PropsType {
 	startTime: number;
@@ -18,13 +14,15 @@ interface PropsType {
 	feedbackRef: React.MutableRefObject<any[]>;
 }
 const EditableFeedbackBox = ({ startTime, index, feedbackRef }: PropsType) => {
-	const [feedback, setFeedback] = useRecoilState(feedbackState(startTime));
-	const deleteFeedback = useResetRecoilState(feedbackState(startTime));
+	const feedback = useRecoilValue(feedbackState(startTime));
+
 	const isFbSync = useRecoilValue(isFbSyncState);
 	const setFocusIndex = useSetRecoilState(focusIndexState);
 	const setIsFbClicked = useSetRecoilState(isFbClickedState);
 	const setCurrentVideoTime = useSetRecoilState(currentVideoTimeSelector);
-	const setfeedbackIdsState = useSetRecoilState(feedbackIdsState);
+
+	const { handleStartEditFeedback, handleEndEditFeedback, handleFbChange, handleDeleteFeedback } =
+		useCrudFeedback(startTime);
 
 	if (!feedback) return;
 	const { content, readOnly } = feedback;
@@ -33,60 +31,7 @@ const EditableFeedbackBox = ({ startTime, index, feedbackRef }: PropsType) => {
 		if (!isFbSync) return;
 		setFocusIndex(index);
 		setIsFbClicked(true);
-		setCurrentVideoTime(feedback.startTime);
-	};
-
-	const handleStartEditFeedback = (i) => {
-		setFeedback((fb) => {
-			const newReadOnlyList = fb.readOnly.slice();
-			newReadOnlyList[i] = false;
-			return { ...fb, readOnly: newReadOnlyList };
-		});
-	};
-
-	const handleEndEditFeedback = (i) => {
-		setFeedback((fb) => {
-			const newReadOnlyList = fb.readOnly.slice();
-			newReadOnlyList[i] = true;
-			return {
-				...fb,
-				readOnly: newReadOnlyList,
-			};
-		});
-	};
-
-	const handleFbChange = (e, i) => {
-		setFeedback((fb) => {
-			const newContentList = fb.content.slice();
-			newContentList[i] = e.target.value;
-			return {
-				...fb,
-				content: newContentList,
-			};
-		});
-	};
-
-	const handleDeleteFeedback = (idx) => {
-		if (feedback.content.length === 1) {
-			deleteFeedback();
-			setfeedbackIdsState((fbIds) => fbIds.filter((st) => st !== startTime));
-		} else {
-			setFeedback((fb) => {
-				const newContentList = fb.content.reduce((prev, cur, i) => {
-					if (idx === i) return prev;
-					return prev.concat(cur);
-				}, []);
-				const newReadOnlyList = fb.readOnly.reduce((prev, cur, i) => {
-					if (idx === i) return prev;
-					return prev.concat(cur);
-				}, []);
-				return {
-					...fb,
-					content: newContentList,
-					readOnly: newReadOnlyList,
-				};
-			});
-		}
+		setCurrentVideoTime(startTime);
 	};
 
 	return (
@@ -99,16 +44,16 @@ const EditableFeedbackBox = ({ startTime, index, feedbackRef }: PropsType) => {
 						readOnly={readOnly[i]}
 						onChange={(e) => handleFbChange(e, i)}
 					/>
-					<button onClick={() => handleDeleteFeedback(i)}>
-						<DeleteIcon width={20} />
-					</button>
-					<button>
+					<div>
+						<DeleteIcon onClick={() => handleDeleteFeedback(i)} width={20} />
+					</div>
+					<div>
 						{readOnly[i] ? (
 							<EditIcon onClick={() => handleStartEditFeedback(i)} width={20} />
 						) : (
-							<div onClick={() => handleEndEditFeedback(i)}>수정완료</div>
+							<button onClick={() => handleEndEditFeedback(i)}>수정완료</button>
 						)}
-					</button>
+					</div>
 				</div>
 			))}
 		</div>
