@@ -2,41 +2,64 @@ import React, { useRef, useEffect } from 'react';
 import { socket } from '../service/socket';
 
 const useWebRTC = (
-	senderId: string,
+	myId: string,
 	setMyStream: React.Dispatch<React.SetStateAction<MediaStream>>,
 	setStreamList: React.Dispatch<React.SetStateAction<MediaStream[]>>
 ) => {
 	const myStreamRef = useRef(null);
 	const connectionListRef = useRef(new Map());
 
-	async function getMedia() {
+	/**
+	 내 미디어 장치로부터 MediaStream을 가져와 myStreamRef를 Stream으로 설정합니다. 
+	 그 후 setMyStream을 통해 외부 myStream 상태를 Stream으로 설정합니다.
+	 */
+	async function getMyStream() {
 		try {
 			const newStream = await navigator.mediaDevices.getUserMedia({
 				audio: true,
 				video: true,
 			});
 
-			setMyStream(newStream);
 			myStreamRef.current = newStream;
+			setMyStream(newStream);
 		} catch (e) {
-			alert(e);
 			console.log(e);
 		}
 	}
 
-	const handleIce = (senderId, recieverID, data) => {
-		socket.emit('ice', data.candidate, senderId, recieverID);
+	/**
+	 * RTCPeerConnection에 icecandidate 이벤트 발생 시 핸들링하는 함수입니다.
+	 * 들어온 icecandidate를 시그널링 서버를 통해 상대방에게 전달합니다.
+	 * @param event icecandidate event
+	 * @param myId 내 ID
+	 * @param opponentId connection으로 연결된 상대방의 ID
+	 */
+	const handleIce = (event, myId, opponentId) => {
+		socket.emit('ice', event.candidate, myId, opponentId);
 	};
 
-	const handleAddStream = async (receiverId, data) => {
-		connectionListRef.current.set(receiverId, {
-			...connectionListRef.current.get(receiverId),
-			stream: data.stream,
+	/**
+	 * RTCPeerConnectiono에 addstream 이벤트 발생 시 핸들링하는 함수입니다.
+	 * 들어온 stream을 connectionListRef에 보낸 사람의 ID와 매칭하여 저장합니다.
+	 * 그 후 setStreamList를 통해 외부 streamList 상태를 새로 설정합니다.
+	 * @param event addstream event
+	 * @param opponentId connection으로 연결된 상대방의 ID
+	 */
+	const handleAddStream = async (event, opponentId) => {
+		connectionListRef.current.set(opponentId, {
+			...connectionListRef.current.get(opponentId),
+			stream: event.stream,
 		});
-		setStreamList((current) => [...current, data.stream]);
+		setStreamList((current) => [...current, event.stream]);
 	};
 
-	const makeConnection = (senderID, recieverID) => {
+	/**
+	 * 새로운 RTCPeerConnection을 만듭니다.
+	 * @param myId 내 ID
+	 * @param opponentId Connection으로 연결되는 상대방의 ID
+	 * @returns 새로 생성된 RTCPeerConnection
+	 */
+	const makeConnection = (myId, opponentId) => {
 		const connection = new RTCPeerConnection({
 			iceServers: [
 				{
@@ -51,59 +74,85 @@ const useWebRTC = (
 			],
 		});
 
-		connection.addEventListener('icecandidate', (data) =>
-			handleIce(senderID, recieverID, data)
-		);
-		connection.addEventListener('addstream', (data) => handleAddStream(recieverID, data));
+		connection.addEventListener('icecandidate', (event) => handleIce(event, myId, opponentId));
+
+		//TODO Deprecated Event : track으로 교체 필요
+		//track으로 교체 시 event.streams[0].id에 대해 중복 제거 로직 추가 필요
+		connection.addEventListener('addstream', (event) => handleAddStream(event, opponentId));
 
 		myStreamRef.current
 			.getTracks()
 			.forEach((track) => connection.addTrack(track, myStreamRef.current));
 
-		connectionListRef.current.set(recieverID, { connection });
+		connectionListRef.current.set(opponentId, { connection });
+
+		return connection;
 	};
 
-	const enterRoomInit = async () => {
-		await getMedia();
+	/**
+	 * WebRTC Connection 시작 함수입니다.
+	 * 실행 시, 유저로부터 Stream을 얻어오고 socket에 필요한 이벤트를 설정 후,
+	 * 서버에 enter_room 이벤트를 보냅니다.
+	 */
+	const startConnection = async () => {
+		await getMyStream();
 
-		socket.emit('join_room', senderId);
+		socket.on('user_enter', async (opponentId) => {
+			const newConnection = makeConnection(myId, opponentId);
+			const offer = await newConnection.createOffer();
+			newConnection.setLocalDescription(offer);
 
-		socket.on('welcome', async (receiverId) => {
-			//알림을 받는 쪽에서 실행
-			console.log('상대방 닉네임', receiverId);
-			makeConnection(senderId, receiverId);
-			const offer = await connectionListRef.current.get(receiverId).connection.createOffer(); //초대장 만들기
-			connectionListRef.current.get(receiverId).connection.setLocalDescription(offer);
-			socket.emit('offer', offer, senderId, receiverId);
+			socket.emit('offer', offer, myId, opponentId);
 		});
 
-		//새로운 참가자가 offer를 받으면 answer를 만들어서 기존 참가자들에게 보냄
-		socket.on('offer', async (offer, receiverId) => {
-			makeConnection(senderId, receiverId);
-			connectionListRef.current.get(receiverId).connection.setRemoteDescription(offer);
-			const answer = await connectionListRef.current
-				.get(receiverId)
-				.connection.createAnswer();
-			connectionListRef.current.get(receiverId).connection.setLocalDescription(answer);
-			socket.emit('answer', answer, senderId, receiverId);
+		socket.on('offer', async (offer, opponentId) => {
+			const newConnection = makeConnection(myId, opponentId);
+			newConnection.setRemoteDescription(offer);
+			const answer = await newConnection.createAnswer();
+			newConnection.setLocalDescription(answer);
+
+			socket.emit('answer', answer, myId, opponentId);
 		});
 
-		//answer를 받으면 내꺼에 answer를 등록
-		socket.on('answer', (answer, receiverId) => {
-			connectionListRef.current.get(receiverId).connection.setRemoteDescription(answer);
+		socket.on('answer', (answer, opponentId) => {
+			connectionListRef.current.get(opponentId).connection.setRemoteDescription(answer);
 		});
 
-		//candicate를 받음.
-		socket.on('ice', (ice, receiverId) => {
-			connectionListRef.current.get(receiverId).connection.addIceCandidate(ice);
+		socket.on('ice', (ice, opponentId) => {
+			connectionListRef.current.get(opponentId).connection.addIceCandidate(ice);
 		});
+
+		socket.emit('enter_room', myId);
+	};
+
+	/**
+	 * 특정 Connection을 종료하기 위한 함수입니다.
+	 * closeId에 매칭되는 MediaStream을 stop하고, connection을 close합니다.
+	 * 그 후, connectionListRef과 외부 streamList를 업데이트합니다.
+	 * @param closeId 서버가 보낸 나간 UserId
+	 */
+	const closeConnection = (closeId) => {
+		const oldStream = connectionListRef.current.get(closeId).stream;
+		const oldConnection = connectionListRef.current.get(closeId).connection;
+
+		oldStream.getTracks().forEach((track) => track.close());
+		oldConnection.close();
+		connectionListRef.current.delete(closeId);
+		setStreamList((current) =>
+			current.filter((mediaStream) => mediaStream.id !== oldStream.id)
+		);
 	};
 
 	useEffect(() => {
-		enterRoomInit();
+		return () => {
+			socket.off('user_enter');
+			socket.off('offer');
+			socket.off('answer');
+			socket.off('ice');
+		};
 	}, []);
 
-	return { myStreamRef, connectionListRef };
+	return { startConnection, closeConnection };
 };
 
 export default useWebRTC;
