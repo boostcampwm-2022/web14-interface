@@ -45,7 +45,7 @@ const useWebRTC = (
 	 * @param event addstream event
 	 * @param opponentId connection으로 연결된 상대방의 ID
 	 */
-	const handleAddStream = async (event, opponentId) => {
+	const handleAddStream = (event, opponentId) => {
 		connectionListRef.current.set(opponentId, {
 			...connectionListRef.current.get(opponentId),
 			stream: event.stream,
