@@ -4,7 +4,7 @@ import { socket } from '../service/socket';
 const useWebRTC = (
 	myId: string,
 	setMyStream: React.Dispatch<React.SetStateAction<MediaStream>>,
-	setStreamList: React.Dispatch<React.SetStateAction<MediaStream[]>>
+	setOtherStreamList: React.Dispatch<React.SetStateAction<MediaStream[]>>
 ) => {
 	const myStreamRef = useRef(null);
 	const connectionListRef = useRef(new Map());
@@ -41,7 +41,7 @@ const useWebRTC = (
 	/**
 	 * RTCPeerConnectiono에 addstream 이벤트 발생 시 핸들링하는 함수입니다.
 	 * 들어온 stream을 connectionListRef에 보낸 사람의 ID와 매칭하여 저장합니다.
-	 * 그 후 setStreamList를 통해 외부 streamList 상태를 새로 설정합니다.
+	 * 그 후 setOtherStreamList를 통해 외부 otherStreamList 상태를 새로 설정합니다.
 	 * @param event addstream event
 	 * @param opponentId connection으로 연결된 상대방의 ID
 	 */
@@ -50,7 +50,7 @@ const useWebRTC = (
 			...connectionListRef.current.get(opponentId),
 			stream: event.stream,
 		});
-		setStreamList((current) => [...current, event.stream]);
+		setOtherStreamList((current) => [...current, event.stream]);
 	};
 
 	/**
@@ -128,7 +128,7 @@ const useWebRTC = (
 	/**
 	 * 특정 Connection을 종료하기 위한 함수입니다.
 	 * closeId에 매칭되는 MediaStream을 stop하고, connection을 close합니다.
-	 * 그 후, connectionListRef과 외부 streamList를 업데이트합니다.
+	 * 그 후, connectionListRef과 외부 otherStreamList를 업데이트합니다.
 	 * @param closeId 서버가 보낸 나간 UserId
 	 */
 	const closeConnection = (closeId) => {
@@ -138,7 +138,7 @@ const useWebRTC = (
 		oldStream.getTracks().forEach((track) => track.close());
 		oldConnection.close();
 		connectionListRef.current.delete(closeId);
-		setStreamList((current) =>
+		setOtherStreamList((current) =>
 			current.filter((mediaStream) => mediaStream.id !== oldStream.id)
 		);
 	};
