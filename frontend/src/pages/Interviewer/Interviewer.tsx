@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { PHASE_TYPE } from '@constants/phase.constant';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
-import { socket } from '../service/socket';
+import { socket } from '../../service/socket';
 
 const Interviewer = () => {
 	const { safeNavigate } = useSafeNavigate();
