@@ -33,12 +33,12 @@ const FeedbackForm = () => {
 				if (!existFeedback) createNewFeedbackBox(set, newFeedback);
 				else appendFeedback(set, newFeedback, existFeedback);
 			},
-		[currentVideoTime]
+		[]
 	);
 
 	const createNewFeedbackBox = (set, newFeedback) => {
-		set(feedbackIdsState, (curTodoIds) =>
-			curTodoIds.concat(newFeedback.startTime).sort((a, b) => a - b)
+		set(feedbackIdsState, (todoId) =>
+			todoId.concat(newFeedback.startTime).sort((a, b) => a - b)
 		);
 		set(feedbackState(newFeedback.startTime), newFeedback);
 	};
