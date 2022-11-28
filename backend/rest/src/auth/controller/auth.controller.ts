@@ -1,7 +1,7 @@
 import { Controller, Get, HttpCode, Param, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import { Request, Response } from 'express';
-import { HTTP_STATUS, tokenCookieOptions, JWT_ENV, JWT_TYPE } from '@constant';
+import { HTTP_STATUS, tokenCookieOptions, JWT_TYPE } from '@constant';
 import { JwtAuthGuard } from '../guard/jwt.guard';
 
 @Controller('auth')
@@ -10,16 +10,16 @@ export class AuthController {
 
 	@Get('oauth/redirect/:type')
 	@HttpCode(HTTP_STATUS.HTTP_REDIRECT)
-	redirectOauthPage(@Param('type') type: string, @Res() res: Response) {
+	redirectOauthPage(@Param('type') type: string) {
 		const pageUrl = this.authService.getSocialUrl(type);
-		res.redirect(pageUrl);
+		return { url: pageUrl };
 	}
 
 	@Get('oauth/callback/:type')
 	async socialStart(
 		@Query('code') authorizationCode: string,
 		@Param('type') type: string,
-		@Res({ passthrough: true }) res: Response
+		@Res() res: Response
 	) {
 		const user = await this.authService.socialStart({ type, authorizationCode });
 		const { accessToken, refreshToken } =
@@ -27,6 +27,7 @@ export class AuthController {
 
 		res.cookie(JWT_TYPE.ACCESS_TOKEN, accessToken, tokenCookieOptions);
 		res.cookie(JWT_TYPE.REFRESH_TOKEN, refreshToken, tokenCookieOptions);
+		res.redirect(process.env.CLIENT_ORIGIN_URL);
 	}
 
 	@UseGuards(JwtAuthGuard)
@@ -36,6 +37,7 @@ export class AuthController {
 		const { accessToken, refreshToken } = req.cookies;
 		res.cookie(JWT_TYPE.ACCESS_TOKEN, accessToken, tokenCookieOptions);
 		res.cookie(JWT_TYPE.REFRESH_TOKEN, refreshToken, tokenCookieOptions);
+		return { statusCode: 200 };
 	}
 
 	@UseGuards(JwtAuthGuard)
@@ -43,5 +45,6 @@ export class AuthController {
 	logout(@Res({ passthrough: true }) res: Response) {
 		res.clearCookie(JWT_TYPE.ACCESS_TOKEN);
 		res.clearCookie(JWT_TYPE.REFRESH_TOKEN);
+		return { statusCode: 200 };
 	}
 }
