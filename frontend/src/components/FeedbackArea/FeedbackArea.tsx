@@ -23,12 +23,12 @@ const FeedbackArea = () => {
 					height: '200px',
 				}}
 			>
-				{feedbackIds.map((startTime, i) => (
+				{feedbackIds.map((feedbackId, idx) => (
 					<EditableFeedbackBox
-						key={startTime}
-						startTime={startTime}
-						index={i}
+						key={feedbackId}
+						feedbackId={feedbackId}
 						feedbackRef={feedbackRef}
+						index={idx}
 					/>
 				))}
 			</div>

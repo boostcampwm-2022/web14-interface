@@ -5,57 +5,50 @@ import { ReactComponent as EditIcon } from '@assets/icon/edit.svg';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { feedbackState, isFbClickedState, isFbSyncState } from '@store/feedback.atom';
 import { currentVideoTimeSelector } from '@store/currentVideoTime.atom';
-import { focusIndexState } from '@store/focusIndex.atom';
 import useCrudFeedback from '@hooks/useCrudFeedback';
 
 interface PropsType {
-	startTime: number;
-	index: number;
+	feedbackId: string;
 	feedbackRef: React.MutableRefObject<any[]>;
+	index: number;
 }
-const EditableFeedbackBox = ({ startTime, index, feedbackRef }: PropsType) => {
-	const feedback = useRecoilValue(feedbackState(startTime));
-
+const EditableFeedbackBox = ({ feedbackId, feedbackRef, index }: PropsType) => {
+	const feedback = useRecoilValue(feedbackState(feedbackId));
 	const isFbSync = useRecoilValue(isFbSyncState);
-	const setFocusIndex = useSetRecoilState(focusIndexState);
 	const setIsFbClicked = useSetRecoilState(isFbClickedState);
 	const setCurrentVideoTime = useSetRecoilState(currentVideoTimeSelector);
-
 	const { handleStartEditFeedback, handleEndEditFeedback, handleFbChange, handleDeleteFeedback } =
-		useCrudFeedback(startTime);
+		useCrudFeedback(feedbackId);
 
-	if (!feedback) return;
-	const { content, readOnly } = feedback;
+	const { startTime, innerIndex, content, readOnly } = feedback;
 
 	const handleClickFeedback = () => {
 		if (!isFbSync) return;
-		setFocusIndex(index);
 		setIsFbClicked(true);
 		setCurrentVideoTime(startTime);
 	};
 
 	return (
 		<div ref={(el) => (feedbackRef.current[index] = el)} onClick={handleClickFeedback}>
+			{/* TODO: find first innerIndex */}
 			<div>{startTime}</div>
-			{content.map((c, i) => (
-				<div key={i}>
-					<textarea
-						value={c}
-						readOnly={readOnly[i]}
-						onChange={(e) => handleFbChange(e, i)}
-					/>
-					<div>
-						<DeleteIcon onClick={() => handleDeleteFeedback(i)} width={20} />
-					</div>
-					<div>
-						{readOnly[i] ? (
-							<EditIcon onClick={() => handleStartEditFeedback(i)} width={20} />
-						) : (
-							<button onClick={() => handleEndEditFeedback(i)}>수정완료</button>
-						)}
-					</div>
-				</div>
-			))}
+			<textarea
+				cols={30}
+				rows={3}
+				value={content}
+				onChange={(e) => handleFbChange(e.target.value)}
+				readOnly={readOnly}
+			/>
+			<div>
+				<DeleteIcon onClick={handleDeleteFeedback} width={20} />
+			</div>
+			<div>
+				{readOnly ? (
+					<EditIcon onClick={handleStartEditFeedback} width={20} />
+				) : (
+					<button onClick={handleEndEditFeedback}>수정완료</button>
+				)}
+			</div>
 		</div>
 	);
 };

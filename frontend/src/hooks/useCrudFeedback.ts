@@ -1,56 +1,32 @@
 import { feedbackIdsState, feedbackState } from '@store/feedback.atom';
-import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
+import { useResetRecoilState, useSetRecoilState } from 'recoil';
 
-const useCrudFeedback = (startTime) => {
-	const [feedback, setFeedback] = useRecoilState(feedbackState(startTime));
-	const deleteFeedback = useResetRecoilState(feedbackState(startTime));
-	const setfeedbackIds = useSetRecoilState(feedbackIdsState);
+const useCrudFeedback = (feedbackId: string) => {
+	const setFeedback = useSetRecoilState(feedbackState(feedbackId));
+	const deleteFeedback = useResetRecoilState(feedbackState(feedbackId));
+	const setFeedbackIds = useSetRecoilState(feedbackIdsState);
 
-	const handleStartEditFeedback = (i) => {
+	const handleStartEditFeedback = () => {
 		setFeedback((fb) => {
-			const newReadOnlyList = fb.readOnly.slice();
-			newReadOnlyList[i] = false;
-			return { ...fb, readOnly: newReadOnlyList };
+			return { ...fb, readOnly: false };
 		});
 	};
 
-	const handleEndEditFeedback = (i) => {
+	const handleEndEditFeedback = () => {
 		setFeedback((fb) => {
-			const newReadOnlyList = fb.readOnly.slice();
-			newReadOnlyList[i] = true;
-			return {
-				...fb,
-				readOnly: newReadOnlyList,
-			};
+			return { ...fb, readOnly: true };
 		});
 	};
 
-	const handleFbChange = (e, i) => {
+	const handleFbChange = (newContent) => {
 		setFeedback((fb) => {
-			const newContentList = fb.content.slice();
-			newContentList[i] = e.target.value;
-			return {
-				...fb,
-				content: newContentList,
-			};
+			return { ...fb, content: newContent };
 		});
 	};
 
-	const handleDeleteFeedback = (idx) => {
-		if (feedback.content.length === 1) {
-			deleteFeedback();
-			setfeedbackIds((fbIds) => fbIds.filter((st) => st !== startTime));
-		} else {
-			setFeedback((fb) => {
-				const newContentList = fb.content.splice(idx, 1);
-				const newReadOnlyList = fb.readOnly.splice(idx, 1);
-				return {
-					...fb,
-					content: newContentList,
-					readOnly: newReadOnlyList,
-				};
-			});
-		}
+	const handleDeleteFeedback = () => {
+		deleteFeedback();
+		setFeedbackIds((ids) => ids.filter((id) => id !== feedbackId));
 	};
 
 	return { handleStartEditFeedback, handleEndEditFeedback, handleFbChange, handleDeleteFeedback };
