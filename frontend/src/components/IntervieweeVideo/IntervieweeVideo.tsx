@@ -1,23 +1,28 @@
-import React, { useRef, useEffect, Dispatch, SetStateAction } from 'react';
-import Video, { VideoPropType } from '@components/@shared/Video/Video';
+import React, { useRef, useEffect } from 'react';
+import Video from '@components/@shared/Video/Video';
+import { useRecoilState } from 'recoil';
+import { currentVideoTimeSelector } from '@store/currentVideoTime.atom';
+import { isFbClickedState } from '@store/feedback.atom';
 
-interface IntervieweeVideoType extends VideoPropType {
-	currentTime: number;
-	setCurrentTime: Dispatch<SetStateAction<number>>;
-	isFbClicked: boolean;
-	setIsFbClicked: Dispatch<SetStateAction<boolean>>;
-}
-const IntervieweeVideo = (props: IntervieweeVideoType) => {
-	const { currentTime, setCurrentTime, isFbClicked, setIsFbClicked } = props;
+const IntervieweeVideo = () => {
 	const videoRef = useRef<HTMLVideoElement>(null);
+	const [currentVideoTime, setCurrentVideoTime] = useRecoilState(currentVideoTimeSelector);
+	const [isFbClicked, setIsFbClicked] = useRecoilState(isFbClickedState);
 
 	const sendPeriod = 1000;
 	const sendCurrentTime = () => {
 		if (!videoRef.current?.currentTime) return;
 
 		const currentTime = videoRef.current.currentTime;
-		setCurrentTime(currentTime);
+		setCurrentVideoTime(Math.floor(currentTime));
 	};
+
+	useEffect(() => {
+		if (!videoRef.current) return;
+		if (!isFbClicked) return;
+		videoRef.current.currentTime = currentVideoTime;
+		setIsFbClicked(false);
+	}, [currentVideoTime]);
 
 	useEffect(() => {
 		if (videoRef) {
@@ -27,14 +32,7 @@ const IntervieweeVideo = (props: IntervieweeVideoType) => {
 		}
 	}, []);
 
-	useEffect(() => {
-		if (videoRef && isFbClicked) {
-			videoRef.current.currentTime = currentTime;
-			setIsFbClicked(false);
-		}
-	}, [currentTime]);
-
-	return <Video {...props} ref={videoRef} />;
+	return <Video src="assets/test.mp4" width={400} controls ref={videoRef} />;
 };
 
 export default React.memo(IntervieweeVideo);

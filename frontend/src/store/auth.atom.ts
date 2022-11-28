@@ -8,7 +8,6 @@ const authPersistEffect =
 			setSelf(JSON.parse(savedValue));
 		}
 		onSet((newVal, _, isReset) => {
-			console.log(newVal);
 			isReset
 				? localStorage.removeItem(key)
 				: localStorage.setItem(key, JSON.stringify(newVal));

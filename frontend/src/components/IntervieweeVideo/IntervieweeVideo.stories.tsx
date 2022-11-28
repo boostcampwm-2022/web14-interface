@@ -22,7 +22,7 @@ Default.args = {
 };
 
 const getMedia = async () => {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		const myStream = navigator.mediaDevices.getUserMedia({
 			audio: true,
 			video: true,
@@ -45,7 +45,6 @@ MediaStream.loaders = [
 	}),
 ];
 
-const printCurrentTime = (currentTime: number) => console.log(currentTime);
 
 export const ProvideCallback = Template.bind({});
 ProvideCallback.args = {
@@ -54,5 +53,4 @@ ProvideCallback.args = {
 	autoplay: true,
 	controls: true,
 	muted: true,
-	callback: printCurrentTime,
 };
