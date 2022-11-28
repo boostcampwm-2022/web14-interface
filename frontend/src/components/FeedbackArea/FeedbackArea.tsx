@@ -2,21 +2,22 @@ import React, { useEffect, useRef } from 'react';
 import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
 import EditableFeedbackBox from '@components/EditableFeedbackBox/EditableFeedbackBox';
 import { useRecoilValue } from 'recoil';
-import { feedbackIdsState } from '@store/feedback.atom';
+import { feedbackIdsState, isFbSyncState } from '@store/feedback.atom';
 import { focusIndexSelector } from '@store/currentVideoTime.atom';
 
 const FeedbackArea = () => {
 	const feedbackRef = useRef([]);
 	const feedbackIds = useRecoilValue(feedbackIdsState);
 	const focusIndex = useRecoilValue(focusIndexSelector);
+	const isFbSync = useRecoilValue(isFbSyncState);
 
 	useEffect(() => {
-		if (feedbackRef.current.length)
+		if (feedbackRef.current.length && isFbSync)
 			feedbackRef.current[focusIndex].scrollIntoView({
 				behavior: 'smooth',
 				block: 'start',
 			});
-	}, [focusIndex]);
+	}, [focusIndex, isFbSync]);
 
 	return (
 		<div>
