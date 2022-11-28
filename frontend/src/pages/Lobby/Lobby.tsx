@@ -27,7 +27,7 @@ const Lobby = () => {
 			<div>Lobby</div>
 			<Video src={myStream} width={400} autoplay muted />
 			{streamList.map((stream) => (
-				<Video key={stream} src={stream} width={400} autoplay muted />
+				<Video key={stream.id} src={stream} width={400} autoplay muted />
 			))}
 			<button onClick={() => safeNavigate(PHASE_TYPE.INTERVIEWEE_PHASE)}>면접자 시작</button>
 			<button onClick={() => safeNavigate(PHASE_TYPE.INTERVIEWER_PHASE)}>면접관 시작</button>
