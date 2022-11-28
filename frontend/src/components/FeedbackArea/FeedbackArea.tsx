@@ -3,16 +3,19 @@ import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
 import EditableFeedbackBox from '@components/EditableFeedbackBox/EditableFeedbackBox';
 import { useRecoilValue } from 'recoil';
 import { feedbackIdsState } from '@store/feedback.atom';
-import { focusIndexState } from '@store/focusIndex.atom';
+import { focusIndexSelector } from '@store/currentVideoTime.atom';
 
 const FeedbackArea = () => {
 	const feedbackRef = useRef([]);
 	const feedbackIds = useRecoilValue(feedbackIdsState);
-	const focusIndex = useRecoilValue(focusIndexState);
+	const focusIndex = useRecoilValue(focusIndexSelector);
 
 	useEffect(() => {
 		if (feedbackRef.current.length)
-			feedbackRef.current[focusIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+			feedbackRef.current[focusIndex].scrollIntoView({
+				behavior: 'smooth',
+				block: 'start',
+			});
 	}, [focusIndex]);
 
 	return (

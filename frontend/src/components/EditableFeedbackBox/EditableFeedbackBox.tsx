@@ -4,7 +4,7 @@ import { ReactComponent as DeleteIcon } from '@assets/icon/delete.svg';
 import { ReactComponent as EditIcon } from '@assets/icon/edit.svg';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { feedbackState, isFbClickedState, isFbSyncState } from '@store/feedback.atom';
-import { currentVideoTimeSelector } from '@store/currentVideoTime.atom';
+import { currentVideoTimeState } from '@store/currentVideoTime.atom';
 import useCrudFeedback from '@hooks/useCrudFeedback';
 
 interface PropsType {
@@ -16,7 +16,7 @@ const EditableFeedbackBox = ({ feedbackId, feedbackRef, index }: PropsType) => {
 	const feedback = useRecoilValue(feedbackState(feedbackId));
 	const isFbSync = useRecoilValue(isFbSyncState);
 	const setIsFbClicked = useSetRecoilState(isFbClickedState);
-	const setCurrentVideoTime = useSetRecoilState(currentVideoTimeSelector);
+	const setCurrentVideoTime = useSetRecoilState(currentVideoTimeState);
 	const { handleStartEditFeedback, handleEndEditFeedback, handleFbChange, handleDeleteFeedback } =
 		useCrudFeedback(feedbackId);
 
