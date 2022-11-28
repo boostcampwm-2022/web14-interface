@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from 'react';
 import { SetterOrUpdater } from 'recoil';
-import { v4 } from 'uuid';
 
 import { socket } from '../service/socket';
 
@@ -9,7 +8,7 @@ export interface WebRTCUserType {
 	stream: MediaStream;
 }
 
-const useWebRTC = (
+const useWebRTCSignaling = (
 	setMyStream: SetterOrUpdater<MediaStream>,
 	webRTCUserList: Map<string, WebRTCUserType>,
 	setWebRTCUserList: SetterOrUpdater<Map<string, WebRTCUserType>>
@@ -43,7 +42,7 @@ const useWebRTC = (
 	 * @param opponentId connection으로 연결된 상대방의 ID
 	 */
 	const handleIce = (event, myId, opponentId) => {
-		socket.emit('ice', event.candidate, myId, opponentId);
+		socket.emit('icecandidate', event.candidate, myId, opponentId);
 	};
 
 	/**
@@ -104,14 +103,12 @@ const useWebRTC = (
 	/**
 	 * WebRTC Connection 시작 함수입니다.
 	 * 실행 시, 유저로부터 Stream을 얻어오고 socket에 필요한 이벤트를 설정 후,
-	 * 서버에 enter_room 이벤트를 보냅니다.
+	 * 서버에 start_signaling 이벤트를 보냅니다.
 	 */
-	const startConnection = async () => {
+	const startConnection = async (myId) => {
 		await getMyStream();
 
-		const myId = v4();
-		//이름 바뀔꺼고
-		socket.on('user_enter', async (opponentId) => {
+		socket.on('receive_signaling', async (opponentId) => {
 			const newConnection = makeConnection(myId, opponentId);
 			const offer = await newConnection.createOffer();
 			newConnection.setLocalDescription(offer);
@@ -132,12 +129,13 @@ const useWebRTC = (
 			connectionListRef.current.get(opponentId).connection.setRemoteDescription(answer);
 		});
 
-		socket.on('ice', (ice, opponentId) => {
-			connectionListRef.current.get(opponentId).connection.addIceCandidate(ice);
+		socket.on('icecandidate', (icecandidate, opponentId) => {
+			connectionListRef.current.get(opponentId).connection.addIceCandidate(icecandidate);
 		});
 
-		//uuid
-		socket.emit('enter_room', myId);
+		socket.on('disconnect_webrtc', closeConnection);
+
+		socket.emit('start_signaling', myId);
 	};
 
 	/**
@@ -161,14 +159,15 @@ const useWebRTC = (
 
 	useEffect(() => {
 		return () => {
-			socket.off('user_enter');
+			socket.off('receive_signaling');
 			socket.off('offer');
 			socket.off('answer');
-			socket.off('ice');
+			socket.off('icecandidate');
+			socket.off('disconnect_webrtc');
 		};
 	}, []);
 
 	return { startConnection, closeConnection };
 };
 
-export default useWebRTC;
+export default useWebRTCSignaling;
