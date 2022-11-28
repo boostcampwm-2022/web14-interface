@@ -5,6 +5,8 @@ import { useRecoilValue } from 'recoil';
 import { feedbackIdsState, isFbSyncState } from '@store/feedback.atom';
 import { focusIndexSelector } from '@store/currentVideoTime.atom';
 
+import { feedbackAreaStyle, feedbackListStyle } from './FeedbackArea.style';
+
 const FeedbackArea = () => {
 	const feedbackRef = useRef([]);
 	const feedbackIds = useRecoilValue(feedbackIdsState);
@@ -20,13 +22,8 @@ const FeedbackArea = () => {
 	}, [focusIndex, isFbSync]);
 
 	return (
-		<div>
-			<div
-				style={{
-					overflow: 'scroll',
-					height: '200px',
-				}}
-			>
+		<div css={feedbackAreaStyle}>
+			<div css={feedbackListStyle}>
 				{feedbackIds.map((feedbackId, idx) => (
 					<EditableFeedbackBox
 						key={feedbackId}

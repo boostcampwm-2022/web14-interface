@@ -7,6 +7,13 @@ import { feedbackState, isFbClickedState, isFbSyncState } from '@store/feedback.
 import { currentVideoTimeState } from '@store/currentVideoTime.atom';
 import useCrudFeedback from '@hooks/useCrudFeedback';
 
+import {
+	feedbackBoxStyle,
+	fbTextAreaStyle,
+	fbBtnContainer,
+	fbStartTimeStyle,
+} from './EditableFeedbackBox.style';
+
 interface PropsType {
 	feedbackId: string;
 	feedbackRef: React.MutableRefObject<any[]>;
@@ -29,26 +36,28 @@ const EditableFeedbackBox = ({ feedbackId, feedbackRef, index }: PropsType) => {
 	};
 
 	return (
-		<div ref={(el) => (feedbackRef.current[index] = el)}>
+		<div ref={(el) => (feedbackRef.current[index] = el)} css={feedbackBoxStyle}>
 			{/* TODO: find first innerIndex */}
-			<div>{startTime}</div>
+			<div css={fbStartTimeStyle}>{startTime}</div>
 			<textarea
-				cols={30}
 				rows={3}
 				value={content}
 				onChange={(e) => handleFbChange(e.target.value)}
 				readOnly={readOnly}
 				onClick={handleClickFeedback}
+				css={fbTextAreaStyle}
 			/>
-			<div>
-				<DeleteIcon onClick={handleDeleteFeedback} width={20} />
-			</div>
-			<div>
-				{readOnly ? (
-					<EditIcon onClick={handleStartEditFeedback} width={20} />
-				) : (
-					<button onClick={handleEndEditFeedback}>수정완료</button>
-				)}
+			<div css={fbBtnContainer}>
+				<div>
+					{readOnly ? (
+						<EditIcon onClick={handleStartEditFeedback} width={15} />
+					) : (
+						<button onClick={handleEndEditFeedback}>수정완료</button>
+					)}
+				</div>
+				<div>
+					<DeleteIcon onClick={handleDeleteFeedback} width={15} />
+				</div>
 			</div>
 		</div>
 	);
