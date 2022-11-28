@@ -14,7 +14,7 @@
 <img src="https://img.shields.io/badge/-NestJS-E0234E?logo=NestJS&logoColor=white&style={STYLE}" alt="badge sample"/>
 <img src="https://img.shields.io/badge/-Redis-DC382D?logo=Redis&logoColor=white&style={STYLE}" alt="badge sample"/>
 <img src="https://img.shields.io/badge/-MySQL-4479A1?logo=MySQL&logoColor=white&style={STYLE}" alt="badge sample"/>
-<img src="https://img.shields.io/badge/-Typeform-262627?logo=Typeform&logoColor=white&style={STYLE}" alt="badge sample"/>
+<img src="https://img.shields.io/badge/-Typeform-262627?logo=TypeORM&logoColor=white&style={STYLE}" alt="badge sample"/>
 </div>
 
 ### FE
