@@ -4,6 +4,8 @@ import { feedbackIdsState, feedbackIdxMapState, feedbackState } from '@store/fee
 import React, { useState } from 'react';
 import { useRecoilTransaction_UNSTABLE, useRecoilValue } from 'recoil';
 
+import { fbFormStyle, fbInputStyle, fbStartTimeStyle } from './FeedbackForm.style';
+
 const FeedbackForm = () => {
 	const [inputVal, setInputVal] = useState('');
 	const [startTime, setStartTime] = useState(0);
@@ -50,12 +52,12 @@ const FeedbackForm = () => {
 	);
 
 	return (
-		<>
+		<div css={fbFormStyle}>
+			<div css={fbStartTimeStyle}>{inputVal ? startTime : currentVideoTime}</div>
 			<form onSubmit={handleAddFeedback}>
-				<input type="text" value={inputVal} onChange={handleChange} />
-				<button type="submit">추가</button>
+				<input type="text" value={inputVal} onChange={handleChange} css={fbInputStyle} />
 			</form>
-		</>
+		</div>
 	);
 };
 
