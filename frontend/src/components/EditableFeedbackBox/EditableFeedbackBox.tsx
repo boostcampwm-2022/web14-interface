@@ -29,7 +29,7 @@ const EditableFeedbackBox = ({ feedbackId, feedbackRef, index }: PropsType) => {
 	};
 
 	return (
-		<div ref={(el) => (feedbackRef.current[index] = el)} onClick={handleClickFeedback}>
+		<div ref={(el) => (feedbackRef.current[index] = el)}>
 			{/* TODO: find first innerIndex */}
 			<div>{startTime}</div>
 			<textarea
@@ -38,6 +38,7 @@ const EditableFeedbackBox = ({ feedbackId, feedbackRef, index }: PropsType) => {
 				value={content}
 				onChange={(e) => handleFbChange(e.target.value)}
 				readOnly={readOnly}
+				onClick={handleClickFeedback}
 			/>
 			<div>
 				<DeleteIcon onClick={handleDeleteFeedback} width={20} />
