@@ -14,5 +14,8 @@
   },
   "lint-staged": {
     "{src,apps,libs,test}/**/*.{ts,tsx,js}": "eslint --fix"
+  },
+  "dependencies": {
+    "@woowa-babble/random-nickname": "^1.0.2"
   }
 }
