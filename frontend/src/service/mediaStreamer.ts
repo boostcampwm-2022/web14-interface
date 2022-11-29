@@ -1,35 +1,35 @@
 import { socket } from './socket';
 import { ONE_SECOND } from '@constants/time.constant';
 
-const mediaRecorder = () => {
+const mediaStreamer = () => {
 	let mediaRecorder: MediaRecorder;
 
-	const startRecord = (mediaStream: MediaStream) => {
+	const startStream = (mediaStream: MediaStream) => {
 		mediaRecorder = new MediaRecorder(mediaStream, {
 			mimeType: 'video/webm; codecs=vp9',
 		});
 
 		mediaRecorder.ondataavailable = (e) => {
-			if (e.data && e.data.size > 0) {
-				socket.emit('stream_video', {
-					timestamp: new Date().getTime(),
-					data: e.data,
-				});
-			}
+			if (!e.data || !e.data.size) return;
+
+			socket.emit('stream_video', {
+				timestamp: new Date().getTime(),
+				data: e.data,
+			});
 		};
 
 		mediaRecorder.onstop = () => {
-			socket.emit('finish_streaming');
+			mediaRecorder = null;
 		};
 
 		mediaRecorder.start(ONE_SECOND);
 	};
 
-	const stopRecord = () => {
+	const stopStream = () => {
 		if (mediaRecorder) mediaRecorder.stop();
 	};
 
-	return { startRecord, stopRecord };
+	return { startStream, stopStream };
 };
 
-export default mediaRecorder;
+export default mediaStreamer;
