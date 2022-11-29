@@ -43,7 +43,7 @@ const useWebRTCSignaling = (
 	 * @param opponentId connection으로 연결된 상대방의 ID
 	 */
 	const handleIce = (event, myId, opponentId) => {
-		socket.emit('icecandidate', event.candidate, myId, opponentId);
+		socket.emit('icecandidate', { icecandidate: event.candidate, myId, opponentId });
 	};
 
 	/**
@@ -114,23 +114,23 @@ const useWebRTCSignaling = (
 			const offer = await newConnection.createOffer();
 			newConnection.setLocalDescription(offer);
 
-			socket.emit('offer', offer, myId, opponentId);
+			socket.emit('offer', { offer, myId, opponentId });
 		});
 
-		socket.on('offer', async (offer, opponentId) => {
+		socket.on('offer', async ({ offer, opponentId }) => {
 			const newConnection = makeConnection(myId, opponentId);
 			newConnection.setRemoteDescription(offer);
 			const answer = await newConnection.createAnswer();
 			newConnection.setLocalDescription(answer);
 
-			socket.emit('answer', answer, myId, opponentId);
+			socket.emit('answer', { answer, myId, opponentId });
 		});
 
-		socket.on('answer', (answer, opponentId) => {
+		socket.on('answer', ({ answer, opponentId }) => {
 			connectionListRef.current.get(opponentId).connection.setRemoteDescription(answer);
 		});
 
-		socket.on('icecandidate', (icecandidate, opponentId) => {
+		socket.on('icecandidate', ({ icecandidate, opponentId }) => {
 			connectionListRef.current.get(opponentId).connection.addIceCandidate(icecandidate);
 		});
 
