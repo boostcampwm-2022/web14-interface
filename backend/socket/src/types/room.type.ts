@@ -2,7 +2,7 @@ import { ROOM_PHASE } from '@constant';
 
 export interface InmemoryRoom {
 	users: Map<string, User>;
-	state: ROOM_PHASE;
+	phase: ROOM_PHASE;
 	feedbacked: Set<User>;
 }
 

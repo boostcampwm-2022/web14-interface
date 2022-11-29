@@ -61,7 +61,7 @@ export class RoomService {
 			return new SocketResponseDto({ success: false, message: ERROR_MSG.BUSY_ROOM });
 		}
 
-		if (room.state !== ROOM_PHASE.LOBBY) {
+		if (room.phase !== ROOM_PHASE.LOBBY) {
 			return new SocketResponseDto({ success: false, message: ERROR_MSG.BUSY_ROOM });
 		}
 
@@ -104,7 +104,7 @@ export class RoomService {
 	 * @returns room
 	 */
 	createDefaultRoom(): InmemoryRoom {
-		return { users: new Map(), state: ROOM_PHASE.LOBBY, feedbacked: new Set() };
+		return { users: new Map(), phase: ROOM_PHASE.LOBBY, feedbacked: new Set() };
 	}
 
 	/**
