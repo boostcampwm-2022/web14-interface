@@ -4,7 +4,7 @@ import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { webRTCStreamSelector, webRTCUserListState } from '@store/webRTC.atom';
-import useWebRTCSignaling from '@hooks/useWebRTC';
+import useWebRTCSignaling from '@hooks/useWebRTCSignaling';
 import { socket } from '../../service/socket';
 import Video from '@components/@shared/Video/Video';
 
