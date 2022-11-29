@@ -1,3 +1,4 @@
+import { ROOM_PHASE } from '@constant';
 import { InmemoryRoom, User } from '@types';
 
 export interface RoomRepository {
@@ -56,4 +57,18 @@ export interface RoomRepository {
 	 * @param clientId
 	 */
 	removeUserInSocketUserMap(clientId: string): void;
+
+	/**
+	 * 방의 현재 phase를 반환합니다.
+	 * @param roomUUID
+	 * @returns ROOM_PHASE
+	 */
+	getRoomPhase(roomUUID: string): ROOM_PHASE;
+
+	/**
+	 * 해당 room uuid의 room의 interview phase를 update 합니다.
+	 * @param roomUUID
+	 * @param phase
+	 */
+	updateRoomPhase({ roomUUID, phase }: { roomUUID: string; phase: ROOM_PHASE }): void;
 }

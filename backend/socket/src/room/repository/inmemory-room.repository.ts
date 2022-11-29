@@ -1,3 +1,4 @@
+import { ROOM_PHASE } from '@constant';
 import { InmemoryRoom, User } from 'src/types/room.type';
 import { RoomRepository } from './interface-room.repository';
 
@@ -16,7 +17,7 @@ export class InmemoryRoomRepository implements RoomRepository {
 
 	getUsersInRoom(roomUUID: string) {
 		const room = this.rooms.get(roomUUID);
-		return room.users.values();
+		return [...room.users.values()];
 	}
 
 	saveUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }) {
@@ -39,5 +40,15 @@ export class InmemoryRoomRepository implements RoomRepository {
 
 	removeUserInSocketUserMap(clientId: string) {
 		this.socketUserMap.delete(clientId);
+	}
+
+	getRoomPhase(roomUUID: string): ROOM_PHASE {
+		const room = this.rooms.get(roomUUID);
+		return room.phase;
+	}
+
+	updateRoomPhase({ roomUUID, phase }: { roomUUID: string; phase: ROOM_PHASE }) {
+		const room = this.rooms.get(roomUUID);
+		room.phase = phase;
 	}
 }
