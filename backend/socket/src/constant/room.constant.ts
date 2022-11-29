@@ -1,9 +1,8 @@
-export const ROOM_REPOSITORY_INTERFACE = 'roomRepository';
-export const MAX_COUNT = 4;
+export const ROOM_REPOSITORY_INTERFACE = 'RoomRepository';
+export const MAX_USER_COUNT = 4;
 
-export enum ROOM_STATE {
+export enum ROOM_PHASE {
 	LOBBY = 'lobby',
 	INTERVIEW = 'interview',
 	FEEDBACK = 'feedback',
 }
-export const END_FLAG = -1;

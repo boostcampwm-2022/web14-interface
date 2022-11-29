@@ -31,3 +31,10 @@ export enum EVENT {
 	ICECANDIDATE = 'icecandidate',
 	DISCONNECT_WEBRTC = 'disconnect_webrtc',
 }
+
+export enum ERROR_MSG {
+	FULL_ROOM = 'full_room',
+	NO_ROOM = 'no_room',
+	BUSY_ROOM = 'busy_room',
+	NOT_ENOUGHT_USER = 'not_enough_user',
+}
