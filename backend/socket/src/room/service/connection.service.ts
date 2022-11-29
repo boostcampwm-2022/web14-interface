@@ -118,7 +118,7 @@ export class RoomService {
 		let nickname = '';
 		do {
 			nickname = getRandomNickname('monsters');
-		} while (users.has(nickname));
+		} while (users.find((user) => user.nickname === nickname));
 
 		return { uuid, nickname, role: '', roomUUID };
 	}

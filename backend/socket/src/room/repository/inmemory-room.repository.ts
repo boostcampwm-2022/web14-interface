@@ -16,7 +16,7 @@ export class InmemoryRoomRepository implements RoomRepository {
 
 	getUsersInRoom(roomUUID: string) {
 		const room = this.rooms.get(roomUUID);
-		return room.users;
+		return room.users.values();
 	}
 
 	saveUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }) {
