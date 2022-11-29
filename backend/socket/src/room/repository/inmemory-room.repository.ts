@@ -4,7 +4,9 @@ import { RoomRepository } from './interface-room.repository';
 
 export class InmemoryRoomRepository implements RoomRepository {
 	private rooms = new Map<string, InmemoryRoom>();
-	private socketUserMap = new Map<string, User>();
+	private usersInRoom = new Map<string, Set<string>>();
+	private clientUserIdMap = new Map<string, string>();
+	private userMap = new Map<string, User>();
 
 	createRoom({ roomUUID, room }: { roomUUID: string; room: InmemoryRoom }) {
 		this.rooms.set(roomUUID, room);
@@ -16,30 +18,34 @@ export class InmemoryRoomRepository implements RoomRepository {
 	}
 
 	getUsersInRoom(roomUUID: string) {
-		const room = this.rooms.get(roomUUID);
-		return [...room.users.values()];
+		const userSet = this.usersInRoom.get(roomUUID);
+		return [...userSet].map((uuid) => this.userMap.get(uuid));
 	}
 
 	saveUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }) {
-		const room = this.rooms.get(roomUUID);
-		room.users.set(user.uuid, user);
+		const userSet = this.usersInRoom.get(roomUUID);
+		userSet.add(user.uuid);
+		this.userMap.set(user.uuid, user);
 	}
 
 	getUserByClientId(clientId: string) {
-		return this.socketUserMap.get(clientId);
+		const uuid = this.clientUserIdMap.get(clientId);
+		return this.userMap.get(uuid);
 	}
 
 	setUserByClientId({ clientId, user }: { clientId: string; user: User }) {
-		this.socketUserMap.set(clientId, user);
+		this.clientUserIdMap.set(clientId, user.uuid);
+		this.userMap.set(user.uuid, user);
 	}
 
 	removeUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }) {
-		const room = this.rooms.get(roomUUID);
-		room.users.delete(user.nickname);
+		const userSet = this.usersInRoom.get(roomUUID);
+		userSet.delete(user.uuid);
+		this.userMap.delete(user.uuid);
 	}
 
 	removeUserInSocketUserMap(clientId: string) {
-		this.socketUserMap.delete(clientId);
+		this.clientUserIdMap.delete(clientId);
 	}
 
 	getRoomPhase(roomUUID: string): ROOM_PHASE {

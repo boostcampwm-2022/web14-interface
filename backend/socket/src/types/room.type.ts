@@ -1,9 +1,9 @@
 import { ROOM_PHASE } from '@constant';
 
 export interface InmemoryRoom {
-	users: Map<string, User>;
+	roomUUID: string;
 	phase: ROOM_PHASE;
-	feedbacked: Set<User>;
+	feedbackCount: number;
 }
 
 export interface User {
