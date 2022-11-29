@@ -1,4 +1,4 @@
-import { MAX_COUNT, ROOM_EVENT, ROOM_REPOSITORY_INTERFACE, ROOM_STATE } from '@constant';
+import { MAX_COUNT, EVENT, ROOM_REPOSITORY_INTERFACE, ROOM_STATE } from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { SocketResponseDto } from 'src/room/dto/socket-response.dto';
@@ -35,26 +35,20 @@ export class RoomService {
 	 * @returns
 	 */
 	enterRoom({ client, server, roomUUID }: { client: Socket; server: Server; roomUUID: string }) {
-		client.join(roomUUID);
-
 		const room = this.roomRepository.getRoom(roomUUID);
 
-		const exception = this.IsEnterableRoom(room);
+		const exception = this.isEnterableRoom(room);
 		if (exception) return exception;
 
 		const user = this.createDefaultUser(roomUUID);
-		this.roomRepository.setUserByClientId({ clientId: client.id, user });
+		const others = this.roomRepository.getUsersInRoom(roomUUID);
+
+		client.join(roomUUID);
 		this.roomRepository.saveUserInRoom({ roomUUID, user });
+		this.roomRepository.setUserByClientId({ clientId: client.id, user });
 
-		this.broadcastInRoom({
-			clientId: client.id,
-			server,
-			eventType: ROOM_EVENT.USER_ENTER,
-			data: { user },
-		});
-
-		const users = this.roomRepository.getUsersInRoom(roomUUID);
-		return { data: users };
+		server.to(roomUUID).emit(EVENT.CHANGE_USER, { user });
+		return { data: { others: others.values(), me: user } };
 	}
 
 	/**
@@ -62,7 +56,7 @@ export class RoomService {
 	 * @param room room instance
 	 * @returns
 	 */
-	IsEnterableRoom(room: InmemoryRoom): SocketResponseDto | null {
+	isEnterableRoom(room: InmemoryRoom): SocketResponseDto | null {
 		if (room === undefined) {
 			return new SocketResponseDto({ success: false, message: 'no room' });
 		}
@@ -95,8 +89,8 @@ export class RoomService {
 		this.broadcastInRoom({
 			clientId: client.id,
 			server,
-			eventType: ROOM_EVENT.USER_ENTER,
-			data: { users },
+			eventType: EVENT.CHANGE_USER,
+			data: { users: users.values() },
 		});
 	}
 
@@ -121,8 +115,7 @@ export class RoomService {
 		const user = this.roomRepository.getUserByClientId(clientId);
 		const roomUUID = user.roomUUID;
 
-		const response = new SocketResponseDto({ success: true, data });
-		server.to(roomUUID).emit(eventType, response);
+		server.to(roomUUID).emit(eventType, data);
 	}
 
 	/**
@@ -139,12 +132,13 @@ export class RoomService {
 	 */
 	createDefaultUser(roomUUID: string): User {
 		const users = this.roomRepository.getUsersInRoom(roomUUID);
+		const uuid = uuidv4();
 
 		let nickname = '';
 		do {
 			nickname = getRandomNickname('monsters');
 		} while (users.has(nickname));
 
-		return { nickname, role: '', roomUUID };
+		return { uuid, nickname, role: '', roomUUID };
 	}
 }

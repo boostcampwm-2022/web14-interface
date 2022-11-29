@@ -7,6 +7,7 @@ export interface InmemoryRoom {
 }
 
 export interface User {
+	uuid: string;
 	nickname: string;
 	role: string;
 	roomUUID: string;
