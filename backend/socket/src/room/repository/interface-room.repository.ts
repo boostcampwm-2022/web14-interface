@@ -13,4 +13,5 @@ export interface RoomRepository {
 	getUserByClientId(clientId: string): User;
 	setUserByClientId({ clientId, user }: { clientId: string; user: User }): void;
 	removeUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }): void;
+	removeUserInSocketUserMap(clientId: string): void;
 }

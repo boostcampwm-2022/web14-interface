@@ -28,6 +28,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage(EVENT.ENTER_ROOM)
 	handleEnterRoom(@ConnectedSocket() client: Socket, @MessageBody() roomUUID: string) {
+		if (!roomUUID) return;
 		const users = this.roomSerivce.enterRoom({ client, server: this.server, roomUUID });
 		return new SocketResponseDto({ success: true, data: { users } });
 	}
@@ -43,6 +44,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	handleDisconnect(@ConnectedSocket() client: Socket) {
 		this.logger.log(`disconnected: ${client.id}`);
+		this.roomSerivce.disconnectUser(client);
 		this.roomSerivce.leaveRoom({ client, server: this.server });
 	}
 }

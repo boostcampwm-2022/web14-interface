@@ -80,6 +80,8 @@ export class RoomService {
 	 */
 	leaveRoom({ client, server }: { client: Socket; server: Server }) {
 		const user = this.roomRepository.getUserByClientId(client.id);
+		if (!user) return;
+
 		const roomUUID = user.roomUUID;
 
 		this.roomRepository.removeUserInRoom({ roomUUID, user });
@@ -110,6 +112,11 @@ export class RoomService {
 		const roomUUID = user.roomUUID;
 
 		server.to(roomUUID).emit(eventType, data);
+	}
+
+	disconnectUser(client: Socket) {
+		if (this.roomRepository.getUserByClientId(client.id) === undefined) return;
+		this.roomRepository.removeUserInSocketUserMap(client.id);
 	}
 
 	/**

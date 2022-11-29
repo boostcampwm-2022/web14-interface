@@ -3,7 +3,7 @@ import { RoomRepository } from './interface-room.repository';
 
 export class InmemoryRoomRepository implements RoomRepository {
 	private rooms = new Map<string, InmemoryRoom>();
-	private userMap = new Map<string, User>();
+	private socketUserMap = new Map<string, User>();
 
 	createRoom({ roomUUID, room }: { roomUUID: string; room: InmemoryRoom }) {
 		this.rooms.set(roomUUID, room);
@@ -21,19 +21,23 @@ export class InmemoryRoomRepository implements RoomRepository {
 
 	saveUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }) {
 		const room = this.rooms.get(roomUUID);
-		room.users.set(user.nickname, user);
+		room.users.set(user.uuid, user);
 	}
 
 	getUserByClientId(clientId: string) {
-		return this.userMap.get(clientId);
+		return this.socketUserMap.get(clientId);
 	}
 
 	setUserByClientId({ clientId, user }: { clientId: string; user: User }) {
-		this.userMap.set(clientId, user);
+		this.socketUserMap.set(clientId, user);
 	}
 
 	removeUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }) {
 		const room = this.rooms.get(roomUUID);
 		room.users.delete(user.nickname);
+	}
+
+	removeUserInSocketUserMap(clientId: string) {
+		this.socketUserMap.delete(clientId);
 	}
 }
