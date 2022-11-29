@@ -4,7 +4,7 @@ import { Server, Socket } from 'socket.io';
 import { SocketResponseDto } from 'src/room/dto/socket-response.dto';
 import { InmemoryRoom, User } from 'src/types/room.type';
 import { v4 as uuidv4 } from 'uuid';
-import { RoomRepository } from './repository/interface-room.repository';
+import { RoomRepository } from '../repository/interface-room.repository';
 import { getRandomNickname } from '@woowa-babble/random-nickname';
 
 @Injectable()
@@ -147,42 +147,4 @@ export class RoomService {
 
 		return { nickname, role: '', roomUUID };
 	}
-
-	// changeRoomState(client: Socket, state: string) {
-	// 	const uuid = this.sockets[client.id];
-	// 	this.roomState[uuid] = state;
-	// }
-
-	// countFeedback(clientId: string, server: Server) {
-	// 	const uuid = this.sockets[clientId];
-	// 	if (this.feedbackCounter[uuid].has(clientId)) throw new WsException('이미 카운트되었음');
-
-	// 	this.feedbackCounter[uuid].add(clientId);
-
-	// 	server.to(uuid).emit(ROOM_EVENT.COUNT_FEEDBACK, this.feedbackCounter[uuid].size);
-	// 	if (this.feedbackCounter[uuid].size == MAX_COUNT - 1) {
-	// 		server.to(uuid).emit(ROOM_EVENT.TERMINATE_SESSION);
-	// 		return END_FLAG;
-	// 	}
-	// 	return this.feedbackCounter[uuid].size;
-	// }
-
-	// startInterview(client: Socket, server: Server) {
-	// 	this.roomRepository.changeRoomState(client, ROOM_STATE.INTERVIEW);
-	// 	return this.roomRepository.broadcastUserList(client.id, server, ROOM_EVENT.JOIN_INTERVIEW);
-	// }
-
-	// endInterview(client: Socket, server: Server) {
-	// 	this.roomRepository.changeRoomState(client, ROOM_STATE.FEEDBACK);
-	// 	return this.roomRepository.broadcastUserList(client.id, server, ROOM_EVENT.END_INTERVIEW);
-	// }
-
-	// endFeedback(client: Socket, server: Server) {
-	// 	// const feedbackCount = this.roomRepository.countFeedback(client.id, server);
-	// 	// if (feedbackCount == END_FLAG) {
-	// 	// 	client.emit(ROOM_EVENT.TERMINATE_SESSION);
-	// 	// } else {
-	// 	// 	client.emit(ROOM_EVENT.COUNT_FEEDBACK, feedbackCount);
-	// 	// }
-	// }
 }

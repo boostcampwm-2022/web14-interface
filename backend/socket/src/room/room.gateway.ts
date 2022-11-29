@@ -11,7 +11,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { SocketResponseDto } from 'src/room/dto/socket-response.dto';
-import { RoomService } from './room.service';
+import { RoomService } from './service/connection.service';
 
 @WebSocketGateway({ namespace: 'socket' })
 export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -45,19 +45,4 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.logger.log(`disconnected: ${client.id}`);
 		this.roomSerivce.leaveRoom(client, this.server);
 	}
-
-	// @SubscribeMessage(ROOM_EVENT.START_INTERVIEW)
-	// handleStartInterview(@ConnectedSocket() client: Socket) {
-	// 	return this.roomSerivce.startInterview(client, this.server);
-	// }
-
-	// @SubscribeMessage(ROOM_EVENT.END_INTERVIEW)
-	// handleEndInterview(@ConnectedSocket() client: Socket) {
-	// 	return this.roomSerivce.endInterview(client, this.server);
-	// }
-
-	// @SubscribeMessage(ROOM_EVENT.END_FEEDBACK)
-	// handleEndFeedback(@ConnectedSocket() client: Socket) {
-	// 	this.roomSerivce.endFeedback(client, this.server);
-	// }
 }
