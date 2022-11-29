@@ -91,29 +91,9 @@ export class RoomService {
 	}
 
 	/**
-	 * broad cast 메서드 입니다.
-	 * @param clientId - client socket id
-	 * @param server - server instance
-	 * @param eventType - emit event type
-	 * @param data - emit으로 전달할 data
+	 * 해당 client id에 mapping된 user 객체를 지우는 메서드입니다.
+	 * @param client - client socket
 	 */
-	broadcastInRoom({
-		clientId,
-		server,
-		eventType,
-		data,
-	}: {
-		clientId: string;
-		server: Server;
-		eventType: string;
-		data: unknown;
-	}) {
-		const user = this.roomRepository.getUserByClientId(clientId);
-		const roomUUID = user.roomUUID;
-
-		server.to(roomUUID).emit(eventType, data);
-	}
-
 	disconnectUser(client: Socket) {
 		if (this.roomRepository.getUserByClientId(client.id) === undefined) return;
 		this.roomRepository.removeUserInSocketUserMap(client.id);
