@@ -8,7 +8,7 @@ import { RoomRepository } from '../../repository/interface-room.repository';
 import { getRandomNickname } from '@woowa-babble/random-nickname';
 
 @Injectable()
-export class RoomService {
+export class ConnectionService {
 	constructor(
 		@Inject(ROOM_REPOSITORY_INTERFACE)
 		private readonly roomRepository: RoomRepository

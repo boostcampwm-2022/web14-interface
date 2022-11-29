@@ -12,26 +12,31 @@ import {
 import { Server, Socket } from 'socket.io';
 import { SocketResponseDto } from 'src/room/dto/socket-response.dto';
 import { RoomService } from './service/connection/connection.service';
+import { InterviewService } from './service/interview/interview.service';
 
 @WebSocketGateway({ namespace: 'socket' })
 export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer() server: Server;
 	private logger = new Logger('room');
 
-	constructor(private readonly roomSerivce: RoomService) {}
+	constructor(
+		private readonly roomSerivce: RoomService,
+		private readonly interviewService: InterviewService
+	) {}
 
 	// connection
 
 	@SubscribeMessage(EVENT.CREATE_ROOM)
 	handleCreateRoom(): SocketResponseDto {
-		const res = this.roomSerivce.createRoom();
-		return res;
+		return this.roomSerivce.createRoom();
 	}
 
 	@SubscribeMessage(EVENT.ENTER_ROOM)
-	handleEnterRoom(@ConnectedSocket() client: Socket, @MessageBody() roomUUID: string) {
-		const res = this.roomSerivce.enterRoom({ client, server: this.server, roomUUID });
-		return res;
+	handleEnterRoom(
+		@ConnectedSocket() client: Socket,
+		@MessageBody() roomUUID: string
+	): SocketResponseDto {
+		return this.roomSerivce.enterRoom({ client, server: this.server, roomUUID });
 	}
 
 	@SubscribeMessage(EVENT.LEAVE_ROOM)
@@ -47,5 +52,12 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.logger.log(`disconnected: ${client.id}`);
 		this.roomSerivce.disconnectUser(client);
 		this.roomSerivce.leaveRoom({ client, server: this.server });
+	}
+
+	// interview
+
+	@SubscribeMessage(EVENT.START_INTERVIEW)
+	handleStartInterview(@ConnectedSocket() client: Socket): SocketResponseDto {
+		return this.roomSerivce.startInterview({ client, server: this.server });
 	}
 }
