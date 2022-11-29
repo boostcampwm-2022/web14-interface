@@ -24,7 +24,7 @@ export class RoomService {
 
 		this.roomRepository.createRoom({ roomUUID, room });
 
-		return roomUUID;
+		return new SocketResponseDto({ success: true, data: { uuid: roomUUID } });
 	}
 
 	/**
@@ -48,7 +48,10 @@ export class RoomService {
 		this.roomRepository.setUserByClientId({ clientId: client.id, user });
 
 		server.to(roomUUID).emit(EVENT.CHANGE_USER, { user });
-		return { data: { others: others.values(), me: user } };
+		return new SocketResponseDto({
+			success: true,
+			data: { others, me: user },
+		});
 	}
 
 	/**

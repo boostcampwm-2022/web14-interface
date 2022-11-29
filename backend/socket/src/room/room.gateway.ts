@@ -20,16 +20,18 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	constructor(private readonly roomSerivce: RoomService) {}
 
+	// connection
+
 	@SubscribeMessage(EVENT.CREATE_ROOM)
 	handleCreateRoom(): SocketResponseDto {
-		const uuid = this.roomSerivce.createRoom();
-		return new SocketResponseDto({ success: true, data: { uuid } });
+		const res = this.roomSerivce.createRoom();
+		return res;
 	}
 
 	@SubscribeMessage(EVENT.ENTER_ROOM)
 	handleEnterRoom(@ConnectedSocket() client: Socket, @MessageBody() roomUUID: string) {
-		const users = this.roomSerivce.enterRoom({ client, server: this.server, roomUUID });
-		return new SocketResponseDto({ success: true, data: { users } });
+		const res = this.roomSerivce.enterRoom({ client, server: this.server, roomUUID });
+		return res;
 	}
 
 	@SubscribeMessage(EVENT.LEAVE_ROOM)
