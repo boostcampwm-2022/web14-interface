@@ -1,10 +1,5 @@
 import { atom, selector } from 'recoil';
 
-export const webRTCMyStreamState = atom({
-	key: 'webRTCMyStreamState',
-	default: null,
-});
-
 export const webRTCUserListState = atom({
 	key: 'webRTCUserListState',
 	default: new Map(),
