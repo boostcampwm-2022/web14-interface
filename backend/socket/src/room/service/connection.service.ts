@@ -1,4 +1,4 @@
-import { MAX_COUNT, EVENT, ROOM_REPOSITORY_INTERFACE, ROOM_STATE } from '@constant';
+import { MAX_USER_COUNT, EVENT, ROOM_REPOSITORY_INTERFACE, ROOM_PHASE, ERROR_MSG } from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { SocketResponseDto } from 'src/room/dto/socket-response.dto';
@@ -58,16 +58,16 @@ export class RoomService {
 	 */
 	isEnterableRoom(room: InmemoryRoom): SocketResponseDto | null {
 		if (room === undefined) {
-			return new SocketResponseDto({ success: false, message: 'no room' });
+			return new SocketResponseDto({ success: false, message: ERROR_MSG.BUSY_ROOM });
 		}
 
-		if (room.state !== ROOM_STATE.LOBBY) {
-			return new SocketResponseDto({ success: false, message: 'invalid state' });
+		if (room.state !== ROOM_PHASE.LOBBY) {
+			return new SocketResponseDto({ success: false, message: ERROR_MSG.BUSY_ROOM });
 		}
 
 		const countInRoom = room.users.size;
-		if (countInRoom >= MAX_COUNT) {
-			return new SocketResponseDto({ success: false, message: 'full room' });
+		if (countInRoom >= MAX_USER_COUNT) {
+			return new SocketResponseDto({ success: false, message: ERROR_MSG.FULL_ROOM });
 		}
 
 		return null;
@@ -78,20 +78,14 @@ export class RoomService {
 	 * @param client - client socket
 	 * @param server - server instance
 	 */
-	leaveRoom(client: Socket, server: Server) {
+	leaveRoom({ client, server }: { client: Socket; server: Server }) {
 		const user = this.roomRepository.getUserByClientId(client.id);
 		const roomUUID = user.roomUUID;
 
 		this.roomRepository.removeUserInRoom({ roomUUID, user });
 		client.leave(roomUUID);
 
-		const users = this.roomRepository.getUsersInRoom(roomUUID);
-		this.broadcastInRoom({
-			clientId: client.id,
-			server,
-			eventType: EVENT.CHANGE_USER,
-			data: { users: users.values() },
-		});
+		server.to(roomUUID).emit(EVENT.CHANGE_USER, { user });
 	}
 
 	/**
@@ -123,7 +117,7 @@ export class RoomService {
 	 * @returns room
 	 */
 	createDefaultRoom(): InmemoryRoom {
-		return { users: new Map(), state: ROOM_STATE.LOBBY, feedbacked: new Set() };
+		return { users: new Map(), state: ROOM_PHASE.LOBBY, feedbacked: new Set() };
 	}
 
 	/**
