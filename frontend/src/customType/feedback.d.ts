@@ -1,8 +1,8 @@
 export interface FeedbackType {
-	content: string[];
 	startTime: number;
-	endTime?: number;
-	readOnly?: boolean[];
+	innerIndex: number;
+	content: string;
+	readOnly?: boolean;
 }
 
 export interface EditableFeedbackType extends FeedbackType {

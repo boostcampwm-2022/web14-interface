@@ -2,33 +2,34 @@ import React, { useEffect, useRef } from 'react';
 import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
 import EditableFeedbackBox from '@components/EditableFeedbackBox/EditableFeedbackBox';
 import { useRecoilValue } from 'recoil';
-import { feedbackIdsState } from '@store/feedback.atom';
-import { focusIndexState } from '@store/focusIndex.atom';
+import { feedbackIdsState, isFbSyncState } from '@store/feedback.atom';
+import { focusIndexSelector } from '@store/currentVideoTime.atom';
+
+import { feedbackAreaStyle, feedbackListStyle } from './FeedbackArea.style';
 
 const FeedbackArea = () => {
 	const feedbackRef = useRef([]);
 	const feedbackIds = useRecoilValue(feedbackIdsState);
-	const focusIndex = useRecoilValue(focusIndexState);
+	const focusIndex = useRecoilValue(focusIndexSelector);
+	const isFbSync = useRecoilValue(isFbSyncState);
 
 	useEffect(() => {
-		if (feedbackRef.current.length)
-			feedbackRef.current[focusIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
-	}, [focusIndex]);
+		if (feedbackRef.current.length && isFbSync)
+			feedbackRef.current[focusIndex].scrollIntoView({
+				behavior: 'smooth',
+				block: 'start',
+			});
+	}, [focusIndex, isFbSync]);
 
 	return (
-		<div>
-			<div
-				style={{
-					overflow: 'scroll',
-					height: '200px',
-				}}
-			>
-				{feedbackIds.map((startTime, i) => (
+		<div css={feedbackAreaStyle}>
+			<div css={feedbackListStyle}>
+				{feedbackIds.map((feedbackId, idx) => (
 					<EditableFeedbackBox
-						key={startTime}
-						startTime={startTime}
-						index={i}
+						key={feedbackId}
+						feedbackId={feedbackId}
 						feedbackRef={feedbackRef}
+						index={idx}
 					/>
 				))}
 			</div>
