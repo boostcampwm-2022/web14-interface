@@ -9,7 +9,6 @@ export interface WebRTCUserType {
 }
 
 const useWebRTCSignaling = (
-	setMyStream: SetterOrUpdater<MediaStream>,
 	webRTCUserList: Map<string, WebRTCUserType>,
 	setWebRTCUserList: SetterOrUpdater<Map<string, WebRTCUserType>>
 ) => {
@@ -20,7 +19,7 @@ const useWebRTCSignaling = (
 	 내 미디어 장치로부터 MediaStream을 가져와 myStreamRef를 Stream으로 설정합니다. 
 	 그 후 setMyStream을 통해 외부 myStream 상태를 Stream으로 설정합니다.
 	 */
-	async function getMyStream() {
+	async function getMyStream(myId) {
 		try {
 			const newStream = await navigator.mediaDevices.getUserMedia({
 				audio: true,
@@ -28,7 +27,9 @@ const useWebRTCSignaling = (
 			});
 
 			myStreamRef.current = newStream;
-			setMyStream(newStream);
+			setWebRTCUserList((prev) =>
+				new Map(prev).set(myId, { connection: null, stream: newStream })
+			);
 		} catch (e) {
 			console.log(e);
 		}
@@ -106,7 +107,7 @@ const useWebRTCSignaling = (
 	 * 서버에 start_signaling 이벤트를 보냅니다.
 	 */
 	const startConnection = async (myId) => {
-		await getMyStream();
+		await getMyStream(myId);
 
 		socket.on('receive_signaling', async (opponentId) => {
 			const newConnection = makeConnection(myId, opponentId);
