@@ -1,6 +1,6 @@
 import { MAX_USER_COUNT, EVENT, ROOM_REPOSITORY_INTERFACE, ROOM_PHASE, ERROR_MSG } from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
-import { Server, Socket } from 'socket.io';
+import { Namespace, Socket } from 'socket.io';
 import { SocketResponseDto } from 'src/room/dto/socket-response.dto';
 import { InmemoryRoom, User } from 'src/types/room.type';
 import { v4 as uuidv4 } from 'uuid';
@@ -28,11 +28,19 @@ export class ConnectionService {
 	/**
 	 * default user를 생성하고 roomUUID에 해당하는 room에 유저가 들어가는 메서드입니다.
 	 * @param client - client socket
-	 * @param server - server 인스턴스
+	 * @param server -  namespace 인스턴스
 	 * @param roomUUID - room uuid
 	 * @returns
 	 */
-	enterRoom({ client, server, roomUUID }: { client: Socket; server: Server; roomUUID: string }) {
+	enterRoom({
+		client,
+		server,
+		roomUUID,
+	}: {
+		client: Socket;
+		server: Namespace;
+		roomUUID: string;
+	}) {
 		const room = this.roomRepository.getRoom(roomUUID);
 
 		const exception = this.isEnterableRoom(room);
@@ -78,9 +86,9 @@ export class ConnectionService {
 	/**
 	 * 방에서 해당 유저를 제거하고, 나머지 유저들에게 emit을 하는 메서드입니다.
 	 * @param client - client socket
-	 * @param server - server instance
+	 * @param server - namespace instance
 	 */
-	leaveRoom({ client, server }: { client: Socket; server: Server }) {
+	leaveRoom({ client, server }: { client: Socket; server: Namespace }) {
 		const user = this.roomRepository.getUserByClientId(client.id);
 		if (!user) return;
 

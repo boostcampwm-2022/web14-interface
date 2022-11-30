@@ -9,18 +9,18 @@ import {
 	WebSocketGateway,
 	WebSocketServer,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
+import { Namespace, Socket } from 'socket.io';
 import { SocketResponseDto } from 'src/room/dto/socket-response.dto';
-import { RoomService } from './service/connection/connection.service';
+import { ConnectionService } from './service/connection/connection.service';
 import { InterviewService } from './service/interview/interview.service';
 
 @WebSocketGateway({ namespace: 'socket' })
 export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
-	@WebSocketServer() server: Server;
+	@WebSocketServer() server: Namespace;
 	private logger = new Logger('room');
 
 	constructor(
-		private readonly roomSerivce: RoomService,
+		private readonly connectionService: ConnectionService,
 		private readonly interviewService: InterviewService
 	) {}
 
@@ -28,7 +28,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage(EVENT.CREATE_ROOM)
 	handleCreateRoom(): SocketResponseDto {
-		return this.roomSerivce.createRoom();
+		return this.connectionService.createRoom();
 	}
 
 	@SubscribeMessage(EVENT.ENTER_ROOM)
@@ -36,12 +36,12 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		@ConnectedSocket() client: Socket,
 		@MessageBody() roomUUID: string
 	): SocketResponseDto {
-		return this.roomSerivce.enterRoom({ client, server: this.server, roomUUID });
+		return this.connectionService.enterRoom({ client, server: this.server, roomUUID });
 	}
 
 	@SubscribeMessage(EVENT.LEAVE_ROOM)
 	handleLeaveRoom(@ConnectedSocket() client: Socket) {
-		this.roomSerivce.leaveRoom({ client, server: this.server });
+		this.connectionService.leaveRoom({ client, server: this.server });
 	}
 
 	handleConnection(@ConnectedSocket() client: Socket) {
@@ -50,14 +50,19 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	handleDisconnect(@ConnectedSocket() client: Socket) {
 		this.logger.log(`disconnected: ${client.id}`);
-		this.roomSerivce.disconnectUser(client);
-		this.roomSerivce.leaveRoom({ client, server: this.server });
+		this.connectionService.disconnectUser(client);
+		this.connectionService.leaveRoom({ client, server: this.server });
 	}
 
 	// interview
 
 	@SubscribeMessage(EVENT.START_INTERVIEW)
 	handleStartInterview(@ConnectedSocket() client: Socket): SocketResponseDto {
-		return this.roomSerivce.startInterview({ client, server: this.server });
+		return this.interviewService.startInterview({ client, server: this.server });
+	}
+
+	@SubscribeMessage(EVENT.END_INTERVIEW)
+	handleEndInterview(@ConnectedSocket() client: Socket) {
+		this.interviewService.endInterview({ client, server: this.server });
 	}
 }
