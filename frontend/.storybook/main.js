@@ -13,6 +13,17 @@ module.exports = {
 		builder: '@storybook/builder-webpack5',
 	},
 	webpackFinal: async (config, { configType }) => {
+		config.module.rules.push({
+			test: /\.(ts|tsx)$/,
+			loader: require.resolve('babel-loader'),
+			options: {
+				presets: [
+					['react-app', { flow: false, typescript: true }],
+					require.resolve('@emotion/babel-preset-css-prop'),
+				],
+			},
+		});
+
 		config.resolve.alias = {
 			...config.resolve.alias,
 			'@assets': path.resolve(__dirname, '../src/assets'),
