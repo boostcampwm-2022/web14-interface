@@ -1,5 +1,6 @@
 export enum USER_ROLE {
-	INETRVIEWER = 'interviewer',
+	INTERVIEWER = 'interviewer',
 	INTERVIEWEE = 'interviewee',
+	FEEDBACKED = 'feedbacked',
 	NONE = 'none',
 }
