@@ -27,10 +27,21 @@ export class InmemoryRoomRepository implements RoomRepository {
 		return [...userSet].map((uuid) => this.userMap.get(uuid));
 	}
 
-	saveUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }) {
+	saveUserInRoom({
+		clientId,
+		roomUUID,
+		user,
+	}: {
+		clientId: string;
+		roomUUID: string;
+		user: User;
+	}) {
 		const userSet = this.usersInRoom.get(roomUUID);
 		userSet.add(user.uuid);
+
 		this.userMap.set(user.uuid, user);
+		this.clientUserIdMap.set(clientId, user.uuid);
+		this.userClientIdMap.set(user.uuid, clientId);
 	}
 
 	getUserByClientId(clientId: string) {
@@ -38,17 +49,17 @@ export class InmemoryRoomRepository implements RoomRepository {
 		return this.userMap.get(uuid);
 	}
 
-	setUserByClientId({ clientId, user }: { clientId: string; user: User }) {
-		this.clientUserIdMap.set(clientId, user.uuid);
-		this.userMap.set(user.uuid, user);
+	getClientIdByUser(uuid: string) {
+		const clientId = this.userClientIdMap.get(uuid);
+		return clientId;
 	}
 
 	removeUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }) {
 		const userSet = this.usersInRoom.get(roomUUID);
-		const clientId = this.userClientIdMap.get(user.uuid);
+		userSet.delete(user.uuid);
 
 		// cascading
-		userSet.delete(user.uuid);
+		const clientId = this.userClientIdMap.get(user.uuid);
 		this.userMap.delete(user.uuid);
 		this.userClientIdMap.delete(user.uuid);
 		this.clientUserIdMap.delete(clientId);
@@ -67,5 +78,10 @@ export class InmemoryRoomRepository implements RoomRepository {
 	updateUserRole({ uuid, role }: { uuid: string; role: USER_ROLE }) {
 		const user = this.userMap.get(uuid);
 		user.role = role;
+	}
+
+	updateFeedbackCount({ roomUUID, count }: { roomUUID: string; count: number }) {
+		const room = this.rooms.get(roomUUID);
+		room.feedbackCount = count;
 	}
 }

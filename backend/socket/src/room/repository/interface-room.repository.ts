@@ -28,7 +28,15 @@ export interface RoomRepository {
 	 * @param roomUUID
 	 * @param user User
 	 */
-	saveUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }): void;
+	saveUserInRoom({
+		clientId,
+		roomUUID,
+		user,
+	}: {
+		clientId: string;
+		roomUUID: string;
+		user: User;
+	}): void;
 
 	/**
 	 * client socket id로 mapping된 user 객체를 반환합니다.
@@ -37,13 +45,7 @@ export interface RoomRepository {
 	 */
 	getUserByClientId(clientId: string): User;
 
-	/**
-	 * client socket id와 user 객체를 map에 저장합니다.
-	 * @param clientId
-	 * @param user
-	 * @returns User
-	 */
-	setUserByClientId({ clientId, user }: { clientId: string; user: User }): void;
+	getClientIdByUser(uuid: string): string;
 
 	/**
 	 * roomUUID를 기반으로 해당 방에 있는 user를 제거합니다.
@@ -67,4 +69,6 @@ export interface RoomRepository {
 	updateRoomPhase({ roomUUID, phase }: { roomUUID: string; phase: ROOM_PHASE }): void;
 
 	updateUserRole({ uuid, role }: { uuid: string; role: USER_ROLE }): void;
+
+	updateFeedbackCount({ roomUUID, count }: { roomUUID: string; count: number });
 }

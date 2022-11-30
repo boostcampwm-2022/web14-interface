@@ -50,9 +50,7 @@ export class ConnectionService {
 		const others = this.roomRepository.getUsersInRoom(roomUUID);
 
 		client.join(roomUUID);
-		this.roomRepository.saveUserInRoom({ roomUUID, user });
-		this.roomRepository.setUserByClientId({ clientId: client.id, user });
-
+		this.roomRepository.saveUserInRoom({ clientId: client.id, roomUUID, user });
 		server.to(roomUUID).emit(EVENT.CHANGE_USER, { user });
 		return new SocketResponseDto({
 			success: true,
@@ -106,7 +104,6 @@ export class ConnectionService {
 	 */
 	disconnectUser(client: Socket) {
 		if (this.roomRepository.getUserByClientId(client.id) === undefined) return;
-		this.roomRepository.removeUserInSocketUserMap(client.id);
 	}
 
 	/**
