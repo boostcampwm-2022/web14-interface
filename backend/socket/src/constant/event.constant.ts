@@ -37,4 +37,5 @@ export enum ERROR_MSG {
 	NO_ROOM = 'no_room',
 	BUSY_ROOM = 'busy_room',
 	NOT_ENOUGHT_USER = 'not_enough_user',
+	INVALID_REQUEST = 'invalid_request',
 }
