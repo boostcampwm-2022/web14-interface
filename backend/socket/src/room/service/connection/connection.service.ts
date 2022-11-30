@@ -19,12 +19,10 @@ export class ConnectionService {
 	 * @returns uuid - 방의 uuid
 	 */
 	createRoom() {
-		const roomUUID = uuidv4();
 		const room = this.createDefaultRoom();
+		this.roomRepository.createRoom({ roomUUID: room.roomUUID, room });
 
-		this.roomRepository.createRoom({ roomUUID, room });
-
-		return new SocketResponseDto({ success: true, data: { uuid: roomUUID } });
+		return new SocketResponseDto({ success: true, data: { uuid: room.roomUUID } });
 	}
 
 	/**
@@ -68,7 +66,8 @@ export class ConnectionService {
 			return new SocketResponseDto({ success: false, message: ERROR_MSG.BUSY_ROOM });
 		}
 
-		const countInRoom = room.users.size;
+		const users = this.roomRepository.getUsersInRoom(room.roomUUID);
+		const countInRoom = users.length;
 		if (countInRoom >= MAX_USER_COUNT) {
 			return new SocketResponseDto({ success: false, message: ERROR_MSG.FULL_ROOM });
 		}
@@ -107,7 +106,7 @@ export class ConnectionService {
 	 * @returns room
 	 */
 	createDefaultRoom(): InmemoryRoom {
-		return { users: new Map(), phase: ROOM_PHASE.LOBBY, feedbacked: new Set() };
+		return { roomUUID: uuidv4(), phase: ROOM_PHASE.LOBBY, feedbackCount: 0 };
 	}
 
 	/**

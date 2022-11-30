@@ -1,5 +1,6 @@
-import { EVENT, ROOM_PHASE, ROOM_REPOSITORY_INTERFACE } from '@constant';
+import { EVENT, ROOM_PHASE, ROOM_REPOSITORY_INTERFACE, USER_ROLE } from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
+import { User } from '@types';
 import { Socket, Server } from 'socket.io';
 import { SocketResponseDto } from 'src/room/dto/socket-response.dto';
 import { RoomRepository } from 'src/room/repository/interface-room.repository';

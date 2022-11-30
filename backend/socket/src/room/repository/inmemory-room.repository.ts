@@ -1,4 +1,4 @@
-import { ROOM_PHASE } from '@constant';
+import { ROOM_PHASE, USER_ROLE } from '@constant';
 import { InmemoryRoom, User } from 'src/types/room.type';
 import { RoomRepository } from './interface-room.repository';
 
@@ -11,6 +11,10 @@ export class InmemoryRoomRepository implements RoomRepository {
 	createRoom({ roomUUID, room }: { roomUUID: string; room: InmemoryRoom }) {
 		this.rooms.set(roomUUID, room);
 		return room;
+	}
+
+	deleteRoom(roomUUID: string) {
+		this.rooms.delete(roomUUID);
 	}
 
 	getRoom(roomUUID: string) {
