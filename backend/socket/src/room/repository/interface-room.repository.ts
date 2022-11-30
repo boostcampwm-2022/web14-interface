@@ -68,7 +68,5 @@ export interface RoomRepository {
 	 */
 	updateRoomPhase({ roomUUID, phase }: { roomUUID: string; phase: ROOM_PHASE }): void;
 
-	updateUserRole({ uuid, role }: { uuid: string; role: USER_ROLE }): void;
-
-	updateFeedbackCount({ roomUUID, count }: { roomUUID: string; count: number });
+	updateUserInfo({ uuid, updateUser }: { uuid: string; updateUser: Partial<User> });
 }

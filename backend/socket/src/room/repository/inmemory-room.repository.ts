@@ -1,4 +1,4 @@
-import { ROOM_PHASE, USER_ROLE } from '@constant';
+import { ROOM_PHASE } from '@constant';
 import { clientId, InmemoryRoom, roomUUID, User, userUUID } from '@types';
 import { RoomRepository } from './interface-room.repository';
 
@@ -75,13 +75,11 @@ export class InmemoryRoomRepository implements RoomRepository {
 		room.phase = phase;
 	}
 
-	updateUserRole({ uuid, role }: { uuid: string; role: USER_ROLE }) {
+	updateUserInfo({ uuid, updateUser }: { uuid: string; updateUser: Partial<User> }) {
 		const user = this.userMap.get(uuid);
-		user.role = role;
-	}
-
-	updateFeedbackCount({ roomUUID, count }: { roomUUID: string; count: number }) {
-		const room = this.rooms.get(roomUUID);
-		room.feedbackCount = count;
+		for (const key in updateUser) {
+			user[key] = updateUser[key];
+		}
+		this.userMap.set(user.uuid, user);
 	}
 }
