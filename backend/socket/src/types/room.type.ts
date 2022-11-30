@@ -12,3 +12,7 @@ export interface User {
 	role: string;
 	roomUUID: string;
 }
+
+export type userUUID = string;
+export type roomUUID = string;
+export type clientId = string;

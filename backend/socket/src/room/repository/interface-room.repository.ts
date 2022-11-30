@@ -53,12 +53,6 @@ export interface RoomRepository {
 	removeUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }): void;
 
 	/**
-	 * client socket id에 mapping된 user객체를 지웁니다.
-	 * @param clientId
-	 */
-	removeUserInSocketUserMap(clientId: string): void;
-
-	/**
 	 * 방의 현재 phase를 반환합니다.
 	 * @param roomUUID
 	 * @returns ROOM_PHASE
