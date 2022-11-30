@@ -17,11 +17,37 @@ export class InterviewService {
 		const roomUUID = user.roomUUID;
 
 		if (!this.isValidPhaseUpdate({ roomUUID, phase: ROOM_PHASE.INTERVIEW })) return;
-
 		this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.INTERVIEW });
+
+		const usersInRoom = this.roomRepository.getUsersInRoom(roomUUID);
+		this.updateUsersRoleAtStartInterview({ trigger: user, users: usersInRoom });
+
 		server.to(roomUUID).emit(EVENT.JOIN_INTERVIEW);
 
 		return new SocketResponseDto({ success: true });
+	}
+
+	updateUsersRoleAtStartInterview({ trigger, users }: { trigger: User; users: User[] }) {
+		users.forEach((user) => {
+			if (trigger.uuid === user.uuid) {
+				this.roomRepository.updateUserRole({
+					uuid: trigger.uuid,
+					role: USER_ROLE.INTERVIEWEE,
+				});
+				return;
+			}
+
+			this.roomRepository.updateUserRole({
+				uuid: user.uuid,
+				role: USER_ROLE.INETRVIEWER,
+			});
+		});
+	}
+
+	updateUsersRoleAtEndInterview(users: User[]) {
+		users.forEach((user) =>
+			this.roomRepository.updateUserRole({ uuid: user.uuid, role: USER_ROLE.NONE })
+		);
 	}
 
 	isValidPhaseUpdate({ roomUUID, phase }: { roomUUID: string; phase: string }) {

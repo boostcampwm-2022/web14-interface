@@ -61,4 +61,9 @@ export class InmemoryRoomRepository implements RoomRepository {
 		const room = this.rooms.get(roomUUID);
 		room.phase = phase;
 	}
+
+	updateUserRole({ uuid, role }: { uuid: string; role: USER_ROLE }) {
+		const user = this.userMap.get(uuid);
+		user.role = role;
+	}
 }

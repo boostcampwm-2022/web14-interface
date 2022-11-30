@@ -1,4 +1,4 @@
-import { ROOM_PHASE } from '@constant';
+import { ROOM_PHASE, USER_ROLE } from '@constant';
 import { InmemoryRoom, User } from '@types';
 
 export interface RoomRepository {
@@ -71,4 +71,6 @@ export interface RoomRepository {
 	 * @param phase
 	 */
 	updateRoomPhase({ roomUUID, phase }: { roomUUID: string; phase: ROOM_PHASE }): void;
+
+	updateUserRole({ uuid, role }: { uuid: string; role: USER_ROLE }): void;
 }
