@@ -111,7 +111,7 @@ export class ConnectionService {
 	 * @returns room
 	 */
 	createDefaultRoom(): InmemoryRoom {
-		return { roomUUID: uuidv4(), phase: ROOM_PHASE.LOBBY, feedbackCount: 0 };
+		return { roomUUID: uuidv4(), phase: ROOM_PHASE.LOBBY };
 	}
 
 	/**

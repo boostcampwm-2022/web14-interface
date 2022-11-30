@@ -3,7 +3,6 @@ import { ROOM_PHASE } from '@constant';
 export interface InmemoryRoom {
 	roomUUID: string;
 	phase: ROOM_PHASE;
-	feedbackCount: number;
 }
 
 export interface User {
