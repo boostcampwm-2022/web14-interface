@@ -65,4 +65,9 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	handleEndInterview(@ConnectedSocket() client: Socket) {
 		this.interviewService.endInterview({ client, server: this.server });
 	}
+
+	@SubscribeMessage(EVENT.END_FEEDBACK)
+	handleEndFeedback(@ConnectedSocket() client: Socket): SocketResponseDto {
+		return this.interviewService.endFeedback({ client, server: this.server });
+	}
 }
