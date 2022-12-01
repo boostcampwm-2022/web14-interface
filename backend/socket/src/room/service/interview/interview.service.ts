@@ -1,4 +1,11 @@
-import { ERROR_MSG, EVENT, ROOM_PHASE, ROOM_REPOSITORY_INTERFACE, USER_ROLE } from '@constant';
+import {
+	ERROR_MSG,
+	EVENT,
+	MIN_USER_COUNT,
+	ROOM_PHASE,
+	ROOM_REPOSITORY_INTERFACE,
+	USER_ROLE,
+} from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
 import { User } from '@types';
 import { Socket, Namespace } from 'socket.io';
@@ -16,6 +23,7 @@ export class InterviewService {
 	startInterview({ client, server }: { client: Socket; server: Namespace }) {
 		const user = this.roomRepository.getUserByClientId(client.id);
 		const roomUUID = user.roomUUID;
+		const usersInRoom = this.roomRepository.getUsersInRoom(roomUUID);
 
 		if (!this.isValidRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.INTERVIEW })) {
 			return new SocketResponseDto({
@@ -23,9 +31,15 @@ export class InterviewService {
 				message: ERROR_MSG.INVALID_REQUEST,
 			});
 		}
-		this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.INTERVIEW });
 
-		const usersInRoom = this.roomRepository.getUsersInRoom(roomUUID);
+		if (usersInRoom.length < MIN_USER_COUNT) {
+			return new SocketResponseDto({
+				success: false,
+				message: ERROR_MSG.NOT_ENOUGHT_USER,
+			});
+		}
+
+		this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.INTERVIEW });
 		this.updateUsersRoleAtStartInterview({ emitter: user, users: usersInRoom });
 
 		server.to(roomUUID).emit(EVENT.JOIN_INTERVIEW);
@@ -37,12 +51,16 @@ export class InterviewService {
 		const docsUUID = uuidv4();
 
 		const user = this.roomRepository.getUserByClientId(client.id);
-		const usersInRoom = this.roomRepository.getUsersInRoom(user.roomUUID);
+		const roomUUID = user.roomUUID;
+		const usersInRoom = this.roomRepository.getUsersInRoom(roomUUID);
 
-		this.roomRepository.updateRoomPhase({
-			roomUUID: user.roomUUID,
-			phase: ROOM_PHASE.FEEDBACK,
-		});
+		if (!this.isValidRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.LOBBY })) {
+			return new SocketResponseDto({
+				success: false,
+				message: ERROR_MSG.INVALID_REQUEST,
+			});
+		}
+		this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.FEEDBACK });
 
 		usersInRoom.forEach((user) => {
 			const clientId = this.roomRepository.getClientIdByUser(user.uuid);

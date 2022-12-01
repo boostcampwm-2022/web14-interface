@@ -58,7 +58,7 @@ export class ConnectionService {
 
 		client.join(roomUUID);
 		this.roomRepository.saveUserInRoom({ clientId: client.id, roomUUID, user });
-		server.to(roomUUID).emit(EVENT.CHANGE_USER, { user });
+		server.to(roomUUID).emit(EVENT.ENTER_USER, { user });
 		return new SocketResponseDto({
 			success: true,
 			data: { others, me: user },
@@ -102,7 +102,7 @@ export class ConnectionService {
 		this.roomRepository.removeUserInRoom({ roomUUID, user });
 		client.leave(roomUUID);
 
-		server.to(roomUUID).emit(EVENT.CHANGE_USER, { user });
+		server.to(roomUUID).emit(EVENT.LEAVE_USER, { user });
 	}
 
 	/**
