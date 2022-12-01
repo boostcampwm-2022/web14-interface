@@ -17,20 +17,9 @@ const Lobby = () => {
 
 	const streamList = useRecoilValue(webRTCStreamSelector);
 
-	useEffect(() => {
-		//TODO roomUUID 받는 로직 추가
-		const roomUUID = '123';
-		socket.emit('enter_room', roomUUID, ({ success, data }) => {
-			if (!success) {
-				alert('Invalid Room');
-				return;
-			}
-
-			const { me, others } = data;
-
-			startConnection(me.uuid);
-		});
-	}, []);
+	// useEffect(() => {
+	// 	startConnection(me.uuid);
+	// }, []);
 
 	return (
 		<>
