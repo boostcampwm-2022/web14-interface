@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { PHASE_TYPE } from '@constants/phase.constant';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import axios from 'axios';
+import { io } from 'socket.io-client';
 
+const socket = io('/socket');
 const Landing = () => {
 	usePreventLeave();
+
+	useEffect(() => {
+		socket.emit('create_room');
+	}, []);
+
 	const { safeNavigate } = useSafeNavigate();
 	const handleSignOut = async () => {
 		const res = await axios.get('/api/auth/logout');
