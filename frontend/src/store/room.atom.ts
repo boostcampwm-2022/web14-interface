@@ -7,7 +7,7 @@ export const roomUUIDState = atom({
 
 export const othersInRoomState = atom({
 	key: 'othersInRoomState',
-	default: null,
+	default: [],
 });
 
 export const meInRoomState = atom({
