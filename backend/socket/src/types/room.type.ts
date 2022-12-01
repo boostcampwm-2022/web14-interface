@@ -1,4 +1,4 @@
-import { ROOM_PHASE } from '@constant';
+import { ROOM_PHASE, USER_ROLE } from '@constant';
 
 export interface InmemoryRoom {
 	roomUUID: string;
@@ -8,7 +8,7 @@ export interface InmemoryRoom {
 export interface User {
 	uuid: string;
 	nickname: string;
-	role: string;
+	role: USER_ROLE;
 	roomUUID: string;
 }
 

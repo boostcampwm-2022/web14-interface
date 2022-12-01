@@ -1,4 +1,11 @@
-import { MAX_USER_COUNT, EVENT, ROOM_REPOSITORY_INTERFACE, ROOM_PHASE, ERROR_MSG } from '@constant';
+import {
+	MAX_USER_COUNT,
+	EVENT,
+	ROOM_REPOSITORY_INTERFACE,
+	ROOM_PHASE,
+	ERROR_MSG,
+	USER_ROLE,
+} from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
 import { Namespace, Socket } from 'socket.io';
 import { SocketResponseDto } from 'src/room/dto/socket-response.dto';
@@ -128,6 +135,6 @@ export class ConnectionService {
 			nickname = uuidv4();
 		} while (users.find((user) => user.nickname === nickname));
 
-		return { uuid, nickname, role: '', roomUUID };
+		return { uuid, nickname, role: USER_ROLE.NONE, roomUUID };
 	}
 }
