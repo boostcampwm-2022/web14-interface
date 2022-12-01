@@ -39,6 +39,11 @@ export class InterviewService {
 		const user = this.roomRepository.getUserByClientId(client.id);
 		const usersInRoom = this.roomRepository.getUsersInRoom(user.roomUUID);
 
+		this.roomRepository.updateRoomPhase({
+			roomUUID: user.roomUUID,
+			phase: ROOM_PHASE.FEEDBACK,
+		});
+
 		usersInRoom.forEach((user) => {
 			const clientId = this.roomRepository.getClientIdByUser(user.uuid);
 
@@ -77,7 +82,7 @@ export class InterviewService {
 		const interviewee = users.find((user) => user.role === USER_ROLE.INTERVIEWEE);
 		const clientId = this.roomRepository.getClientIdByUser(interviewee.uuid);
 		server.to(clientId).emit(EVENT.COUNT_FEEDBACK, { count });
-		return new SocketResponseDto({ success: true, data: { isLastFeedback: false } });
+		return new SocketResponseDto({ success: true, data: { isLastFeedback: false, count } });
 	}
 
 	terminateCycle({ server, user, users }: { server: Namespace; user: User; users: User[] }) {
@@ -114,10 +119,10 @@ export class InterviewService {
 	updateUsersRoleAtStartInterview({ emitter, users }: { emitter: User; users: User[] }) {
 		users.forEach((user) => {
 			if (emitter.uuid === user.uuid) {
-				this.updateUserRole({ uuid: emitter.uuid, role: USER_ROLE.INTERVIEWEE });
+				this.updateUserRole({ uuid: user.uuid, role: USER_ROLE.INTERVIEWEE });
 				return;
 			}
-			this.updateUserRole({ uuid: emitter.uuid, role: USER_ROLE.INTERVIEWER });
+			this.updateUserRole({ uuid: user.uuid, role: USER_ROLE.INTERVIEWER });
 		});
 	}
 

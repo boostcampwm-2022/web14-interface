@@ -25,7 +25,9 @@ const PrivateRoutes = () => {
 	return (
 		<Routes>
 			<Route path={LANDING_PATH} element={<Landing />} />
-			<Route path={LOBBY_PATH} element={<Lobby />} />
+			<Route element={<StrictRoute targetPath={LOBBY_PATH} />}>
+				<Route path={LOBBY_PATH} element={<Lobby />} />
+			</Route>
 			<Route element={<StrictRoute targetPath={INTERVIEWER_PATH} />}>
 				<Route path={INTERVIEWER_PATH} element={<Interviewer />} />
 			</Route>

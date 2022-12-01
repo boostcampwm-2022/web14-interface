@@ -5,7 +5,7 @@ import { SocketResponseDto } from 'src/room/dto/socket-response.dto';
 import { InmemoryRoom, User } from 'src/types/room.type';
 import { v4 as uuidv4 } from 'uuid';
 import { RoomRepository } from '../../repository/interface-room.repository';
-import { getRandomNickname } from '@woowa-babble/random-nickname';
+// import { getRandomNickname } from '@woowa-babble/random-nickname';
 
 @Injectable()
 export class ConnectionService {
@@ -65,7 +65,7 @@ export class ConnectionService {
 	 */
 	isEnterableRoom(room: InmemoryRoom): SocketResponseDto | null {
 		if (room === undefined) {
-			return new SocketResponseDto({ success: false, message: ERROR_MSG.BUSY_ROOM });
+			return new SocketResponseDto({ success: false, message: ERROR_MSG.NO_ROOM });
 		}
 
 		if (room.phase !== ROOM_PHASE.LOBBY) {
@@ -124,7 +124,8 @@ export class ConnectionService {
 
 		let nickname = '';
 		do {
-			nickname = getRandomNickname('monsters');
+			// nickname = getRandomNickname('monsters');
+			nickname = uuidv4();
 		} while (users.find((user) => user.nickname === nickname));
 
 		return { uuid, nickname, role: '', roomUUID };

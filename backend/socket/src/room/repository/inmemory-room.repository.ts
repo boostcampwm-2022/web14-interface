@@ -11,6 +11,7 @@ export class InmemoryRoomRepository implements RoomRepository {
 
 	createRoom({ roomUUID, room }: { roomUUID: string; room: InmemoryRoom }) {
 		this.rooms.set(roomUUID, room);
+		this.usersInRoom.set(roomUUID, new Set());
 		return room;
 	}
 
