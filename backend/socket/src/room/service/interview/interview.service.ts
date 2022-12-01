@@ -114,10 +114,10 @@ export class InterviewService {
 	updateUsersRoleAtStartInterview({ emitter, users }: { emitter: User; users: User[] }) {
 		users.forEach((user) => {
 			if (emitter.uuid === user.uuid) {
-				this.updateUserRole({ uuid: emitter.uuid, role: USER_ROLE.INTERVIEWEE });
+				this.updateUserRole({ uuid: user.uuid, role: USER_ROLE.INTERVIEWEE });
 				return;
 			}
-			this.updateUserRole({ uuid: emitter.uuid, role: USER_ROLE.INTERVIEWER });
+			this.updateUserRole({ uuid: user.uuid, role: USER_ROLE.INTERVIEWER });
 		});
 	}
 
