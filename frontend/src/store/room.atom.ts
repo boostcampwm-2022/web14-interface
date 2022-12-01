@@ -14,3 +14,8 @@ export const meInRoomState = atom({
 	key: 'meInRoomState',
 	default: null,
 });
+
+export const completedFbCntState = atom({
+	key: 'completedFbCntState',
+	default: 0,
+});
