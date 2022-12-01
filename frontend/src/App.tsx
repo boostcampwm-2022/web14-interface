@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { RecoilRoot } from 'recoil';
 import { Global, ThemeProvider } from '@emotion/react';
 import { BrowserRouter } from 'react-router-dom';
@@ -14,7 +14,9 @@ function App() {
 				<ThemeProvider theme={theme}>
 					<div className="App">
 						<Global styles={globalStyle} />
-						<RootRoutes />
+						<Suspense fallback={<>spinner...</>}>
+							<RootRoutes />
+						</Suspense>
 					</div>
 				</ThemeProvider>
 			</BrowserRouter>

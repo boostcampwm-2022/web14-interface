@@ -1,9 +1,4 @@
-/*  */
 import React from 'react';
-import { useSetRecoilState } from 'recoil';
-import { PHASE_TYPE } from '@constants/phase.constant';
-import { authState } from '@store/auth.atom';
-import useSafeNavigate from '@hooks/useSafeNavigate';
 
 import { ReactComponent as InterfacePreview } from '@assets/icon/interface_preview.svg';
 import { ReactComponent as InterfaceDescript } from '@assets/icon/interface_descript.svg';
@@ -11,7 +6,6 @@ import { ReactComponent as NaverOauthBtn } from '@assets/icon/naver_oauth.svg';
 import { ReactComponent as KakaoOauthBtn } from '@assets/icon/kakao_oauth.svg';
 import { css } from '@emotion/react';
 import axios from 'axios';
-import { useEffect } from 'react';
 
 enum OAUTH_TYPE {
 	NAVER = 'naver',
@@ -19,25 +13,6 @@ enum OAUTH_TYPE {
 }
 
 const Login = () => {
-	const { safeNavigate } = useSafeNavigate();
-	const authSetter = useSetRecoilState(authState);
-
-	useEffect(() => {
-		(async () => {
-			// TODO 응답, 처리 hook으로 빼기
-			const res = await axios
-				.get('/api/auth/login')
-				.then((res) => res.data)
-				.catch((err) => err.response);
-
-			// TODO server에서 응답, 오류 구조화
-			if (res.statusCode === 200) {
-				safeNavigate(PHASE_TYPE.LANDING_PHASE);
-				authSetter(true);
-			}
-		})();
-	}, []);
-
 	const startOauth = async (type: string) => {
 		// TODO 응답, 처리 hook으로 빼기
 		const res = await axios
