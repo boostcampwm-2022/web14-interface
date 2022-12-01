@@ -1,13 +1,17 @@
-import { ROOM_STATE } from '@constant';
+import { ROOM_PHASE } from '@constant';
 
 export interface InmemoryRoom {
-	users: Map<string, User>;
-	state: ROOM_STATE;
-	feedbacked: Set<User>;
+	roomUUID: string;
+	phase: ROOM_PHASE;
 }
 
 export interface User {
+	uuid: string;
 	nickname: string;
 	role: string;
 	roomUUID: string;
 }
+
+export type userUUID = string;
+export type roomUUID = string;
+export type clientId = string;
