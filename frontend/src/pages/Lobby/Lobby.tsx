@@ -7,9 +7,13 @@ import { webRTCStreamSelector, webRTCUserListState } from '@store/webRTC.atom';
 import useWebRTCSignaling from '@hooks/useWebRTCSignaling';
 import { socket } from '../../service/socket';
 import Video from '@components/@shared/Video/Video';
+import { meInRoomState, othersInRoomState } from '@store/room.atom';
 
 const Lobby = () => {
 	const { safeNavigate } = useSafeNavigate();
+	const me = useRecoilValue(meInRoomState);
+	const [others, setOthers] = useRecoilState(othersInRoomState);
+
 	usePreventLeave();
 
 	const [webRTCUserList, setWebRTCUserList] = useRecoilState(webRTCUserListState);
@@ -21,14 +25,25 @@ const Lobby = () => {
 	// 	startConnection(me.uuid);
 	// }, []);
 
+	useEffect(() => {
+		socket.on('join_interview', () => {
+			safeNavigate(PHASE_TYPE.INTERVIEWER_PHASE);
+		});
+	}, []);
+
+	const handleStartInterviewee = () => {
+		socket.emit('start_interview', () => {
+			safeNavigate(PHASE_TYPE.INTERVIEWEE_PHASE);
+		});
+	};
+
 	return (
 		<>
 			<div>Lobby</div>
 			{streamList.map((stream) => (
 				<Video key={stream.id} src={stream} width={400} autoplay muted />
 			))}
-			<button onClick={() => safeNavigate(PHASE_TYPE.INTERVIEWEE_PHASE)}>면접자 시작</button>
-			<button onClick={() => safeNavigate(PHASE_TYPE.INTERVIEWER_PHASE)}>면접관 시작</button>
+			<button onClick={handleStartInterviewee}>면접자로 시작</button>
 		</>
 	);
 };
