@@ -1,15 +1,14 @@
-import { IsString, IsObject, IsNotEmpty } from 'class-validator';
+import { IsString, IsObject, IsNotEmpty, IsBoolean } from 'class-validator';
 
 export class SocketResponseDto {
-	constructor({ success, data = null, message = null }) {
+	constructor({ success = true, data = null, message = null }) {
 		this.success = success;
 		this.data = data;
 		this.message = message;
 	}
 
-	@IsNotEmpty()
-	@IsString()
-	success: string;
+	@IsBoolean()
+	success: boolean;
 
 	@IsObject()
 	data: unknown;

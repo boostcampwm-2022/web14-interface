@@ -7,11 +7,10 @@ import {
 	USER_ROLE,
 } from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
-import { User } from '@types';
 import { Socket, Namespace } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
-import { SocketResponseDto } from 'src/room/dto/socket-response.dto';
 import { RoomRepository } from 'src/room/repository/interface-room.repository';
+import { User } from '@types';
 
 @Injectable()
 export class InterviewService {
@@ -26,17 +25,11 @@ export class InterviewService {
 		const usersInRoom = this.roomRepository.getUsersInRoom(roomUUID);
 
 		if (!this.isValidRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.INTERVIEW })) {
-			return new SocketResponseDto({
-				success: false,
-				message: ERROR_MSG.INVALID_REQUEST,
-			});
+			return { success: false, message: ERROR_MSG.INVALID_REQUEST };
 		}
 
 		if (usersInRoom.length < MIN_USER_COUNT) {
-			return new SocketResponseDto({
-				success: false,
-				message: ERROR_MSG.NOT_ENOUGHT_USER,
-			});
+			return { success: false, message: ERROR_MSG.NOT_ENOUGHT_USER };
 		}
 
 		this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.INTERVIEW });
@@ -44,7 +37,7 @@ export class InterviewService {
 
 		server.to(roomUUID).emit(EVENT.JOIN_INTERVIEW);
 
-		return new SocketResponseDto({ success: true });
+		return {};
 	}
 
 	endInterview({ client, server }: { client: Socket; server: Namespace }) {
@@ -54,11 +47,8 @@ export class InterviewService {
 		const roomUUID = user.roomUUID;
 		const usersInRoom = this.roomRepository.getUsersInRoom(roomUUID);
 
-		if (!this.isValidRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.LOBBY })) {
-			return new SocketResponseDto({
-				success: false,
-				message: ERROR_MSG.INVALID_REQUEST,
-			});
+		if (!this.isValidRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.FEEDBACK })) {
+			return { success: false, message: ERROR_MSG.INVALID_REQUEST };
 		}
 		this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.FEEDBACK });
 
@@ -70,6 +60,7 @@ export class InterviewService {
 		});
 
 		// TODO video object storage upload
+		return {};
 	}
 
 	getEventAtEndInterviewByRole(role: string) {
@@ -100,23 +91,20 @@ export class InterviewService {
 		const interviewee = users.find((user) => user.role === USER_ROLE.INTERVIEWEE);
 		const clientId = this.roomRepository.getClientIdByUser(interviewee.uuid);
 		server.to(clientId).emit(EVENT.COUNT_FEEDBACK, { count });
-		return new SocketResponseDto({ success: true, data: { isLastFeedback: false, count } });
+		return { data: { isLastFeedback: false, count } };
 	}
 
 	terminateCycle({ server, user, users }: { server: Namespace; user: User; users: User[] }) {
 		const roomUUID = user.roomUUID;
 
 		if (!this.isValidRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.LOBBY })) {
-			return new SocketResponseDto({
-				success: false,
-				message: ERROR_MSG.INVALID_REQUEST,
-			});
+			return { success: false, message: ERROR_MSG.INVALID_REQUEST };
 		}
 		this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.LOBBY });
 
 		this.updateUsersRoleAtEndInterview(users);
 		server.to(roomUUID).emit(EVENT.TERMINATE_SESSION);
-		return new SocketResponseDto({ success: true, data: { isLastFeedback: true } });
+		return { data: { isLastFeedback: true } };
 	}
 
 	getFeedbackEndCount(roomUUID: string) {
