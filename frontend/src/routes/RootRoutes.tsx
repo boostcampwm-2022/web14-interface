@@ -5,17 +5,12 @@ import { Route, Routes } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import isAuthQuery from '@store/authState';
 
-
-// TODO: 
 const RootRoutes = () => {
-	// const isAuth = useRecoilValue(isAuthQuery);
-	const isAuth = true;
+	const isAuth = useRecoilValue(isAuthQuery);
 	return (
-		<Suspense fallback={<>spinner...</>}>
-			<Routes>
-				<Route path="*" element={isAuth ? <PrivateRoutes /> : <PublicRoutes />} />
-			</Routes>
-		</Suspense>
+		<Routes>
+			<Route path="*" element={isAuth ? <PrivateRoutes /> : <PublicRoutes />} />
+		</Routes>
 	);
 };
 

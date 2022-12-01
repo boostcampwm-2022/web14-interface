@@ -10,4 +10,13 @@ module.exports = function (app) {
 			changeOrigin: true,
 		})
 	);
+	app.use(
+		'/socket',
+		createProxyMiddleware({
+			target: 'http://localhost:8081',
+			changeOrigin: true,
+			ws: true,
+			// secure: false,
+		})
+	);
 };
