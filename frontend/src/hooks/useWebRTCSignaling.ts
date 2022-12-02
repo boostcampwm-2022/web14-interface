@@ -109,28 +109,38 @@ const useWebRTCSignaling = (
 	const startConnection = async (myId) => {
 		await getMyStream(myId);
 
-		socket.on('receive_signaling', async (opponentId) => {
+		socket.on('receive_signaling', async ({ userUUID: opponentId }) => {
+			console.log('시그널 받음', '상대방', opponentId, '나', myId);
 			const newConnection = makeConnection(myId, opponentId);
 			const offer = await newConnection.createOffer();
 			newConnection.setLocalDescription(offer);
 
+			console.log('offer 보냄', offer, opponentId);
+
 			socket.emit('offer', { offer, myId, opponentId });
 		});
 
-		socket.on('offer', async ({ offer, opponentId }) => {
+		socket.on('offer', async ({ offer, myId, opponentId }) => {
+			console.log('offer 받음', offer);
 			const newConnection = makeConnection(myId, opponentId);
 			newConnection.setRemoteDescription(offer);
 			const answer = await newConnection.createAnswer();
 			newConnection.setLocalDescription(answer);
 
+			console.log('answer 보냄');
+
 			socket.emit('answer', { answer, myId, opponentId });
 		});
 
 		socket.on('answer', ({ answer, opponentId }) => {
+			// console.log(answer, opponentId);
+			console.log('answer 받음');
 			connectionListRef.current.get(opponentId).connection.setRemoteDescription(answer);
 		});
 
 		socket.on('icecandidate', ({ icecandidate, opponentId }) => {
+			// console.log(icecandidate, opponentId);
+			console.log('ice 받음');
 			connectionListRef.current.get(opponentId).connection.addIceCandidate(icecandidate);
 		});
 
@@ -145,7 +155,8 @@ const useWebRTCSignaling = (
 	 * 그 후, connectionListRef과 외부 webRTCUserList를 업데이트합니다.
 	 * @param closeId 서버가 보낸 나간 UserId
 	 */
-	const closeConnection = (closeId) => {
+	const closeConnection = ({ userUUID: closeId }) => {
+		console.log(closeId);
 		const oldStream = webRTCUserList.get(closeId).stream;
 		const oldConnection = webRTCUserList.get(closeId).connection;
 
