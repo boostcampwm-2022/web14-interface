@@ -1,11 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { PHASE_TYPE } from '@constants/phase.constant';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import axios from 'axios';
-import { socket } from '../../service/socket';
 import { meInRoomState, othersInRoomState, roomUUIDState } from '@store/room.atom';
 import { useSetRecoilState } from 'recoil';
+import { SOCKET_EVENT_TYPE } from '@constants/event.constant';
+import { socketEmit } from '../../api/socket.api';
+import { UserDTO } from '@customType/user';
+
+interface createRoomResponseType {
+	uuid: string;
+}
+
+interface attendRoomResponseType {
+	others: UserDTO[];
+	me: UserDTO;
+}
 
 const Landing = () => {
 	usePreventLeave();
@@ -15,44 +26,36 @@ const Landing = () => {
 	const setMe = useSetRecoilState(meInRoomState);
 
 	const { safeNavigate } = useSafeNavigate();
+
 	const handleSignOut = async () => {
 		const res = await axios.get('/api/auth/logout');
-		console.log(res.data.statusCode);
+		alert(res.data.statusCode);
 	};
 
 	const handleAttendRoom = () => {
 		attendRoom(roomNumber);
 	};
 
-	const handleCreate = () => {
-		//TODO: magic ev type
-		socket.emit('create_room', (res) => {
-			console.log(res);
-			const { uuid } = res.data;
-			setRoom(uuid);
-			attendRoom(uuid);
-		});
+	const handleCreate = async () => {
+		const { uuid } = await socketEmit<createRoomResponseType>(SOCKET_EVENT_TYPE.CRERATE_ROOM);
+		setRoom(uuid);
+		attendRoom(uuid);
 	};
 
-	const attendRoom = (roomUUID) => {
-		socket.emit('enter_room', roomUUID, (res) => {
-			console.log(res);
-			const { data, success, message } = res;
-			if (!success) {
-				alert(message);
-				return;
-			}
-			const { others, me } = data;
-			setOthers(others);
-			setMe(me);
-			safeNavigate(PHASE_TYPE.LOBBY_PHASE);
-		});
+	const attendRoom = async (roomUUID) => {
+		const { others, me } = await socketEmit<attendRoomResponseType>(
+			SOCKET_EVENT_TYPE.COUNT_FEEDBACK,
+			roomUUID
+		);
+
+		setOthers(others);
+		setMe(me);
+		safeNavigate(PHASE_TYPE.LOBBY_PHASE);
 	};
 
 	return (
 		<>
 			<div>Landing</div>
-			<button onClick={() => safeNavigate(PHASE_TYPE.LOBBY_PHASE)}>방참가/생성</button>
 			<input
 				type="text"
 				placeholder="방번호를 입력하세요"
@@ -62,6 +65,8 @@ const Landing = () => {
 			<button onClick={handleCreate}>방생성</button>
 
 			<button onClick={handleAttendRoom}>방참가</button>
+			<button onClick={handleSignOut}>로그아웃</button>
+			<button onClick={handleSignOut}>내 기록</button>
 			<button onClick={handleSignOut}>로그아웃</button>
 		</>
 	);
