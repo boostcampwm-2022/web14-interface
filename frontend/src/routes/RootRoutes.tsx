@@ -6,7 +6,8 @@ import { useRecoilValue } from 'recoil';
 import isAuthQuery from '@store/authState';
 
 const RootRoutes = () => {
-	const isAuth = useRecoilValue(isAuthQuery);
+	// const isAuth = useRecoilValue(isAuthQuery);
+	const isAuth = true;
 	return (
 		<Routes>
 			<Route path="*" element={isAuth ? <PrivateRoutes /> : <PublicRoutes />} />

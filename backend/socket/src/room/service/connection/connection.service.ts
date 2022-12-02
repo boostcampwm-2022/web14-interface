@@ -1,7 +1,13 @@
-import { MAX_USER_COUNT, EVENT, ROOM_REPOSITORY_INTERFACE, ROOM_PHASE, ERROR_MSG } from '@constant';
+import {
+	MAX_USER_COUNT,
+	EVENT,
+	ROOM_REPOSITORY_INTERFACE,
+	ROOM_PHASE,
+	ERROR_MSG,
+	USER_ROLE,
+} from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
 import { Namespace, Socket } from 'socket.io';
-import { SocketResponseDto } from 'src/room/dto/socket-response.dto';
 import { InmemoryRoom, User } from 'src/types/room.type';
 import { v4 as uuidv4 } from 'uuid';
 import { RoomRepository } from '../../repository/interface-room.repository';
@@ -22,7 +28,7 @@ export class ConnectionService {
 		const room = this.createDefaultRoom();
 		this.roomRepository.createRoom({ roomUUID: room.roomUUID, room });
 
-		return new SocketResponseDto({ success: true, data: { uuid: room.roomUUID } });
+		return { data: { uuid: room.roomUUID } };
 	}
 
 	/**
@@ -51,11 +57,9 @@ export class ConnectionService {
 
 		client.join(roomUUID);
 		this.roomRepository.saveUserInRoom({ clientId: client.id, roomUUID, user });
-		server.to(roomUUID).emit(EVENT.CHANGE_USER, { user });
-		return new SocketResponseDto({
-			success: true,
-			data: { others, me: user },
-		});
+		server.to(roomUUID).emit(EVENT.ENTER_USER, { user });
+
+		return { data: { others, me: user } };
 	}
 
 	/**
@@ -63,19 +67,19 @@ export class ConnectionService {
 	 * @param room room instance
 	 * @returns
 	 */
-	isEnterableRoom(room: InmemoryRoom): SocketResponseDto | null {
+	isEnterableRoom(room: InmemoryRoom) {
 		if (room === undefined) {
-			return new SocketResponseDto({ success: false, message: ERROR_MSG.NO_ROOM });
+			return { success: false, message: ERROR_MSG.NO_ROOM };
 		}
 
 		if (room.phase !== ROOM_PHASE.LOBBY) {
-			return new SocketResponseDto({ success: false, message: ERROR_MSG.BUSY_ROOM });
+			return { success: false, message: ERROR_MSG.BUSY_ROOM };
 		}
 
 		const users = this.roomRepository.getUsersInRoom(room.roomUUID);
 		const countInRoom = users.length;
 		if (countInRoom >= MAX_USER_COUNT) {
-			return new SocketResponseDto({ success: false, message: ERROR_MSG.FULL_ROOM });
+			return { success: false, message: ERROR_MSG.FULL_ROOM };
 		}
 
 		return null;
@@ -91,19 +95,12 @@ export class ConnectionService {
 		if (!user) return;
 
 		const roomUUID = user.roomUUID;
-
 		this.roomRepository.removeUserInRoom({ roomUUID, user });
 		client.leave(roomUUID);
 
-		server.to(roomUUID).emit(EVENT.CHANGE_USER, { user });
-	}
+		server.to(roomUUID).emit(EVENT.LEAVE_USER, { user });
 
-	/**
-	 * 해당 client id에 mapping된 user 객체를 지우는 메서드입니다.
-	 * @param client - client socket
-	 */
-	disconnectUser(client: Socket) {
-		if (this.roomRepository.getUserByClientId(client.id) === undefined) return;
+		return {};
 	}
 
 	/**
@@ -128,6 +125,6 @@ export class ConnectionService {
 			nickname = uuidv4();
 		} while (users.find((user) => user.nickname === nickname));
 
-		return { uuid, nickname, role: '', roomUUID };
+		return { uuid, nickname, role: USER_ROLE.NONE, roomUUID };
 	}
 }

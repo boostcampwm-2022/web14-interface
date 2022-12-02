@@ -3,6 +3,8 @@ export enum EVENT {
 	CREATE_ROOM = 'create_room',
 	ENTER_ROOM = 'enter_room',
 	LEAVE_ROOM = 'leave_room',
+	ENTER_USER = 'enter_user',
+	LEAVE_USER = 'leave_user',
 
 	// interview
 	START_INTERVIEW = 'start_interview',
@@ -11,7 +13,6 @@ export enum EVENT {
 	END_FEEDBACK = 'end_feedback',
 	COUNT_FEEDBACK = 'count_feedback',
 	TERMINATE_SESSION = 'terminate_session',
-	CHANGE_USER = 'change_user',
 	START_WAITING = 'start_waiting',
 	START_FEEDBACK = 'start_feedback',
 
@@ -30,6 +31,9 @@ export enum EVENT {
 	ANSWER = 'answer',
 	ICECANDIDATE = 'icecandidate',
 	DISCONNECT_WEBRTC = 'disconnect_webrtc',
+
+	// error
+	BAD_REQUEST = 'bad_request',
 }
 
 export enum ERROR_MSG {
@@ -38,4 +42,5 @@ export enum ERROR_MSG {
 	BUSY_ROOM = 'busy_room',
 	NOT_ENOUGHT_USER = 'not_enough_user',
 	INVALID_REQUEST = 'invalid_request',
+	BAD_REQUEST = 'invalid socket request',
 }
