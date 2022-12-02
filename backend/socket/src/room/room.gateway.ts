@@ -1,5 +1,5 @@
 import { EVENT } from '@constant';
-import { Logger, UseInterceptors } from '@nestjs/common';
+import { Logger, UseFilters, UseInterceptors } from '@nestjs/common';
 import {
 	ConnectedSocket,
 	MessageBody,
@@ -10,11 +10,13 @@ import {
 	WebSocketServer,
 } from '@nestjs/websockets';
 import { Namespace, Socket } from 'socket.io';
+import { SocketExceptionFilter } from 'src/filter/socket-exception.filter';
 import { SocketResponseInterceptor } from 'src/interceptor/socket-response.interceptor';
 import { ConnectionService } from './service/connection/connection.service';
 import { InterviewService } from './service/interview/interview.service';
 
 @UseInterceptors(new SocketResponseInterceptor())
+@UseFilters(new SocketExceptionFilter())
 @WebSocketGateway({ namespace: 'socket' })
 export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer() server: Namespace;
