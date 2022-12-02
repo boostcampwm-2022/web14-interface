@@ -8,7 +8,6 @@ import {
 } from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
 import { Namespace, Socket } from 'socket.io';
-import { SocketResponseDto } from 'src/room/dto/socket-response.dto';
 import { InmemoryRoom, User } from 'src/types/room.type';
 import { v4 as uuidv4 } from 'uuid';
 import { RoomRepository } from '../../repository/interface-room.repository';

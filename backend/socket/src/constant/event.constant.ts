@@ -31,6 +31,9 @@ export enum EVENT {
 	ANSWER = 'answer',
 	ICECANDIDATE = 'icecandidate',
 	DISCONNECT_WEBRTC = 'disconnect_webrtc',
+
+	// error
+	BAD_REQUEST = 'bad_request',
 }
 
 export enum ERROR_MSG {
@@ -39,4 +42,5 @@ export enum ERROR_MSG {
 	BUSY_ROOM = 'busy_room',
 	NOT_ENOUGHT_USER = 'not_enough_user',
 	INVALID_REQUEST = 'invalid_request',
+	BAD_REQUEST = 'invalid socket request',
 }

@@ -1,3 +1,4 @@
+import { EVENT } from '@constant';
 import { Catch, ArgumentsHost, InternalServerErrorException, Logger } from '@nestjs/common';
 import { BaseWsExceptionFilter, WsException } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
@@ -13,7 +14,7 @@ export class SocketExceptionFilter extends BaseWsExceptionFilter {
 		logger.error(`[Client ID: ${client.id}] ${exception.message}`);
 
 		if (exception instanceof WsException) {
-			client.emit('BAD_REQUEST', exception);
+			client.emit(EVENT.BAD_REQUEST, exception);
 			return;
 		}
 

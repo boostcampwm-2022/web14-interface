@@ -11,6 +11,7 @@ import { Socket, Namespace } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 import { RoomRepository } from 'src/room/repository/interface-room.repository';
 import { User } from '@types';
+import { WsException } from '@nestjs/websockets';
 
 @Injectable()
 export class InterviewService {
@@ -24,13 +25,10 @@ export class InterviewService {
 		const roomUUID = user.roomUUID;
 		const usersInRoom = this.roomRepository.getUsersInRoom(roomUUID);
 
-		if (!this.isValidRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.INTERVIEW })) {
-			return { success: false, message: ERROR_MSG.INVALID_REQUEST };
-		}
-
 		if (usersInRoom.length < MIN_USER_COUNT) {
 			return { success: false, message: ERROR_MSG.NOT_ENOUGHT_USER };
 		}
+		this.validateRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.INTERVIEW });
 
 		this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.INTERVIEW });
 		this.updateUsersRoleAtStartInterview({ emitter: user, users: usersInRoom });
@@ -47,9 +45,7 @@ export class InterviewService {
 		const roomUUID = user.roomUUID;
 		const usersInRoom = this.roomRepository.getUsersInRoom(roomUUID);
 
-		if (!this.isValidRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.FEEDBACK })) {
-			return { success: false, message: ERROR_MSG.INVALID_REQUEST };
-		}
+		this.validateRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.FEEDBACK });
 		this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.FEEDBACK });
 
 		usersInRoom.forEach((user) => {
@@ -97,9 +93,7 @@ export class InterviewService {
 	terminateCycle({ server, user, users }: { server: Namespace; user: User; users: User[] }) {
 		const roomUUID = user.roomUUID;
 
-		if (!this.isValidRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.LOBBY })) {
-			return { success: false, message: ERROR_MSG.INVALID_REQUEST };
-		}
+		this.validateRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.LOBBY });
 		this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.LOBBY });
 
 		this.updateUsersRoleAtEndInterview(users);
@@ -138,11 +132,12 @@ export class InterviewService {
 		});
 	}
 
-	isValidRoomPhaseUpdate({ roomUUID, phase }: { roomUUID: string; phase: string }) {
+	validateRoomPhaseUpdate({ roomUUID, phase }: { roomUUID: string; phase: string }) {
 		const currentPhase = this.roomRepository.getRoomPhase(roomUUID);
 		if (currentPhase === ROOM_PHASE.LOBBY && phase === ROOM_PHASE.INTERVIEW) return true;
 		if (currentPhase === ROOM_PHASE.INTERVIEW && phase === ROOM_PHASE.FEEDBACK) return true;
 		if (currentPhase === ROOM_PHASE.FEEDBACK && phase === ROOM_PHASE.LOBBY) return true;
-		return false;
+
+		throw new WsException(ERROR_MSG.BAD_REQUEST);
 	}
 }
