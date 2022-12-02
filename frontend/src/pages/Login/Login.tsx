@@ -6,11 +6,7 @@ import { ReactComponent as NaverOauthBtn } from '@assets/icon/naver_oauth.svg';
 import { ReactComponent as KakaoOauthBtn } from '@assets/icon/kakao_oauth.svg';
 import { css } from '@emotion/react';
 import axios from 'axios';
-
-enum OAUTH_TYPE {
-	NAVER = 'naver',
-	KAKAO = 'kakao',
-}
+import { OAUTH_TYPE } from '@constants/oauth.constant';
 
 const Login = () => {
 	const startOauth = async (type: string) => {
