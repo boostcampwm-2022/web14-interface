@@ -29,10 +29,12 @@ export class WebrtcService {
 		connectSignal: WebrtcBaseDto;
 		eventType: EVENT;
 	}) {
-		const { opponentId } = connectSignal;
+		const { myId, opponentId } = connectSignal;
 		const opponentClientId = this.roomRepository.getClientIdByUser(opponentId);
 
-		server.to(opponentClientId).emit(eventType, { connectSignal });
+		server
+			.to(opponentClientId)
+			.emit(eventType, { ...connectSignal, myId: opponentId, opponentId: myId });
 		return {};
 	}
 
