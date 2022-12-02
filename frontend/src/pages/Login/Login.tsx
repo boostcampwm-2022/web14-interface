@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { ReactComponent as InterfacePreview } from '@assets/icon/interface_preview.svg';
-import { ReactComponent as InterfaceDescript } from '@assets/icon/interface_descript.svg';
-import { ReactComponent as NaverOauthBtn } from '@assets/icon/naver_oauth.svg';
-import { ReactComponent as KakaoOauthBtn } from '@assets/icon/kakao_oauth.svg';
+import { ReactComponent as InterfacePreview } from '@assets/preview.svg';
+import { ReactComponent as InterfaceDescript } from '@assets/interface_descript.svg';
+import { ReactComponent as NaverOauthBtn } from '@assets/naver_oauth.svg';
+import { ReactComponent as KakaoOauthBtn } from '@assets/kakao_oauth.svg';
 import { css } from '@emotion/react';
 import axios from 'axios';
 import { OAUTH_TYPE } from '@constants/oauth.constant';
