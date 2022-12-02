@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+       "paths": {
+        "@config": ["src/config/index"],
+        "@constant": ["src/constant/index"],
+        "@types": ["src/types/index"],
+      }
+    }
+}
+  

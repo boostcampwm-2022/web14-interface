@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+origin_url="https://github.com/boostcampwm-2022/web14-interface.git"
+
+url="$2"
+
+if [ "$url" != "$origin_url" ]
+then
+    exit 0
+fi
+
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+if [ "$current_branch" == "main" -o "$current_branch" == "dev" ]
+then
+    echo "do not push in dev or main branch"
+    exit 1
+fi
+
+cd server && yarn lint && yarn test
+
+exit 0

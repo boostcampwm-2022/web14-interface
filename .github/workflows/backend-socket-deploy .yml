@@ -1,0 +1,53 @@
+name: Backend Socket Server Deploy 
+
+on:
+  push:
+    branches: [main] 
+      
+jobs:
+  docker-build-push:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend/socket
+          
+    steps: 
+      - name: repository의 파일을 가상 인스턴스로 복사합니다.
+        uses: actions/checkout@v3
+    
+      - name: docker 관련 로직 처리를 위한 buildx를 설치합니다.
+        uses: docker/setup-buildx-action@v2
+        
+      - name: docker hub에 로그인 합니다.
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_ID }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          
+      - name: docker 이미지를 build 및 push합니다.
+        uses: docker/build-push-action@v3
+        with:
+          context: ./backend/socket
+          push: true
+          tags: ${{ secrets.DOCKER_SOCKET_IMAGE }}:${{ secrets.VERSION }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          
+  docker-run:
+    needs: docker-build-push
+    runs-on: ubuntu-latest
+  
+    steps:    
+      - name: 배포 서버에서 docker image를 받아서 container를 실행시킵니다.
+        uses: appleboy/ssh-action@master
+        with:
+          username: ${{ secrets.SOCKET_SERVER_USER }}
+          password: ${{ secrets.SOCKET_SERVER_PWD }}
+          host: ${{ secrets.SOCKET_SERVER_HOST }}
+          port: ${{ secrets.SOCKET_SERVER_PORT }}
+          
+          script: |
+            export CURRENT_CONTAINER=$(docker ps -aq -f "name=socket-server")
+            docker stop $(echo $CURRENT_CONTAINER) && docker rm $(echo $CURRENT_CONTAINER)
+            docker pull ${{ secrets.DOCKER_SOCKET_IMAGE }}:${{ secrets.VERSION }} 
+            docker run --name socket-server --restart always -d -p 8081:8081 ${{ secrets.DOCKER_SOCKET_IMAGE }}:${{ secrets.VERSION }}
