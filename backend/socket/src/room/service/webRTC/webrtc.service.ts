@@ -13,8 +13,10 @@ export class WebrtcService {
 
 	startSignaling({ client, server }: { client: Socket; server: Namespace }) {
 		const user = this.roomRepository.getUserByClientId(client.id);
+		const usersInRoom = this.roomRepository.getUsersInRoom(user.roomUUID);
+		console.log(usersInRoom);
 
-		server.to(user.roomUUID).emit(EVENT.RECEIVE_SIGNALING, { userUUID: user.uuid });
+		client.to(user.roomUUID).emit(EVENT.RECEIVE_SIGNALING, { userUUID: user.uuid });
 		return {};
 	}
 
