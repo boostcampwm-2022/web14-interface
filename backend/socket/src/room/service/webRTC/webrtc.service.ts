@@ -13,8 +13,10 @@ export class WebrtcService {
 
 	startSignaling({ client, server }: { client: Socket; server: Namespace }) {
 		const user = this.roomRepository.getUserByClientId(client.id);
+		const usersInRoom = this.roomRepository.getUsersInRoom(user.roomUUID);
+		console.log(usersInRoom);
 
-		server.to(user.roomUUID).emit(EVENT.RECEIVE_SIGNALING, { userUUID: user.uuid });
+		client.to(user.roomUUID).emit(EVENT.RECEIVE_SIGNALING, { userUUID: user.uuid });
 		return {};
 	}
 
@@ -27,10 +29,12 @@ export class WebrtcService {
 		connectSignal: WebrtcBaseDto;
 		eventType: EVENT;
 	}) {
-		const { opponentId } = connectSignal;
+		const { myId, opponentId } = connectSignal;
 		const opponentClientId = this.roomRepository.getClientIdByUser(opponentId);
 
-		server.to(opponentClientId).emit(eventType, { connectSignal });
+		server
+			.to(opponentClientId)
+			.emit(eventType, { ...connectSignal, myId: opponentId, opponentId: myId });
 		return {};
 	}
 
