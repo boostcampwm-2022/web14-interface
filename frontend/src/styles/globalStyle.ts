@@ -8,7 +8,8 @@ const globalStyle = css`
 
 	html,
 	body,
-	#root {
+	#root,
+	.App {
 		width: 100%;
 		height: 100%;
 		font-family: 'Noto Sans KR', sans-serif;
@@ -28,10 +29,12 @@ const globalStyle = css`
 		background: none;
 		border: none;
 		cursor: pointer;
+		font-family: 'Noto Sans KR', sans-serif;
 	}
 
 	input {
 		outline: none;
+		font-family: 'Noto Sans KR', sans-serif;
 	}
 `;
 
