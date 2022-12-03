@@ -25,7 +25,7 @@ import {
 	drawerHeaderStyle,
 } from './BottomBar.style';
 import theme from '@styles/theme';
-import { iconStyle } from '@styles/commonStyle';
+import { iconBgStyle } from '@styles/commonStyle';
 
 interface Props {
 	mainController?: React.ReactNode;
@@ -70,55 +70,55 @@ const BottomBar = ({ mainController }: Props) => {
 			<div css={bottomBarStyle}>
 				<div css={iconGroupStyle}>
 					<button>
-						<UserIcon {...iconStyle} />
+						<UserIcon {...iconBgStyle} />
 					</button>
 
 					<div css={horzLineStyle} />
 					{isMicOn ? (
 						<button onClick={() => setIsMicOn(false)}>
-							<MicOnIcon {...iconStyle} />
+							<MicOnIcon {...iconBgStyle} />
 						</button>
 					) : (
 						<button onClick={() => setIsMicOn(true)}>
-							<MicOffIcon {...iconStyle} fill={theme.colors.red} />
+							<MicOffIcon {...iconBgStyle} fill={theme.colors.red} />
 						</button>
 					)}
 					{isCameraOn ? (
 						<button onClick={() => setIsCameraOn(false)}>
-							<CameraOnIcon {...iconStyle} />
+							<CameraOnIcon {...iconBgStyle} />
 						</button>
 					) : (
 						<button onClick={() => setIsCameraOn(true)}>
-							<CameraOffIcon {...iconStyle} fill={theme.colors.red} />
+							<CameraOffIcon {...iconBgStyle} fill={theme.colors.red} />
 						</button>
 					)}
 				</div>
 				{mainController}
 				<div css={iconGroupStyle}>
 					<button onClick={() => handleOpenDrawer(DRAWER_TYPE.CHAT_DRAWER)}>
-						<ChatIcon {...iconStyle} />
+						<ChatIcon {...iconBgStyle} />
 					</button>
 					<button onClick={() => handleOpenDrawer(DRAWER_TYPE.USER_DRAWER)}>
-						<UsersIcon {...iconStyle} />
+						<UsersIcon {...iconBgStyle} />
 					</button>
 					<button onClick={() => handleOpenDrawer(DRAWER_TYPE.RECORD_DRAWER)}>
-						<FolderIcon {...iconStyle} />
+						<FolderIcon {...iconBgStyle} />
 					</button>
 					<div css={horzLineStyle} />
 					<button>
-						<EnterIcon {...iconStyle} fill={theme.colors.red} />
+						<EnterIcon {...iconBgStyle} fill={theme.colors.red} />
 					</button>
 				</div>
 			</div>
-			<div css={drawerStyle(isDrawerOpen)}>
+			<aside css={drawerStyle(isDrawerOpen)}>
 				<div css={drawerHeaderStyle}>
 					<div>{drawerCategory}</div>
 					<button onClick={handleCloseDrawer}>
-						<CloseIcon {...iconStyle} width={25} height={25} />
+						<CloseIcon {...iconBgStyle} width={25} height={25} />
 					</button>
 				</div>
 				<div>{drawerContentsSwitch()}</div>
-			</div>
+			</aside>
 		</>
 	);
 };

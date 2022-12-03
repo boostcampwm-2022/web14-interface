@@ -26,7 +26,7 @@ export const horzLineStyle = (theme) => css`
 
 export const drawerStyle = (isOpen) => (theme) =>
 	css`
-		display: ${isOpen ? 'display' : 'none'};
+		display: ${isOpen ? 'flex' : 'none'};
 		flex-direction: column;
 		position: absolute;
 		right: 0px;
@@ -37,6 +37,8 @@ export const drawerStyle = (isOpen) => (theme) =>
 		width: 412px;
 		height: calc(100% - 100px);
 		background-color: ${theme.colors.titleActive};
+
+		opacity: 0.85;
 	`;
 
 export const drawerHeaderStyle = css`
