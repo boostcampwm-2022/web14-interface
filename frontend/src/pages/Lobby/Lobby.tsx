@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PHASE_TYPE } from '@constants/phase.constant';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
@@ -14,9 +14,13 @@ import { socketEmit } from '@api/socket.api';
 import { UserDTO } from '@customType/user';
 import { css } from '@emotion/react';
 
+interface joinInterviewResponseType {
+	usersInRoom: UserDTO[];
+}
+
 const Lobby = () => {
 	const { safeNavigate } = useSafeNavigate();
-	const me = useRecoilValue<UserDTO>(meInRoomState);
+	const [me, setMe] = useRecoilState<UserDTO>(meInRoomState);
 	const [others, setOthers] = useRecoilState<UserDTO[]>(othersInRoomState);
 
 	usePreventLeave();
@@ -27,11 +31,21 @@ const Lobby = () => {
 	const streamList = useRecoilValue(webRTCStreamSelector);
 
 	useEffect(() => {
-		socket.on(SOCKET_EVENT_TYPE.JOIN_INTERVIEW, () => {
-			safeNavigate(PHASE_TYPE.INTERVIEWER_PHASE);
+		//TODO 변경된 부분 BE랑 맞추기
+		socket.on(SOCKET_EVENT_TYPE.JOIN_INTERVIEW, ({ user: interviewee }) => {
+			const newOthers = others.map((user) => {
+				return user.uuid === interviewee.uuid
+					? { ...user, role: 'interviewee' }
+					: { ...user, role: 'interviewer' };
+			});
+
+			setOthers(newOthers);
+			setMe({ ...me, role: 'interviewer' });
+
+			setTimeout(() => safeNavigate(PHASE_TYPE.INTERVIEWER_PHASE), 0);
 		});
 
-		socket.on(SOCKET_EVENT_TYPE.ENTER_ROOM, ({ user }) => {
+		socket.on(SOCKET_EVENT_TYPE.ENTER_USER, ({ user }) => {
 			setOthers((prevOthers) => [...prevOthers, user]);
 		});
 
@@ -41,10 +55,17 @@ const Lobby = () => {
 
 		startConnection(me.uuid);
 	}, []);
-	
-	const handleStartInterviewee = async () => {
-		await socketEmit(SOCKET_EVENT_TYPE.START_INTERVIEW);
 
+	const handleStartInterviewee = async () => {
+		//TODO 변경된 부분 BE랑 맞추기
+		await socketEmit<joinInterviewResponseType>(SOCKET_EVENT_TYPE.START_INTERVIEW);
+
+		const newOthers = others.map((user) => {
+			return { ...user, role: 'interviewer' };
+		});
+
+		setMe({ ...me, role: 'interviewee' });
+		setOthers(newOthers);
 		safeNavigate(PHASE_TYPE.INTERVIEWEE_PHASE);
 	};
 
