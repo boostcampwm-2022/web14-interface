@@ -1,13 +1,21 @@
 import React, { useEffect } from 'react';
-import { PHASE_TYPE } from '@constants/phase.constant';
+import { useRecoilState, useRecoilValue } from 'recoil';
+
+import Video from '@components/@shared/Video/Video';
+import BottomBar from '@components/BottomBar/BottomBar';
+
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { webRTCStreamSelector, webRTCUserListState } from '@store/webRTC.atom';
 import useWebRTCSignaling from '@hooks/useWebRTCSignaling';
-import { socket } from '../../service/socket';
-import Video from '@components/@shared/Video/Video';
+import { webRTCStreamSelector, webRTCUserListState } from '@store/webRTC.atom';
 import { meInRoomState, othersInRoomState } from '@store/room.atom';
+import { socket } from '../../service/socket';
+
+import { ReactComponent as BroadcastIcon } from '@assets/icon/broadcast.svg';
+import { ReactComponent as CopyIcon } from '@assets/icon/copy.svg';
+import { PHASE_TYPE } from '@constants/phase.constant';
+import { iconStyle } from '@styles/commonStyle';
+import { lobbyWrapperStyle, startInterviewBtnStyle } from './Lobby.style';
 
 const Lobby = () => {
 	const { safeNavigate } = useSafeNavigate();
@@ -49,18 +57,38 @@ const Lobby = () => {
 		});
 	};
 
+	const startInterviewBtn = (
+		<button css={startInterviewBtnStyle} onClick={handleStartInterviewee}>
+			<BroadcastIcon {...iconStyle} />
+			<div>면접시작</div>
+		</button>
+	);
+
+	const handleClickCopy = async () => {
+		try {
+			if (!me) return;
+			await navigator.clipboard.writeText(me.roomUUID);
+			alert('방 번호 복사완료');
+		} catch (e) {
+			alert('복사실패!');
+		}
+	};
+
 	return (
-		<>
-			<div>Lobby</div>
+		<div css={lobbyWrapperStyle}>
 			{streamList.map((stream) => (
 				<Video key={stream.id} src={stream} width={400} autoplay muted />
 			))}
-			{JSON.stringify(me)}
-			{others.map((user, i) => (
-				<div key={i}>{JSON.stringify(user)}</div>
-			))}
-			<button onClick={handleStartInterviewee}>면접자로 시작</button>
-		</>
+			<div style={{ color: 'white', fontSize: '20px', padding: '0px 30px' }}>
+				room uuid:
+				{me.roomUUID}
+				<button onClick={handleClickCopy}>
+					<CopyIcon width={30} height={30} fill="white" />
+				</button>
+			</div>
+
+			<BottomBar mainController={startInterviewBtn} />
+		</div>
 	);
 };
 
