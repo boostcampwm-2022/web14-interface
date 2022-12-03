@@ -1,20 +1,23 @@
-import React, { useRef, useEffect } from 'react';
-import Video from '@components/@shared/Video/Video';
+import React, { useRef, useEffect, useState } from 'react';
+import Video, { VideoPropType } from '@components/@shared/Video/Video';
 import { useRecoilState } from 'recoil';
 import { currentVideoTimeState } from '@store/currentVideoTime.atom';
 import { isFbClickedState } from '@store/feedback.atom';
 
-const IntervieweeVideo = () => {
+const IntervieweeVideo = (props: VideoPropType) => {
 	const videoRef = useRef<HTMLVideoElement>(null);
+	const offsetRef = useRef(0);
 	const [currentVideoTime, setCurrentVideoTime] = useRecoilState(currentVideoTimeState);
 	const [isFbClicked, setIsFbClicked] = useRecoilState(isFbClickedState);
 
 	const sendPeriod = 1000;
 	const sendCurrentTime = () => {
-		if (!videoRef.current?.currentTime) return;
+		if (!videoRef.current?.currentTime || videoRef.current.currentTime === 0) return;
+		if (offsetRef.current === 0) {
+			offsetRef.current = videoRef.current.currentTime;
+		}
 
-		const currentTime = videoRef.current.currentTime;
-		setCurrentVideoTime(Math.floor(currentTime));
+		setCurrentVideoTime(Math.floor(videoRef.current.currentTime - offsetRef.current + 1));
 	};
 
 	useEffect(() => {
@@ -32,7 +35,7 @@ const IntervieweeVideo = () => {
 		}
 	}, []);
 
-	return <Video src="assets/test.mp4" width={400} controls ref={videoRef} />;
+	return <Video {...props} ref={videoRef} />;
 };
 
 export default React.memo(IntervieweeVideo);
