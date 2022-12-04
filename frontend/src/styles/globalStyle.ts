@@ -1,6 +1,10 @@
 import { css } from '@emotion/react';
 
 const globalStyle = css`
+	* {
+		box-sizing: border-box;
+	}
+
 	body {
 		margin: 0;
 		padding: 0;
@@ -12,7 +16,6 @@ const globalStyle = css`
 	.App {
 		width: 100%;
 		height: 100%;
-		font-family: 'Noto Sans KR', sans-serif;
 	}
 
 	ul,
