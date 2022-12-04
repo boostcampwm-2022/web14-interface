@@ -1,14 +1,15 @@
 import { css } from '@emotion/react';
 
-export const buttonStyle = (theme, width, size, style, color, iconColor) => css`
+export const buttonStyle = (theme, width, size, style, color, iconColor, justifyContent) => css`
 	display: flex;
+	justify-content: ${justifyContent};
 	align-items: center;
 	gap: 8px;
 
 	width: ${width};
 	padding: ${size === 'small' ? '12px' : '16px'};
 	font-size: ${size === 'small' ? '16px' : '20px'};
-	line-height: ${size === 'small' ? '14px' : '20px'};
+	line-height: ${size === 'small' ? '14px' : '17px'};
 
 	border-radius: 8px;
 
