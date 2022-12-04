@@ -42,7 +42,7 @@ const Lobby = () => {
 			setOthers(newOthers);
 			setMe({ ...me, role: 'interviewer' });
 
-			setTimeout(() => safeNavigate(PHASE_TYPE.INTERVIEWER_PHASE), 0);
+			safeNavigate(PHASE_TYPE.INTERVIEWER_PHASE);
 		});
 
 		socket.on(SOCKET_EVENT_TYPE.ENTER_USER, ({ user }) => {
@@ -53,6 +53,15 @@ const Lobby = () => {
 			setOthers((prevOhters) => prevOhters.filter((other) => other.uuid !== user.uuid));
 		});
 
+		return () => {
+			socket.off(SOCKET_EVENT_TYPE.JOIN_INTERVIEW);
+			socket.off(SOCKET_EVENT_TYPE.ENTER_USER);
+			socket.off(SOCKET_EVENT_TYPE.LEAVE_USER);
+		};
+	}, [others]);
+
+	useEffect(() => {
+		//TODO Lobby 첫 렌더링 시가 아니라 첫 입장 시만 하기
 		startConnection(me.uuid);
 	}, []);
 
