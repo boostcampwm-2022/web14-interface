@@ -41,4 +41,16 @@ const globalStyle = css`
 	}
 `;
 
+export const flexRow = ({ gap }) => css`
+	display: flex;
+	flex-direction: row;
+	gap: ${gap};
+`;
+
+export const flexColumn = ({ gap }) => css`
+	display: flex;
+	flex-direction: column;
+	gap: ${gap};
+`;
+
 export default globalStyle;

@@ -1,12 +1,15 @@
 import React from 'react';
+import axios from 'axios';
+import { OAUTH_TYPE } from '@constants/oauth.constant';
 
+import Button from '@components/@shared/Button/Button';
 import { ReactComponent as InterfacePreview } from '@assets/preview.svg';
 import { ReactComponent as Logo } from '@assets/logo_white.svg';
 import { ReactComponent as NaverIcon } from '@assets/icon/naver.svg';
 import { ReactComponent as KakaoIcon } from '@assets/icon/kakao.svg';
-import { css } from '@emotion/react';
-import axios from 'axios';
-import { OAUTH_TYPE } from '@constants/oauth.constant';
+
+import { LoginWrapper, logoStyle, previewStyle } from './Login.style';
+import { flexColumn, flexRow } from '@styles/globalStyle';
 
 const Login = () => {
 	const startOauth = async (type: string) => {
@@ -22,79 +25,39 @@ const Login = () => {
 
 	return (
 		<>
-			<div css={LoginWrapper}>
-				<div>
-					<InterfacePreview css={previewStyle} />
-				</div>
-				<div css={flexColumn}>
-					<div css={flexColumn}>
+			<div css={[LoginWrapper, flexRow({ gap: '64px' })]}>
+				<InterfacePreview css={previewStyle} />
+				<div css={flexColumn({ gap: '32px' })}>
+					<div css={flexColumn({ gap: '16px' })}>
 						<Logo css={logoStyle} />
 						<span>실시간 면접 피드백 플랫폼</span>
 					</div>
-					<div css={flexColumn}>
-						<button css={OauthButton} onClick={() => startOauth(OAUTH_TYPE.NAVER)}>
-							<NaverIcon css={OauthIconStyle} />
-							네이버로 시작하기
-						</button>
-						<button css={OauthButton} onClick={() => startOauth(OAUTH_TYPE.KAKAO)}>
-							<KakaoIcon css={OauthIconStyle} />
-							카카오로 시작하기
-						</button>
+					<div css={flexColumn({ gap: '16px' })}>
+						<Button
+							color={'secondary'}
+							justifyContent={'space-between'}
+							iconColor={false}
+							onClick={() => startOauth(OAUTH_TYPE.NAVER)}
+						>
+							<NaverIcon />
+							<span>네이버로 시작하기</span>
+							<br />
+						</Button>
+						<Button
+							color={'secondary'}
+							justifyContent={'space-between'}
+							iconColor={false}
+							onClick={() => startOauth(OAUTH_TYPE.KAKAO)}
+						>
+							<KakaoIcon />
+							<span>카카오로 시작하기</span>
+							<br />
+						</Button>
 					</div>
 				</div>
 			</div>
 		</>
 	);
 };
-
-const LoginWrapper = (theme) => css`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	width: 100%;
-	height: 100%;
-	background: ${theme.colors.primary3};
-
-	gap: 64px;
-	color: ${theme.colors.white};
-`;
-
-const previewStyle = css`
-	width: 560px;
-`;
-
-const logoStyle = css`
-	width: 320px;
-`;
-
-const flexColumn = (theme) => css`
-	display: flex;
-	flex-direction: column;
-	gap: 16px;
-`;
-
-const OauthButton = (theme) => css`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: 16px;
-
-	width: 100%;
-	background-color: ${theme.colors.primary2};
-
-	font-size: 20px;
-	font-weight: bold;
-
-	border: 2px solid ${theme.colors.gray3};
-	border-radius: 8px;
-`;
-
-const OauthIconStyle = (theme) => css`
-	width: 24px;
-
-	border-radius: 8px;
-	overflow: hidden;
-`;
 
 export default Login;
