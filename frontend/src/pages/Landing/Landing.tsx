@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PHASE_TYPE } from '@constants/phase.constant';
+import { PAGE_TYPE } from '@constants/page.constant';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import axios from 'axios';
@@ -51,7 +51,7 @@ const Landing = () => {
 	const handleSignOut = async () => {
 		const res = await axios.get('/api/auth/logout');
 		alert(res.data.statusCode);
-		safeNavigate(PHASE_TYPE.LOGIN_PHASE);
+		safeNavigate(PAGE_TYPE.LOGIN_PAGE);
 	};
 
 	const handleCreate = async () => {
@@ -68,7 +68,7 @@ const Landing = () => {
 
 		setOthers(others);
 		setMe(me);
-		safeNavigate(PHASE_TYPE.LOBBY_PHASE);
+		safeNavigate(PAGE_TYPE.LOBBY_PAGE);
 	};
 
 	//TODO 닉네임 로딩 반영 -> 소켓 Suspense howt?

@@ -40,8 +40,8 @@ const PrivateRoutes = () => {
 			<Route element={<StrictRoute targetPath={FEEDBACK_PATH} />}>
 				<Route path={FEEDBACK_PATH} element={<Feedback />} />
 			</Route>
-			<Route path="*" element={<Navigate to={LANDING_PATH} replace />} />
-			{/* TODO: */}
+			<Route path="/" element={<Navigate to={LANDING_PATH} replace />} />
+			<Route path="/login" element={<Navigate to={LANDING_PATH} replace />} />
 			<Route path="*" element={<NotFound />} />
 		</Routes>
 	);
