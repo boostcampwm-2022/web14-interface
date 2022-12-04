@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { PHASE_TYPE } from '@constants/phase.constant';
+import { PAGE_TYPE } from '@constants/page.constant';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import { useRecoilValue } from 'recoil';
@@ -20,7 +20,7 @@ const Interviewer = () => {
 
 	useEffect(() => {
 		socket.on('start_feedback', () => {
-			safeNavigate(PHASE_TYPE.FEEDBACK_PHASE);
+			safeNavigate(PAGE_TYPE.FEEDBACK_PAGE);
 		});
 	}, []);
 
