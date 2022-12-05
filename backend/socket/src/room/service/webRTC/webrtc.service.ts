@@ -40,6 +40,7 @@ export class WebrtcService {
 
 	disconnectWebrtc({ client, server }: { client: Socket; server: Namespace }) {
 		const user = this.roomRepository.getUserByClientId(client.id);
+		if (!user) return;
 
 		server.to(user.roomUUID).emit(EVENT.DISCONNECT_WEBRTC, { userUUID: user.uuid });
 	}
