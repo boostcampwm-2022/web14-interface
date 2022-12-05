@@ -19,26 +19,28 @@ const Interviewee = () => {
 	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);
 	const webRTCUserMap = useRecoilValue(webRTCUserMapState);
 
-	const getStreamFromUUID = (uuid) => {
-		return streamList.find((stream) => stream.uuid === uuid).stream;
-	};
-
 	const streamList = useRecoilValue(webRTCStreamSelector);
 	const hadleEndInterview = () => {
 		socketEmit('end_interview');
 	};
 
+	const getStreamFromUUID = (uuid) => {
+		return streamList.find((stream) => stream.uuid === uuid).stream;
+	};
+
 	useEffect(() => {
-		socket.on('start_waiting', () => {
+		socket.on('start_waiting', ({ docsUUID }) => {
+			console.log(docsUUID);
+
 			safeNavigate(PAGE_TYPE.WAITTING_PAGE);
-			stopStream();
+			stopStream(docsUUID);
 		});
 	}, []);
 
 	useEffect(() => {
 		const effect = () => {
 			if (!interviewee) return;
-			const myStream = webRTCUserMap.get(interviewee.uuid);
+			const myStream = getStreamFromUUID(interviewee.uuid);
 			if (!myStream) return;
 			startStream(myStream);
 		};
