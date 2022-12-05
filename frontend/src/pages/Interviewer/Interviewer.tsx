@@ -38,7 +38,7 @@ const Interviewer = () => {
 	useEffect(() => {
 		console.log(interviewee);
 		socket.on('start_feedback', () => {
-			safeNavigate(PHASE_TYPE.FEEDBACK_PHASE);
+			safeNavigate(PAGE_TYPE.FEEDBACK_PAGE);
 		});
 	}, []);
 
