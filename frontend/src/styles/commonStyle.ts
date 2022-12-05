@@ -1,6 +1,6 @@
 export const iconBgStyle = {
-	width: '48px',
-	height: '48px',
+	width: '35px',
+	height: '35px',
 	fill: 'white',
 };
 

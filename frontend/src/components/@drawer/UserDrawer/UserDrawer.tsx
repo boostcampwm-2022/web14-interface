@@ -37,7 +37,7 @@ const UserDrawer = () => {
 				<div css={roomUUIDStyle}>
 					{me.roomUUID}
 					<button onClick={() => navigator.clipboard.writeText(me.roomUUID)}>
-						<CopyIcon width={25} height={25} fill="white" />
+						<CopyIcon {...iconSmStyle} />
 					</button>
 				</div>
 			</div>

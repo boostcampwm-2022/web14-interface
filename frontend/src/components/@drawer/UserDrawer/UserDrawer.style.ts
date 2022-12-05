@@ -9,6 +9,7 @@ export const userListStyle = css`
 	div {
 		display: flex;
 		justify-content: space-between;
+		align-items: center;
 		div {
 			display: flex;
             gap: 10px;

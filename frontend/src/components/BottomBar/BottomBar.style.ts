@@ -3,13 +3,13 @@ import { css } from '@emotion/react';
 export const bottomBarStyle = (theme) => css`
 	position: fixed;
 	bottom: 0;
-	background-color: ${theme.colors.titleActive};
+	background-color: ${theme.colors.black};
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	box-sizing: border-box;
 	width: 100%;
-	height: 100px;
+	height: 70px;
 	padding: 0px 30px;
 `;
 
@@ -35,8 +35,8 @@ export const drawerStyle = (isOpen) => (theme) =>
 		box-sizing: border-box;
 		padding: 30px 25px;
 		width: 412px;
-		height: calc(100% - 100px);
-		background-color: ${theme.colors.titleActive};
+		height: calc(100% - 70px);
+		background-color: ${theme.colors.black};
 
 		opacity: 0.85;
 	`;

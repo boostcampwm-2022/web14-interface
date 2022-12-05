@@ -15,11 +15,10 @@ import BottomBar from '@components/BottomBar/BottomBar';
 import { socket } from '../../service/socket';
 import { socketEmit } from '@api/socket.api';
 import { UserDTO } from '@customType/user';
-import { css } from '@emotion/react';
 
 import { ReactComponent as BroadcastIcon } from '@assets/icon/broadcast.svg';
 import { iconBgStyle } from '@styles/commonStyle';
-import { lobbyWrapperStyle, startInterviewBtnStyle } from './Lobby.style';
+import { lobbyWrapperStyle, startInterviewBtnStyle, VideoAreaStyle } from './Lobby.style';
 
 import { SOCKET_EVENT_TYPE } from '@constants/event.constant';
 import { PAGE_TYPE } from '@constants/page.constant';
@@ -88,7 +87,7 @@ const Lobby = () => {
 	const startInterviewBtn = (
 		<button css={startInterviewBtnStyle} onClick={handleStartInterviewee}>
 			<BroadcastIcon {...iconBgStyle} />
-			<div>면접시작</div>
+			<div>면접 시작</div>
 		</button>
 	);
 
@@ -108,11 +107,3 @@ const Lobby = () => {
 
 export default Lobby;
 
-const VideoAreaStyle = () => css`
-	display: flex;
-	justify-content: center;
-	align-content: center;
-
-	width: 100%;
-	height: calc(100% - 72px);
-`;
