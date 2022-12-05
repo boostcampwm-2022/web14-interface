@@ -1,5 +1,5 @@
 import { EVENT } from '@constant';
-import { Body, Logger, UseFilters, UseInterceptors } from '@nestjs/common';
+import { Logger, UseFilters, UseInterceptors } from '@nestjs/common';
 import {
 	ConnectedSocket,
 	MessageBody,
@@ -12,7 +12,6 @@ import {
 import { Namespace, Socket } from 'socket.io';
 import { SocketExceptionFilter } from 'src/filter/socket-exception.filter';
 import { SocketResponseInterceptor } from 'src/interceptor/socket-response.interceptor';
-import { VideoBlobDto } from './dto/video.dto';
 import { WebrtcAnswerDto, WebrtcIcecandidateDto, WebrtcOfferDto } from './dto/webrtc.dto';
 import { ConnectionService } from './service/connection/connection.service';
 import { InterviewService } from './service/interview/interview.service';
@@ -86,8 +85,8 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage(EVENT.STREAM_VIDEO)
-	handleStreamVideo(@ConnectedSocket() client: Socket, @MessageBody() packet: VideoBlobDto) {
-		return this.objectStorageService.mediaStreaming({ client, packet });
+	handleStreamVideo(@ConnectedSocket() client: Socket, @MessageBody() videoBlob: Blob) {
+		return this.objectStorageService.mediaStreaming({ client, videoBlob });
 	}
 
 	@SubscribeMessage(EVENT.FINISH_STEAMING)

@@ -11,10 +11,8 @@ import {
 	NAVER_OBJECT_STORAGE_ENDPOINT,
 	ROOM_REPOSITORY_INTERFACE,
 } from '@constant';
-import fs from 'fs';
 import { Socket } from 'socket.io';
 import { clientId } from '@types';
-import { VideoBlobDto } from 'src/room/dto/video.dto';
 import { RoomRepository } from 'src/room/repository/interface-room.repository';
 
 @Injectable()
@@ -34,7 +32,7 @@ export class ObjectStorageService {
 		});
 	}
 
-	private clientPacketMap = new Map<clientId, VideoBlobDto[]>();
+	private clientPacketMap = new Map<clientId, Blob[]>();
 
 	private objectStorageUrl = this.configService.get(NAVER_OBJECT_STORAGE_ENDPOINT);
 	private endpoint = new AWS.Endpoint(this.objectStorageUrl);
@@ -44,26 +42,24 @@ export class ObjectStorageService {
 	private bucketName = this.configService.get(BUCKET_NAME);
 	private S3: AWS.S3;
 
-	mediaStreaming({ client, packet }: { client: Socket; packet: VideoBlobDto }) {
+	mediaStreaming({ client, videoBlob }: { client: Socket; videoBlob: Blob }) {
 		if (!this.clientPacketMap.get(client.id)) {
 			this.clientPacketMap.set(client.id, []);
 		}
 
-		const packets = this.clientPacketMap.get(client.id);
-		packets.push(packet);
+		const blobs = this.clientPacketMap.get(client.id);
+		blobs.push(videoBlob);
+		Logger.log(videoBlob);
 
-		Logger.log(packet);
-		Logger.log(packets.length);
+		return {};
 	}
 
-	createLocalPathFromBlobs(clientId: string) {
-		const packets = this.clientPacketMap.get(clientId);
-		packets.sort((a, b) => a.timestamp - b.timestamp);
-		const videoBlob = new Blob(packets.map((packet) => packet.data));
+	async createBufferFromBlobs(clientId: string) {
+		const blobs = this.clientPacketMap.get(clientId);
+		const videoBlob = new Blob(blobs, { type: 'video/webm' });
+		const videoArrayBuffer = await videoBlob.arrayBuffer();
 
-		this.deleteVideoData(clientId);
-
-		return URL.createObjectURL(videoBlob);
+		return Buffer.from(videoArrayBuffer);
 	}
 
 	deleteVideoData(clientId: string) {
@@ -71,26 +67,26 @@ export class ObjectStorageService {
 	}
 
 	async uploadVideo({ client, docsUUID }: { client: Socket; docsUUID: string }) {
-		const polderName = 'userId/'; // TODO: user id로 폴더 생성
-		const fileName = docsUUID;
-		const localPath = this.createLocalPathFromBlobs(client.id);
+		const folderName = 'userId/'; // TODO: user id로 폴더 생성
+		const fileName = folderName + docsUUID;
+		const videoBuffer = await this.createBufferFromBlobs(client.id);
 
 		await this.S3.putObject({
 			Bucket: this.bucketName,
-			Key: polderName,
+			Key: folderName,
 		}).promise();
 
 		await this.S3.putObject({
 			Bucket: this.bucketName,
 			Key: fileName,
 			ACL: 'public-read',
-			Body: fs.createReadStream(localPath),
+			Body: videoBuffer,
 		}).promise();
 
 		const user = this.roomRepository.getUserByClientId(client.id);
-		const videoUrl = [this.objectStorageUrl, this.bucketName, polderName, fileName].join('/');
-		client.to(user.roomUUID).emit(EVENT.DOWNLOAD_VIDEO, { videoUrl });
+		const videoUrl = [this.objectStorageUrl, this.bucketName, fileName].join('/');
 
+		client.to(user.roomUUID).emit(EVENT.DOWNLOAD_VIDEO, { videoUrl });
 		return {};
 	}
 
