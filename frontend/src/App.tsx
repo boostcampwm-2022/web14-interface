@@ -4,8 +4,8 @@ import { Global, ThemeProvider } from '@emotion/react';
 import { BrowserRouter } from 'react-router-dom';
 
 import RootRoutes from '@routes/RootRoutes';
-import globalStyle from './styles/globalStyle';
-import theme from './styles/theme';
+import globalStyle from '@styles/globalStyle';
+import theme from '@styles/theme';
 
 function App() {
 	return (

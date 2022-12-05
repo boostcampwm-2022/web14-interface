@@ -1,16 +1,20 @@
 import React from 'react';
-
-import { ReactComponent as InterfacePreview } from '@assets/preview.svg';
-import { ReactComponent as InterfaceDescript } from '@assets/interface_descript.svg';
-import { ReactComponent as NaverOauthBtn } from '@assets/naver_oauth.svg';
-import { ReactComponent as KakaoOauthBtn } from '@assets/kakao_oauth.svg';
-import { css } from '@emotion/react';
 import axios from 'axios';
 import { OAUTH_TYPE } from '@constants/oauth.constant';
+
+import Button from '@components/@shared/Button/Button';
+import { ReactComponent as InterfacePreview } from '@assets/preview.svg';
+import { ReactComponent as Logo } from '@assets/logo_white.svg';
+import { ReactComponent as NaverIcon } from '@assets/icon/naver.svg';
+import { ReactComponent as KakaoIcon } from '@assets/icon/kakao.svg';
+
+import { LoginWrapper, logoStyle, previewStyle } from './Login.style';
+import { flexColumn, flexRow } from '@styles/globalStyle';
 
 const Login = () => {
 	const startOauth = async (type: string) => {
 		// TODO 응답, 처리 hook으로 빼기
+		console.log('hello');
 		const res = await axios
 			.get(`/api/auth/oauth/redirect/${type}`)
 			.then((res) => res.data)
@@ -21,44 +25,39 @@ const Login = () => {
 
 	return (
 		<>
-			<div css={LoginContainer}>
-				<InterfacePreview css={{ width: '800px', height: '440px' }} />
-				<div css={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-					<InterfaceDescript css={{ width: '500px', height: '160px' }} />
-					<div css={{ display: 'flex', flexDirection: 'column' }}>
-						<NaverOauthBtn
-							css={OauthButton}
+			<div css={[LoginWrapper, flexRow({ gap: '64px' })]}>
+				<InterfacePreview css={previewStyle} />
+				<div css={flexColumn({ gap: '32px' })}>
+					<div css={flexColumn({ gap: '16px' })}>
+						<Logo css={logoStyle} />
+						<span>실시간 면접 피드백 플랫폼</span>
+					</div>
+					<div css={flexColumn({ gap: '16px' })}>
+						<Button
+							color={'secondary'}
+							justifyContent={'space-between'}
+							iconColor={false}
 							onClick={() => startOauth(OAUTH_TYPE.NAVER)}
-						/>
-						<KakaoOauthBtn
-							css={OauthButton}
+						>
+							<NaverIcon />
+							<span>네이버로 시작하기</span>
+							<br />
+						</Button>
+						<Button
+							color={'secondary'}
+							justifyContent={'space-between'}
+							iconColor={false}
 							onClick={() => startOauth(OAUTH_TYPE.KAKAO)}
-						/>
+						>
+							<KakaoIcon />
+							<span>카카오로 시작하기</span>
+							<br />
+						</Button>
 					</div>
 				</div>
 			</div>
 		</>
 	);
 };
-
-const LoginContainer = css`
-	width: 100vw;
-	height: 100vh;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: #030d45;
-	gap: 64px;
-	color: white;
-`;
-
-const OauthButton = css`
-	width: 300px;
-	height: 80px;
-	margin-left: 32px;
-	&:hover {
-		cursor: pointer;
-	}
-`;
 
 export default Login;
