@@ -20,7 +20,7 @@ export class InterviewService {
 		private readonly roomRepository: RoomRepository
 	) {}
 
-	startInterview({ client, server }: { client: Socket; server: Namespace }) {
+	startInterview({ client }: { client: Socket }) {
 		const user = this.roomRepository.getUserByClientId(client.id);
 		const roomUUID = user.roomUUID;
 		const usersInRoom = this.roomRepository.getUsersInRoom(roomUUID);
@@ -38,7 +38,7 @@ export class InterviewService {
 		return {};
 	}
 
-	endInterview({ client, server }: { client: Socket; server: Namespace }) {
+	endInterview({ client }: { client: Socket }) {
 		const docsUUID = uuidv4();
 
 		const user = this.roomRepository.getUserByClientId(client.id);
@@ -52,7 +52,7 @@ export class InterviewService {
 			const clientId = this.roomRepository.getClientIdByUser(user.uuid);
 
 			const emitEvent = this.getEventAtEndInterviewByRole(user.role);
-			server.to(clientId).emit(emitEvent, { docsUUID });
+			client.to(clientId).emit(emitEvent, { docsUUID });
 		});
 
 		// TODO video object storage upload
@@ -70,7 +70,7 @@ export class InterviewService {
 		}
 	}
 
-	endFeedback({ client, server }: { client: Socket; server: Namespace }) {
+	endFeedback({ client }: { client: Socket }) {
 		const user = this.roomRepository.getUserByClientId(client.id);
 		const users = this.roomRepository.getUsersInRoom(user.roomUUID);
 		const MAX_FEEDBACK_COUNT = users.length - 1;
@@ -79,25 +79,25 @@ export class InterviewService {
 		const currentFeedbackCount = this.getFeedbackEndCount(user.roomUUID);
 
 		return currentFeedbackCount < MAX_FEEDBACK_COUNT
-			? this.inProgressCycle({ server, count: currentFeedbackCount, users })
-			: this.terminateCycle({ server, user, users });
+			? this.inProgressCycle({ client, count: currentFeedbackCount, users })
+			: this.terminateCycle({ client, user, users });
 	}
 
-	inProgressCycle({ server, count, users }: { server: Namespace; count: number; users: User[] }) {
+	inProgressCycle({ client, count, users }: { client: Socket; count: number; users: User[] }) {
 		const interviewee = users.find((user) => user.role === USER_ROLE.INTERVIEWEE);
 		const clientId = this.roomRepository.getClientIdByUser(interviewee.uuid);
-		server.to(clientId).emit(EVENT.COUNT_FEEDBACK, { count });
+		client.to(clientId).emit(EVENT.COUNT_FEEDBACK, { count });
 		return { data: { isLastFeedback: false, count } };
 	}
 
-	terminateCycle({ server, user, users }: { server: Namespace; user: User; users: User[] }) {
+	terminateCycle({ client, user, users }: { client: Socket; user: User; users: User[] }) {
 		const roomUUID = user.roomUUID;
 
 		this.validateRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.LOBBY });
 		this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.LOBBY });
 
 		this.updateUsersRoleAtEndInterview(users);
-		server.to(roomUUID).emit(EVENT.TERMINATE_SESSION);
+		client.to(roomUUID).emit(EVENT.TERMINATE_SESSION);
 		return { data: { isLastFeedback: true } };
 	}
 
