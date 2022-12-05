@@ -91,6 +91,11 @@ export class ConnectionService {
 
 		client.leave(roomUUID);
 
+		const usersInRoom = this.roomRepository.getUsersInRoom(roomUUID);
+		if (!usersInRoom.length) {
+			this.roomRepository.deleteRoom(roomUUID);
+		}
+
 		return {};
 	}
 
