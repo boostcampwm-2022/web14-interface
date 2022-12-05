@@ -15,6 +15,7 @@ import { SocketResponseInterceptor } from 'src/interceptor/socket-response.inter
 import { WebrtcAnswerDto, WebrtcIcecandidateDto, WebrtcOfferDto } from './dto/webrtc.dto';
 import { ConnectionService } from './service/connection/connection.service';
 import { InterviewService } from './service/interview/interview.service';
+import { ObjectStorageService } from './service/objectstorage/objectstorage.service';
 import { WebrtcService } from './service/webRTC/webrtc.service';
 
 @UseInterceptors(new SocketResponseInterceptor())
@@ -27,7 +28,8 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	constructor(
 		private readonly connectionService: ConnectionService,
 		private readonly interviewService: InterviewService,
-		private readonly webrtcService: WebrtcService
+		private readonly webrtcService: WebrtcService,
+		private readonly objectStorageService: ObjectStorageService
 	) {}
 
 	// connection
@@ -53,8 +55,9 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	handleDisconnect(@ConnectedSocket() client: Socket) {
 		this.logger.log(`disconnected: ${client.id}`);
-		this.webrtcService.disconnectWebrtc(client);
-		this.connectionService.leaveRoom(client);
+		this.objectStorageService.deleteVideoData(client.id);
+		this.webrtcService.disconnectWebrtc({ client, server: this.server });
+		this.connectionService.leaveRoom({ client, server: this.server });
 	}
 
 	// interview
@@ -72,6 +75,23 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage(EVENT.END_FEEDBACK)
 	handleEndFeedback(@ConnectedSocket() client: Socket) {
 		return this.interviewService.endFeedback(client);
+	}
+
+	// objectStorage
+
+	@SubscribeMessage(EVENT.ALLOW_BUCKET_CORS)
+	handleAllowBucketCors() {
+		return this.objectStorageService.setCorsAtBucket();
+	}
+
+	@SubscribeMessage(EVENT.STREAM_VIDEO)
+	handleStreamVideo(@ConnectedSocket() client: Socket, @MessageBody() videoBlob: Blob) {
+		return this.objectStorageService.mediaStreaming({ client, videoBlob });
+	}
+
+	@SubscribeMessage(EVENT.FINISH_STEAMING)
+	handleFinishStreaming(@ConnectedSocket() client: Socket, @MessageBody() docsUUID: string) {
+		return this.objectStorageService.uploadVideo({ client, docsUUID });
 	}
 
 	// webRTC

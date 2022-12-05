@@ -11,7 +11,9 @@ export class SocketExceptionFilter extends BaseWsExceptionFilter {
 		const ctx = host.switchToWs();
 		const client = ctx.getClient<Socket>();
 
-		logger.error(`[Client ID: ${client.id}] ${exception.message}`);
+		logger.error(`[Client ID] ${client.id}] `);
+		logger.error(`[Error Message] ${exception.message}`);
+		logger.error(`[Error Stack] ${exception.stack}`);
 
 		if (exception instanceof WsException) {
 			client.emit(EVENT.BAD_REQUEST, exception);
