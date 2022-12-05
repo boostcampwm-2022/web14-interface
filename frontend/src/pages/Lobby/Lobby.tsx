@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { PHASE_TYPE } from '@constants/phase.constant';
+import { PAGE_TYPE } from '@constants/page.constant';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -42,7 +42,7 @@ const Lobby = () => {
 			setOthers(newOthers);
 			setMe({ ...me, role: 'interviewer' });
 
-			safeNavigate(PHASE_TYPE.INTERVIEWER_PHASE);
+			safeNavigate(PAGE_TYPE.INTERVIEWER_PAGE);
 		});
 
 		socket.on(SOCKET_EVENT_TYPE.ENTER_USER, ({ user }) => {
@@ -75,7 +75,7 @@ const Lobby = () => {
 
 		setMe({ ...me, role: 'interviewee' });
 		setOthers(newOthers);
-		safeNavigate(PHASE_TYPE.INTERVIEWEE_PHASE);
+		safeNavigate(PAGE_TYPE.INTERVIEWEE_PAGE);
 	};
 
 	return (
