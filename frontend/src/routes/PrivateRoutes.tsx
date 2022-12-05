@@ -11,6 +11,8 @@ import StrictRoute from './StrictRoute';
 import { PATH_TYPE } from '@constants/path.constant';
 import NotFound from '@pages/NotFound/NotFound';
 
+import useSafeNavigator from '@hooks/useSafeNavigator';
+
 const {
 	FEEDBACK_PATH,
 	LANDING_PATH,
@@ -22,6 +24,7 @@ const {
 
 // TODO: barrel import 도입
 const PrivateRoutes = () => {
+	useSafeNavigator();
 	return (
 		<Routes>
 			<Route path={LANDING_PATH} element={<Landing />} />
