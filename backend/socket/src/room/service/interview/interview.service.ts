@@ -38,7 +38,7 @@ export class InterviewService {
 		return {};
 	}
 
-	endInterview(client: Socket) {
+	endInterview({ client, server }: { client: Socket; server: Namespace }) {
 		const docsUUID = uuidv4();
 
 		const user = this.roomRepository.getUserByClientId(client.id);
@@ -52,7 +52,7 @@ export class InterviewService {
 			const clientId = this.roomRepository.getClientIdByUser(user.uuid);
 
 			const emitEvent = this.getEventAtEndInterviewByRole(user.role);
-			client.to(clientId).emit(emitEvent, { docsUUID });
+			server.to(clientId).emit(emitEvent, { docsUUID });
 		});
 
 		// TODO video object storage upload
