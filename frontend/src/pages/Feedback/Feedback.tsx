@@ -9,7 +9,7 @@ import { isFbSyncState } from '@store/feedback.atom';
 
 import { feedbackPageStyle, feedbackPageContainerStyle } from './Feddback.style';
 import useSafeNavigate from '@hooks/useSafeNavigate';
-import { PHASE_TYPE } from '@constants/phase.constant';
+import { PAGE_TYPE } from '@constants/page.constant';
 import { completedFbCntState } from '@store/room.atom';
 
 const Feedback = () => {
@@ -24,8 +24,8 @@ const Feedback = () => {
 			const { data } = res;
 			const { isLastFeedback, count } = data;
 			setCompletedFbCnt(count);
-			if (isLastFeedback) safeNavigate(PHASE_TYPE.LOBBY_PHASE);
-			else safeNavigate(PHASE_TYPE.WAITTING_PHASE);
+			if (isLastFeedback) safeNavigate(PAGE_TYPE.LOBBY_PAGE);
+			else safeNavigate(PAGE_TYPE.WAITTING_PAGE);
 		});
 	};
 
