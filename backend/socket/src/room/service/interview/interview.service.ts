@@ -33,7 +33,7 @@ export class InterviewService {
 		this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.INTERVIEW });
 		this.updateUsersRoleAtStartInterview({ emitter: user, users: usersInRoom });
 
-		server.to(roomUUID).emit(EVENT.JOIN_INTERVIEW, { user });
+		client.to(roomUUID).emit(EVENT.JOIN_INTERVIEW, { user });
 
 		return {};
 	}
