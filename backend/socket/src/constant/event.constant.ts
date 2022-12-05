@@ -24,6 +24,11 @@ export enum EVENT {
 	SEND_MESSAGE = 'send_message',
 	RECEIVE_MESSAGE = 'receive_message',
 
+	// objectStorage
+	STREAM_VIDEO = 'stream_video',
+	FINISH_STEAMING = 'finish_streaming',
+	ALLOW_BUCKET_CORS = 'allow_bucket_cors',
+
 	// webRTC
 	START_SIGNALING = 'start_signaling',
 	RECEIVE_SIGNALING = 'receive_signaling',

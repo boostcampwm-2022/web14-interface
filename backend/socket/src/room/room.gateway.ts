@@ -1,5 +1,5 @@
 import { EVENT } from '@constant';
-import { Logger, UseFilters, UseInterceptors } from '@nestjs/common';
+import { Body, Logger, UseFilters, UseInterceptors } from '@nestjs/common';
 import {
 	ConnectedSocket,
 	MessageBody,
@@ -12,9 +12,11 @@ import {
 import { Namespace, Socket } from 'socket.io';
 import { SocketExceptionFilter } from 'src/filter/socket-exception.filter';
 import { SocketResponseInterceptor } from 'src/interceptor/socket-response.interceptor';
+import { VideoBlobDto } from './dto/video.dto';
 import { WebrtcAnswerDto, WebrtcIcecandidateDto, WebrtcOfferDto } from './dto/webrtc.dto';
 import { ConnectionService } from './service/connection/connection.service';
 import { InterviewService } from './service/interview/interview.service';
+import { ObjectStorageService } from './service/objectstorage/objectstorage.service';
 import { WebrtcService } from './service/webRTC/webrtc.service';
 
 @UseInterceptors(new SocketResponseInterceptor())
@@ -27,7 +29,8 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	constructor(
 		private readonly connectionService: ConnectionService,
 		private readonly interviewService: InterviewService,
-		private readonly webrtcService: WebrtcService
+		private readonly webrtcService: WebrtcService,
+		private readonly objectStorageService: ObjectStorageService
 	) {}
 
 	// connection
@@ -72,6 +75,18 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage(EVENT.END_FEEDBACK)
 	handleEndFeedback(@ConnectedSocket() client: Socket) {
 		return this.interviewService.endFeedback({ client, server: this.server });
+	}
+
+	// objectStorage
+
+	@SubscribeMessage(EVENT.ALLOW_BUCKET_CORS)
+	handleAllowBucketCors() {
+		return this.objectStorageService.setCorsAtBucket();
+	}
+
+	@SubscribeMessage(EVENT.STREAM_VIDEO)
+	handleStreamVideo(@ConnectedSocket() client: Socket, @MessageBody() packet: VideoBlobDto) {
+		return this.objectStorageService.mediaStreaming({ client, packet });
 	}
 
 	// webRTC

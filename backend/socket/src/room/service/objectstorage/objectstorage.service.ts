@@ -12,6 +12,7 @@ import {
 import fs from 'fs';
 import { Socket } from 'socket.io';
 import { clientId } from '@types';
+import { VideoBlobDto } from 'src/room/dto/video.dto';
 
 @Injectable()
 export class ObjectStorageService {
@@ -26,7 +27,7 @@ export class ObjectStorageService {
 		});
 	}
 
-	private clientVideoMap = new Map<clientId, Blob[]>();
+	private clientPacketMap = new Map<clientId, VideoBlobDto[]>();
 
 	private endpoint = new AWS.Endpoint(this.configService.get(NAVER_OBJECT_STORAGE_ENDPOINT));
 	private region = this.configService.get(AWS_S3_RESION);
@@ -35,14 +36,22 @@ export class ObjectStorageService {
 	private bucketName = this.configService.get(BUCKET_NAME);
 	private S3: AWS.S3;
 
-	mediaStreaming({ client, blob }: { client: Socket; blob: Blob }) {
-		const video = this.clientVideoMap.get(client.id);
-		video.push(blob);
+	mediaStreaming({ client, packet }: { client: Socket; packet: VideoBlobDto }) {
+		if (!this.clientPacketMap.get(client.id)) {
+			this.clientPacketMap.set(client.id, []);
+		}
+
+		const packets = this.clientPacketMap.get(client.id);
+		packets.push(packet);
 	}
 
 	createLocalPathFromBlobs(clientId: string) {
-		const blobs = this.clientVideoMap.get(clientId);
-		const videoBlob = new Blob(blobs);
+		const packets = this.clientPacketMap.get(clientId);
+		packets.sort((a, b) => a.timestamp - b.timestamp);
+		const videoBlob = new Blob(packets.map((packet) => packet.data));
+
+		this.clientPacketMap.delete(clientId);
+
 		return URL.createObjectURL(videoBlob);
 	}
 
@@ -64,6 +73,8 @@ export class ObjectStorageService {
 		}).promise();
 	}
 
+	async;
+
 	async setCorsAtBucket() {
 		const params: S3.Types.PutBucketCorsRequest = {
 			Bucket: this.bucketName,
@@ -80,5 +91,7 @@ export class ObjectStorageService {
 		};
 
 		await this.S3.putBucketCors(params).promise();
+
+		return {};
 	}
 }
