@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import AWS, { S3 } from 'aws-sdk';
 import {
@@ -49,6 +49,9 @@ export class ObjectStorageService {
 
 		const packets = this.clientPacketMap.get(client.id);
 		packets.push(packet);
+
+		Logger.log(packet);
+		Logger.log(packets.length);
 	}
 
 	createLocalPathFromBlobs(clientId: string) {
