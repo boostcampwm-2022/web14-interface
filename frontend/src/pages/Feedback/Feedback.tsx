@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { socket } from '../../service/socket';
 
@@ -17,6 +17,7 @@ const Feedback = () => {
 	const setCompletedFbCnt = useSetRecoilState(completedFbCntState);
 	const { safeNavigate } = useSafeNavigate();
 	const [isFbSync, setIsFbSync] = useRecoilState(isFbSyncState);
+	const [videoUrl, setVideoUrl] = useState('');
 
 	const handleEndFeedback = () => {
 		socket.emit('end_feedback', (res) => {
@@ -29,10 +30,22 @@ const Feedback = () => {
 		});
 	};
 
+	useEffect(() => {
+		socket.on('download_video', ({ videoUrl }) => {
+			console.log('download');
+			console.log(videoUrl);
+			setVideoUrl(videoUrl);
+		});
+	}, []);
+
+	useEffect(() => {
+		console.log(videoUrl);
+	}, [videoUrl]);
+
 	return (
 		<div css={feedbackPageStyle}>
 			<div css={feedbackPageContainerStyle}>
-				<IntervieweeVideo src="/assets/test.mp4" width={400} autoplay muted controls />
+				<IntervieweeVideo src={videoUrl} width={400} autoplay muted controls />
 				<button
 					type="button"
 					onClick={() => setIsFbSync((current) => !current)}
