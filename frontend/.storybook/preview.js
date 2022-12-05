@@ -1,4 +1,7 @@
+import { Global, ThemeProvider, css } from '@emotion/react';
 import { RecoilRoot } from 'recoil';
+import globalStyle from '../src/styles/globalStyle';
+import theme from '../src/styles/theme';
 
 export const parameters = {
 	actions: { argTypesRegex: '^on[A-Z].*' },
@@ -13,7 +16,10 @@ export const parameters = {
 export const decorators = [
 	(Story) => (
 		<RecoilRoot>
-			<Story />
+			<ThemeProvider theme={theme}>
+				<Global styles={globalStyle} />
+				<Story />
+			</ThemeProvider>
 		</RecoilRoot>
 	),
 ];
