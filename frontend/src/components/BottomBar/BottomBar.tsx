@@ -26,6 +26,10 @@ import {
 } from './BottomBar.style';
 import theme from '@styles/theme';
 import { iconBgStyle } from '@styles/commonStyle';
+import { socketEmit } from '@api/socket.api';
+import { SOCKET_EVENT_TYPE } from '@constants/event.constant';
+import useSafeNavigate from '@hooks/useSafeNavigate';
+import { PAGE_TYPE } from '@constants/page.constant';
 
 interface Props {
 	mainController?: React.ReactNode;
@@ -38,18 +42,25 @@ enum DRAWER_TYPE {
 }
 
 const BottomBar = ({ mainController }: Props) => {
+	const { safeNavigate } = useSafeNavigate();
 	const [isMicOn, setIsMicOn] = useState(true);
 	const [isCameraOn, setIsCameraOn] = useState(true);
 
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [drawerCategory, setDrawerCategory] = useState<DRAWER_TYPE>(null);
 
-	const handleOpenDrawer = (category) => {
+	const handleToggleDrawer = (category) => {
+		if (isDrawerOpen && drawerCategory === category) {
+			setIsDrawerOpen(false);
+			return;
+		}
+
 		setIsDrawerOpen(true);
 		setDrawerCategory(category);
 	};
 
 	const handleCloseDrawer = () => {
+		//TODO leave에 사용될 cleanup 훅을 만들어야 함, 지금은 오염된 전역상태가 그대로 남아있음.
 		setIsDrawerOpen(false);
 		setDrawerCategory(null);
 	};
@@ -63,6 +74,11 @@ const BottomBar = ({ mainController }: Props) => {
 			case DRAWER_TYPE.RECORD_DRAWER:
 				return <RecordDrawer />;
 		}
+	};
+
+	const handleLeaveRoom = () => {
+		socketEmit(SOCKET_EVENT_TYPE.LEAVE_ROOM);
+		safeNavigate(PAGE_TYPE.LANDING_PAGE);
 	};
 
 	return (
@@ -95,17 +111,17 @@ const BottomBar = ({ mainController }: Props) => {
 				</div>
 				{mainController}
 				<div css={iconGroupStyle}>
-					<button onClick={() => handleOpenDrawer(DRAWER_TYPE.CHAT_DRAWER)}>
+					<button onClick={() => handleToggleDrawer(DRAWER_TYPE.CHAT_DRAWER)}>
 						<ChatIcon {...iconBgStyle} />
 					</button>
-					<button onClick={() => handleOpenDrawer(DRAWER_TYPE.USER_DRAWER)}>
+					<button onClick={() => handleToggleDrawer(DRAWER_TYPE.USER_DRAWER)}>
 						<UsersIcon {...iconBgStyle} />
 					</button>
-					<button onClick={() => handleOpenDrawer(DRAWER_TYPE.RECORD_DRAWER)}>
+					<button onClick={() => handleToggleDrawer(DRAWER_TYPE.RECORD_DRAWER)}>
 						<FolderIcon {...iconBgStyle} />
 					</button>
 					<div css={horzLineStyle} />
-					<button>
+					<button onClick={handleLeaveRoom}>
 						<EnterIcon {...iconBgStyle} fill={theme.colors.red} />
 					</button>
 				</div>
