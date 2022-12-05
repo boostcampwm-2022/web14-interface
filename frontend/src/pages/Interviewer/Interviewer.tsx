@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { PHASE_TYPE } from '@constants/phase.constant';
+import { PAGE_TYPE } from '@constants/page.constant';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import { useRecoilValue } from 'recoil';
