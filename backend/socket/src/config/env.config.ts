@@ -9,5 +9,6 @@ export const envConfig: ConfigModuleOptions = {
 		NAVER_API_PWD: Joi.string().required(),
 		NAVER_OBJECT_STORAGE_ENDPOINT: Joi.string().required(),
 		AWS_S3_RESION: Joi.string().required(),
+		BUCKET_NAME: Joi.string().required(),
 	}),
 };
