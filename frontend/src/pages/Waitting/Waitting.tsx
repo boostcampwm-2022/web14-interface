@@ -4,7 +4,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { completedFbCntState, othersInRoomState } from '@store/room.atom';
 import usePreventLeave from '@hooks/usePreventLeave';
 import useSafeNavigate from '@hooks/useSafeNavigate';
-import { PHASE_TYPE } from '@constants/phase.constant';
+import { PAGE_TYPE } from '@constants/page.constant';
 
 import { socket } from '../../service/socket';
 
@@ -19,7 +19,7 @@ const Waitting = () => {
 		});
 		socket.on('terminate_session', () => {
 			setCompletedFbCnt(totalUser.length);
-			safeNavigate(PHASE_TYPE.LOBBY_PHASE);
+			safeNavigate(PAGE_TYPE.LOBBY_PAGE);
 		});
 	}, []);
 	usePreventLeave();
