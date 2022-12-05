@@ -10,6 +10,8 @@ import {
 	NAVER_OBJECT_STORAGE_ENDPOINT,
 } from '@constant';
 import fs from 'fs';
+import { Socket } from 'socket.io';
+import { clientId } from '@types';
 
 @Injectable()
 export class ObjectStorageService {
@@ -24,6 +26,8 @@ export class ObjectStorageService {
 		});
 	}
 
+	private clientVideoMap = new Map<clientId, Blob[]>();
+
 	private endpoint = new AWS.Endpoint(this.configService.get(NAVER_OBJECT_STORAGE_ENDPOINT));
 	private region = this.configService.get(AWS_S3_RESION);
 	private ApiAccessKey = this.configService.get(NAVER_API_KEY);
@@ -31,10 +35,21 @@ export class ObjectStorageService {
 	private bucketName = this.configService.get(BUCKET_NAME);
 	private S3: AWS.S3;
 
-	async uploadVideo(docsUUID: string) {
+	mediaStreaming({ client, blob }: { client: Socket; blob: Blob }) {
+		const video = this.clientVideoMap.get(client.id);
+		video.push(blob);
+	}
+
+	createLocalPathFromBlobs(clientId: string) {
+		const blobs = this.clientVideoMap.get(clientId);
+		const videoBlob = new Blob(blobs);
+		return URL.createObjectURL(videoBlob);
+	}
+
+	async uploadVideo({ client, docsUUID }: { client: Socket; docsUUID: string }) {
 		const polderName = 'userId/'; // TODO: user id로 폴더 생성
 		const fileName = docsUUID;
-		const localPath = 'src/README.md'; // TODO: local path 생성
+		const localPath = this.createLocalPathFromBlobs(client.id);
 
 		await this.S3.putObject({
 			Bucket: this.bucketName,
