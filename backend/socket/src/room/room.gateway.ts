@@ -44,7 +44,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage(EVENT.LEAVE_ROOM)
 	handleLeaveRoom(@ConnectedSocket() client: Socket) {
-		return this.connectionService.leaveRoom({ client });
+		return this.connectionService.leaveRoom(client);
 	}
 
 	handleConnection(@ConnectedSocket() client: Socket) {
@@ -53,32 +53,32 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	handleDisconnect(@ConnectedSocket() client: Socket) {
 		this.logger.log(`disconnected: ${client.id}`);
-		this.webrtcService.disconnectWebrtc({ client });
-		this.connectionService.leaveRoom({ client });
+		this.webrtcService.disconnectWebrtc(client);
+		this.connectionService.leaveRoom(client);
 	}
 
 	// interview
 
 	@SubscribeMessage(EVENT.START_INTERVIEW)
 	handleStartInterview(@ConnectedSocket() client: Socket) {
-		return this.interviewService.startInterview({ client });
+		return this.interviewService.startInterview(client);
 	}
 
 	@SubscribeMessage(EVENT.END_INTERVIEW)
 	handleEndInterview(@ConnectedSocket() client: Socket) {
-		return this.interviewService.endInterview({ client });
+		return this.interviewService.endInterview(client);
 	}
 
 	@SubscribeMessage(EVENT.END_FEEDBACK)
 	handleEndFeedback(@ConnectedSocket() client: Socket) {
-		return this.interviewService.endFeedback({ client });
+		return this.interviewService.endFeedback(client);
 	}
 
 	// webRTC
 
 	@SubscribeMessage(EVENT.START_SIGNALING)
 	handleStartSignaling(@ConnectedSocket() client: Socket) {
-		return this.webrtcService.startSignaling({ client });
+		return this.webrtcService.startSignaling(client);
 	}
 
 	@SubscribeMessage(EVENT.OFFER)

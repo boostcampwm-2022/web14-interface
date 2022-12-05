@@ -80,7 +80,7 @@ export class ConnectionService {
 	 * 방에서 해당 유저를 제거하고, 나머지 유저들에게 emit을 하는 메서드입니다.
 	 * @param client - client socket
 	 */
-	leaveRoom({ client }: { client: Socket }) {
+	leaveRoom(client: Socket) {
 		const user = this.roomRepository.getUserByClientId(client.id);
 		if (!user) return;
 

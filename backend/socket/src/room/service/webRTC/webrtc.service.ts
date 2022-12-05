@@ -11,7 +11,7 @@ export class WebrtcService {
 		private readonly roomRepository: RoomRepository
 	) {}
 
-	startSignaling({ client }: { client: Socket }) {
+	startSignaling(client: Socket) {
 		const user = this.roomRepository.getUserByClientId(client.id);
 		const usersInRoom = this.roomRepository.getUsersInRoom(user.roomUUID);
 		console.log(usersInRoom);
@@ -38,7 +38,7 @@ export class WebrtcService {
 		return {};
 	}
 
-	disconnectWebrtc({ client }: { client: Socket }) {
+	disconnectWebrtc(client: Socket) {
 		const user = this.roomRepository.getUserByClientId(client.id);
 
 		client.to(user.roomUUID).emit(EVENT.DISCONNECT_WEBRTC, { userUUID: user.uuid });

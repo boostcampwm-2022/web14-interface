@@ -20,7 +20,7 @@ export class InterviewService {
 		private readonly roomRepository: RoomRepository
 	) {}
 
-	startInterview({ client }: { client: Socket }) {
+	startInterview(client: Socket) {
 		const user = this.roomRepository.getUserByClientId(client.id);
 		const roomUUID = user.roomUUID;
 		const usersInRoom = this.roomRepository.getUsersInRoom(roomUUID);
@@ -38,7 +38,7 @@ export class InterviewService {
 		return {};
 	}
 
-	endInterview({ client }: { client: Socket }) {
+	endInterview(client: Socket) {
 		const docsUUID = uuidv4();
 
 		const user = this.roomRepository.getUserByClientId(client.id);
@@ -70,7 +70,7 @@ export class InterviewService {
 		}
 	}
 
-	endFeedback({ client }: { client: Socket }) {
+	endFeedback(client: Socket) {
 		const user = this.roomRepository.getUserByClientId(client.id);
 		const users = this.roomRepository.getUsersInRoom(user.roomUUID);
 		const MAX_FEEDBACK_COUNT = users.length - 1;
