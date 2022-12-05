@@ -5,6 +5,7 @@ import {
 	AWS_S3_RESION,
 	BUCKET_CORS_ALLOW_SEC,
 	BUCKET_NAME,
+	EVENT,
 	NAVER_API_KEY,
 	NAVER_API_PWD,
 	NAVER_OBJECT_STORAGE_ENDPOINT,
@@ -13,10 +14,14 @@ import fs from 'fs';
 import { Socket } from 'socket.io';
 import { clientId } from '@types';
 import { VideoBlobDto } from 'src/room/dto/video.dto';
+import { RoomRepository } from 'src/room/repository/interface-room.repository';
 
 @Injectable()
 export class ObjectStorageService {
-	constructor(private readonly configService: ConfigService) {
+	constructor(
+		private readonly configService: ConfigService,
+		private readonly roomRepository: RoomRepository
+	) {
 		this.S3 = new AWS.S3({
 			endpoint: this.endpoint,
 			region: this.region,
@@ -29,7 +34,8 @@ export class ObjectStorageService {
 
 	private clientPacketMap = new Map<clientId, VideoBlobDto[]>();
 
-	private endpoint = new AWS.Endpoint(this.configService.get(NAVER_OBJECT_STORAGE_ENDPOINT));
+	private objectStorageUrl = this.configService.get(NAVER_OBJECT_STORAGE_ENDPOINT);
+	private endpoint = new AWS.Endpoint(this.objectStorageUrl);
 	private region = this.configService.get(AWS_S3_RESION);
 	private ApiAccessKey = this.configService.get(NAVER_API_KEY);
 	private ApiSecretKey = this.configService.get(NAVER_API_PWD);
@@ -50,9 +56,13 @@ export class ObjectStorageService {
 		packets.sort((a, b) => a.timestamp - b.timestamp);
 		const videoBlob = new Blob(packets.map((packet) => packet.data));
 
-		this.clientPacketMap.delete(clientId);
+		this.deleteVideoData(clientId);
 
 		return URL.createObjectURL(videoBlob);
+	}
+
+	deleteVideoData(clientId: string) {
+		this.clientPacketMap.delete(clientId);
 	}
 
 	async uploadVideo({ client, docsUUID }: { client: Socket; docsUUID: string }) {
@@ -71,9 +81,13 @@ export class ObjectStorageService {
 			ACL: 'public-read',
 			Body: fs.createReadStream(localPath),
 		}).promise();
-	}
 
-	async;
+		const user = this.roomRepository.getUserByClientId(client.id);
+		const videoUrl = [this.objectStorageUrl, this.bucketName, polderName, fileName].join('/');
+		client.to(user.roomUUID).emit(EVENT.DOWNLOAD_VIDEO, { videoUrl });
+
+		return {};
+	}
 
 	async setCorsAtBucket() {
 		const params: S3.Types.PutBucketCorsRequest = {
