@@ -3,7 +3,7 @@ import { PAGE_TYPE } from '@constants/page.constant';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { webRTCStreamSelector, webRTCUserListState } from '@store/webRTC.atom';
+import { webRTCStreamSelector, webRTCUserMapState } from '@store/webRTC.atom';
 import useWebRTCSignaling from '@hooks/useWebRTCSignaling';
 import { socket } from '../../service/socket';
 import Video from '@components/@shared/Video/Video';
@@ -25,7 +25,7 @@ const Lobby = () => {
 
 	usePreventLeave();
 
-	const [webRTCUserList, setWebRTCUserList] = useRecoilState(webRTCUserListState);
+	const [webRTCUserList, setWebRTCUserList] = useRecoilState(webRTCUserMapState);
 	const { startConnection } = useWebRTCSignaling(webRTCUserList, setWebRTCUserList);
 
 	const streamList = useRecoilValue(webRTCStreamSelector);

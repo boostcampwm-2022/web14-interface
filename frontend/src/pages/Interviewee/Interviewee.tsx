@@ -1,36 +1,49 @@
-/*  */
 import React, { useEffect } from 'react';
 import { PAGE_TYPE } from '@constants/page.constant';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
-import { webRTCStreamSelector } from '@store/webRTC.atom';
+import { webRTCStreamSelector, webRTCUserMapState } from '@store/webRTC.atom';
 import { useRecoilValue } from 'recoil';
 import Video from '@components/@shared/Video/Video';
 import { socket } from '../../service/socket';
-import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
+import mediaStreamer from '@service/mediaStreamer';
 import { userRoleSelector } from '@store/room.atom';
+import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
+import { socketEmit } from '@api/socket.api';
 
 const Interviewee = () => {
 	usePreventLeave();
 	const { safeNavigate } = useSafeNavigate();
+	const { startStream, stopStream } = mediaStreamer();
 
 	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);
+	const webRTCUserMap = useRecoilValue(webRTCUserMapState);
+
+	const getStreamFromUUID = (uuid) => {
+		return streamList.find((stream) => stream.uuid === uuid).stream;
+	};
+
 	const streamList = useRecoilValue(webRTCStreamSelector);
 	const hadleEndInterview = () => {
-		socket.emit('end_interview', (res) => {
-			console.log(res);
-		});
+		socketEmit('end_interview');
 	};
 
 	useEffect(() => {
 		socket.on('start_waiting', () => {
 			safeNavigate(PAGE_TYPE.WAITTING_PAGE);
+			stopStream();
 		});
 	}, []);
 
-	const getStreamFromUUID = (uuid) => {
-		return streamList.find((stream) => stream.uuid === uuid).stream;
-	};
+	useEffect(() => {
+		const effect = () => {
+			if (!interviewee) return;
+			const myStream = webRTCUserMap.get(interviewee.uuid);
+			if (!myStream) return;
+			startStream(myStream);
+		};
+		effect();
+	}, [webRTCUserMap, interviewee]);
 
 	return (
 		<>
