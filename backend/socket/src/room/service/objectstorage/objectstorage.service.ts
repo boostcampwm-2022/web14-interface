@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import AWS, { S3 } from 'aws-sdk';
 import {
@@ -9,6 +9,7 @@ import {
 	NAVER_API_KEY,
 	NAVER_API_PWD,
 	NAVER_OBJECT_STORAGE_ENDPOINT,
+	ROOM_REPOSITORY_INTERFACE,
 } from '@constant';
 import fs from 'fs';
 import { Socket } from 'socket.io';
@@ -19,8 +20,9 @@ import { RoomRepository } from 'src/room/repository/interface-room.repository';
 @Injectable()
 export class ObjectStorageService {
 	constructor(
-		private readonly configService: ConfigService,
-		private readonly roomRepository: RoomRepository
+		@Inject(ROOM_REPOSITORY_INTERFACE)
+		private readonly roomRepository: RoomRepository,
+		private readonly configService: ConfigService
 	) {
 		this.S3 = new AWS.S3({
 			endpoint: this.endpoint,

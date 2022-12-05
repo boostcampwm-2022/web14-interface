@@ -1,10 +1,11 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class VideoBlobDto {
 	@IsNotEmpty()
 	@IsNumber()
 	timestamp: number;
 
+	@IsString()
 	@IsNotEmpty()
-	data: Blob;
+	data: string;
 }
