@@ -9,6 +9,7 @@ import {
 	NAVER_API_PWD,
 	NAVER_OBJECT_STORAGE_ENDPOINT,
 } from '@constant';
+import fs from 'fs';
 
 @Injectable()
 export class ObjectStorageService {
@@ -29,6 +30,24 @@ export class ObjectStorageService {
 	private ApiSecretKey = this.configService.get(NAVER_API_PWD);
 	private bucketName = this.configService.get(BUCKET_NAME);
 	private S3: AWS.S3;
+
+	async uploadVideo(docsUUID: string) {
+		const polderName = 'userId/'; // TODO: user id로 폴더 생성
+		const fileName = docsUUID;
+		const localPath = 'src/README.md'; // TODO: local path 생성
+
+		await this.S3.putObject({
+			Bucket: this.bucketName,
+			Key: polderName,
+		}).promise();
+
+		await this.S3.putObject({
+			Bucket: this.bucketName,
+			Key: fileName,
+			ACL: 'public-read',
+			Body: fs.createReadStream(localPath),
+		}).promise();
+	}
 
 	async setCorsAtBucket() {
 		const params: S3.Types.PutBucketCorsRequest = {
