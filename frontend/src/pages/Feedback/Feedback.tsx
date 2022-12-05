@@ -32,7 +32,7 @@ const Feedback = () => {
 	return (
 		<div css={feedbackPageStyle}>
 			<div css={feedbackPageContainerStyle}>
-				<IntervieweeVideo />
+				<IntervieweeVideo src="/assets/test.mp4" width={400} autoplay muted controls />
 				<button
 					type="button"
 					onClick={() => setIsFbSync((current) => !current)}
