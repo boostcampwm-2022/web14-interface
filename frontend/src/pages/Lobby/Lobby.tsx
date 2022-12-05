@@ -31,7 +31,6 @@ const Lobby = () => {
 	const streamList = useRecoilValue(webRTCStreamSelector);
 
 	useEffect(() => {
-		//TODO 변경된 부분 BE랑 맞추기
 		socket.on(SOCKET_EVENT_TYPE.JOIN_INTERVIEW, ({ user: interviewee }) => {
 			const newOthers = others.map((user) => {
 				return user.uuid === interviewee.uuid
@@ -61,12 +60,10 @@ const Lobby = () => {
 	}, [others]);
 
 	useEffect(() => {
-		//TODO Lobby 첫 렌더링 시가 아니라 첫 입장 시만 하기
-		startConnection(me.uuid);
+		if (!webRTCUserList.has(me.uuid)) startConnection(me.uuid);
 	}, []);
 
 	const handleStartInterviewee = async () => {
-		//TODO 변경된 부분 BE랑 맞추기
 		await socketEmit<joinInterviewResponseType>(SOCKET_EVENT_TYPE.START_INTERVIEW);
 
 		const newOthers = others.map((user) => {

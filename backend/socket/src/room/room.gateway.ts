@@ -41,12 +41,12 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage(EVENT.ENTER_ROOM)
 	handleEnterRoom(@ConnectedSocket() client: Socket, @MessageBody() roomUUID: string) {
-		return this.connectionService.enterRoom({ client, server: this.server, roomUUID });
+		return this.connectionService.enterRoom({ client, roomUUID });
 	}
 
 	@SubscribeMessage(EVENT.LEAVE_ROOM)
 	handleLeaveRoom(@ConnectedSocket() client: Socket) {
-		return this.connectionService.leaveRoom({ client, server: this.server });
+		return this.connectionService.leaveRoom(client);
 	}
 
 	handleConnection(@ConnectedSocket() client: Socket) {
@@ -64,7 +64,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage(EVENT.START_INTERVIEW)
 	handleStartInterview(@ConnectedSocket() client: Socket) {
-		return this.interviewService.startInterview({ client, server: this.server });
+		return this.interviewService.startInterview(client);
 	}
 
 	@SubscribeMessage(EVENT.END_INTERVIEW)
@@ -74,7 +74,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage(EVENT.END_FEEDBACK)
 	handleEndFeedback(@ConnectedSocket() client: Socket) {
-		return this.interviewService.endFeedback({ client, server: this.server });
+		return this.interviewService.endFeedback(client);
 	}
 
 	// objectStorage
@@ -98,13 +98,13 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage(EVENT.START_SIGNALING)
 	handleStartSignaling(@ConnectedSocket() client: Socket) {
-		return this.webrtcService.startSignaling({ client, server: this.server });
+		return this.webrtcService.startSignaling(client);
 	}
 
 	@SubscribeMessage(EVENT.OFFER)
 	handleOffer(@ConnectedSocket() client: Socket, @MessageBody() connectSignal: WebrtcOfferDto) {
 		return this.webrtcService.delivery({
-			server: this.server,
+			client,
 			connectSignal,
 			eventType: EVENT.OFFER,
 		});
@@ -113,7 +113,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage(EVENT.ANSWER)
 	handleAnswer(@ConnectedSocket() client: Socket, @MessageBody() connectSignal: WebrtcAnswerDto) {
 		return this.webrtcService.delivery({
-			server: this.server,
+			client,
 			connectSignal,
 			eventType: EVENT.ANSWER,
 		});
@@ -125,7 +125,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		@MessageBody() connectSignal: WebrtcIcecandidateDto
 	) {
 		return this.webrtcService.delivery({
-			server: this.server,
+			client,
 			connectSignal,
 			eventType: EVENT.ICECANDIDATE,
 		});

@@ -34,19 +34,10 @@ export class ConnectionService {
 	/**
 	 * default user를 생성하고 roomUUID에 해당하는 room에 유저가 들어가는 메서드입니다.
 	 * @param client - client socket
-	 * @param server -  namespace 인스턴스
 	 * @param roomUUID - room uuid
 	 * @returns
 	 */
-	enterRoom({
-		client,
-		server,
-		roomUUID,
-	}: {
-		client: Socket;
-		server: Namespace;
-		roomUUID: string;
-	}) {
+	enterRoom({ client, roomUUID }: { client: Socket; roomUUID: string }) {
 		const room = this.roomRepository.getRoom(roomUUID);
 
 		const exception = this.isEnterableRoom(room);
@@ -57,7 +48,7 @@ export class ConnectionService {
 
 		client.join(roomUUID);
 		this.roomRepository.saveUserInRoom({ clientId: client.id, roomUUID, user });
-		server.to(roomUUID).emit(EVENT.ENTER_USER, { user });
+		client.to(roomUUID).emit(EVENT.ENTER_USER, { user });
 
 		return { data: { others, me: user } };
 	}
@@ -88,17 +79,17 @@ export class ConnectionService {
 	/**
 	 * 방에서 해당 유저를 제거하고, 나머지 유저들에게 emit을 하는 메서드입니다.
 	 * @param client - client socket
-	 * @param server - namespace instance
 	 */
-	leaveRoom({ client, server }: { client: Socket; server: Namespace }) {
+	leaveRoom(client: Socket) {
 		const user = this.roomRepository.getUserByClientId(client.id);
 		if (!user) return;
 
 		const roomUUID = user.roomUUID;
 		this.roomRepository.removeUserInRoom({ roomUUID, user });
-		client.leave(roomUUID);
 
-		server.to(roomUUID).emit(EVENT.LEAVE_USER, { user });
+		client.to(roomUUID).emit(EVENT.LEAVE_USER, { user });
+
+		client.leave(roomUUID);
 
 		return {};
 	}
