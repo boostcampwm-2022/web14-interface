@@ -17,6 +17,7 @@ export class InmemoryRoomRepository implements RoomRepository {
 
 	deleteRoom(roomUUID: string) {
 		this.rooms.delete(roomUUID);
+		this.usersInRoom.delete(roomUUID);
 	}
 
 	getRoom(roomUUID: string) {
