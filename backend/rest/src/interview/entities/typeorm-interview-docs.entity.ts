@@ -1,7 +1,8 @@
 import { IsNumber, IsString } from 'class-validator';
 import { TypeormBaseEntity } from 'src/common/typeorm-base.entity';
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
 import { InterviewDocs } from './interview-docs.entity';
+import { TypeormFeedbackEntity } from './typeorm-feedback.entity';
 
 @Entity('interviewDocs')
 export class TypeormInterviewDocsEntity extends TypeormBaseEntity implements InterviewDocs {
@@ -20,4 +21,9 @@ export class TypeormInterviewDocsEntity extends TypeormBaseEntity implements Int
 	@Column({ name: 'video_play_time' })
 	@IsNumber()
 	videoPlayTime: number;
+
+	@OneToMany(() => TypeormFeedbackEntity, (feedback) => feedback.docs, {
+		cascade: true,
+	})
+	feebacks: TypeormFeedbackEntity[];
 }
