@@ -1,5 +1,5 @@
 import { CreateJwtPayloadDto } from 'src/auth/dto/create-jwt.dto';
-import { BaseBuilder } from '../core.builder';
+import { BaseBuilder } from '../../common/base.builder';
 
 export class JwtPayloadBuiler extends BaseBuilder<CreateJwtPayloadDto> {
 	constructor() {

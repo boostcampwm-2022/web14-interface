@@ -1,4 +1,4 @@
-import { JoinUserBuilder } from '@builder';
+import { JoinUserBuilder } from 'src/common';
 import { JWT_ENV, USER_REPOSITORY_INTERFACE } from '@constant';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';

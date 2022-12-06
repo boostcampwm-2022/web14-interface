@@ -1,5 +1,5 @@
 import { TypeormUserEntity } from 'src/user/entities/typeorm-user.entity';
-import { BaseBuilder } from '../core.builder';
+import { BaseBuilder } from '../../common/base.builder';
 
 export class JoinUserBuilder extends BaseBuilder<TypeormUserEntity> {
 	constructor() {

@@ -5,3 +5,5 @@ import { InterviewService } from '../service/interview.service';
 export class InterviewController {
 	constructor(private readonly interviewService: InterviewService) {}
 }
+
+// common

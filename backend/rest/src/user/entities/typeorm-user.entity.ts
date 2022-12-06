@@ -1,8 +1,9 @@
+import { TypeormBaseEntity } from 'src/common/typeorm-base.entity';
 import { Entity, PrimaryColumn, Column } from 'typeorm';
 import { UserEntity } from './interface-user.entity';
 
 @Entity('user')
-export class TypeormUserEntity implements UserEntity {
+export class TypeormUserEntity extends TypeormBaseEntity implements UserEntity {
 	@PrimaryColumn({ length: 100 })
 	id: string;
 
@@ -17,13 +18,4 @@ export class TypeormUserEntity implements UserEntity {
 
 	@Column({ length: 10, default: 'none', name: 'oauth_type' })
 	oauthType: string;
-
-	@Column({ name: 'created_at', type: 'date' })
-	createdAt: string;
-
-	@Column({ name: 'updated_at', type: 'date' })
-	updatedAt: string;
-
-	@Column({ name: 'is_deleted', default: false })
-	isDeleted: boolean;
 }
