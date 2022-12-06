@@ -5,9 +5,9 @@ import usePreventLeave from '@hooks/usePreventLeave';
 import axios from 'axios';
 import { meInRoomState, othersInRoomState, roomUUIDState } from '@store/room.atom';
 import { useSetRecoilState } from 'recoil';
-import { SOCKET_EVENT_TYPE } from '@constants/event.constant';
+import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { socketEmit } from '../../api/socket.api';
-import { UserDTO } from '@customType/user';
+import { UserType } from '@customType/user';
 import { ReactComponent as InterfacePreview } from '@assets/preview.svg';
 import { ReactComponent as Logo } from '@assets/logo_black.svg';
 import { ReactComponent as FolderIcon } from '@assets/icon/folder.svg';
@@ -35,16 +35,16 @@ interface createRoomResponseType {
 }
 
 interface attendRoomResponseType {
-	others: UserDTO[];
-	me: UserDTO;
+	others: UserType[];
+	me: UserType;
 }
 
 const Landing = () => {
 	usePreventLeave();
 	const [roomNumber, setRoomNumber] = useState('');
 	const setRoom = useSetRecoilState(roomUUIDState);
-	const setOthers = useSetRecoilState<UserDTO[]>(othersInRoomState);
-	const setMe = useSetRecoilState<UserDTO>(meInRoomState);
+	const setOthers = useSetRecoilState<UserType[]>(othersInRoomState);
+	const setMe = useSetRecoilState<UserType>(meInRoomState);
 
 	const { safeNavigate } = useSafeNavigate();
 

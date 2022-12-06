@@ -13,7 +13,7 @@ export enum SOCKET_EVENT_TYPE {
 	COUNT_FEEDBACK = 'count_feedback',
 	TERMINATE_SESSION = 'terminate_session',
 	STREAM_VIDEO = 'stream_video',
-	LOAD_VIDEO = 'load_video',
+	DOWNLOAD_VIDEO = 'download_video',
 	SEND_MESSAGE = 'send_message',
 	RECEIVE_MESSAGE = 'receive_message',
 }
