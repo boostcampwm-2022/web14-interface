@@ -13,7 +13,7 @@ import { OauthKakaoService } from './oauth/kakao-oauth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { CreateJwtPayloadDto } from '../dto/create-jwt.dto';
-import { JwtPayloadBuiler } from 'src/auth/dto/create-jwt-payload.dto';
+import { JwtPayloadBuiler } from 'src/auth/dto/create-jwt.builder';
 import { UserEntity } from 'src/user/entities/user.entity';
 
 @Injectable()

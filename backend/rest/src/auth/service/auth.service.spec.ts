@@ -160,7 +160,6 @@ describe('AuthService', () => {
 			.setPassword(password)
 			.setNickname(nickname)
 			.setOauthType(oauthType)
-			.setDefaultValue()
 			.build();
 		return userEntity;
 	};
