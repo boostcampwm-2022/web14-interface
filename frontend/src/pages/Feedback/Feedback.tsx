@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { socket } from '../../service/socket';
 
 import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
-import usePreventLeave from '@hooks/usePreventLeave';
 import FeedbackArea from '@components/FeedbackArea/FeedbackArea';
-import { isFbSyncState } from '@store/feedback.atom';
-
-import { feedbackPageStyle, feedbackPageContainerStyle } from './Feddback.style';
+import BottomBar from '@components/BottomBar/BottomBar';
+import RoundButton from '@components/@shared/RoundButton/RoundButton';
+import usePreventLeave from '@hooks/usePreventLeave';
 import useSafeNavigate from '@hooks/useSafeNavigate';
-import { PAGE_TYPE } from '@constants/page.constant';
+import { isFbSyncState } from '@store/feedback.atom';
 import { completedFbCntState } from '@store/room.atom';
+
+import { ReactComponent as LinkIcon } from '@assets/icon/link.svg';
+import { socket } from '../../service/socket';
+import { feedbackWrapperStyle, feedbackPageContainerStyle } from './Feedback.style';
+import { PAGE_TYPE } from '@constants/page.constant';
+import theme from '@styles/theme';
+import { iconBgStyle } from '@styles/commonStyle';
 
 const Feedback = () => {
 	usePreventLeave();
@@ -42,20 +47,44 @@ const Feedback = () => {
 		console.log(videoUrl);
 	}, [videoUrl]);
 
+	const finishFeedbackBtn = (
+		<RoundButton
+			style={{
+				backgroundColor: theme.colors.primary,
+				width: 200,
+				height: 50,
+				color: theme.colors.white,
+			}}
+			onClick={handleEndFeedback}
+		>
+			<div>피드백 종료</div>
+		</RoundButton>
+	);
+
 	return (
-		<div css={feedbackPageStyle}>
+		<div css={feedbackWrapperStyle}>
 			<div css={feedbackPageContainerStyle}>
 				<IntervieweeVideo src={videoUrl} width={400} autoplay muted controls />
 				<button
-					type="button"
+					style={{
+						backgroundColor: isFbSync ? theme.colors.primary : theme.colors.white,
+						width: 50,
+						height: 50,
+						borderRadius: '25px',
+						display: 'flex',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
 					onClick={() => setIsFbSync((current) => !current)}
-					style={{ color: 'white', height: '40px', width: '65px' }}
 				>
-					{isFbSync ? 'Sync' : 'UnSync'}
+					<LinkIcon
+						{...iconBgStyle}
+						fill={isFbSync ? theme.colors.white : theme.colors.primary}
+					/>
 				</button>
 				<FeedbackArea />
-				<button onClick={handleEndFeedback}>피드백 종료</button>
 			</div>
+			<BottomBar mainController={finishFeedbackBtn} />
 		</div>
 	);
 };
