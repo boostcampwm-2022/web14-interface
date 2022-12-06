@@ -92,7 +92,7 @@ export class ConnectionService {
 		client.leave(roomUUID);
 
 		const usersInRoom = this.roomRepository.getUsersInRoom(roomUUID);
-		if (!usersInRoom.length) {
+		if (!usersInRoom) {
 			this.roomRepository.deleteRoom(roomUUID);
 		}
 
