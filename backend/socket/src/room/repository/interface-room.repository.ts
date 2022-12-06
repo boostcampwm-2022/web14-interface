@@ -9,6 +9,8 @@ export interface RoomRepository {
 	 */
 	createRoom({ roomUUID, room }: { roomUUID: string; room: InmemoryRoom }): InmemoryRoom;
 
+	deleteRoom(roomUUID: string): void;
+
 	/**
 	 * uuid로 방 정보를 가져옵니다.
 	 * @param roomUUID
