@@ -1,14 +1,14 @@
 import { atom, selector } from 'recoil';
 
-export const webRTCUserListState = atom({
-	key: 'webRTCUserListState',
+export const webRTCUserMapState = atom({
+	key: 'webRTCUserMapState',
 	default: new Map(),
 });
 
 export const webRTCStreamSelector = selector({
 	key: 'webRTCStreamSelector',
 	get: ({ get }) => {
-		return Array.from(get(webRTCUserListState).entries()).map((userInfo) => {
+		return Array.from(get(webRTCUserMapState).entries()).map((userInfo) => {
 			const [uuid, { stream }] = userInfo;
 			return { uuid, stream };
 		});

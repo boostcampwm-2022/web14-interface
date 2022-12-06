@@ -3,9 +3,10 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
+
+import { webRTCStreamSelector, webRTCUserMapState } from '@store/webRTC.atom';
 import useWebRTCSignaling from '@hooks/useWebRTCSignaling';
 
-import { webRTCStreamSelector, webRTCUserListState } from '@store/webRTC.atom';
 import { meInRoomState, othersInRoomState } from '@store/room.atom';
 
 import Video from '@components/@shared/Video/Video';
@@ -34,7 +35,7 @@ const Lobby = () => {
 
 	usePreventLeave();
 
-	const [webRTCUserList, setWebRTCUserList] = useRecoilState(webRTCUserListState);
+	const [webRTCUserList, setWebRTCUserList] = useRecoilState(webRTCUserMapState);
 	const { startConnection } = useWebRTCSignaling(webRTCUserList, setWebRTCUserList);
 
 	const streamList = useRecoilValue(webRTCStreamSelector);

@@ -4,6 +4,7 @@ import { InmemoryRoomRepository } from './repository/inmemory-room.repository';
 import { RoomGateway } from './room.gateway';
 import { ConnectionService } from './service/connection/connection.service';
 import { InterviewService } from './service/interview/interview.service';
+import { ObjectStorageService } from './service/objectstorage/objectstorage.service';
 import { WebrtcService } from './service/webRTC/webrtc.service';
 
 export const RoomRepository: ClassProvider = {
@@ -12,6 +13,13 @@ export const RoomRepository: ClassProvider = {
 };
 
 @Module({
-	providers: [RoomGateway, RoomRepository, ConnectionService, InterviewService, WebrtcService],
+	providers: [
+		RoomGateway,
+		RoomRepository,
+		ConnectionService,
+		InterviewService,
+		WebrtcService,
+		ObjectStorageService,
+	],
 })
 export class RoomModule {}
