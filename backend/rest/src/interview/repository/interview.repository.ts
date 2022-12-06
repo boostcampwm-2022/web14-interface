@@ -1,4 +1,5 @@
 import { DocsRequestDto } from '../dto/request-docs.dto';
+import { feedbackBoxDto } from '../dto/request-feedback.dto';
 
 export interface InterviewRepository<T> {
 	saveInterviewDocs({
@@ -12,4 +13,14 @@ export interface InterviewRepository<T> {
 	}): Promise<string>;
 
 	getInterviewDocs(userId: string): Promise<T[]>;
+
+	deleteInterviewDocs(docsUUID: string): Promise<string>;
+
+	saveFeedback({
+		userId,
+		feedbackBoxDto,
+	}: {
+		userId: string;
+		feedbackBoxDto: feedbackBoxDto;
+	}): Promise<number>;
 }

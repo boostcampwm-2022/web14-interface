@@ -3,4 +3,5 @@ export interface Feedback {
 	userId: string;
 	startTime: number;
 	innerIndex: number;
+	content: string;
 }
