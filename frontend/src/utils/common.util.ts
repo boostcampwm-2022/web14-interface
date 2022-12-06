@@ -10,5 +10,7 @@ export const mmssFormatter = (ms: number) => {
 
 const paddingFormatter = (n: number) => {
 	n = Math.floor(n);
-	return ('00' + n).slice(-2);
+	const l = (n + '').length;
+	const sliceSize = l > 2 ? l : 2;
+	return ('00' + n).slice(-sliceSize);
 };

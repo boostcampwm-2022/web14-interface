@@ -6,7 +6,7 @@ import { iconSmStyle } from '@styles/commonStyle';
 import { createdAtStyle, docsItemWrapper, indexStyle, playTimeStyle } from './DocsItem.style';
 import { mmssFormatter } from '@utils/common.util';
 
-interface Props {
+export interface Props {
 	docs: DocsItemDtoType;
 	idx: number;
 	style: 'card' | 'list';

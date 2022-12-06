@@ -1,11 +1,9 @@
-// import axios from 'axios';
+import axios from 'axios';
 
-// export const requestGet = async <T>(url, header?: obejct) => {
-// 	try {
-//         await axios.get(url, {headers})
-// 	} catch (e) {
-// 		console.log(e);
-// 	}
-// };
-
-// export const requestPost = <T>(url, data?: T) => {};
+export const requestGet = async <T>(url) => {
+	try {
+		await axios.get(url);
+	} catch (e) {
+		console.log(e);
+	}
+};

@@ -9,6 +9,7 @@ const theme = {
 		gray2: '#BBBBBB',
 		gray3: '#D7D7D7',
 		white: '#ffffff',
+		blue1: '#1F7CD2',
 	},
 };
 
