@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DocsRequestDto } from '../dto/request-docs.dto';
+import { feedbackBoxDto } from '../dto/request-feedback.dto';
+import { FeedbackBuilder } from '../entities/typeorm-feedback.builder';
+import { TypeormFeedbackEntity } from '../entities/typeorm-feedback.entity';
 import { InterviewDocsBuilder } from '../entities/typeorm-interview-docs.builder';
 import { TypeormInterviewDocsEntity } from '../entities/typeorm-interview-docs.entity';
 import { InterviewRepository } from './interview.repository';
@@ -10,7 +13,10 @@ import { InterviewRepository } from './interview.repository';
 export class TypeormInterviewRepository implements InterviewRepository<TypeormInterviewDocsEntity> {
 	constructor(
 		@InjectRepository(TypeormInterviewDocsEntity)
-		private readonly interviewDocsRepository: Repository<TypeormInterviewDocsEntity>
+		private readonly interviewDocsRepository: Repository<TypeormInterviewDocsEntity>,
+
+		@InjectRepository(TypeormFeedbackEntity)
+		private readonly feedbackRepository: Repository<TypeormFeedbackEntity>
 	) {}
 
 	async saveInterviewDocs({
@@ -53,5 +59,24 @@ export class TypeormInterviewRepository implements InterviewRepository<TypeormIn
 		}
 
 		return docsUUID;
+	}
+
+	async saveFeedback({
+		userId,
+		feedbackBoxDto,
+	}: {
+		userId: string;
+		feedbackBoxDto: feedbackBoxDto;
+	}): Promise<number> {
+		const { startTime, innerIndex, content } = feedbackBoxDto;
+		const feedback = new FeedbackBuilder()
+			.setUserId(userId)
+			.setStartTime(startTime)
+			.setInnerIndex(innerIndex)
+			.setContent(content)
+			.build();
+
+		const result = await this.feedbackRepository.save(feedback);
+		return result.id;
 	}
 }
