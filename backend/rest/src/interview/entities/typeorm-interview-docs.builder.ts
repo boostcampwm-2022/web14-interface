@@ -11,8 +11,8 @@ export class InterviewDocsBuilder extends BaseBuilder<TypeormInterviewDocsEntity
 		return this;
 	}
 
-	setUserUUID(userUUID: string): InterviewDocsBuilder {
-		this.instance.userUUID = userUUID;
+	setUserId(userId: string): InterviewDocsBuilder {
+		this.instance.userId = userId;
 		return this;
 	}
 

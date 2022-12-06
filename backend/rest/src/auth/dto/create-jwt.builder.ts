@@ -7,12 +7,7 @@ export class JwtPayloadBuiler extends BaseBuilder<CreateJwtPayloadDto> {
 	}
 
 	setId(id: string) {
-		this.instance.nickname = id;
-		return this;
-	}
-
-	setNickname(nickname: string) {
-		this.instance.nickname = nickname;
+		this.instance.id = id;
 		return this;
 	}
 

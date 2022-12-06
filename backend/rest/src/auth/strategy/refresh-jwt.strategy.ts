@@ -27,13 +27,9 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 		});
 	}
 
-	async validate(req: Request, payload: JwtPayload) {
-		const { id, email, nickname } = payload;
-		const createJwtPayload = new JwtPayloadBuiler()
-			.setId(id)
-			.setEmail(email)
-			.setNickname(nickname)
-			.build();
+	async validate(req: Request, payload: JwtPayload): Promise<JwtPayload> {
+		const { id, email } = payload;
+		const createJwtPayload = new JwtPayloadBuiler().setId(id).setEmail(email).build();
 		const accessToken = this.authService.createJwt({
 			payload: createJwtPayload,
 			...accessTokenOptions,

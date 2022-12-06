@@ -79,8 +79,6 @@ export class AuthService {
 		secret: string;
 		expirationTime: string;
 	}) {
-		const { id, nickname, email } = payload;
-		const createJwtPayload = { id, nickname, email };
 		const token = this.jwtService.sign(
 			{ ...payload },
 			{
@@ -98,12 +96,8 @@ export class AuthService {
 	 * @returns {} { accessToken, refreshToken }
 	 */
 	createAccessTokenAndRefreshToken(user: UserInfo) {
-		const { id, nickname, email } = user;
-		const payload = new JwtPayloadBuiler()
-			.setId(id)
-			.setNickname(nickname)
-			.setEmail(email)
-			.build();
+		const { id, email } = user;
+		const payload = new JwtPayloadBuiler().setId(id).setEmail(email).build();
 
 		const accessToken = this.createJwt({ payload, ...accessTokenOptions });
 		const refreshToken = this.createJwt({ payload, ...refreshTokenOptions });

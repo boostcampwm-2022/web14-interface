@@ -15,7 +15,6 @@ export interface UserInfo extends UserSocialInfo, UserLocalInfo {
 
 export interface JwtPayload {
 	id: string;
-	nickname: string;
 	email: string;
 	iat: number;
 	exp: number;
