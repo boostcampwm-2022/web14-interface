@@ -13,7 +13,7 @@ const mediaStreamer = () => {
 
 		mediaRecorder.ondataavailable = async (e) => {
 			if (!e.data || !e.data.size) return;
-			socket.emit('stream_video', e.data);
+			socket.emit('stream_video', await e.data.arrayBuffer());
 		};
 
 		mediaRecorder.onstop = () => {
