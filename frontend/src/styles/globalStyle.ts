@@ -39,6 +39,10 @@ const globalStyle = css`
 		outline: none;
 		font-family: 'Noto Sans KR', sans-serif;
 	}
+
+	textarea {
+		resize: none;
+	}
 `;
 
 export const flexRow = ({ gap }) => css`

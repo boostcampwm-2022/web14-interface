@@ -4,7 +4,12 @@ import { feedbackIdsState, feedbackIdxMapState, feedbackState } from '@store/fee
 import React, { useState } from 'react';
 import { useRecoilTransaction_UNSTABLE, useRecoilValue } from 'recoil';
 
-import { fbFormStyle, fbFormWrapperStyle, fbInputStyle, fbStartTimeStyle } from './FeedbackForm.style';
+import {
+	fbFormStyle,
+	fbFormWrapperStyle,
+	fbInputStyle,
+	fbStartTimeStyle,
+} from './FeedbackForm.style';
 
 const FeedbackForm = () => {
 	const [inputVal, setInputVal] = useState('');
@@ -19,8 +24,7 @@ const FeedbackForm = () => {
 		setInputVal(e.target.value);
 	};
 
-	const handleAddFeedback = (e) => {
-		e.preventDefault();
+	const handleAddFeedback = () => {
 		feedbackIdxMap.set(startTime, feedbackIdxMap.get(startTime) + 1 || 1);
 		const nextInnerIdx = feedbackIdxMap.get(startTime);
 		const newFeedback = {
@@ -51,10 +55,14 @@ const FeedbackForm = () => {
 		[]
 	);
 
+	const handleKeyDown = (e) => {
+		if (e.keyCode === 13 && !e.shiftKey) handleAddFeedback();
+	};
+
 	return (
 		<div css={fbFormWrapperStyle}>
 			<div css={fbStartTimeStyle}>{inputVal ? startTime : currentVideoTime}</div>
-			<form onSubmit={handleAddFeedback} css={fbFormStyle}>
+			<form css={fbFormStyle} onKeyDown={handleKeyDown}>
 				<textarea value={inputVal} onChange={handleChange} css={fbInputStyle} />
 			</form>
 		</div>

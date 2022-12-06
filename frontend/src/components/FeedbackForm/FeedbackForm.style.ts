@@ -12,7 +12,7 @@ export const fbFormStyle = css`
 
 export const fbInputStyle = (theme) => css`
 	width: 100%;
-	height: 200px;
+	height: 120px;
 	border-radius: 5px;
 	border: none;
 	background-color: ${theme.colors.secondary};
