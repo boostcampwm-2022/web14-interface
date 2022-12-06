@@ -52,4 +52,9 @@ export class InterviewService {
 
 		return userId;
 	}
+
+	async getInterviewDocs(userId: string) {
+		const docsList = await this.interviewRepository.getInterviewDocsListByUserId(userId);
+		return docsList;
+	}
 }
