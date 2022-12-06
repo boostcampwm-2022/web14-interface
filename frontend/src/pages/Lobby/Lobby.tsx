@@ -1,18 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { PAGE_TYPE } from '@constants/page.constant';
+import React, { useEffect } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
-import { useRecoilState, useRecoilValue } from 'recoil';
+
 import { webRTCStreamSelector, webRTCUserMapState } from '@store/webRTC.atom';
 import useWebRTCSignaling from '@hooks/useWebRTCSignaling';
-import { socket } from '../../service/socket';
-import Video from '@components/@shared/Video/Video';
+
 import { meInRoomState, othersInRoomState } from '@store/room.atom';
-import { SOCKET_EVENT_TYPE } from '@constants/event.constant';
+
+import Video from '@components/@shared/Video/Video';
 import VideoGrid from '@components/@shared/VideoGrid/VideoGrid';
+import BottomBar from '@components/BottomBar/BottomBar';
+
+import { socket } from '../../service/socket';
 import { socketEmit } from '@api/socket.api';
 import { UserDTO } from '@customType/user';
-import { css } from '@emotion/react';
+
+import { ReactComponent as BroadcastIcon } from '@assets/icon/broadcast.svg';
+import { iconBgStyle } from '@styles/commonStyle';
+import { lobbyWrapperStyle, startInterviewBtnStyle, VideoAreaStyle } from './Lobby.style';
+
+import { SOCKET_EVENT_TYPE } from '@constants/event.constant';
+import { PAGE_TYPE } from '@constants/page.constant';
 
 interface joinInterviewResponseType {
 	usersInRoom: UserDTO[];
@@ -75,8 +85,15 @@ const Lobby = () => {
 		safeNavigate(PAGE_TYPE.INTERVIEWEE_PAGE);
 	};
 
+	const startInterviewBtn = (
+		<button css={startInterviewBtnStyle} onClick={handleStartInterviewee}>
+			<BroadcastIcon {...iconBgStyle} />
+			<div>면접 시작</div>
+		</button>
+	);
+
 	return (
-		<div css={LobbyWrapperStyle}>
+		<div css={lobbyWrapperStyle}>
 			<div css={VideoAreaStyle}>
 				<VideoGrid>
 					{streamList.map(({ uuid, stream }) => (
@@ -84,55 +101,10 @@ const Lobby = () => {
 					))}
 				</VideoGrid>
 			</div>
-			<div css={bottomBarStyle}>
-				<div>
-					<button>Profile</button>
-					<button>Mic</button>
-					<button>Camera</button>
-				</div>
-				<div>
-					<button onClick={handleStartInterviewee}>면접 시작</button>
-					<button>중지</button>
-					<button>취소</button>
-				</div>
-				<div>
-					<button>채팅</button>
-					<button>유저</button>
-					<button>기록</button>
-					<button>나가기</button>
-				</div>
-			</div>
+			<BottomBar mainController={startInterviewBtn} />
 		</div>
 	);
 };
 
 export default Lobby;
 
-const LobbyWrapperStyle = (theme) => css`
-	width: 100%;
-	height: 100%;
-	background-color: ${theme.colors.primary3};
-`;
-
-const VideoAreaStyle = () => css`
-	display: flex;
-	justify-content: center;
-	align-content: center;
-
-	width: 100%;
-	height: calc(100% - 72px);
-`;
-
-const bottomBarStyle = (theme) => css`
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-
-	width: 100%;
-	height: 72px;
-	background-color: ${theme.colors.titleActive};
-
-	button {
-		color: ${theme.colors.white};
-	}
-`;
