@@ -1,5 +1,5 @@
 import { CreateJwtPayloadDto } from 'src/auth/dto/create-jwt.dto';
-import { BaseBuilder } from '../core.builder';
+import { BaseBuilder } from '../../common/base.builder';
 
 export class JwtPayloadBuiler extends BaseBuilder<CreateJwtPayloadDto> {
 	constructor() {
@@ -7,12 +7,7 @@ export class JwtPayloadBuiler extends BaseBuilder<CreateJwtPayloadDto> {
 	}
 
 	setId(id: string) {
-		this.instance.nickname = id;
-		return this;
-	}
-
-	setNickname(nickname: string) {
-		this.instance.nickname = nickname;
+		this.instance.id = id;
 		return this;
 	}
 
