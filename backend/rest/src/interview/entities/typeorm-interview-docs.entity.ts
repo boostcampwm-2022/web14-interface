@@ -25,5 +25,5 @@ export class TypeormInterviewDocsEntity extends TypeormBaseEntity implements Int
 	@OneToMany(() => TypeormFeedbackEntity, (feedback) => feedback.docs, {
 		cascade: true,
 	})
-	feebackList: TypeormFeedbackEntity[];
+	feedbackList: TypeormFeedbackEntity[];
 }

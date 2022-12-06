@@ -24,7 +24,7 @@ export class TypeormFeedbackEntity implements Feedback {
 	@IsString()
 	content: string;
 
-	@ManyToOne(() => TypeormInterviewDocsEntity, (docs) => docs.feebackList, {
+	@ManyToOne(() => TypeormInterviewDocsEntity, (docs) => docs.feedbackList, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn({ name: 'docs_uuid' })
