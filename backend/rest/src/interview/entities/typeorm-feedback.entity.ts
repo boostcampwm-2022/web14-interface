@@ -8,15 +8,15 @@ export class TypeormFeedbackEntity implements Feedback {
 	@PrimaryGeneratedColumn('increment')
 	id: number;
 
-	@Column({ length: 36, name: 'user_uuid' })
+	@Column({ length: 36 })
 	@IsString()
-	userUUID: string;
+	userId: string;
 
-	@Column({ name: 'start_time' })
+	@Column()
 	@IsNumber()
 	startTime: number;
 
-	@Column({ name: 'inner_index' })
+	@Column()
 	@IsNumber()
 	innerIndex: number;
 

@@ -10,15 +10,15 @@ export class TypeormInterviewDocsEntity extends TypeormBaseEntity implements Int
 	@IsString()
 	id: string;
 
-	@Column({ length: 36, name: 'user_uuid' })
+	@Column({ length: 36 })
 	@IsString()
-	userUUID: string;
+	userId: string;
 
-	@Column({ length: 100, name: 'video_url' })
+	@Column({ length: 100 })
 	@IsString()
 	videoUrl: string;
 
-	@Column({ name: 'video_play_time' })
+	@Column()
 	@IsNumber()
 	videoPlayTime: number;
 
