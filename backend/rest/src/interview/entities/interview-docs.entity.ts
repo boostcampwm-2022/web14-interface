@@ -1,5 +1,5 @@
 export interface InterviewDocs {
-	docsUUID: string;
+	id: string;
 	userUUID: string;
 	videoUrl: string;
 	videoPlayTime: number;

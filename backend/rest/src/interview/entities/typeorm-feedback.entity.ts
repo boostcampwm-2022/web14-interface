@@ -1,18 +1,9 @@
 import { IsNumber, IsString } from 'class-validator';
-import { TypeormBaseEntity } from 'src/common/typeorm-base.entity';
-import {
-	Entity,
-	PrimaryColumn,
-	Column,
-	PrimaryGeneratedColumn,
-	ManyToOne,
-	JoinColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Feedback } from './feedback.entity';
-import { InterviewDocs } from './interview-docs.entity';
 import { TypeormInterviewDocsEntity } from './typeorm-interview-docs.entity';
 
-@Entity('interviewDocs')
+@Entity('feedback')
 export class TypeormFeedbackEntity implements Feedback {
 	@PrimaryGeneratedColumn('increment')
 	id: number;

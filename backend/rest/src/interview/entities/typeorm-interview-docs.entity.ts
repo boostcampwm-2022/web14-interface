@@ -4,11 +4,11 @@ import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
 import { InterviewDocs } from './interview-docs.entity';
 import { TypeormFeedbackEntity } from './typeorm-feedback.entity';
 
-@Entity('interviewDocs')
+@Entity('interview_docs')
 export class TypeormInterviewDocsEntity extends TypeormBaseEntity implements InterviewDocs {
-	@PrimaryColumn({ length: 36, name: 'docs_uuid' })
+	@PrimaryColumn({ length: 36 })
 	@IsString()
-	docsUUID: string;
+	id: string;
 
 	@Column({ length: 36, name: 'user_uuid' })
 	@IsString()
