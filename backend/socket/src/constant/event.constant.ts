@@ -18,7 +18,6 @@ export enum EVENT {
 
 	// video
 	VIDEO_BLOB = 'video_blob',
-	LOAD_VIDEO = 'load_video',
 
 	// chat
 	SEND_MESSAGE = 'send_message',

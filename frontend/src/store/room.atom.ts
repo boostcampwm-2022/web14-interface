@@ -6,12 +6,17 @@ export const roomUUIDState = atom({
 	default: null,
 });
 
+export const docsUUIDState = atom({
+	key: 'docsUUIDState',
+	default: null,
+});
+
 export const othersInRoomState = atom<UserType[]>({
 	key: 'othersInRoomState',
 	default: [],
 });
 
-export const meInRoomState = atom<UserType | null>({
+export const meInRoomState = atom<UserType>({
 	key: 'meInRoomState',
 	default: null,
 });
