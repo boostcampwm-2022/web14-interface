@@ -30,12 +30,4 @@ export class JoinUserBuilder extends BaseBuilder<TypeormUserEntity> {
 		this.instance.oauthType = oauthType;
 		return this;
 	}
-
-	setDefaultValue(): JoinUserBuilder {
-		const now = new Date();
-		const dateString = `${now.getFullYear()}:${now.getMonth() + 1}:${now.getDate()}`;
-		this.instance.createdAt = dateString;
-		this.instance.updatedAt = dateString;
-		return this;
-	}
 }

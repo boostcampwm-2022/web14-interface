@@ -21,7 +21,6 @@ export class TypeormUserRepository implements UserRepository<TypeormUserEntity> 
 			.setEmail(email)
 			.setNickname(nickname)
 			.setOauthType(oauthType)
-			.setDefaultValue()
 			.build();
 
 		await this.userRepository.save(user);

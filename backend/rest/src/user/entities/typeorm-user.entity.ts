@@ -1,6 +1,6 @@
 import { TypeormBaseEntity } from 'src/common/typeorm-base.entity';
 import { Entity, PrimaryColumn, Column } from 'typeorm';
-import { UserEntity } from './interface-user.entity';
+import { UserEntity } from './user.entity';
 
 @Entity('user')
 export class TypeormUserEntity extends TypeormBaseEntity implements UserEntity {
