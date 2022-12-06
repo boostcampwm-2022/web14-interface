@@ -6,15 +6,15 @@ import {
 } from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
 import { UserInfo } from '@types';
-import { UserRepository } from 'src/user/repository/interface-user.repository';
+import { UserRepository } from 'src/user/repository/user.repository';
 import { OauthNaverService } from './oauth/naver-oauth.service';
 import { OauthService } from './oauth/interface-oauth.service';
 import { OauthKakaoService } from './oauth/kakao-oauth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { CreateJwtPayloadDto } from '../dto/create-jwt.dto';
-import { JwtPayloadBuiler } from 'src/builder/auth/create-jwt-payload.dto';
-import { UserEntity } from 'src/user/entities/interface-user.entity';
+import { JwtPayloadBuiler } from 'src/auth/dto/create-jwt-payload.dto';
+import { UserEntity } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
