@@ -4,12 +4,10 @@ import { Repository } from 'typeorm';
 import { DocsRequestDto } from '../dto/request-docs.dto';
 import { InterviewDocsBuilder } from '../entities/typeorm-interview-docs.builder';
 import { TypeormInterviewDocsEntity } from '../entities/typeorm-interview-docs.entity';
-import { InterviewDocsRepository } from './interview.repository';
+import { InterviewRepository } from './interview.repository';
 
 @Injectable()
-export class TypeormInterviewDocsRepository
-	implements InterviewDocsRepository<TypeormInterviewDocsEntity>
-{
+export class TypeormInterviewRepository implements InterviewRepository<TypeormInterviewDocsEntity> {
 	constructor(
 		@InjectRepository(TypeormInterviewDocsEntity)
 		private readonly interviewDocsRepository: Repository<TypeormInterviewDocsEntity>
@@ -46,5 +44,14 @@ export class TypeormInterviewDocsRepository
 		});
 
 		return interviewDocs;
+	}
+
+	async deleteInterviewDocs(docsUUID: string): Promise<string> {
+		const result = await this.interviewDocsRepository.delete(docsUUID);
+		if (!result.affected) {
+			throw new Error();
+		}
+
+		return docsUUID;
 	}
 }

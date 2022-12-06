@@ -1,6 +1,6 @@
 import { DocsRequestDto } from '../dto/request-docs.dto';
 
-export interface InterviewDocsRepository<T> {
+export interface InterviewRepository<T> {
 	saveInterviewDocs({
 		userId,
 		videoUrl,

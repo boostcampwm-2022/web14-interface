@@ -8,7 +8,7 @@ export class TypeormFeedbackEntity implements Feedback {
 	@PrimaryGeneratedColumn('increment')
 	id: number;
 
-	@Column({ length: 36 })
+	@Column({ length: 45 })
 	@IsString()
 	userId: string;
 
@@ -19,6 +19,10 @@ export class TypeormFeedbackEntity implements Feedback {
 	@Column()
 	@IsNumber()
 	innerIndex: number;
+
+	@Column()
+	@IsString()
+	content: string;
 
 	@ManyToOne(() => TypeormInterviewDocsEntity, (docs) => docs.feebackList, {
 		onDelete: 'CASCADE',

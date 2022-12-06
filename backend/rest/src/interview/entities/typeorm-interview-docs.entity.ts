@@ -10,7 +10,7 @@ export class TypeormInterviewDocsEntity extends TypeormBaseEntity implements Int
 	@IsString()
 	id: string;
 
-	@Column({ length: 36 })
+	@Column({ length: 45 })
 	@IsString()
 	userId: string;
 
