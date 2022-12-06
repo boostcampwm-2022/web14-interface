@@ -1,7 +1,7 @@
-import { FeedbackType } from '@customType/feedback';
+import { EditableFeedbackType } from '@customType/feedback';
 import { atom, atomFamily } from 'recoil';
 
-export const feedbackState = atomFamily<FeedbackType, string>({
+export const feedbackState = atomFamily<EditableFeedbackType, string>({
 	key: 'feedbackState',
 	default: null,
 });

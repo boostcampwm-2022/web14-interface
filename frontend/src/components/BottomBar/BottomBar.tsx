@@ -27,7 +27,7 @@ import {
 import theme from '@styles/theme';
 import { iconBgStyle } from '@styles/commonStyle';
 import { socketEmit } from '@api/socket.api';
-import { SOCKET_EVENT_TYPE } from '@constants/event.constant';
+import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import { PAGE_TYPE } from '@constants/page.constant';
 
