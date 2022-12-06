@@ -85,8 +85,8 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage(EVENT.STREAM_VIDEO)
-	handleStreamVideo(@ConnectedSocket() client: Socket, @MessageBody() videoBlob: Blob) {
-		return this.objectStorageService.mediaStreaming({ client, videoBlob });
+	handleStreamVideo(@ConnectedSocket() client: Socket, @MessageBody() videoBuffer: Buffer) {
+		return this.objectStorageService.mediaStreaming({ client, videoBuffer });
 	}
 
 	@SubscribeMessage(EVENT.FINISH_STEAMING)
