@@ -14,6 +14,18 @@ export interface DocsReqDtoType {
 
 export interface DocsResDtoType {
 	docsUUID: string;
+	createdAt: Date;
+	userUUID: string;
+	feedbacks: namedFeedback;
+}
+
+interface namedFeedback {
+	nickname: string;
+	feedbackList: FeedbackType[];
+}
+
+export interface FeedbackDtoType {
+	docsUUID: string;
 	userUUID: string;
 	feedbackList: FeedbackType[];
 }

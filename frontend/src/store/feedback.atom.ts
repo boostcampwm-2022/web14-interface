@@ -1,5 +1,5 @@
 import { EditableFeedbackType } from '@customType/feedback';
-import { atom, atomFamily } from 'recoil';
+import { atom, atomFamily, selector } from 'recoil';
 
 export const feedbackState = atomFamily<EditableFeedbackType, string>({
 	key: 'feedbackState',
@@ -24,4 +24,15 @@ export const isFbClickedState = atom({
 export const isFbSyncState = atom({
 	key: 'isFbSyncState',
 	default: true,
+});
+
+export const feedbackSelector = selector({
+	key: 'feedbackSelector',
+	get: ({ get }) => {
+		return get(feedbackIdsState).map((id) => {
+			const fb = { ...get(feedbackState(id)) };
+			delete fb.readOnly;
+			return fb;
+		});
+	},
 });
