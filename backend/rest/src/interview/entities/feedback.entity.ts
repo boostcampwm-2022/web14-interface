@@ -1,6 +1,6 @@
 export interface Feedback {
 	id: number;
-	userUUID: string;
+	userId: string;
 	startTime: number;
 	innerIndex: number;
 }

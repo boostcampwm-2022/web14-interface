@@ -20,7 +20,7 @@ export class TypeormFeedbackEntity implements Feedback {
 	@IsNumber()
 	innerIndex: number;
 
-	@ManyToOne(() => TypeormInterviewDocsEntity, (docs) => docs.feebacks, {
+	@ManyToOne(() => TypeormInterviewDocsEntity, (docs) => docs.feebackList, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn({ name: 'docs_uuid' })

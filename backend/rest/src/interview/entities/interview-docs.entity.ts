@@ -1,6 +1,6 @@
 export interface InterviewDocs {
 	id: string;
-	userUUID: string;
+	userId: string;
 	videoUrl: string;
 	videoPlayTime: number;
 	createdAt: Date;
