@@ -12,15 +12,19 @@ export interface InterviewRepository<T> {
 		docsDto: DocsRequestDto;
 	}): Promise<string>;
 
-	getInterviewDocs(userId: string): Promise<T[]>;
+	getInterviewDocsListByUserId(userId: string): Promise<T[]>;
+
+	getInterviewDocsByDocsUUID(docsUUID: string): Promise<T>;
 
 	deleteInterviewDocs(docsUUID: string): Promise<string>;
 
 	saveFeedback({
 		userId,
+		docs,
 		feedbackBoxDto,
 	}: {
 		userId: string;
+		docs: T;
 		feedbackBoxDto: feedbackBoxDto;
 	}): Promise<number>;
 }

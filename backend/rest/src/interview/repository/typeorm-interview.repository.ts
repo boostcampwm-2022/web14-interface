@@ -40,15 +40,22 @@ export class TypeormInterviewRepository implements InterviewRepository<TypeormIn
 		return docs.id;
 	}
 
-	async getInterviewDocs(userId: string): Promise<TypeormInterviewDocsEntity[]> {
-		const interviewDocs = await this.interviewDocsRepository.find({
-			where: { userId },
-			relations: ['feedbackList'],
-			order: {
-				createdAt: 'DESC',
-			},
-		});
+	async getInterviewDocsListByUserId(userId: string): Promise<TypeormInterviewDocsEntity[]> {
+		const interviewDocsList = await this.interviewDocsRepository
+			.createQueryBuilder('docs')
+			.leftJoinAndSelect('feedback', 'fb')
+			.where('docs.user_id = :userId', { userId })
+			.groupBy('fb.id')
+			.orderBy('docs.created_at', 'DESC')
+			.addOrderBy('fb.startTime', 'DESC')
+			.addOrderBy('fb.innerIndex', 'DESC')
+			.getMany();
 
+		return interviewDocsList;
+	}
+
+	async getInterviewDocsByDocsUUID(docsUUID: string): Promise<TypeormInterviewDocsEntity> {
+		const interviewDocs = await this.interviewDocsRepository.findOneBy({ id: docsUUID });
 		return interviewDocs;
 	}
 
@@ -63,14 +70,17 @@ export class TypeormInterviewRepository implements InterviewRepository<TypeormIn
 
 	async saveFeedback({
 		userId,
+		docs,
 		feedbackBoxDto,
 	}: {
 		userId: string;
+		docs: TypeormInterviewDocsEntity;
 		feedbackBoxDto: feedbackBoxDto;
 	}): Promise<number> {
 		const { startTime, innerIndex, content } = feedbackBoxDto;
 		const feedback = new FeedbackBuilder()
 			.setUserId(userId)
+			.setDocs(docs)
 			.setStartTime(startTime)
 			.setInnerIndex(innerIndex)
 			.setContent(content)

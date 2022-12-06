@@ -1,5 +1,6 @@
 import { BaseBuilder } from '../../common/base.builder';
 import { TypeormFeedbackEntity } from './typeorm-feedback.entity';
+import { TypeormInterviewDocsEntity } from './typeorm-interview-docs.entity';
 
 export class FeedbackBuilder extends BaseBuilder<TypeormFeedbackEntity> {
 	constructor() {
@@ -8,6 +9,11 @@ export class FeedbackBuilder extends BaseBuilder<TypeormFeedbackEntity> {
 
 	setUserId(userId: string): FeedbackBuilder {
 		this.instance.userId = userId;
+		return this;
+	}
+
+	setDocs(docs: TypeormInterviewDocsEntity): FeedbackBuilder {
+		this.instance.docs = docs;
 		return this;
 	}
 
