@@ -1,10 +1,14 @@
 import { IsNumber, IsString } from 'class-validator';
 import { TypeormBaseEntity } from 'src/common/typeorm-base.entity';
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Feedback } from './feedback.entity';
 import { InterviewDocs } from './interview-docs.entity';
 
 @Entity('interviewDocs')
-export class TypeormInterviewDocsEntity extends TypeormBaseEntity implements InterviewDocs {
+export class TypeormFeedbackEntity implements Feedback {
+	@PrimaryGeneratedColumn('increment')
+	id: number;
+
 	@PrimaryColumn({ length: 36, name: 'docs_uuid' })
 	@IsString()
 	docsUUID: string;
@@ -13,11 +17,11 @@ export class TypeormInterviewDocsEntity extends TypeormBaseEntity implements Int
 	@IsString()
 	userUUID: string;
 
-	@Column({ length: 100, name: 'video_url' })
-	@IsString()
-	videoUrl: string;
-
-	@Column({ name: 'video_play_time' })
+	@Column({ name: 'start_time' })
 	@IsNumber()
-	videoPlayTime: number;
+	startTime: number;
+
+	@Column({ name: 'inner_index' })
+	@IsNumber()
+	innerIndex: number;
 }
