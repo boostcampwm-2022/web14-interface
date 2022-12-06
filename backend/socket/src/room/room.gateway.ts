@@ -56,8 +56,8 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	handleDisconnect(@ConnectedSocket() client: Socket) {
 		this.logger.log(`disconnected: ${client.id}`);
 		this.objectStorageService.deleteVideoData(client.id);
-		this.webrtcService.disconnectWebrtc({ client, server: this.server });
-		this.connectionService.leaveRoom({ client, server: this.server });
+		this.webrtcService.disconnectWebrtc(client);
+		this.connectionService.leaveRoom(client);
 	}
 
 	// interview
@@ -85,8 +85,8 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage(EVENT.STREAM_VIDEO)
-	handleStreamVideo(@ConnectedSocket() client: Socket, @MessageBody() videoBlob: Blob) {
-		return this.objectStorageService.mediaStreaming({ client, videoBlob });
+	handleStreamVideo(@ConnectedSocket() client: Socket, @MessageBody() videoBuffer: Buffer) {
+		return this.objectStorageService.mediaStreaming({ client, videoBuffer });
 	}
 
 	@SubscribeMessage(EVENT.FINISH_STEAMING)

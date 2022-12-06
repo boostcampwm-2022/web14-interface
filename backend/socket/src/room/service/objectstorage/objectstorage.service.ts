@@ -32,7 +32,7 @@ export class ObjectStorageService {
 		});
 	}
 
-	private clientPacketMap = new Map<clientId, Blob[]>();
+	private clientPacketMap = new Map<clientId, Buffer[]>();
 
 	private objectStorageUrl = this.configService.get(NAVER_OBJECT_STORAGE_ENDPOINT);
 	private endpoint = new AWS.Endpoint(this.objectStorageUrl);
@@ -42,24 +42,20 @@ export class ObjectStorageService {
 	private bucketName = this.configService.get(BUCKET_NAME);
 	private S3: AWS.S3;
 
-	mediaStreaming({ client, videoBlob }: { client: Socket; videoBlob: Blob }) {
+	mediaStreaming({ client, videoBuffer }: { client: Socket; videoBuffer: Buffer }) {
 		if (!this.clientPacketMap.get(client.id)) {
 			this.clientPacketMap.set(client.id, []);
 		}
 
-		const blobs = this.clientPacketMap.get(client.id);
-		blobs.push(videoBlob);
-		Logger.log(videoBlob);
+		const buffers = this.clientPacketMap.get(client.id);
+		buffers.push(videoBuffer);
 
 		return {};
 	}
 
-	async createBufferFromBlobs(clientId: string) {
-		const blobs = this.clientPacketMap.get(clientId);
-		const videoBlob = new Blob(blobs, { type: 'video/webm' });
-		const videoArrayBuffer = await videoBlob.arrayBuffer();
-
-		return Buffer.from(videoArrayBuffer);
+	getVideoBuffer(clientId: string): Buffer {
+		const buffers = this.clientPacketMap.get(clientId);
+		return Buffer.concat(buffers);
 	}
 
 	deleteVideoData(clientId: string) {
@@ -69,7 +65,7 @@ export class ObjectStorageService {
 	async uploadVideo({ client, docsUUID }: { client: Socket; docsUUID: string }) {
 		const folderName = 'userId/'; // TODO: user id로 폴더 생성
 		const fileName = folderName + docsUUID;
-		const videoBuffer = await this.createBufferFromBlobs(client.id);
+		const videoBuffer = this.getVideoBuffer(client.id);
 
 		await this.S3.putObject({
 			Bucket: this.bucketName,
@@ -81,12 +77,15 @@ export class ObjectStorageService {
 			Key: fileName,
 			ACL: 'public-read',
 			Body: videoBuffer,
+			ContentType: 'video/webm',
 		}).promise();
 
+		this.deleteVideoData(client.id);
 		const user = this.roomRepository.getUserByClientId(client.id);
 		const videoUrl = [this.objectStorageUrl, this.bucketName, fileName].join('/');
 
 		client.to(user.roomUUID).emit(EVENT.DOWNLOAD_VIDEO, { videoUrl });
+
 		return {};
 	}
 
