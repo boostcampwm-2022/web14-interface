@@ -19,7 +19,8 @@ export const fbTextAreaStyle = (theme) => css`
 export const fbBtnContainer = css`
 	position: absolute;
 	right: 10px;
-	height: 72px;
+	height: 100%;
+	padding: 5px 0px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;

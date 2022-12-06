@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { ReactComponent as DeleteIcon } from '@assets/icon/delete.svg';
 import { ReactComponent as EditIcon } from '@assets/icon/edit.svg';
@@ -20,12 +20,17 @@ interface PropsType {
 	index: number;
 }
 const EditableFeedbackBox = ({ feedbackId, feedbackRef, index }: PropsType) => {
+	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const feedback = useRecoilValue(feedbackState(feedbackId));
 	const isFbSync = useRecoilValue(isFbSyncState);
 	const setIsFbClicked = useSetRecoilState(isFbClickedState);
 	const setCurrentVideoTime = useSetRecoilState(currentVideoTimeState);
 	const { handleStartEditFeedback, handleEndEditFeedback, handleFbChange, handleDeleteFeedback } =
 		useCrudFeedback(feedbackId);
+
+	useEffect(() => {
+		feedbackRef.current[index].style.height = textareaRef.current.scrollHeight + 'px';
+	}, [textareaRef]);
 
 	const { startTime, innerIndex, content, readOnly } = feedback;
 
@@ -40,7 +45,7 @@ const EditableFeedbackBox = ({ feedbackId, feedbackRef, index }: PropsType) => {
 			{/* TODO: find first innerIndex */}
 			<div css={fbStartTimeStyle}>{startTime}</div>
 			<textarea
-				rows={3}
+				ref={textareaRef}
 				value={content}
 				onChange={(e) => handleFbChange(e.target.value)}
 				readOnly={readOnly}

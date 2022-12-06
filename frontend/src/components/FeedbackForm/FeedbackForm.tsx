@@ -56,15 +56,21 @@ const FeedbackForm = () => {
 	);
 
 	const handleKeyDown = (e) => {
-		if (e.keyCode === 13 && !e.shiftKey) handleAddFeedback();
+		if (e.keyCode === 13 && !e.shiftKey) {
+			e.preventDefault();
+			handleAddFeedback();
+		}
 	};
 
 	return (
 		<div css={fbFormWrapperStyle}>
 			<div css={fbStartTimeStyle}>{inputVal ? startTime : currentVideoTime}</div>
-			<form css={fbFormStyle} onKeyDown={handleKeyDown}>
-				<textarea value={inputVal} onChange={handleChange} css={fbInputStyle} />
-			</form>
+			<textarea
+				value={inputVal}
+				onKeyDown={handleKeyDown}
+				onChange={handleChange}
+				css={fbInputStyle}
+			/>
 		</div>
 	);
 };
