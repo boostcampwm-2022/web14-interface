@@ -22,6 +22,10 @@ export interface InterviewRepository<T> {
 
 	getInterviewDocsByDocsUUID(docsUUID: string): Promise<T>;
 
+	getInterviewDocsInRoomByUserId(
+		args: { userId: string } | { userId: string; roomUUID: string }
+	): Promise<T[]>;
+
 	deleteInterviewDocs(docsUUID: string): Promise<string>;
 
 	saveFeedback({

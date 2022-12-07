@@ -26,6 +26,10 @@ export class TypeormInterviewDocsEntity
 	@IsNumber()
 	videoPlayTime: number;
 
+	@Column({ length: 36, name: 'room_uuid' })
+	@IsString()
+	roomUUID: string;
+
 	@OneToMany(() => TypeormFeedbackEntity, (feedback) => feedback.docs, {
 		cascade: true,
 	})

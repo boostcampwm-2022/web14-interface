@@ -6,5 +6,6 @@ export interface InterviewDocs<T> {
 	createdAt: Date;
 	updatedAt: Date;
 	isDeleted: boolean;
+	roomUUID: string;
 	feedbackList: T[];
 }

@@ -8,4 +8,8 @@ export class DocsRequestDto {
 	@IsNumber()
 	@IsNotEmpty()
 	videoPlayTime: number;
+
+	@IsString()
+	@IsNotEmpty()
+	roomUUID: string;
 }

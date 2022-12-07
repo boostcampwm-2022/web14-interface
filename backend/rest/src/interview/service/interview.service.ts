@@ -78,4 +78,11 @@ export class InterviewService {
 			}, []),
 		};
 	}
+
+	async getInterviewDocsList({ userId, roomUUID }: { userId: string; roomUUID: string }) {
+		const args = { userId };
+		if (roomUUID) args['roomUUID'] = roomUUID;
+		const docsList = await this.interviewRepository.getInterviewDocsInRoomByUserId(args);
+		return docsList;
+	}
 }

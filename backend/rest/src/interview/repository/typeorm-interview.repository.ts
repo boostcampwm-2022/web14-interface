@@ -28,12 +28,13 @@ export class TypeormInterviewRepository implements InterviewRepository<TypeormIn
 		videoUrl: string;
 		docsDto: DocsRequestDto;
 	}): Promise<string> {
-		const { docsUUID, videoPlayTime } = docsDto;
+		const { docsUUID, videoPlayTime, roomUUID } = docsDto;
 		const interviewDocsDao = new InterviewDocsBuilder()
 			.setId(docsUUID)
 			.setUserId(userId)
 			.setVideoUrl(videoUrl)
 			.setVideoPlayTime(videoPlayTime)
+			.setRoomUUID(roomUUID)
 			.build();
 
 		const docs = await this.interviewDocsRepository.save(interviewDocsDao);
@@ -63,6 +64,14 @@ export class TypeormInterviewRepository implements InterviewRepository<TypeormIn
 	async getInterviewDocsByDocsUUID(docsUUID: string): Promise<TypeormInterviewDocsEntity> {
 		const interviewDocs = await this.interviewDocsRepository.findOneBy({ id: docsUUID });
 		return interviewDocs;
+	}
+
+	async getInterviewDocsInRoomByUserId(args) {
+		const interviewDocsList = await this.interviewDocsRepository.find({
+			select: { createdAt: true, videoPlayTime: true, id: true },
+			where: { ...args },
+		});
+		return interviewDocsList;
 	}
 
 	async deleteInterviewDocs(docsUUID: string): Promise<string> {

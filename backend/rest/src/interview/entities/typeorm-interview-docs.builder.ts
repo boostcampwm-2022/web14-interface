@@ -25,4 +25,9 @@ export class InterviewDocsBuilder extends BaseBuilder<TypeormInterviewDocsEntity
 		this.instance.videoPlayTime = videoPlayTime;
 		return this;
 	}
+
+	setRoomUUID(roomUUID: string): InterviewDocsBuilder {
+		this.instance.roomUUID = roomUUID;
+		return this;
+	}
 }

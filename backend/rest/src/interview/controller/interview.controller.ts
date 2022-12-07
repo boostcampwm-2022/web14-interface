@@ -37,4 +37,14 @@ export class InterviewController {
 
 		return { statusCode: 201, data: interviewDocs };
 	}
+
+	@Get('docs-list')
+	async getInterviewDocsList(@Req() req: Request, @Query('room-uuid') roomUUID: string) {
+		const payload = req.user as JwtPayload;
+		const interviewDocsList = await this.interviewService.getInterviewDocsList({
+			userId: payload.id,
+			roomUUID,
+		});
+		return { statusCode: 200, data: interviewDocsList };
+	}
 }
