@@ -1,5 +1,5 @@
 import { HTTP_ERROR_MSG } from '@constant';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DocsWhereCondition } from 'src/types/query.type';
 import { Repository } from 'typeorm';

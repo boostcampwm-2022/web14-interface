@@ -22,6 +22,9 @@ export class AuthController {
 		@Res() res: Response
 	) {
 		const user = await this.authService.socialStart({ type, authorizationCode });
+
+		// 방어 로직을 짠다면 넘기기 전에 처리할지
+		// 모든 값을 넘기기전에 방어로직을 짜야할지 정해야함
 		const { accessToken, refreshToken } =
 			this.authService.createAccessTokenAndRefreshToken(user);
 
