@@ -21,16 +21,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
 			exception = new InternalServerErrorException();
 		}
 
-		const { statusCode, message, error }: any = (exception as HttpException).getResponse();
+		const { statusCode, message }: any = (exception as HttpException).getResponse();
 
 		logger.error(`[Request URL] ${req.url}`);
 		logger.error(`[Exception Time] ${new Date().toISOString()}`);
-		logger.error(`[Exception Name] ${error}`);
 		logger.error(`[Exception Message] ${message}`);
 		logger.error(`[Exception Stack] ${exception.stack}`);
 
 		const response = {
-			name: error,
 			message: message,
 			stack: exception.stack,
 		};

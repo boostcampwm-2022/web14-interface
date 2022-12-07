@@ -19,6 +19,6 @@ export class RestInterceptor implements NestInterceptor {
 					logger.log(`[Process Time] ${end.getTime() - start}ms`);
 				})
 			)
-			.pipe(map((data) => ({ data })));
+			.pipe(map((result) => ({ data: result })));
 	}
 }
