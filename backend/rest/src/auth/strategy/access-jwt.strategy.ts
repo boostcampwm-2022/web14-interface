@@ -1,11 +1,10 @@
-import { accessTokenOptions, JWT_ENV, refreshTokenOptions } from '@constant';
+import { JWT_ENV } from '@constant';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
 import { JwtPayload, UserInfo } from 'src/types/auth.type';
-import { JwtPayloadBuiler } from '../dto/create-jwt.builder';
 import { AuthService } from '../service/auth.service';
 
 @Injectable()
