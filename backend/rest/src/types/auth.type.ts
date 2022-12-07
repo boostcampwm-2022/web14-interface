@@ -9,9 +9,7 @@ export interface UserLocalInfo {
 	email: string;
 }
 
-export interface UserInfo extends UserSocialInfo, UserLocalInfo {
-	nickname: string;
-}
+export interface UserInfo extends UserSocialInfo, UserLocalInfo {}
 
 export interface JwtPayload {
 	id: string;

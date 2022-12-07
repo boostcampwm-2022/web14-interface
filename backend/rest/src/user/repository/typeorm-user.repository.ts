@@ -14,12 +14,11 @@ export class TypeormUserRepository implements UserRepository<TypeormUserEntity> 
 	) {}
 
 	async saveUser(userInfo: UserInfo): Promise<TypeormUserEntity> {
-		const { id, password, email, oauthType, nickname } = userInfo;
+		const { id, password, email, oauthType } = userInfo;
 		const user = new JoinUserBuilder()
 			.setId(id)
 			.setPassword(password)
 			.setEmail(email)
-			.setNickname(nickname)
 			.setOauthType(oauthType)
 			.build();
 
