@@ -6,6 +6,7 @@ import { feedbackBoxDto, FeedbackRequestDto } from '../dto/request-feedback.dto'
 import { Feedback } from '../entities/feedback.entity';
 import { InterviewDocs } from '../entities/interview-docs.entity';
 import { InterviewRepository } from '../repository/interview.repository';
+import { getRandomNickname } from '@woowa-babble/random-nickname';
 
 @Injectable()
 export class InterviewService {
@@ -57,10 +58,23 @@ export class InterviewService {
 	async getInterviewDocs(userId: string) {
 		const docsList = await this.interviewRepository.getInterviewDocsListByUserId(userId);
 
-		docsList.map((docs) => {
-			docs.feedbackList;
+		const userSet = new Set();
+		return docsList.map((docs) => {
+			return {
+				...docs,
+				feedbackList: docs.feedbackList.reduce((prev, feedback) => {
+					if (!userSet.has(feedback.userId)) {
+						userSet.add(feedback.userId);
+						prev.push({
+							nickname: getRandomNickname('monsters'),
+							feedbackList: [feedback],
+						});
+					} else {
+						prev.at(-1).feedbackList.push(feedback);
+					}
+					return prev;
+				}, []),
+			};
 		});
-
-		return docsList;
 	}
 }
