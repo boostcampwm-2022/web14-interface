@@ -34,7 +34,7 @@ export const drawerStyle = (isOpen) => (theme) =>
 
 		box-sizing: border-box;
 		padding: 30px 25px;
-		width: 412px;
+		width: 400px;
 		height: calc(100% - 70px);
 		background-color: ${theme.colors.black};
 

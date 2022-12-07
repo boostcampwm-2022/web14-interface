@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import axios from 'axios';
 
 import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
 import FeedbackArea from '@components/FeedbackArea/FeedbackArea';
@@ -7,8 +8,8 @@ import BottomBar from '@components/BottomBar/BottomBar';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import usePreventLeave from '@hooks/usePreventLeave';
 import useSafeNavigate from '@hooks/useSafeNavigate';
-import { isFbSyncState } from '@store/feedback.atom';
-import { completedFbCntState } from '@store/room.atom';
+import { feedbackSelector, isFbSyncState } from '@store/feedback.atom';
+import { completedFbCntState, docsUUIDState, meInRoomState } from '@store/room.atom';
 
 import { ReactComponent as LinkIcon } from '@assets/icon/link.svg';
 import { socket } from '../../service/socket';
@@ -16,6 +17,10 @@ import { feedbackWrapperStyle, feedbackPageContainerStyle } from './Feedback.sty
 import { PAGE_TYPE } from '@constants/page.constant';
 import theme from '@styles/theme';
 import { iconBgStyle } from '@styles/commonStyle';
+import { socketEmit } from '@api/socket.api';
+import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
+import { REST_TYPE } from '@constants/rest.constant';
+import { FeedbackDtoType } from '@customType/DTO';
 
 const Feedback = () => {
 	usePreventLeave();
@@ -23,22 +28,28 @@ const Feedback = () => {
 	const { safeNavigate } = useSafeNavigate();
 	const [isFbSync, setIsFbSync] = useRecoilState(isFbSyncState);
 	const [videoUrl, setVideoUrl] = useState('');
+	const docsUUID = useRecoilValue(docsUUIDState);
+	const feedbackList = useRecoilValue(feedbackSelector);
+	const me = useRecoilValue(meInRoomState);
 
-	const handleEndFeedback = () => {
-		socket.emit('end_feedback', (res) => {
-			console.log(res);
-			const { data } = res;
+	const handleEndFeedback = useCallback(() => {
+		socketEmit(SOCKET_EVENT_TYPE.END_FEEDBACK, ({ data }) => {
 			const { isLastFeedback, count } = data;
 			setCompletedFbCnt(count);
-			if (isLastFeedback) safeNavigate(PAGE_TYPE.LOBBY_PAGE);
+			const feedbackDTO: FeedbackDtoType = {
+				docsUUID,
+				userUUID: me.uuid,
+				feedbackList,
+			};
+			axios.post(REST_TYPE.FEEDBACK, feedbackDTO);
+
+			if (!isLastFeedback) safeNavigate(PAGE_TYPE.LOBBY_PAGE);
 			else safeNavigate(PAGE_TYPE.WAITTING_PAGE);
 		});
-	};
+	}, [docsUUID, feedbackList]);
 
 	useEffect(() => {
-		socket.on('download_video', ({ videoUrl }) => {
-			console.log('download');
-			console.log(videoUrl);
+		socket.on(SOCKET_EVENT_TYPE.DOWNLOAD_VIDEO, ({ videoUrl }) => {
 			setVideoUrl(videoUrl);
 		});
 	}, []);

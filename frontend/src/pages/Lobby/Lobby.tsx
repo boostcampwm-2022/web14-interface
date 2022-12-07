@@ -1,37 +1,32 @@
 import React, { useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import useSafeNavigate from '@hooks/useSafeNavigate';
-import usePreventLeave from '@hooks/usePreventLeave';
-
-import { webRTCStreamSelector, webRTCUserMapState } from '@store/webRTC.atom';
-import useWebRTCSignaling from '@hooks/useWebRTCSignaling';
-
-import { meInRoomState, othersInRoomState } from '@store/room.atom';
-
 import Video from '@components/@shared/Video/Video';
 import VideoGrid from '@components/@shared/VideoGrid/VideoGrid';
 import BottomBar from '@components/BottomBar/BottomBar';
+import useSafeNavigate from '@hooks/useSafeNavigate';
+import usePreventLeave from '@hooks/usePreventLeave';
+import useWebRTCSignaling from '@hooks/useWebRTCSignaling';
+import { meInRoomState, othersInRoomState } from '@store/room.atom';
+import { webRTCStreamSelector, webRTCUserMapState } from '@store/webRTC.atom';
 
 import { socket } from '../../service/socket';
 import { socketEmit } from '@api/socket.api';
-import { UserDTO } from '@customType/user';
-
-import { ReactComponent as BroadcastIcon } from '@assets/icon/broadcast.svg';
+import { UserType } from '@customType/user';
+import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
+import { PAGE_TYPE } from '@constants/page.constant';
 import { iconBgStyle } from '@styles/commonStyle';
 import { lobbyWrapperStyle, startInterviewBtnStyle, VideoAreaStyle } from './Lobby.style';
-
-import { SOCKET_EVENT_TYPE } from '@constants/event.constant';
-import { PAGE_TYPE } from '@constants/page.constant';
+import { ReactComponent as BroadcastIcon } from '@assets/icon/broadcast.svg';
 
 interface joinInterviewResponseType {
-	usersInRoom: UserDTO[];
+	usersInRoom: UserType[];
 }
 
 const Lobby = () => {
 	const { safeNavigate } = useSafeNavigate();
-	const [me, setMe] = useRecoilState<UserDTO>(meInRoomState);
-	const [others, setOthers] = useRecoilState<UserDTO[]>(othersInRoomState);
+	const [me, setMe] = useRecoilState<UserType>(meInRoomState);
+	const [others, setOthers] = useRecoilState<UserType[]>(othersInRoomState);
 
 	usePreventLeave();
 
@@ -107,4 +102,3 @@ const Lobby = () => {
 };
 
 export default Lobby;
-

@@ -1,30 +1,29 @@
-import React, { useEffect, useRef } from 'react';
-import { PAGE_TYPE } from '@constants/page.constant';
+import React, { useEffect } from 'react';
+import { useRecoilValue } from 'recoil';
+
+import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
+import FeedbackArea from '@components/FeedbackArea/FeedbackArea';
+import Video from '@components/@shared/Video/Video';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
-import { useRecoilValue } from 'recoil';
 import { webRTCStreamSelector } from '@store/webRTC.atom';
-import Video from '@components/@shared/Video/Video';
-import { socket } from '../../service/socket';
 import { userRoleSelector } from '@store/room.atom';
-import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
-import { currentVideoTimeState } from '@store/currentVideoTime.atom';
-import FeedbackArea from '@components/FeedbackArea/FeedbackArea';
+
+import { socket } from '../../service/socket';
+import { PAGE_TYPE } from '@constants/page.constant';
+import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { css } from '@emotion/react';
+import { socketEmit } from '@api/socket.api';
 
 const Interviewer = () => {
 	const { safeNavigate } = useSafeNavigate();
 	usePreventLeave();
 
-	const currentVideoTime = useRecoilValue(currentVideoTimeState);
-
 	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);
 	const streamList = useRecoilValue(webRTCStreamSelector);
 
 	const hadleEndInterview = () => {
-		socket.emit('end_interview', (res) => {
-			console.log(res);
-		});
+		socketEmit(SOCKET_EVENT_TYPE.END_INTERVIEW);
 	};
 
 	const getStreamFromUUID = (uuid) => {
@@ -32,12 +31,7 @@ const Interviewer = () => {
 	};
 
 	useEffect(() => {
-		console.log(currentVideoTime);
-	}, [currentVideoTime]);
-
-	useEffect(() => {
-		console.log(interviewee);
-		socket.on('start_feedback', () => {
+		socket.on(SOCKET_EVENT_TYPE.START_FEEDBACK, () => {
 			safeNavigate(PAGE_TYPE.FEEDBACK_PAGE);
 		});
 	}, []);

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { JoinUserBuilder } from '@builder';
+import { JoinUserBuilder } from '../entities/typeorm-user.builder';
 import { UserInfo } from '@types';
 import { Repository } from 'typeorm';
 import { TypeormUserEntity } from '../entities/typeorm-user.entity';
-import { UserRepository } from './interface-user.repository';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class TypeormUserRepository implements UserRepository<TypeormUserEntity> {
@@ -21,7 +21,6 @@ export class TypeormUserRepository implements UserRepository<TypeormUserEntity> 
 			.setEmail(email)
 			.setNickname(nickname)
 			.setOauthType(oauthType)
-			.setDefaultValue()
 			.build();
 
 		await this.userRepository.save(user);

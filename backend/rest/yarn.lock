@@ -1362,6 +1362,11 @@
     "@webassemblyjs/ast" "1.11.1"
     "@xtuc/long" "4.2.2"
 
+"@woowa-babble/random-nickname@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@woowa-babble/random-nickname/-/random-nickname-1.0.2.tgz#785c2a03d3f3710f042e8034741e9513f4fdb333"
+  integrity sha512-7wdR7s0T6D3aDZROTgaFvA9aP8h9L2OtKHUPselBa3goBe8mweJD7oBub2urs/lJjy/4djqYdkJBEf3lETuG1Q==
+
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
   resolved "https://registry.npmjs.org/@xtuc/ieee754/-/ieee754-1.2.0.tgz"
@@ -5217,7 +5222,7 @@ tsconfig-paths@4.1.0, tsconfig-paths@^4.0.0:
     minimist "^1.2.6"
     strip-bom "^3.0.0"
 
-tslib@2.4.1, tslib@^2.3.1:
+tslib@2.4.1, tslib@^2.1.0, tslib@^2.3.1:
   version "2.4.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.4.1.tgz"
   integrity sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==
@@ -5268,6 +5273,11 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.npmjs.org/typedarray/-/typedarray-0.0.6.tgz"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
+
+typeorm-naming-strategies@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/typeorm-naming-strategies/-/typeorm-naming-strategies-4.1.0.tgz#1ec6eb296c8d7b69bb06764d5b9083ff80e814a9"
+  integrity sha512-vPekJXzZOTZrdDvTl1YoM+w+sUIfQHG4kZTpbFYoTsufyv9NIBRe4Q+PdzhEAFA2std3D9LZHEb1EjE9zhRpiQ==
 
 typeorm@^0.3.10:
   version "0.3.10"

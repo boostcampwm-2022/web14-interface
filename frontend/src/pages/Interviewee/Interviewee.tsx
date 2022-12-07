@@ -1,15 +1,22 @@
 import React, { useEffect } from 'react';
-import { PAGE_TYPE } from '@constants/page.constant';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import axios from 'axios';
+
+import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
+import Video from '@components/@shared/Video/Video';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import { webRTCStreamSelector, webRTCUserMapState } from '@store/webRTC.atom';
-import { useRecoilValue } from 'recoil';
-import Video from '@components/@shared/Video/Video';
-import { socket } from '../../service/socket';
+import { currentVideoTimeState } from '@store/currentVideoTime.atom';
+import { docsUUIDState, userRoleSelector } from '@store/room.atom';
+
+import { socket } from '@service/socket';
 import mediaStreamer from '@service/mediaStreamer';
-import { userRoleSelector } from '@store/room.atom';
-import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
+import { PAGE_TYPE } from '@constants/page.constant';
+import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { socketEmit } from '@api/socket.api';
+import { REST_TYPE } from '@constants/rest.constant';
+import { DocsReqDtoType } from '@customType/dto';
 
 const Interviewee = () => {
 	usePreventLeave();
@@ -18,10 +25,12 @@ const Interviewee = () => {
 
 	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);
 	const webRTCUserMap = useRecoilValue(webRTCUserMapState);
-
+	const currentVideoTime = useRecoilValue(currentVideoTimeState);
 	const streamList = useRecoilValue(webRTCStreamSelector);
+	const setDocsUUID = useSetRecoilState(docsUUIDState);
+
 	const hadleEndInterview = () => {
-		socketEmit('end_interview');
+		socketEmit(SOCKET_EVENT_TYPE.END_INTERVIEW);
 	};
 
 	const getStreamFromUUID = (uuid) => {
@@ -29,13 +38,17 @@ const Interviewee = () => {
 	};
 
 	useEffect(() => {
-		socket.on('start_waiting', ({ docsUUID }) => {
-			console.log(docsUUID);
-
-			safeNavigate(PAGE_TYPE.WAITTING_PAGE);
+		socket.on(SOCKET_EVENT_TYPE.START_WAITING, ({ docsUUID }) => {
+			setDocsUUID(docsUUID);
 			stopStream(docsUUID);
+			const docsRequestDTO: DocsReqDtoType = {
+				docsUUID,
+				videoPlayTime: currentVideoTime,
+			};
+			axios.post(REST_TYPE.INTERVIEW_DOCS, docsRequestDTO);
+			safeNavigate(PAGE_TYPE.WAITTING_PAGE);
 		});
-	}, []);
+	}, [currentVideoTime]);
 
 	useEffect(() => {
 		const effect = () => {

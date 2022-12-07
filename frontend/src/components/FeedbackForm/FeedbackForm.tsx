@@ -1,4 +1,4 @@
-import { FeedbackType } from '@customType/feedback';
+import { EditableFeedbackType } from '@customType/feedback';
 import { currentVideoTimeState } from '@store/currentVideoTime.atom';
 import { feedbackIdsState, feedbackIdxMapState, feedbackState } from '@store/feedback.atom';
 import React, { useState } from 'react';
@@ -44,7 +44,7 @@ const FeedbackForm = () => {
 
 	const insertFeedback = useRecoilTransaction_UNSTABLE(
 		({ set }) =>
-			(newFeedback: FeedbackType) => {
+			(newFeedback: EditableFeedbackType) => {
 				const newFeedbackId = generateFeedbackId(
 					newFeedback.startTime,
 					newFeedback.innerIndex

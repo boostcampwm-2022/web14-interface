@@ -1,8 +1,19 @@
-import { Controller, Get, HttpCode, Param, Query, Req, Res, UseGuards } from '@nestjs/common';
+import {
+	Controller,
+	Get,
+	HttpCode,
+	Logger,
+	Param,
+	Query,
+	Req,
+	Res,
+	UseGuards,
+} from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import { Request, Response } from 'express';
 import { HTTP_STATUS, tokenCookieOptions, JWT_TYPE } from '@constant';
 import { JwtAuthGuard } from '../guard/jwt.guard';
+import { JwtPayload } from '@types';
 
 @Controller('auth')
 export class AuthController {
@@ -38,6 +49,13 @@ export class AuthController {
 		res.cookie(JWT_TYPE.ACCESS_TOKEN, accessToken, tokenCookieOptions);
 		res.cookie(JWT_TYPE.REFRESH_TOKEN, refreshToken, tokenCookieOptions);
 		return { statusCode: 200 };
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Get('id')
+	getUserId(@Req() req: Request) {
+		const userPayload = req.user as JwtPayload;
+		return userPayload.id;
 	}
 
 	@UseGuards(JwtAuthGuard)
