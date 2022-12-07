@@ -26,7 +26,23 @@ export const isFbSyncState = atom({
 	default: true,
 });
 
-export const feedbackSelector = selector({
+export const feedbackListSelector = selector({
+	key: 'feedbackListSelector',
+	get: ({ get }) => {
+		let prev = -1;
+		const fbList = get(feedbackIdsState).map((id) => {
+			const fb = { ...get(feedbackState(id)), isFirst: false };
+			if (fb.startTime > prev) {
+				prev = fb.startTime;
+				fb.isFirst = true;
+			}
+			return fb;
+		});
+		return fbList;
+	},
+});
+
+export const feedbackDtoSelector = selector({
 	key: 'feedbackSelector',
 	get: ({ get }) => {
 		return get(feedbackIdsState).map((id) => {

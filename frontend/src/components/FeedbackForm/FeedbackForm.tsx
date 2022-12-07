@@ -4,12 +4,7 @@ import { feedbackIdsState, feedbackIdxMapState, feedbackState } from '@store/fee
 import React, { useState } from 'react';
 import { useRecoilTransaction_UNSTABLE, useRecoilValue } from 'recoil';
 
-import {
-	fbFormStyle,
-	fbFormWrapperStyle,
-	fbInputStyle,
-	fbStartTimeStyle,
-} from './FeedbackForm.style';
+import { fbFormWrapperStyle, fbInputStyle, fbStartTimeStyle } from './FeedbackForm.style';
 
 const FeedbackForm = () => {
 	const [inputVal, setInputVal] = useState('');
@@ -27,14 +22,16 @@ const FeedbackForm = () => {
 	const handleAddFeedback = () => {
 		feedbackIdxMap.set(startTime, feedbackIdxMap.get(startTime) + 1 || 1);
 		const nextInnerIdx = feedbackIdxMap.get(startTime);
+		const newFeedbackId = generateFeedbackId(startTime, nextInnerIdx);
 		const newFeedback = {
+			id: newFeedbackId,
 			startTime: startTime,
 			innerIndex: nextInnerIdx,
 			content: inputVal,
 			readOnly: true,
 		};
 
-		insertFeedback(newFeedback);
+		insertFeedback(newFeedback, newFeedbackId);
 		setInputVal('');
 	};
 
@@ -44,11 +41,7 @@ const FeedbackForm = () => {
 
 	const insertFeedback = useRecoilTransaction_UNSTABLE(
 		({ set }) =>
-			(newFeedback: EditableFeedbackType) => {
-				const newFeedbackId = generateFeedbackId(
-					newFeedback.startTime,
-					newFeedback.innerIndex
-				);
+			(newFeedback: EditableFeedbackType, newFeedbackId: string) => {
 				set(feedbackIdsState, (todoId) => todoId.concat(newFeedbackId).sort());
 				set(feedbackState(newFeedbackId), newFeedback);
 			},

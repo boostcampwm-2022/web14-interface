@@ -8,7 +8,7 @@ import BottomBar from '@components/BottomBar/BottomBar';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import usePreventLeave from '@hooks/usePreventLeave';
 import useSafeNavigate from '@hooks/useSafeNavigate';
-import { feedbackSelector, isFbSyncState } from '@store/feedback.store';
+import { feedbackDtoSelector, isFbSyncState } from '@store/feedback.store';
 import { completedFbCntState, docsUUIDState, meInRoomState } from '@store/room.store';
 
 import { ReactComponent as LinkIcon } from '@assets/icon/link.svg';
@@ -29,7 +29,7 @@ const Feedback = () => {
 	const [isFbSync, setIsFbSync] = useRecoilState(isFbSyncState);
 	const [videoUrl, setVideoUrl] = useState('');
 	const docsUUID = useRecoilValue(docsUUIDState);
-	const feedbackList = useRecoilValue(feedbackSelector);
+	const feedbackList = useRecoilValue(feedbackDtoSelector);
 	const me = useRecoilValue(meInRoomState);
 
 	const handleEndFeedback = useCallback(() => {

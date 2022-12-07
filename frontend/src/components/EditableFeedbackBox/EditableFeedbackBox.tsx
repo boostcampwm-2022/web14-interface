@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import useCrudFeedback from '@hooks/useCrudFeedback';
-import { feedbackState, isFbClickedState, isFbSyncState } from '@store/feedback.store';
+import { isFbClickedState, isFbSyncState } from '@store/feedback.store';
 import { currentVideoTimeState } from '@store/currentVideoTime.store';
 
 import { ReactComponent as DeleteIcon } from '@assets/icon/delete.svg';
@@ -15,26 +15,27 @@ import {
 	fbStartTimeStyle,
 } from './EditableFeedbackBox.style';
 import { iconSmStyle } from '@styles/commonStyle';
+import { FeedbackItemType } from '@customType/feedback';
 
 interface PropsType {
-	feedbackId: string;
+	feedback: FeedbackItemType;
+	//TODO ref type any
 	feedbackRef: React.MutableRefObject<any[]>;
 	index: number;
 }
-const EditableFeedbackBox = ({ feedbackId, feedbackRef, index }: PropsType) => {
+const EditableFeedbackBox = ({ feedback, feedbackRef, index }: PropsType) => {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
-	const feedback = useRecoilValue(feedbackState(feedbackId));
 	const isFbSync = useRecoilValue(isFbSyncState);
 	const setIsFbClicked = useSetRecoilState(isFbClickedState);
 	const setCurrentVideoTime = useSetRecoilState(currentVideoTimeState);
 	const { handleStartEditFeedback, handleEndEditFeedback, handleFbChange, handleDeleteFeedback } =
-		useCrudFeedback(feedbackId);
+		useCrudFeedback(feedback.id);
 
 	useEffect(() => {
 		feedbackRef.current[index].style.height = textareaRef.current.scrollHeight + 'px';
 	});
 
-	const { startTime, innerIndex, content, readOnly } = feedback;
+	const { startTime, isFirst, content, readOnly } = feedback;
 
 	const handleClickFeedback = () => {
 		if (!isFbSync) return;
@@ -44,8 +45,9 @@ const EditableFeedbackBox = ({ feedbackId, feedbackRef, index }: PropsType) => {
 
 	return (
 		<div ref={(el) => (feedbackRef.current[index] = el)} css={feedbackBoxStyle}>
-			{/* TODO: find first innerIndex */}
-			<div css={fbStartTimeStyle}>{startTime}</div>
+			<div css={fbStartTimeStyle} style={{ visibility: isFirst ? 'visible' : 'hidden' }}>
+				{startTime}
+			</div>
 			<textarea
 				ref={textareaRef}
 				value={content}
