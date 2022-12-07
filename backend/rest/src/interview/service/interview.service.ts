@@ -1,5 +1,5 @@
 import { HTTP_ERROR_MSG, INTERVIEW_REPOSITORY_INTERFACE, OBJECT_STORAGE_ENDPOINT } from '@constant';
-import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocsRequestDto } from '../dto/request-docs.dto';
 import { feedbackBoxDto, FeedbackRequestDto } from '../dto/request-feedback.dto';

@@ -5,7 +5,7 @@ import {
 	refreshTokenOptions,
 	USER_REPOSITORY_INTERFACE,
 } from '@constant';
-import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { UserInfo } from '@types';
 import { UserRepository } from 'src/user/repository/user.repository';
 import { OauthNaverService } from './oauth/naver-oauth.service';

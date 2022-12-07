@@ -5,7 +5,6 @@ import { DocsRequestDto } from '../dto/request-docs.dto';
 import { InterviewService } from '../service/interview.service';
 import { Request } from 'express';
 import { FeedbackRequestDto } from '../dto/request-feedback.dto';
-import { HTTP_ERROR_MSG } from '@constant';
 
 @UseGuards(JwtAuthGuard)
 @Controller('interview')
