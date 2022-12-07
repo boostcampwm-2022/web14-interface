@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocsRequestDto } from '../dto/request-docs.dto';
 import { feedbackBoxDto, FeedbackRequestDto } from '../dto/request-feedback.dto';
+import { Feedback } from '../entities/feedback.entity';
 import { InterviewDocs } from '../entities/interview-docs.entity';
 import { InterviewRepository } from '../repository/interview.repository';
 
@@ -10,7 +11,7 @@ import { InterviewRepository } from '../repository/interview.repository';
 export class InterviewService {
 	constructor(
 		@Inject(INTERVIEW_REPOSITORY_INTERFACE)
-		private readonly interviewRepository: InterviewRepository<InterviewDocs>,
+		private readonly interviewRepository: InterviewRepository<InterviewDocs<Feedback>>,
 		private readonly configService: ConfigService
 	) {}
 
@@ -55,6 +56,11 @@ export class InterviewService {
 
 	async getInterviewDocs(userId: string) {
 		const docsList = await this.interviewRepository.getInterviewDocsListByUserId(userId);
+
+		docsList.map((docs) => {
+			docs.feedbackList;
+		});
+
 		return docsList;
 	}
 }

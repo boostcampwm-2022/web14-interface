@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DocsRequestDto } from '../dto/request-docs.dto';
@@ -45,9 +45,10 @@ export class TypeormInterviewRepository implements InterviewRepository<TypeormIn
 			.createQueryBuilder('docs')
 			.leftJoinAndSelect('docs.feedbackList', 'fb')
 			.where('docs.user_id = :userId', { userId })
+			.orderBy('fb.user_id')
+			.addOrderBy('fb.start_time')
+			.addOrderBy('fb.inner_index')
 			.getMany();
-
-		console.log(interviewDocsList);
 
 		return interviewDocsList;
 	}

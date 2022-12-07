@@ -1,4 +1,4 @@
-export interface InterviewDocs {
+export interface InterviewDocs<T> {
 	id: string;
 	userId: string;
 	videoUrl: string;
@@ -6,4 +6,5 @@ export interface InterviewDocs {
 	createdAt: Date;
 	updatedAt: Date;
 	isDeleted: boolean;
+	feedbackList: T[];
 }

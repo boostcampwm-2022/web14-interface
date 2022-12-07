@@ -1,0 +1,16 @@
+config:
+  target: "http://localhost:8081/socket"
+  socketio:
+    extraHeaders:
+      x-client-id: "abc"
+scenarios:
+  - name: socket.io test
+    engine: socketio
+    flow:
+      - emit:
+          channel: "create_room"
+          namespace: "/socket"
+          capture: 
+            - json: "$.data"
+              as: "data"
+      - log: "emitting captured values: {{ data }}"
