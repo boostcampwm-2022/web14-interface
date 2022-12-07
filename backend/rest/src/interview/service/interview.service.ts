@@ -55,26 +55,27 @@ export class InterviewService {
 		return userId;
 	}
 
-	async getInterviewDocs(userId: string) {
-		const docsList = await this.interviewRepository.getInterviewDocsListByUserId(userId);
+	async getInterviewDocs({ userId, docsUUID }: { userId: string; docsUUID: string }) {
+		const docs = await this.interviewRepository.getInterviewDocsListByUserId({
+			userId,
+			docsUUID,
+		});
 
 		const userSet = new Set();
-		return docsList.map((docs) => {
-			return {
-				...docs,
-				feedbackList: docs.feedbackList.reduce((prev, feedback) => {
-					if (!userSet.has(feedback.userId)) {
-						userSet.add(feedback.userId);
-						prev.push({
-							nickname: getRandomNickname('monsters'),
-							feedbackList: [feedback],
-						});
-					} else {
-						prev.at(-1).feedbackList.push(feedback);
-					}
-					return prev;
-				}, []),
-			};
-		});
+		return {
+			...docs,
+			feedbackList: docs.feedbackList.reduce((prev, feedback) => {
+				if (!userSet.has(feedback.userId)) {
+					userSet.add(feedback.userId);
+					prev.push({
+						nickname: getRandomNickname('monsters'),
+						feedbacks: [feedback],
+					});
+				} else {
+					prev.at(-1).feedbacks.push(feedback);
+				}
+				return prev;
+			}, []),
+		};
 	}
 }

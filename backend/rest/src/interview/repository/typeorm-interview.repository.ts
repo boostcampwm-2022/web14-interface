@@ -40,15 +40,22 @@ export class TypeormInterviewRepository implements InterviewRepository<TypeormIn
 		return docs.id;
 	}
 
-	async getInterviewDocsListByUserId(userId: string): Promise<TypeormInterviewDocsEntity[]> {
+	async getInterviewDocsListByUserId({
+		userId,
+		docsUUID,
+	}: {
+		userId: string;
+		docsUUID: string;
+	}): Promise<TypeormInterviewDocsEntity> {
 		const interviewDocsList = await this.interviewDocsRepository
 			.createQueryBuilder('docs')
 			.leftJoinAndSelect('docs.feedbackList', 'fb')
 			.where('docs.user_id = :userId', { userId })
+			.andWhere('docs.id = :docsUUID', { docsUUID })
 			.orderBy('fb.user_id')
 			.addOrderBy('fb.start_time')
 			.addOrderBy('fb.inner_index')
-			.getMany();
+			.getOne();
 
 		return interviewDocsList;
 	}

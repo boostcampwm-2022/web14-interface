@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { JwtPayload } from '@types';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { DocsRequestDto } from '../dto/request-docs.dto';
@@ -27,11 +27,14 @@ export class InterviewController {
 		return { statusCode: 201 };
 	}
 
-	@Get('docs')
-	async getInterviewDocs(@Req() req: Request) {
+	@Get('docs/:docs_uuid')
+	async getInterviewDocs(@Req() req: Request, @Param('docs_uuid') docsUUID: string) {
 		const payload = req.user as JwtPayload;
-		const interviewDocsList = await this.interviewService.getInterviewDocs(payload.id);
+		const interviewDocs = await this.interviewService.getInterviewDocs({
+			userId: payload.id,
+			docsUUID,
+		});
 
-		return { statusCode: 201, data: interviewDocsList };
+		return { statusCode: 201, data: interviewDocs };
 	}
 }
