@@ -40,6 +40,7 @@ export class TypeormInterviewRepository implements InterviewRepository<TypeormIn
 			.build();
 
 		const docs = await this.interviewDocsRepository.save(interviewDocsDao);
+
 		return docs.id;
 	}
 

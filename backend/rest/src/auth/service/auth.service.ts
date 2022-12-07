@@ -5,7 +5,7 @@ import {
 	refreshTokenOptions,
 	USER_REPOSITORY_INTERFACE,
 } from '@constant';
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserInfo } from '@types';
 import { UserRepository } from 'src/user/repository/user.repository';
 import { OauthNaverService } from './oauth/naver-oauth.service';
@@ -52,8 +52,6 @@ export class AuthService {
 	 */
 	async socialStart({ type, authorizationCode }: { type: string; authorizationCode: string }) {
 		this.setOauthInstanceByType(type);
-
-		if (!authorizationCode) throw new Error(HTTP_ERROR_MSG.UNAUTHORIZATION_ERROR);
 
 		const accessToken = await this.oauthInstance.getAccessTokenByAuthorizationCode(
 			authorizationCode
@@ -120,7 +118,7 @@ export class AuthService {
 				this.oauthInstance = this.oauthKakaoService;
 				break;
 			default:
-				throw new Error(HTTP_ERROR_MSG.UNKNOWN_OAUTH_TYPE_ERROR);
+				throw new BadRequestException(HTTP_ERROR_MSG.UNKNOWN_OAUTH_TYPE_ERROR);
 		}
 	}
 }

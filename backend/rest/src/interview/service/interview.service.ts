@@ -1,5 +1,5 @@
-import { INTERVIEW_REPOSITORY_INTERFACE, OBJECT_STORAGE_ENDPOINT } from '@constant';
-import { Inject, Injectable } from '@nestjs/common';
+import { HTTP_ERROR_MSG, INTERVIEW_REPOSITORY_INTERFACE, OBJECT_STORAGE_ENDPOINT } from '@constant';
+import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocsRequestDto } from '../dto/request-docs.dto';
 import { feedbackBoxDto, FeedbackRequestDto } from '../dto/request-feedback.dto';
@@ -47,6 +47,7 @@ export class InterviewService {
 	}): Promise<string> {
 		const { docsUUID, feedbackList } = feedbackRequestDto;
 		const docs = await this.interviewRepository.getInterviewDocsByDocsUUID(docsUUID);
+		if (!docs) throw new BadRequestException(HTTP_ERROR_MSG.DOCS_NOT_FOUND);
 
 		await Promise.all(
 			feedbackList.map((feedbackBoxDto: feedbackBoxDto) => {
