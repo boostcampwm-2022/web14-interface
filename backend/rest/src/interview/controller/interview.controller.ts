@@ -17,14 +17,14 @@ export class InterviewController {
 		console.log(payload);
 
 		await this.interviewService.createInterviewDocs({ userId: payload.id, docsRequestDto });
-		return { statusCode: 201 };
+		return {};
 	}
 
 	@Post('feedback')
 	async createFeedback(@Req() req: Request, @Body() feedbackRequestDto: FeedbackRequestDto) {
 		const payload = req.user as JwtPayload;
 		await this.interviewService.saveFeedback({ userId: payload.id, feedbackRequestDto });
-		return { statusCode: 201 };
+		return {};
 	}
 
 	@Get('docs/:docsUUID')
@@ -35,7 +35,7 @@ export class InterviewController {
 			docsUUID,
 		});
 
-		return { statusCode: 201, data: interviewDocs };
+		return interviewDocs;
 	}
 
 	@Get('docs-list')
@@ -45,6 +45,7 @@ export class InterviewController {
 			userId: payload.id,
 			roomUUID,
 		});
-		return { statusCode: 200, data: interviewDocsList };
+
+		return interviewDocsList;
 	}
 }
