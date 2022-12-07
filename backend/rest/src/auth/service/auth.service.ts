@@ -1,5 +1,6 @@
 import {
 	accessTokenOptions,
+	HTTP_ERROR_MSG,
 	OAUTH_TYPE,
 	refreshTokenOptions,
 	USER_REPOSITORY_INTERFACE,
@@ -52,7 +53,7 @@ export class AuthService {
 	async socialStart({ type, authorizationCode }: { type: string; authorizationCode: string }) {
 		this.setOauthInstanceByType(type);
 
-		if (!authorizationCode) throw new Error('social 인증이 되지 않았습니다.');
+		if (!authorizationCode) throw new Error(HTTP_ERROR_MSG.UNAUTHORIZATION_ERROR);
 
 		const accessToken = await this.oauthInstance.getAccessTokenByAuthorizationCode(
 			authorizationCode
@@ -117,7 +118,7 @@ export class AuthService {
 				this.oauthInstance = this.oauthKakaoService;
 				break;
 			default:
-				throw new Error();
+				throw new Error(HTTP_ERROR_MSG.UNKNOWN_OAUTH_TYPE_ERROR);
 		}
 	}
 }
