@@ -59,8 +59,11 @@ export class AuthService {
 			authorizationCode
 		);
 		const userSocialInfo = await this.oauthInstance.getSocialInfoByAccessToken(accessToken);
+		if (!userSocialInfo) throw new Error(HTTP_ERROR_MSG.UNEXPECTED_UNDEFINED_OCCUR);
 
 		const user = await this.userRepository.saveUser(userSocialInfo as UserInfo);
+		if (!user) throw new Error(HTTP_ERROR_MSG.UNEXPECTED_UNDEFINED_OCCUR);
+
 		return user;
 	}
 
@@ -98,6 +101,8 @@ export class AuthService {
 	 */
 	createAccessTokenAndRefreshToken(user: UserInfo) {
 		const { id, email } = user;
+		if (!id || !email) throw new Error(HTTP_ERROR_MSG.UNEXPECTED_UNDEFINED_OCCUR);
+
 		const payload = new JwtPayloadBuiler().setId(id).setEmail(email).build();
 
 		const accessToken = this.createJwt({ payload, ...accessTokenOptions });
