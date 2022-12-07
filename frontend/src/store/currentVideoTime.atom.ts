@@ -10,7 +10,7 @@ export const currentVideoTimeState = atom({
 export const focusIndexSelector = selector({
 	key: 'focusIndexSelector',
 	get: ({ get }) => {
-		const startTimeList = get(feedbackIdsState).map((ids) => +ids.slice(0, 6));
+		const startTimeList = get(feedbackIdsState).map((id) => +id.slice(0, 6));
 		return lowerBound(startTimeList, get(currentVideoTimeState));
 	},
 });

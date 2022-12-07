@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 export const typeormConfig =
 	process.env.NODE_ENV === 'dev'
@@ -17,6 +17,7 @@ export const typeormConfig =
 					entities: [__dirname + '/../**/*.entity.{ts,js}'],
 					logging: ['query', 'error'],
 					synchronize: true,
+					namingStrategy: new SnakeNamingStrategy(),
 				}),
 				inject: [ConfigService],
 		  }
@@ -35,8 +36,4 @@ export const typeormConfig =
 					synchronize: true,
 				}),
 				inject: [ConfigService],
-				dataSourceFactory: async (options) => {
-					const dataSource = await new DataSource(options).initialize();
-					return dataSource;
-				},
 		  };

@@ -1,4 +1,4 @@
-import { UserDTO } from '@customType/user';
+import { UserType } from '@customType/user';
 import { atom, selector } from 'recoil';
 
 export const roomUUIDState = atom({
@@ -6,12 +6,17 @@ export const roomUUIDState = atom({
 	default: null,
 });
 
-export const othersInRoomState = atom<UserDTO[]>({
+export const docsUUIDState = atom({
+	key: 'docsUUIDState',
+	default: null,
+});
+
+export const othersInRoomState = atom<UserType[]>({
 	key: 'othersInRoomState',
 	default: [],
 });
 
-export const meInRoomState = atom<UserDTO | null>({
+export const meInRoomState = atom<UserType>({
 	key: 'meInRoomState',
 	default: null,
 });

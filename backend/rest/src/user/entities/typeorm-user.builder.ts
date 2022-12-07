@@ -1,5 +1,5 @@
 import { TypeormUserEntity } from 'src/user/entities/typeorm-user.entity';
-import { BaseBuilder } from '../core.builder';
+import { BaseBuilder } from '../../common/base.builder';
 
 export class JoinUserBuilder extends BaseBuilder<TypeormUserEntity> {
 	constructor() {
@@ -28,14 +28,6 @@ export class JoinUserBuilder extends BaseBuilder<TypeormUserEntity> {
 
 	setOauthType(oauthType: string): JoinUserBuilder {
 		this.instance.oauthType = oauthType;
-		return this;
-	}
-
-	setDefaultValue(): JoinUserBuilder {
-		const now = new Date();
-		const dateString = `${now.getFullYear()}:${now.getMonth() + 1}:${now.getDate()}`;
-		this.instance.createdAt = dateString;
-		this.instance.updatedAt = dateString;
 		return this;
 	}
 }

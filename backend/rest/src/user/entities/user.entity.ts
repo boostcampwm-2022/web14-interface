@@ -4,7 +4,7 @@ export interface UserEntity {
 	email: string;
 	nickname: string;
 	oauthType: string;
-	createdAt: string;
-	updatedAt: string;
+	createdAt: Date;
+	updatedAt: Date;
 	isDeleted: boolean;
 }

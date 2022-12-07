@@ -8,43 +8,43 @@ import Interviewer from '@pages/Interviewer/Interviewer';
 import Waitting from '@pages/Waitting/Waitting';
 import Feedback from '@pages/Feedback/Feedback';
 import StrictRoute from './StrictRoute';
-import { PATH_TYPE } from '@constants/path.constant';
+import { ROUTE_TYPE } from '@constants/route.constant';
 import NotFound from '@pages/NotFound/NotFound';
 
 import useSafeNavigator from '@hooks/useSafeNavigator';
 
 const {
-	FEEDBACK_PATH,
-	LANDING_PATH,
-	LOBBY_PATH,
-	INTERVIEWER_PATH,
-	INTERVIEWEE_PATH,
-	WAITTING_PATH,
-} = PATH_TYPE;
+	FEEDBACK_ROUTE,
+	LANDING_ROUTE,
+	LOBBY_ROUTE,
+	INTERVIEWER_ROUTE,
+	INTERVIEWEE_ROUTE,
+	WAITTING_ROUTE,
+} = ROUTE_TYPE;
 
 // TODO: barrel import 도입
 const PrivateRoutes = () => {
 	useSafeNavigator();
 	return (
 		<Routes>
-			<Route path={LANDING_PATH} element={<Landing />} />
-			<Route element={<StrictRoute targetPath={LOBBY_PATH} />}>
-				<Route path={LOBBY_PATH} element={<Lobby />} />
+			<Route path={LANDING_ROUTE} element={<Landing />} />
+			<Route element={<StrictRoute targetPath={LOBBY_ROUTE} />}>
+				<Route path={LOBBY_ROUTE} element={<Lobby />} />
 			</Route>
-			<Route element={<StrictRoute targetPath={INTERVIEWER_PATH} />}>
-				<Route path={INTERVIEWER_PATH} element={<Interviewer />} />
+			<Route element={<StrictRoute targetPath={INTERVIEWER_ROUTE} />}>
+				<Route path={INTERVIEWER_ROUTE} element={<Interviewer />} />
 			</Route>
-			<Route element={<StrictRoute targetPath={INTERVIEWEE_PATH} />}>
-				<Route path={INTERVIEWEE_PATH} element={<Interviewee />} />
+			<Route element={<StrictRoute targetPath={INTERVIEWEE_ROUTE} />}>
+				<Route path={INTERVIEWEE_ROUTE} element={<Interviewee />} />
 			</Route>
-			<Route element={<StrictRoute targetPath={WAITTING_PATH} />}>
-				<Route path={WAITTING_PATH} element={<Waitting />} />
+			<Route element={<StrictRoute targetPath={WAITTING_ROUTE} />}>
+				<Route path={WAITTING_ROUTE} element={<Waitting />} />
 			</Route>
-			<Route element={<StrictRoute targetPath={FEEDBACK_PATH} />}>
-				<Route path={FEEDBACK_PATH} element={<Feedback />} />
+			<Route element={<StrictRoute targetPath={FEEDBACK_ROUTE} />}>
+				<Route path={FEEDBACK_ROUTE} element={<Feedback />} />
 			</Route>
-			<Route path="/" element={<Navigate to={LANDING_PATH} replace />} />
-			<Route path="/login" element={<Navigate to={LANDING_PATH} replace />} />
+			<Route path="/" element={<Navigate to={LANDING_ROUTE} replace />} />
+			<Route path="/login" element={<Navigate to={LANDING_ROUTE} replace />} />
 			<Route path="*" element={<NotFound />} />
 		</Routes>
 	);
