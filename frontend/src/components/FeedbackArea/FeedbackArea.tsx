@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
 import EditableFeedbackBox from '@components/EditableFeedbackBox/EditableFeedbackBox';
 import { useRecoilValue } from 'recoil';
-import { feedbackIdsState, isFbSyncState } from '@store/feedback.atom';
-import { focusIndexSelector } from '@store/currentVideoTime.atom';
+import { feedbackIdsState, isFbSyncState } from '@store/feedback.store';
+import { focusIndexSelector } from '@store/currentVideoTime.store';
 
 import { feedbackAreaStyle, feedbackListStyle } from './FeedbackArea.style';
 

@@ -3,7 +3,7 @@ import { PAGE_TYPE } from '@constants/page.constant';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import axios from 'axios';
-import { meInRoomState, othersInRoomState, roomUUIDState } from '@store/room.atom';
+import { meInRoomState, othersInRoomState, roomUUIDState } from '@store/room.store';
 import { useSetRecoilState } from 'recoil';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { socketEmit } from '../../api/socket.api';

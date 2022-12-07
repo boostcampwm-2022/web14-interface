@@ -1,4 +1,4 @@
-import { feedbackIdsState, feedbackState } from '@store/feedback.atom';
+import { feedbackIdsState, feedbackState } from '@store/feedback.store';
 import { useResetRecoilState, useSetRecoilState } from 'recoil';
 
 const useCrudFeedback = (feedbackId: string) => {

@@ -6,8 +6,8 @@ import FeedbackArea from '@components/FeedbackArea/FeedbackArea';
 import Video from '@components/@shared/Video/Video';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
-import { webRTCStreamSelector } from '@store/webRTC.atom';
-import { userRoleSelector } from '@store/room.atom';
+import { webRTCStreamSelector } from '@store/webRTC.store';
+import { userRoleSelector } from '@store/room.store';
 
 import { socket } from '../../service/socket';
 import { PAGE_TYPE } from '@constants/page.constant';

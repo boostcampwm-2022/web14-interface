@@ -1,4 +1,4 @@
-import { pageState } from '@store/page.atom';
+import { pageState } from '@store/page.store';
 import { getPathWithPage } from '@utils/getPathWithPage';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';

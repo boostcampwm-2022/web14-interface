@@ -1,6 +1,6 @@
 import { EditableFeedbackType } from '@customType/feedback';
-import { currentVideoTimeState } from '@store/currentVideoTime.atom';
-import { feedbackIdsState, feedbackIdxMapState, feedbackState } from '@store/feedback.atom';
+import { currentVideoTimeState } from '@store/currentVideoTime.store';
+import { feedbackIdsState, feedbackIdxMapState, feedbackState } from '@store/feedback.store';
 import React, { useState } from 'react';
 import { useRecoilTransaction_UNSTABLE, useRecoilValue } from 'recoil';
 

@@ -7,8 +7,8 @@ import BottomBar from '@components/BottomBar/BottomBar';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import useWebRTCSignaling from '@hooks/useWebRTCSignaling';
-import { meInRoomState, othersInRoomState } from '@store/room.atom';
-import { webRTCStreamSelector, webRTCUserMapState } from '@store/webRTC.atom';
+import { meInRoomState, othersInRoomState } from '@store/room.store';
+import { webRTCStreamSelector, webRTCUserMapState } from '@store/webRTC.store';
 
 import { socket } from '../../service/socket';
 import { socketEmit } from '@api/socket.api';

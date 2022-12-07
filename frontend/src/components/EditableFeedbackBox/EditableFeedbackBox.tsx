@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import useCrudFeedback from '@hooks/useCrudFeedback';
-import { feedbackState, isFbClickedState, isFbSyncState } from '@store/feedback.atom';
-import { currentVideoTimeState } from '@store/currentVideoTime.atom';
+import { feedbackState, isFbClickedState, isFbSyncState } from '@store/feedback.store';
+import { currentVideoTimeState } from '@store/currentVideoTime.store';
 
 import { ReactComponent as DeleteIcon } from '@assets/icon/delete.svg';
 import { ReactComponent as EditIcon } from '@assets/icon/edit.svg';

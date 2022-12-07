@@ -8,8 +8,8 @@ import BottomBar from '@components/BottomBar/BottomBar';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import usePreventLeave from '@hooks/usePreventLeave';
 import useSafeNavigate from '@hooks/useSafeNavigate';
-import { feedbackSelector, isFbSyncState } from '@store/feedback.atom';
-import { completedFbCntState, docsUUIDState, meInRoomState } from '@store/room.atom';
+import { feedbackSelector, isFbSyncState } from '@store/feedback.store';
+import { completedFbCntState, docsUUIDState, meInRoomState } from '@store/room.store';
 
 import { ReactComponent as LinkIcon } from '@assets/icon/link.svg';
 import { socket } from '../../service/socket';
@@ -20,7 +20,7 @@ import { iconBgStyle } from '@styles/commonStyle';
 import { socketEmit } from '@api/socket.api';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { REST_TYPE } from '@constants/rest.constant';
-import { FeedbackDtoType } from '@customType/DTO';
+import { FeedbackDtoType } from '@customType/dto';
 
 const Feedback = () => {
 	usePreventLeave();
