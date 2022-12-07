@@ -5,6 +5,7 @@ import { DocsRequestDto } from '../dto/request-docs.dto';
 import { InterviewService } from '../service/interview.service';
 import { Request } from 'express';
 import { FeedbackRequestDto } from '../dto/request-feedback.dto';
+import { HTTP_ERROR_MSG } from '@constant';
 
 @UseGuards(JwtAuthGuard)
 @Controller('interview')
@@ -14,7 +15,6 @@ export class InterviewController {
 	@Post('docs')
 	async createInterviewDocs(@Req() req: Request, @Body() docsRequestDto: DocsRequestDto) {
 		const payload = req.user as JwtPayload;
-		console.log(payload);
 
 		await this.interviewService.createInterviewDocs({ userId: payload.id, docsRequestDto });
 		return {};
