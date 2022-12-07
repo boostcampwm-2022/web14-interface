@@ -67,7 +67,7 @@ export class TypeormInterviewRepository implements InterviewRepository<TypeormIn
 		return interviewDocs;
 	}
 
-	async getInterviewDocsInRoomByUserId(whereCondition: DocsWhereCondition) {
+	async getInterviewDocsInRoomOrGlobalByUserId(whereCondition: DocsWhereCondition) {
 		const interviewDocsList = await this.interviewDocsRepository.find({
 			select: { createdAt: true, videoPlayTime: true, id: true },
 			where: whereCondition,

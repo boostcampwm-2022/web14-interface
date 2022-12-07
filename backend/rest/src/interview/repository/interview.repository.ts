@@ -23,7 +23,7 @@ export interface InterviewRepository<T> {
 
 	getInterviewDocsByDocsUUID(docsUUID: string): Promise<T>;
 
-	getInterviewDocsInRoomByUserId(whereCondition: DocsWhereCondition): Promise<T[]>;
+	getInterviewDocsInRoomOrGlobalByUserId(whereCondition: DocsWhereCondition): Promise<T[]>;
 
 	deleteInterviewDocs(docsUUID: string): Promise<string>;
 

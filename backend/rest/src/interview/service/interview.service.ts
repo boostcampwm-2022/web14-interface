@@ -8,6 +8,7 @@ import { InterviewDocs } from '../entities/interview-docs.entity';
 import { InterviewRepository } from '../repository/interview.repository';
 import { getRandomNickname } from '@woowa-babble/random-nickname';
 import { DocsWhereCondition } from 'src/types/query.type';
+import { DocsResponseDto, UserFeedback } from '../dto/response-docs.dto';
 
 @Injectable()
 export class InterviewService {
@@ -56,28 +57,44 @@ export class InterviewService {
 		return userId;
 	}
 
-	async getInterviewDocs({ userId, docsUUID }: { userId: string; docsUUID: string }) {
+	async getInterviewDocs({
+		userId,
+		docsUUID,
+	}: {
+		userId: string;
+		docsUUID: string;
+	}): Promise<DocsResponseDto> {
 		const docs = await this.interviewRepository.getInterviewDocsListByUserId({
 			userId,
 			docsUUID,
 		});
 
-		const userSet = new Set();
-		return {
-			...docs,
-			feedbackList: docs.feedbackList.reduce((prev, feedback) => {
-				if (!userSet.has(feedback.userId)) {
-					userSet.add(feedback.userId);
-					prev.push({
-						nickname: getRandomNickname('monsters'),
-						feedbacks: [feedback],
-					});
-				} else {
-					prev.at(-1).feedbacks.push(feedback);
-				}
-				return prev;
-			}, []),
+		const result: DocsResponseDto = {
+			docsUUID: docs.id,
+			createdAt: docs.createdAt,
+			videoPlayTime: docs.videoPlayTime,
+			feedbacks: this.parseFeedbackByUserId(docs.feedbackList),
 		};
+
+		return result;
+	}
+
+	parseFeedbackByUserId(feedbackList: Feedback[]) {
+		const result: UserFeedback[] = [];
+		const userFeedbackMap = new Map<string, feedbackBoxDto[]>();
+		feedbackList.forEach(({ userId, startTime, innerIndex, content }: Feedback) => {
+			if (!userFeedbackMap.has(userId)) {
+				userFeedbackMap.set(userId, []);
+				const userFeedback: UserFeedback = {
+					nickname: getRandomNickname('monsters'),
+					feedbackList: userFeedbackMap.get(userId),
+				};
+				result.push(userFeedback);
+			}
+			const feedbackDto = { startTime, innerIndex, content };
+			userFeedbackMap.get(userId).push(feedbackDto);
+		});
+		return result;
 	}
 
 	async getInterviewDocsList({ userId, roomUUID }: DocsWhereCondition) {
@@ -85,9 +102,11 @@ export class InterviewService {
 		if (roomUUID) {
 			whereCondition.roomUUID = roomUUID;
 		}
-		const docsList = await this.interviewRepository.getInterviewDocsInRoomByUserId(
+
+		const docsList = await this.interviewRepository.getInterviewDocsInRoomOrGlobalByUserId(
 			whereCondition
 		);
+
 		return docsList;
 	}
 }

@@ -27,8 +27,8 @@ export class InterviewController {
 		return { statusCode: 201 };
 	}
 
-	@Get('docs/:docs_uuid')
-	async getInterviewDocs(@Req() req: Request, @Param('docs_uuid') docsUUID: string) {
+	@Get('docs/:docsUUID')
+	async getInterviewDocs(@Req() req: Request, @Param('docsUUID') docsUUID: string) {
 		const payload = req.user as JwtPayload;
 		const interviewDocs = await this.interviewService.getInterviewDocs({
 			userId: payload.id,
