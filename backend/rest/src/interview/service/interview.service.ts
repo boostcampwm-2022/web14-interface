@@ -7,6 +7,7 @@ import { Feedback } from '../entities/feedback.entity';
 import { InterviewDocs } from '../entities/interview-docs.entity';
 import { InterviewRepository } from '../repository/interview.repository';
 import { getRandomNickname } from '@woowa-babble/random-nickname';
+import { DocsWhereCondition } from 'src/types/query.type';
 
 @Injectable()
 export class InterviewService {
@@ -79,10 +80,14 @@ export class InterviewService {
 		};
 	}
 
-	async getInterviewDocsList({ userId, roomUUID }: { userId: string; roomUUID: string }) {
-		const args = { userId };
-		if (roomUUID) args['roomUUID'] = roomUUID;
-		const docsList = await this.interviewRepository.getInterviewDocsInRoomByUserId(args);
+	async getInterviewDocsList({ userId, roomUUID }: DocsWhereCondition) {
+		const whereCondition: DocsWhereCondition = { userId };
+		if (roomUUID) {
+			whereCondition.roomUUID = roomUUID;
+		}
+		const docsList = await this.interviewRepository.getInterviewDocsInRoomByUserId(
+			whereCondition
+		);
 		return docsList;
 	}
 }

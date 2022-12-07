@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DocsWhereCondition } from 'src/types/query.type';
 import { Repository } from 'typeorm';
 import { DocsRequestDto } from '../dto/request-docs.dto';
 import { feedbackBoxDto } from '../dto/request-feedback.dto';
@@ -66,10 +67,10 @@ export class TypeormInterviewRepository implements InterviewRepository<TypeormIn
 		return interviewDocs;
 	}
 
-	async getInterviewDocsInRoomByUserId(args) {
+	async getInterviewDocsInRoomByUserId(whereCondition: DocsWhereCondition) {
 		const interviewDocsList = await this.interviewDocsRepository.find({
 			select: { createdAt: true, videoPlayTime: true, id: true },
-			where: { ...args },
+			where: whereCondition,
 		});
 		return interviewDocsList;
 	}
