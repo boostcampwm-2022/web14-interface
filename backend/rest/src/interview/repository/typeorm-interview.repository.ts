@@ -1,3 +1,4 @@
+import { HTTP_ERROR_MSG } from '@constant';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DocsWhereCondition } from 'src/types/query.type';
@@ -78,7 +79,7 @@ export class TypeormInterviewRepository implements InterviewRepository<TypeormIn
 	async deleteInterviewDocs(docsUUID: string): Promise<string> {
 		const result = await this.interviewDocsRepository.delete(docsUUID);
 		if (!result.affected) {
-			throw new Error();
+			throw new Error(HTTP_ERROR_MSG.NULL_POINT_EXCEPTION);
 		}
 
 		return docsUUID;
