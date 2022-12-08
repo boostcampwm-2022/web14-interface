@@ -17,6 +17,10 @@ import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { socketEmit } from '@api/socket.api';
 import { REST_TYPE } from '@constants/rest.constant';
 import { DocsReqDtoType } from '@customType/dto';
+import { intervieweeWrapperStyle } from './Interviewee.style';
+import BottomBar from '@components/BottomBar/BottomBar';
+import RoundButton from '@components/@shared/RoundButton/RoundButton';
+import theme from '@styles/theme';
 
 const Interviewee = () => {
 	usePreventLeave();
@@ -67,9 +71,22 @@ const Interviewee = () => {
 		};
 	}, [currentVideoTime]);
 
+	const endInterviewBtn = (
+		<RoundButton
+			style={{
+				backgroundColor: theme.colors.primary,
+				width: 200,
+				height: 50,
+				color: theme.colors.white,
+			}}
+			onClick={hadleEndInterview}
+		>
+			<div>피드백 종료</div>
+		</RoundButton>
+	);
+
 	return (
-		<>
-			<div>Interviewee</div>
+		<div css={intervieweeWrapperStyle}>
 			<IntervieweeVideo
 				key={interviewee.uuid}
 				src={getStreamFromUUID(interviewee.uuid)}
@@ -86,8 +103,8 @@ const Interviewee = () => {
 					muted
 				/>
 			))}
-			<button onClick={hadleEndInterview}>면접 종료</button>
-		</>
+			<BottomBar mainController={endInterviewBtn} />
+		</div>
 	);
 };
 
