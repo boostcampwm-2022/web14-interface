@@ -1,4 +1,4 @@
-import DocsItem from '@components/@shared/DocsItem/DocsItem';
+import DocsItem from '@components/DocsItem/DocsItem';
 import { REST_TYPE } from '@constants/rest.constant';
 import { DocsItemDtoType } from '@customType/dto';
 import axios from 'axios';
