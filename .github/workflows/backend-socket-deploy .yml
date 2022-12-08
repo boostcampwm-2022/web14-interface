@@ -7,10 +7,7 @@ on:
 jobs:
   docker-build-push:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend/socket
-          
+      
     steps: 
       - name: docker 관련 로직 처리를 위한 buildx를 설치합니다.
         uses: docker/setup-buildx-action@v2
