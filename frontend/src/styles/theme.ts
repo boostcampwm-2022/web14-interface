@@ -8,13 +8,13 @@ const theme = {
 		gray1: '#888888',
 		gray2: '#BBBBBB',
 		gray3: '#EEECEC',
-		white: '#F5F5F5',
+		white: '#FEFEFE',
 	},
 	fontSize: {
 		xSmall: '12px',
 		small: '16px',
 		medium: '20px',
-		laege: '24px',
+		large: '24px',
 	},
 	borderRaduis: '8px',
 };
