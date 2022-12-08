@@ -41,7 +41,7 @@ const Interviewee = () => {
 		socket.on(SOCKET_EVENT_TYPE.START_WAITING, ({ docsUUID }) => {
 			setDocsUUID(docsUUID);
 			stopStream(docsUUID);
-			const docsRequestDTO: DocsReqDtoType = {
+			const docsRequestDto: DocsReqDtoType = {
 				roomUUID: interviewee.roomUUID,
 				docsUUID,
 				videoPlayTime: currentVideoTime,
