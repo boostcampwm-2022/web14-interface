@@ -1,10 +1,11 @@
 import {
 	accessTokenOptions,
+	HTTP_ERROR_MSG,
 	OAUTH_TYPE,
 	refreshTokenOptions,
 	USER_REPOSITORY_INTERFACE,
 } from '@constant';
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { UserInfo } from '@types';
 import { UserRepository } from 'src/user/repository/user.repository';
 import { OauthNaverService } from './oauth/naver-oauth.service';
@@ -52,14 +53,13 @@ export class AuthService {
 	async socialStart({ type, authorizationCode }: { type: string; authorizationCode: string }) {
 		this.setOauthInstanceByType(type);
 
-		if (!authorizationCode) throw new Error('social 인증이 되지 않았습니다.');
-
 		const accessToken = await this.oauthInstance.getAccessTokenByAuthorizationCode(
 			authorizationCode
 		);
 		const userSocialInfo = await this.oauthInstance.getSocialInfoByAccessToken(accessToken);
 
 		const user = await this.userRepository.saveUser(userSocialInfo as UserInfo);
+
 		return user;
 	}
 
@@ -97,6 +97,7 @@ export class AuthService {
 	 */
 	createAccessTokenAndRefreshToken(user: UserInfo) {
 		const { id, email } = user;
+
 		const payload = new JwtPayloadBuiler().setId(id).setEmail(email).build();
 
 		const accessToken = this.createJwt({ payload, ...accessTokenOptions });
@@ -117,7 +118,7 @@ export class AuthService {
 				this.oauthInstance = this.oauthKakaoService;
 				break;
 			default:
-				throw new Error();
+				throw new BadRequestException(HTTP_ERROR_MSG.UNKNOWN_OAUTH_TYPE_ERROR);
 		}
 	}
 }

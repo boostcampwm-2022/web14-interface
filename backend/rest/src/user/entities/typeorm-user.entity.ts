@@ -13,9 +13,6 @@ export class TypeormUserEntity extends TypeormBaseEntity implements UserEntity {
 	@Column({ length: 45, default: '' })
 	email: string;
 
-	@Column({ length: 20, default: '' })
-	nickname: string;
-
 	@Column({ length: 10, default: 'none' })
 	oauthType: string;
 }

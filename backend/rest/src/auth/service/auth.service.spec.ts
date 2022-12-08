@@ -153,12 +153,11 @@ describe('AuthService', () => {
 	});
 
 	const makeMockUser = (userInfo: UserInfo): UserEntity => {
-		const { id, email, password, nickname, oauthType } = userInfo;
+		const { id, email, password, oauthType } = userInfo;
 		const userEntity = new JoinUserBuilder()
 			.setId(id)
 			.setEmail(email)
 			.setPassword(password)
-			.setNickname(nickname)
 			.setOauthType(oauthType)
 			.build();
 		return userEntity;
