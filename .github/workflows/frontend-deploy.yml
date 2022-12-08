@@ -18,6 +18,9 @@ jobs:
       - name: node dependency를 설치합니다.
         run: yarn install
         
+      - name: test를 진행합니다.
+        run: yarn test
+        
       - name: front 파일을 build 합니다.
         run: yarn build
         
