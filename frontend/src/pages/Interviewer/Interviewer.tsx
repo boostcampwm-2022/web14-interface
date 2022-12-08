@@ -57,7 +57,7 @@ const Interviewer = () => {
 				/>
 			))}
 
-			<FeedbackList />
+			<FeedbackList editable />
 			<button onClick={hadleEndInterview}>면접 종료</button>
 		</div>
 	);

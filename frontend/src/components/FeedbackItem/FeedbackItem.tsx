@@ -14,8 +14,9 @@ interface PropsType {
 	//TODO ref type any
 	feedbackRef: React.MutableRefObject<any[]>;
 	index: number;
+	editableBtns: React.ReactNode;
 }
-const FeedbackItem = ({ feedback, feedbackRef, index }: PropsType) => {
+const FeedbackItem = ({ feedback, feedbackRef, index, editableBtns }: PropsType) => {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const isFbSync = useRecoilValue(isFbSyncState);
 	const setIsFbClicked = useSetRecoilState(isFbClickedState);
@@ -47,6 +48,7 @@ const FeedbackItem = ({ feedback, feedbackRef, index }: PropsType) => {
 				onClick={handleClickFeedback}
 				css={fbTextAreaStyle}
 			/>
+			{editableBtns}
 		</div>
 	);
 };
