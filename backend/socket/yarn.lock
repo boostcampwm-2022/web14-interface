@@ -1353,6 +1353,11 @@
     "@webassemblyjs/ast" "1.11.1"
     "@xtuc/long" "4.2.2"
 
+"@woowa-babble/random-nickname@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@woowa-babble/random-nickname/-/random-nickname-1.0.2.tgz#785c2a03d3f3710f042e8034741e9513f4fdb333"
+  integrity sha512-7wdR7s0T6D3aDZROTgaFvA9aP8h9L2OtKHUPselBa3goBe8mweJD7oBub2urs/lJjy/4djqYdkJBEf3lETuG1Q==
+
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@xtuc/ieee754/-/ieee754-1.2.0.tgz#eef014a3145ae477a1cbc00cd1e552336dceb790"
