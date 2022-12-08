@@ -78,33 +78,33 @@ const Landing = () => {
 			<header css={headerStyle}>
 				<Logo css={logoStyle} />
 				<div css={flexRow({ gap: '8px' })}>
-					<Button
+					<button
 						size="small"
 						color="black"
 						onClick={() => openModal(MODAL_TYPE.InterviewDocsModal)}
 					>
 						<FolderIcon />
 						<span>기록</span>
-					</Button>
-					<Button size="small" color="red" onClick={handleSignOut}>
+					</button>
+					<button size="small" color="red" onClick={handleSignOut}>
 						<span>로그아웃</span>
-					</Button>
+					</button>
 				</div>
 			</header>
 			<main css={mainStyle}>
 				<div css={flexColumn({ gap: '32px' })}>
 					<div css={introTextStyle}>interface님, 안녕하세요!</div>
 					<div css={flexRow({ gap: '16px' })}>
-						<Button onClick={handleCreate} iconColor={true}>
+						<button onClick={handleCreate} iconColor={true}>
 							<PlusIcon />
 							<span>방 만들기</span>
-						</Button>
-						<Button
+						</button>
+						<button
 							color="secondary"
 							onClick={() => openModal(MODAL_TYPE.EnterRoomModal)}
 						>
 							<span>참가하기</span>
-						</Button>
+						</button>
 					</div>
 				</div>
 				<InterfacePreview css={previewStyle} />
