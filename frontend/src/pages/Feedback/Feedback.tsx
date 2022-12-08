@@ -28,6 +28,11 @@ import { FeedbackDtoType } from '@customType/dto';
 import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
 import { REST_TYPE } from '@constants/rest.constant';
 
+interface endFeedbackResponseType {
+	isLastFeedback: boolean;
+	count: number;
+}
+
 const Feedback = () => {
 	usePreventLeave();
 	const setCompletedFbCnt = useSetRecoilState(completedFbCntState);
@@ -38,31 +43,27 @@ const Feedback = () => {
 	const feedbackList = useRecoilValue(feedbackDtoSelector);
 	const me = useRecoilValue(meInRoomState);
 
-	const handleEndFeedback = useCallback(() => {
-		socketEmit(SOCKET_EVENT_TYPE.END_FEEDBACK, ({ data }) => {
-			const { isLastFeedback, count } = data;
-			setCompletedFbCnt(count);
-			const feedbackDto: FeedbackDtoType = {
-				docsUUID,
-				userUUID: me.uuid,
-				feedbackList,
-			};
-			axios.post(REST_TYPE.FEEDBACK, feedbackDto);
+	const handleEndFeedback = useCallback(async () => {
+		const { isLastFeedback, count } = await socketEmit<endFeedbackResponseType>(
+			SOCKET_EVENT_TYPE.END_FEEDBACK
+		);
+		setCompletedFbCnt(count);
+		const feedbackDto: FeedbackDtoType = {
+			docsUUID,
+			userUUID: me.uuid,
+			feedbackList,
+		};
+		axios.post(REST_TYPE.FEEDBACK, feedbackDto);
 
-			if (isLastFeedback) safeNavigate(PAGE_TYPE.LOBBY_PAGE);
-			else safeNavigate(PAGE_TYPE.WAITTING_PAGE);
-		});
-	}, [docsUUID, feedbackList]);
+		if (isLastFeedback) safeNavigate(PAGE_TYPE.LOBBY_PAGE);
+		else safeNavigate(PAGE_TYPE.WAITTING_PAGE);
+	}, [docsUUID, feedbackList, me]);
 
 	useEffect(() => {
 		socket.on(SOCKET_EVENT_TYPE.DOWNLOAD_VIDEO, ({ videoUrl }) => {
 			setVideoUrl(videoUrl);
 		});
 	}, []);
-
-	useEffect(() => {
-		console.log(videoUrl);
-	}, [videoUrl]);
 
 	const finishFeedbackBtn = (
 		<RoundButton

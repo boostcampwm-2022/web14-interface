@@ -27,6 +27,9 @@ import {
 	mainStyle,
 	previewStyle,
 } from './Landing.style';
+import Button from '@components/@shared/Button/Button';
+import { MODAL_TYPE } from '@constants/modal.constant';
+import useModal from '@hooks/useModal';
 
 interface createRoomResponseType {
 	uuid: string;
