@@ -19,7 +19,7 @@ import theme from '@styles/theme';
 import { iconBgStyle } from '@styles/commonStyle';
 import { socketEmit } from '@api/socket.api';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
-import { FeedbackDtoType } from '@customType/DTO';
+import { FeedbackDtoType } from '@customType/dto';
 import { REST_TYPE } from '@constants/rest.constant';
 
 const Feedback = () => {
@@ -36,12 +36,12 @@ const Feedback = () => {
 		socketEmit(SOCKET_EVENT_TYPE.END_FEEDBACK, ({ data }) => {
 			const { isLastFeedback, count } = data;
 			setCompletedFbCnt(count);
-			const feedbackDTO: FeedbackDtoType = {
+			const feedbackDto: FeedbackDtoType = {
 				docsUUID,
 				userUUID: me.uuid,
 				feedbackList,
 			};
-			axios.post(REST_TYPE.FEEDBACK, feedbackDTO);
+			axios.post(REST_TYPE.FEEDBACK, feedbackDto);
 
 			if (!isLastFeedback) safeNavigate(PAGE_TYPE.LOBBY_PAGE);
 			else safeNavigate(PAGE_TYPE.WAITTING_PAGE);
