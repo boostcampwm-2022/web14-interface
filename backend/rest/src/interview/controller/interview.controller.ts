@@ -14,28 +14,23 @@ export class InterviewController {
 	@Post('docs')
 	async createInterviewDocs(@Req() req: Request, @Body() docsRequestDto: DocsRequestDto) {
 		const payload = req.user as JwtPayload;
-		console.log(payload);
 
 		await this.interviewService.createInterviewDocs({ userId: payload.id, docsRequestDto });
-		return { statusCode: 201 };
+		return {};
 	}
 
 	@Post('feedback')
 	async createFeedback(@Req() req: Request, @Body() feedbackRequestDto: FeedbackRequestDto) {
 		const payload = req.user as JwtPayload;
 		await this.interviewService.saveFeedback({ userId: payload.id, feedbackRequestDto });
-		return { statusCode: 201 };
+		return {};
 	}
 
 	@Get('docs/:docsUUID')
-	async getInterviewDocs(@Req() req: Request, @Param('docsUUID') docsUUID: string) {
-		const payload = req.user as JwtPayload;
-		const interviewDocs = await this.interviewService.getInterviewDocs({
-			userId: payload.id,
-			docsUUID,
-		});
+	async getInterviewDocs(@Param('docsUUID') docsUUID: string) {
+		const interviewDocs = await this.interviewService.getInterviewDocs(docsUUID);
 
-		return { statusCode: 201, data: interviewDocs };
+		return interviewDocs;
 	}
 
 	@Get('docs-list')
@@ -45,6 +40,7 @@ export class InterviewController {
 			userId: payload.id,
 			roomUUID,
 		});
-		return { statusCode: 200, data: interviewDocsList };
+
+		return interviewDocsList;
 	}
 }

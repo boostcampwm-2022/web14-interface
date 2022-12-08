@@ -13,13 +13,13 @@ export class TypeormUserRepository implements UserRepository<TypeormUserEntity> 
 		private readonly userRepository: Repository<TypeormUserEntity>
 	) {}
 
+	// DTO로 만들면 좋을 거 같아요. DTO에서 validation하면 되니까 repo에서 안전하게 사용할 수 있을 거 같네요.
 	async saveUser(userInfo: UserInfo): Promise<TypeormUserEntity> {
-		const { id, password, email, oauthType, nickname } = userInfo;
+		const { id, password, email, oauthType } = userInfo;
 		const user = new JoinUserBuilder()
 			.setId(id)
 			.setPassword(password)
 			.setEmail(email)
-			.setNickname(nickname)
 			.setOauthType(oauthType)
 			.build();
 
