@@ -45,15 +45,33 @@ const globalStyle = css`
 	}
 `;
 
-export const flexRow = ({ gap }) => css`
+interface flexPropType {
+	gap?: string;
+	justifyContent?: 'center' | 'space-between';
+	alignItems?: 'center';
+}
+
+export const flexRow = ({
+	gap = '0px',
+	justifyContent = 'center',
+	alignItems = 'center',
+}: flexPropType) => css`
 	display: flex;
 	flex-direction: row;
+	justify-content: ${justifyContent};
+	align-items: ${alignItems};
 	gap: ${gap};
 `;
 
-export const flexColumn = ({ gap }) => css`
+export const flexColumn = ({
+	gap = '0px',
+	justifyContent = 'center',
+	alignItems = 'center',
+}: flexPropType) => css`
 	display: flex;
 	flex-direction: column;
+	justify-content: ${justifyContent};
+	align-items: ${alignItems};
 	gap: ${gap};
 `;
 
