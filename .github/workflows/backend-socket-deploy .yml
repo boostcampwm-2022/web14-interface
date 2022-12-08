@@ -21,7 +21,6 @@ jobs:
       - name: docker 이미지를 build 및 push합니다.
         uses: docker/build-push-action@v3
         with:
-          context: .
           push: true
           tags: ${{ secrets.DOCKER_SOCKET_IMAGE }}:test1
           cache-from: type=gha
