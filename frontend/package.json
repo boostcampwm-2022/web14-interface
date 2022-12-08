@@ -31,7 +31,7 @@
   "scripts": {
     "start": "craco start",
     "build": "CI=false && craco build",
-    "test": "craco test",
+    "test": "craco test --passWithNoTests",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
