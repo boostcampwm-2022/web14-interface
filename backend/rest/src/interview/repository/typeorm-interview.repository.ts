@@ -1,4 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HTTP_ERROR_MSG } from '@constant';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DocsWhereCondition } from 'src/types/query.type';
 import { Repository } from 'typeorm';
@@ -39,21 +40,15 @@ export class TypeormInterviewRepository implements InterviewRepository<TypeormIn
 			.build();
 
 		const docs = await this.interviewDocsRepository.save(interviewDocsDao);
+
 		return docs.id;
 	}
 
-	async getInterviewDocsListByUserId({
-		userId,
-		docsUUID,
-	}: {
-		userId: string;
-		docsUUID: string;
-	}): Promise<TypeormInterviewDocsEntity> {
+	async getInterviewDocsListByUserId(docsUUID: string): Promise<TypeormInterviewDocsEntity> {
 		const interviewDocsList = await this.interviewDocsRepository
 			.createQueryBuilder('docs')
 			.leftJoinAndSelect('docs.feedbackList', 'fb')
-			.where('docs.user_id = :userId', { userId })
-			.andWhere('docs.id = :docsUUID', { docsUUID })
+			.where('docs.id = :docsUUID', { docsUUID })
 			.orderBy('fb.user_id')
 			.addOrderBy('fb.start_time')
 			.addOrderBy('fb.inner_index')
@@ -78,7 +73,7 @@ export class TypeormInterviewRepository implements InterviewRepository<TypeormIn
 	async deleteInterviewDocs(docsUUID: string): Promise<string> {
 		const result = await this.interviewDocsRepository.delete(docsUUID);
 		if (!result.affected) {
-			throw new Error();
+			throw new BadRequestException(HTTP_ERROR_MSG.NOT_FOUND_TARGET_IN_DATABASE);
 		}
 
 		return docsUUID;

@@ -21,11 +21,6 @@ export class JoinUserBuilder extends BaseBuilder<TypeormUserEntity> {
 		return this;
 	}
 
-	setNickname(nickname: string): JoinUserBuilder {
-		this.instance.nickname = nickname;
-		return this;
-	}
-
 	setOauthType(oauthType: string): JoinUserBuilder {
 		this.instance.oauthType = oauthType;
 		return this;
