@@ -5,5 +5,5 @@ export enum PAGE_TYPE {
 	INTERVIEWER_PAGE = 'interviewer',
 	INTERVIEWEE_PAGE = 'interviewee',
 	FEEDBACK_PAGE = 'feedback',
-	WAITTING_PAGE = 'waitting',
+	WAITTING_PAGE = 'waiting',
 }

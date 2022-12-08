@@ -51,7 +51,7 @@ const Interviewer = () => {
 			}}
 			onClick={hadleEndInterview}
 		>
-			<div>피드백 종료</div>
+			<div>면접 종료</div>
 		</RoundButton>
 	);
 
