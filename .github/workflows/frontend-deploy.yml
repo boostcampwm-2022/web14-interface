@@ -14,17 +14,8 @@ jobs:
     steps: 
       - name: repository의 파일을 가상 인스턴스로 복사합니다.
         uses: actions/checkout@v3
-      
-      - name: node 패키지를 caching 합니다.
-        uses: actions/cache@v3
-        with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
-            
-      - name: caching된 node 패키지가 없으면 설치합니다.
-        if: steps.cache.outputs.cache-hit != 'true'
+
+      - name: node dependency를 설치합니다.
         run: yarn install
         
       - name: front 파일을 build 합니다.
