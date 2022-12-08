@@ -42,10 +42,10 @@ export enum EVENT {
 }
 
 export enum ERROR_MSG {
-	FULL_ROOM = 'full_room',
-	NO_ROOM = 'no_room',
-	BUSY_ROOM = 'busy_room',
-	NOT_ENOUGHT_USER = 'not_enough_user',
+	FULL_ROOM = '방이 꽉 찼습니다.',
+	NO_ROOM = '없는 방입니다.',
+	BUSY_ROOM = '현재 면접이 진행중입니다.',
+	NOT_ENOUGHT_USER = '인원이 부족합니다.',
 	INVALID_REQUEST = 'invalid_request',
 	BAD_REQUEST = 'invalid socket request',
 }
