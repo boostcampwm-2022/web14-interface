@@ -46,7 +46,7 @@ const Interviewee = () => {
 				docsUUID,
 				videoPlayTime: currentVideoTime,
 			};
-			axios.post(REST_TYPE.INTERVIEW_DOCS, docsRequestDTO);
+			axios.post(REST_TYPE.INTERVIEW_DOCS, docsRequestDto);
 			safeNavigate(PAGE_TYPE.WAITTING_PAGE);
 		});
 		return () => {

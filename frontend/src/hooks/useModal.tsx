@@ -1,5 +1,5 @@
 import { useResetRecoilState, useSetRecoilState } from 'recoil';
-import { currentModalState } from '@store/currentModal.atom';
+import { currentModalState } from '@store/currentModal.store';
 import { useRef, useEffect } from 'react';
 
 const useModal = () => {

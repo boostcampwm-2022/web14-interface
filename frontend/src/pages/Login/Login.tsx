@@ -8,13 +8,12 @@ import { ReactComponent as Logo } from '@assets/logo_white.svg';
 import { ReactComponent as NaverIcon } from '@assets/icon/naver.svg';
 import { ReactComponent as KakaoIcon } from '@assets/icon/kakao.svg';
 
-import { LoginWrapper, logoStyle, previewStyle } from './Login.style';
-import { flexColumn, flexRow } from '@styles/globalStyle';
+import { LoginButtonAreaStyle, LoginWrapper, logoStyle, previewStyle } from './Login.style';
+import { flexColumn } from '@styles/globalStyle';
 
 const Login = () => {
 	const startOauth = async (type: string) => {
 		// TODO 응답, 처리 hook으로 빼기
-		console.log('hello');
 		const res = await axios
 			.get(`/api/auth/oauth/redirect/${type}`)
 			.then((res) => res.data)
@@ -25,15 +24,16 @@ const Login = () => {
 
 	return (
 		<>
-			<div css={[LoginWrapper, flexRow({ gap: '64px' })]}>
+			<div css={LoginWrapper}>
 				<InterfacePreview css={previewStyle} />
 				<div css={flexColumn({ gap: '32px' })}>
 					<div css={flexColumn({ gap: '16px' })}>
 						<Logo css={logoStyle} />
 						<span>실시간 면접 피드백 플랫폼</span>
 					</div>
-					<div css={flexColumn({ gap: '16px' })}>
+					<div css={LoginButtonAreaStyle}>
 						<Button
+							width="100%"
 							color={'secondary'}
 							justifyContent={'space-between'}
 							iconColor={false}
@@ -44,6 +44,7 @@ const Login = () => {
 							<br />
 						</Button>
 						<Button
+							width="100%"
 							color={'secondary'}
 							justifyContent={'space-between'}
 							iconColor={false}

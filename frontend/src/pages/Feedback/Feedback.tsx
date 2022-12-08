@@ -42,12 +42,12 @@ const Feedback = () => {
 		socketEmit(SOCKET_EVENT_TYPE.END_FEEDBACK, ({ data }) => {
 			const { isLastFeedback, count } = data;
 			setCompletedFbCnt(count);
-			const feedbackDTO: FeedbackDtoType = {
+			const feedbackDto: FeedbackDtoType = {
 				docsUUID,
 				userUUID: me.uuid,
 				feedbackList,
 			};
-			axios.post(REST_TYPE.FEEDBACK, feedbackDTO);
+			axios.post(REST_TYPE.FEEDBACK, feedbackDto);
 
 			if (isLastFeedback) safeNavigate(PAGE_TYPE.LOBBY_PAGE);
 			else safeNavigate(PAGE_TYPE.WAITTING_PAGE);
