@@ -2,7 +2,7 @@ import { EVENT, ROOM_REPOSITORY_INTERFACE } from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
 import { Namespace, Socket } from 'socket.io';
 import { WebrtcBaseDto } from 'src/room/dto/webrtc.dto';
-import { RoomRepository } from '../../repository/interface-room.repository';
+import { RoomRepository } from '../../repository/room.repository';
 
 @Injectable()
 export class WebrtcService {

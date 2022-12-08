@@ -1,6 +1,6 @@
 import { ROOM_PHASE } from '@constant';
 import { clientId, InmemoryRoom, roomUUID, User, userUUID } from '@types';
-import { RoomRepository } from './interface-room.repository';
+import { RoomRepository } from './room.repository';
 
 export class InmemoryRoomRepository implements RoomRepository {
 	private rooms = new Map<roomUUID, InmemoryRoom>();

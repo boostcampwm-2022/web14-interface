@@ -10,7 +10,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Namespace, Socket } from 'socket.io';
 import { InmemoryRoom, User } from 'src/types/room.type';
 import { v4 as uuidv4 } from 'uuid';
-import { RoomRepository } from '../../repository/interface-room.repository';
+import { RoomRepository } from '../../repository/room.repository';
 // import { getRandomNickname } from '@woowa-babble/random-nickname';
 
 @Injectable()
