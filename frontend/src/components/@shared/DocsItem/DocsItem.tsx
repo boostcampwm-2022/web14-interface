@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { DocsItemDtoType } from '@customType/DTO';
+import { DocsItemDtoType } from '@customType/dto';
 import { ReactComponent as DownloadIcon } from '@assets/icon/download.svg';
 import { iconSmStyle } from '@styles/commonStyle';
 import { createdAtStyle, docsItemWrapper, indexStyle, playTimeStyle } from './DocsItem.style';
