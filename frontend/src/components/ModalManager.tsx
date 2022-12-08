@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRecoilValue } from 'recoil';
-import { currentModalState } from '@store/currentModal.atom';
+import { currentModalState } from '@store/currentModal.store';
 import ReactDOM from 'react-dom';
 
 const ModalManager = () => {

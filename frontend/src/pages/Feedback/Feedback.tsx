@@ -20,6 +20,7 @@ import { iconBgStyle } from '@styles/commonStyle';
 import { socketEmit } from '@api/socket.api';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { FeedbackDtoType } from '@customType/DTO';
+import { REST_TYPE } from '@constants/rest.constant';
 
 const Feedback = () => {
 	usePreventLeave();
