@@ -73,7 +73,7 @@ export class TypeormInterviewRepository implements InterviewRepository<TypeormIn
 	async deleteInterviewDocs(docsUUID: string): Promise<string> {
 		const result = await this.interviewDocsRepository.delete(docsUUID);
 		if (!result.affected) {
-			throw new BadRequestException(HTTP_ERROR_MSG.NULL_POINT_EXCEPTION);
+			throw new BadRequestException(HTTP_ERROR_MSG.NOT_FOUND_TARGET_IN_DATABASE);
 		}
 
 		return docsUUID;
