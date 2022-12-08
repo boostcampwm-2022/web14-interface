@@ -1,6 +1,9 @@
-import { css } from "@emotion/react";
+import { css } from '@emotion/react';
+import { flexColumn, flexRow } from '@styles/globalStyle';
 
 export const LoginWrapper = (theme) => css`
+	${flexRow({ gap: '64px' })};
+
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -23,4 +26,10 @@ export const previewStyle = css`
 
 export const logoStyle = css`
 	width: 320px;
+`;
+
+export const LoginButtonAreaStyle = () => css`
+	${flexColumn({ gap: '16px' })};
+
+	width: 100%;
 `;
