@@ -1,5 +1,5 @@
 import { ROOM_PHASE } from '@constant';
-import { InmemoryRoom, User } from '@types';
+import { Room, User } from '@types';
 
 export interface RoomRepository {
 	/**
@@ -7,16 +7,16 @@ export interface RoomRepository {
 	 * uuid를 key로 방을 식별할 수 있는 객체에 room의 상태를 LOBBY로 저장하는 메서드입니다.
 	 * @param uuid room을 식별할 수 있는 고유한 key
 	 */
-	createRoom({ roomUUID, room }: { roomUUID: string; room: InmemoryRoom }): Promise<InmemoryRoom>;
+	createRoom({ roomUUID, room }: { roomUUID: string; room: Room }): Promise<Room>;
 
 	deleteRoom(roomUUID: string): Promise<void>;
 
 	/**
 	 * uuid로 방 정보를 가져옵니다.
 	 * @param roomUUID
-	 * @Return InmemoryRoom
+	 * @Return Room
 	 */
-	getRoom(roomUUID: string): Promise<InmemoryRoom>;
+	getRoom(roomUUID: string): Promise<Room>;
 
 	/**
 	 * room uuid기반으로 해당 방에 존재하는 user 배열을 반환합니다.

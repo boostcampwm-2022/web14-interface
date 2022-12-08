@@ -1,15 +1,15 @@
 import { ROOM_PHASE } from '@constant';
-import { clientId, InmemoryRoom, roomUUID, User, userUUID } from '@types';
+import { clientId, Room, roomUUID, User, userUUID } from '@types';
 import { RoomRepository } from './room.repository';
 
 export class InmemoryRoomRepository implements RoomRepository {
-	private rooms = new Map<roomUUID, InmemoryRoom>();
+	private rooms = new Map<roomUUID, Room>();
 	private usersInRoom = new Map<roomUUID, Set<userUUID>>();
 	private clientUserIdMap = new Map<clientId, userUUID>();
 	private userClientIdMap = new Map<userUUID, clientId>();
 	private userMap = new Map<userUUID, User>();
 
-	async createRoom({ roomUUID, room }: { roomUUID: string; room: InmemoryRoom }) {
+	async createRoom({ roomUUID, room }: { roomUUID: string; room: Room }) {
 		this.rooms.set(roomUUID, room);
 		this.usersInRoom.set(roomUUID, new Set());
 		return room;

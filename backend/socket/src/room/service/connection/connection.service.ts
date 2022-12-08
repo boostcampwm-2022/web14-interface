@@ -8,7 +8,7 @@ import {
 } from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
-import { InmemoryRoom, User } from 'src/types/room.type';
+import { Room, User } from 'src/types/room.type';
 import { v4 as uuidv4 } from 'uuid';
 import { RoomRepository } from '../../repository/room.repository';
 import { getRandomNickname } from '@woowa-babble/random-nickname';
@@ -59,7 +59,7 @@ export class ConnectionService {
 	 * @param room room instance
 	 * @returns
 	 */
-	async isEnterableRoom(room: InmemoryRoom) {
+	async isEnterableRoom(room: Room) {
 		if (room === undefined) {
 			return { success: false, message: ERROR_MSG.NO_ROOM };
 		}
@@ -104,7 +104,7 @@ export class ConnectionService {
 	 * default room을 생성해서 반환합니다.
 	 * @returns room
 	 */
-	createDefaultRoom(): InmemoryRoom {
+	createDefaultRoom(): Room {
 		return { roomUUID: uuidv4(), phase: ROOM_PHASE.LOBBY };
 	}
 

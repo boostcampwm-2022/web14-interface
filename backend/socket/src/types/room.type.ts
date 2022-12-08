@@ -1,6 +1,6 @@
 import { ROOM_PHASE, USER_ROLE } from '@constant';
 
-export interface InmemoryRoom {
+export interface Room {
 	roomUUID: string;
 	phase: ROOM_PHASE;
 }
