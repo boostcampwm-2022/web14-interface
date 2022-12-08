@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { meInRoomState, othersInRoomState } from '@store/room.atom';
+import { meInRoomState, othersInRoomState } from '@store/room.store';
 import { ReactComponent as CopyIcon } from '@assets/icon/copy.svg';
 import { ReactComponent as MicOnIcon } from '@assets/icon/mic_on.svg';
 import { ReactComponent as MicOffIcon } from '@assets/icon/mic_off.svg';

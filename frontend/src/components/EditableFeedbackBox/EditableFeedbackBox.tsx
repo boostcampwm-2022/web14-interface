@@ -1,33 +1,41 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+
+import useCrudFeedback from '@hooks/useCrudFeedback';
+import { isFbClickedState, isFbSyncState } from '@store/feedback.store';
+import { currentVideoTimeState } from '@store/currentVideoTime.store';
 
 import { ReactComponent as DeleteIcon } from '@assets/icon/delete.svg';
 import { ReactComponent as EditIcon } from '@assets/icon/edit.svg';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { feedbackState, isFbClickedState, isFbSyncState } from '@store/feedback.atom';
-import { currentVideoTimeState } from '@store/currentVideoTime.atom';
-import useCrudFeedback from '@hooks/useCrudFeedback';
-
+import { ReactComponent as CheckIcon } from '@assets/icon/check.svg';
 import {
 	feedbackBoxStyle,
 	fbTextAreaStyle,
 	fbBtnContainer,
 	fbStartTimeStyle,
 } from './EditableFeedbackBox.style';
+import { iconSmStyle } from '@styles/commonStyle';
+import { FeedbackItemType } from '@customType/feedback';
 
 interface PropsType {
-	feedbackId: string;
+	feedback: FeedbackItemType;
+	//TODO ref type any
 	feedbackRef: React.MutableRefObject<any[]>;
 	index: number;
 }
-const EditableFeedbackBox = ({ feedbackId, feedbackRef, index }: PropsType) => {
-	const feedback = useRecoilValue(feedbackState(feedbackId));
+const EditableFeedbackBox = ({ feedback, feedbackRef, index }: PropsType) => {
+	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const isFbSync = useRecoilValue(isFbSyncState);
 	const setIsFbClicked = useSetRecoilState(isFbClickedState);
 	const setCurrentVideoTime = useSetRecoilState(currentVideoTimeState);
 	const { handleStartEditFeedback, handleEndEditFeedback, handleFbChange, handleDeleteFeedback } =
-		useCrudFeedback(feedbackId);
+		useCrudFeedback(feedback.id);
 
-	const { startTime, innerIndex, content, readOnly } = feedback;
+	useEffect(() => {
+		feedbackRef.current[index].style.height = textareaRef.current.scrollHeight + 'px';
+	});
+
+	const { startTime, isFirst, content, readOnly } = feedback;
 
 	const handleClickFeedback = () => {
 		if (!isFbSync) return;
@@ -37,10 +45,11 @@ const EditableFeedbackBox = ({ feedbackId, feedbackRef, index }: PropsType) => {
 
 	return (
 		<div ref={(el) => (feedbackRef.current[index] = el)} css={feedbackBoxStyle}>
-			{/* TODO: find first innerIndex */}
-			<div css={fbStartTimeStyle}>{startTime}</div>
+			<div css={fbStartTimeStyle} style={{ visibility: isFirst ? 'visible' : 'hidden' }}>
+				{startTime}
+			</div>
 			<textarea
-				rows={3}
+				ref={textareaRef}
 				value={content}
 				onChange={(e) => handleFbChange(e.target.value)}
 				readOnly={readOnly}
@@ -48,16 +57,18 @@ const EditableFeedbackBox = ({ feedbackId, feedbackRef, index }: PropsType) => {
 				css={fbTextAreaStyle}
 			/>
 			<div css={fbBtnContainer}>
-				<div>
-					{readOnly ? (
-						<EditIcon onClick={handleStartEditFeedback} width={15} />
-					) : (
-						<button onClick={handleEndEditFeedback}>수정완료</button>
-					)}
-				</div>
-				<div>
-					<DeleteIcon onClick={handleDeleteFeedback} width={15} />
-				</div>
+				{readOnly ? (
+					<button onClick={handleStartEditFeedback}>
+						<EditIcon {...iconSmStyle} fill="black" />
+					</button>
+				) : (
+					<button onClick={handleEndEditFeedback}>
+						<CheckIcon {...iconSmStyle} fill="black" />
+					</button>
+				)}
+				<button onClick={handleDeleteFeedback}>
+					<DeleteIcon {...iconSmStyle} fill="black" />
+				</button>
 			</div>
 		</div>
 	);

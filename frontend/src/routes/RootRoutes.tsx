@@ -3,7 +3,7 @@ import PrivateRoutes from './PrivateRoutes';
 import PublicRoutes from './PublicRoutes';
 import { Route, Routes } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
-import isAuthQuery from '@store/authState';
+import isAuthQuery from '@store/auth.store';
 
 const RootRoutes = () => {
 	const isAuth = useRecoilValue(isAuthQuery);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
-import { pageState } from '@store/page.atom';
+import { pageState } from '@store/page.store';
 import { ROUTE_TYPE } from '@constants/route.constant';
 import { getPathWithPage } from '@utils/getPathWithPage';
 
