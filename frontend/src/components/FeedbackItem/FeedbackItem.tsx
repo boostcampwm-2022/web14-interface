@@ -26,11 +26,8 @@ const FeedbackItem = ({ feedback, feedbackRef, index, editableBtns }: Props) => 
 	const { handleFbChange } = useCrudFeedback(feedback.id);
 
 	useEffect(() => {
-		const effect = () => {
-			if (!feedbackRef) return;
+		if (feedbackRef)
 			feedbackRef.current[index].style.height = textareaRef.current.scrollHeight + 'px';
-		};
-		effect();
 	});
 
 	const { startTime, isFirst, content, readOnly } = feedback;
@@ -41,13 +38,8 @@ const FeedbackItem = ({ feedback, feedbackRef, index, editableBtns }: Props) => 
 		setCurrentVideoTime(startTime);
 	};
 
-	const getFbRef = (el) => {
-		if (!feedbackRef) return;
-		return (feedbackRef.current[index] = el);
-	};
-
 	return (
-		<div ref={getFbRef} css={feedbackBoxStyle}>
+		<div ref={(el) => (feedbackRef.current[index] = el)} css={feedbackBoxStyle}>
 			<div css={fbStartTimeStyle} style={{ visibility: isFirst ? 'visible' : 'hidden' }}>
 				{mmssFormatter(startTime * ONE_SECOND)}
 			</div>
