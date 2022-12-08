@@ -1,6 +1,8 @@
+import { ONE_SECOND } from '@constants/time.constant';
 import { EditableFeedbackType } from '@customType/feedback';
 import { currentVideoTimeState } from '@store/currentVideoTime.store';
 import { feedbackIdsState, feedbackIdxMapState, feedbackState } from '@store/feedback.store';
+import { mmssFormatter } from '@utils/common.util';
 import React, { useState } from 'react';
 import { useRecoilTransaction_UNSTABLE, useRecoilValue } from 'recoil';
 
@@ -57,7 +59,9 @@ const FeedbackForm = () => {
 
 	return (
 		<div css={fbFormWrapperStyle}>
-			<div css={fbStartTimeStyle}>{inputVal ? startTime : currentVideoTime}</div>
+			<div css={fbStartTimeStyle}>
+				{mmssFormatter((inputVal ? startTime : currentVideoTime) * ONE_SECOND)}
+			</div>
 			<textarea
 				value={inputVal}
 				onKeyDown={handleKeyDown}

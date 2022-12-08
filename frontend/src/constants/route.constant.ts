@@ -5,5 +5,5 @@ export enum ROUTE_TYPE {
 	INTERVIEWER_ROUTE = '/interviewer',
 	INTERVIEWEE_ROUTE = '/interviewee',
 	FEEDBACK_ROUTE = '/feedback',
-	WAITTING_ROUTE = '/waitting',
+	WAITTING_ROUTE = '/waiting',
 }

@@ -17,7 +17,7 @@ export const fbTextAreaStyle = (theme) => css`
 `;
 
 export const fbStartTimeStyle = (theme) => css`
-	width: 30px;
+	width: 45px;
 	height: 15px;
 	font-size: 12px;
 	border-radius: 2px;

@@ -7,11 +7,15 @@ import useSafeNavigate from '@hooks/useSafeNavigate';
 import { PAGE_TYPE } from '@constants/page.constant';
 
 import { socket } from '../../service/socket';
+import BottomBar from '@components/BottomBar/BottomBar';
+import { waitingWrapperStyle } from './Waiting.style';
 
-const Waitting = () => {
+const Waiting = () => {
+	usePreventLeave();
 	const { safeNavigate } = useSafeNavigate();
 	const totalUser = useRecoilValue(othersInRoomState);
 	const [completedFbCnt, setCompletedFbCnt] = useRecoilState(completedFbCntState);
+
 	useEffect(() => {
 		socket.on('count_feedback', (res) => {
 			const { count } = res;
@@ -22,15 +26,18 @@ const Waitting = () => {
 			safeNavigate(PAGE_TYPE.LOBBY_PAGE);
 		});
 	}, []);
-	usePreventLeave();
-	
+
 	return (
 		<>
-			<div style={{ padding: '50px' }}>
-				{completedFbCnt}/{totalUser.length}
+			<div css={waitingWrapperStyle}>
+				<div>면접관이 피드백을 정리 중입니다.</div>
+				<div>
+					{totalUser.length}명 중 {completedFbCnt}명 완료
+				</div>
 			</div>
+			<BottomBar />
 		</>
 	);
 };
 
-export default Waitting;
+export default Waiting;

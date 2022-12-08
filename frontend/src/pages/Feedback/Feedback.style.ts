@@ -7,7 +7,7 @@ export const feedbackWrapperStyle = (theme) => css`
 	background-color: ${theme.colors.tertiary};
 `;
 
-export const feedbackPageContainerStyle = css`
+export const feedbackContainerStyle = css`
 	height: 100%;
 	display: flex;
 	gap: 25px;
@@ -19,9 +19,9 @@ export const feedbackPageContainerStyle = css`
 
 export const feedbackSyncBtnStyle = (theme, isFbSync) => css`
 	background-color: ${isFbSync ? theme.colors.primary : theme.colors.white};
-	width: 50;
-	height: 50;
-	border-radius: '25px';
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
 	display: 'flex';
 	justify-content: 'center';
 	align-items: 'center';

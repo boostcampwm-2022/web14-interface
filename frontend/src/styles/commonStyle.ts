@@ -9,3 +9,9 @@ export const iconSmStyle = {
 	height: '25px',
 	fill: 'white',
 };
+
+export const iconSxStyle = {
+	width: '18px',
+	height: '18px',
+	fill: 'white',
+};

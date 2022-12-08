@@ -5,7 +5,7 @@ import Landing from '@pages/Landing/Landing';
 import Lobby from '@pages/Lobby/Lobby';
 import Interviewee from '@pages/Interviewee/Interviewee';
 import Interviewer from '@pages/Interviewer/Interviewer';
-import Waitting from '@pages/Waitting/Waitting';
+import Waiting from '@pages/Waiting/Waiting';
 import Feedback from '@pages/Feedback/Feedback';
 import StrictRoute from './StrictRoute';
 import { ROUTE_TYPE } from '@constants/route.constant';
@@ -38,7 +38,7 @@ const PrivateRoutes = () => {
 				<Route path={INTERVIEWEE_ROUTE} element={<Interviewee />} />
 			</Route>
 			<Route element={<StrictRoute targetPath={WAITTING_ROUTE} />}>
-				<Route path={WAITTING_ROUTE} element={<Waitting />} />
+				<Route path={WAITTING_ROUTE} element={<Waiting />} />
 			</Route>
 			<Route element={<StrictRoute targetPath={FEEDBACK_ROUTE} />}>
 				<Route path={FEEDBACK_ROUTE} element={<Feedback />} />
