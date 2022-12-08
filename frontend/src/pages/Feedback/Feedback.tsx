@@ -24,8 +24,9 @@ import theme from '@styles/theme';
 import { iconBgStyle } from '@styles/commonStyle';
 import { socketEmit } from '@api/socket.api';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
-import { FeedbackDtoType } from '@customType/DTO';
+import { FeedbackDtoType } from '@customType/dto';
 import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
+import { REST_TYPE } from '@constants/rest.constant';
 
 const Feedback = () => {
 	usePreventLeave();
@@ -91,7 +92,7 @@ const Feedback = () => {
 					/>
 				</button>
 				<div css={feedbackAreaStyle}>
-					<FeedbackList />
+					<FeedbackList editable />
 					<FeedbackForm />
 				</div>
 			</div>
