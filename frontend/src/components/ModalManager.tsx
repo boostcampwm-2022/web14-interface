@@ -1,7 +1,6 @@
 import React from 'react';
 import { useRecoilValue } from 'recoil';
 import { currentModalState } from '@store/currentModal.atom';
-import EnterRoomModal from './Modal/EnterRoomModal';
 import ReactDOM from 'react-dom';
 
 const ModalManager = () => {
@@ -10,7 +9,6 @@ const ModalManager = () => {
 	if (!currentModal) return;
 
 	const modalStore = {
-		EnterRoomModal,
 	};
 
 	const ModalComponent = modalStore[currentModal.modal];
