@@ -12,8 +12,13 @@ import { userRoleSelector } from '@store/room.store';
 import { socket } from '../../service/socket';
 import { PAGE_TYPE } from '@constants/page.constant';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
-import { css } from '@emotion/react';
 import { socketEmit } from '@api/socket.api';
+import { interviewerContainerStyle, interviewerWrapperStyle } from './Interviewer.style';
+import RoundButton from '@components/@shared/RoundButton/RoundButton';
+import theme from '@styles/theme';
+import BottomBar from '@components/BottomBar/BottomBar';
+import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
+import { feedbackAreaStyle } from '@pages/Feedback/Feedback.style';
 
 const Interviewer = () => {
 	const { safeNavigate } = useSafeNavigate();
@@ -36,41 +41,49 @@ const Interviewer = () => {
 		});
 	}, []);
 
-	return (
-		<div css={InterviewerWrapperStyle}>
-			<div>Interviewer</div>
-			<div>면접자 : {interviewee.uuid}</div>
-			<IntervieweeVideo
-				key={interviewee.uuid}
-				src={getStreamFromUUID(interviewee.uuid)}
-				width={400}
-				autoplay
-				muted
-			/>
-			{interviewerList.map((interviewer) => (
-				<Video
-					key={interviewer.uuid}
-					src={getStreamFromUUID(interviewer.uuid)}
-					width={200}
-					autoplay
-					muted
-				/>
-			))}
+	const endInterviewBtn = (
+		<RoundButton
+			style={{
+				backgroundColor: theme.colors.primary,
+				width: 200,
+				height: 50,
+				color: theme.colors.white,
+			}}
+			onClick={hadleEndInterview}
+		>
+			<div>피드백 종료</div>
+		</RoundButton>
+	);
 
-			<FeedbackList editable />
-			<button onClick={hadleEndInterview}>면접 종료</button>
+	return (
+		<div css={interviewerWrapperStyle}>
+			<div css={interviewerContainerStyle}>
+				<div>
+					<IntervieweeVideo
+						key={interviewee.uuid}
+						src={getStreamFromUUID(interviewee.uuid)}
+						width={400}
+						autoplay
+						muted
+					/>
+					{interviewerList.map((interviewer) => (
+						<Video
+							key={interviewer.uuid}
+							src={getStreamFromUUID(interviewer.uuid)}
+							width={200}
+							autoplay
+							muted
+						/>
+					))}
+				</div>
+				<div css={feedbackAreaStyle}>
+					<FeedbackList editable />
+					<FeedbackForm />
+				</div>
+			</div>
+			<BottomBar mainController={endInterviewBtn} />
 		</div>
 	);
 };
 
 export default Interviewer;
-
-const InterviewerWrapperStyle = (theme) => css`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	width: 100%;
-	height: 100%;
-	background-color: ${theme.colors.primary3};
-`;

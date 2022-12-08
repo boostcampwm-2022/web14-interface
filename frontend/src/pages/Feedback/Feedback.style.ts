@@ -7,7 +7,7 @@ export const feedbackWrapperStyle = (theme) => css`
 	background-color: ${theme.colors.tertiary};
 `;
 
-export const feedbackPageContainerStyle = css`
+export const feedbackContainerStyle = css`
 	height: 100%;
 	display: flex;
 	gap: 25px;

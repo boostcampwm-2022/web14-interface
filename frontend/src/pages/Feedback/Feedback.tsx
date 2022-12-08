@@ -15,7 +15,7 @@ import { ReactComponent as LinkIcon } from '@assets/icon/link.svg';
 import { socket } from '../../service/socket';
 import {
 	feedbackWrapperStyle,
-	feedbackPageContainerStyle,
+	feedbackContainerStyle,
 	feedbackAreaStyle,
 	feedbackSyncBtnStyle,
 } from './Feedback.style';
@@ -81,7 +81,7 @@ const Feedback = () => {
 
 	return (
 		<div css={feedbackWrapperStyle}>
-			<div css={feedbackPageContainerStyle}>
+			<div css={feedbackContainerStyle}>
 				<IntervieweeVideo src={videoUrl} width={400} autoplay muted controls />
 				<button
 					css={(theme) => feedbackSyncBtnStyle(theme, isFbSync)}
