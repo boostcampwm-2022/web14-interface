@@ -38,9 +38,21 @@ const Interviewee = () => {
 	};
 
 	useEffect(() => {
+		const effect = () => {
+			console.log('E!');
+			if (!interviewee) return;
+			const myStream = getStreamFromUUID(interviewee.uuid);
+			if (!myStream) return;
+			startStream(myStream);
+		};
+		effect();
+		return stopStream;
+	}, []);
+
+	useEffect(() => {
 		socket.on(SOCKET_EVENT_TYPE.START_WAITING, ({ docsUUID }) => {
 			setDocsUUID(docsUUID);
-			stopStream(docsUUID);
+			socketEmit('finish_streaming', docsUUID);
 			const docsRequestDto: DocsReqDtoType = {
 				roomUUID: interviewee.roomUUID,
 				docsUUID,
@@ -49,20 +61,11 @@ const Interviewee = () => {
 			axios.post(REST_TYPE.INTERVIEW_DOCS, docsRequestDto);
 			safeNavigate(PAGE_TYPE.WAITTING_PAGE);
 		});
+
 		return () => {
 			socket.off(SOCKET_EVENT_TYPE.START_WAITING);
 		};
 	}, [currentVideoTime]);
-
-	useEffect(() => {
-		const effect = () => {
-			if (!interviewee) return;
-			const myStream = getStreamFromUUID(interviewee.uuid);
-			if (!myStream) return;
-			startStream(myStream);
-		};
-		effect();
-	}, [webRTCUserMap, interviewee]);
 
 	return (
 		<>
