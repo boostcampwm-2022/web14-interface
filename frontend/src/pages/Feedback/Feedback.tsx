@@ -49,7 +49,7 @@ const Feedback = () => {
 			};
 			axios.post(REST_TYPE.FEEDBACK, feedbackDTO);
 
-			if (!isLastFeedback) safeNavigate(PAGE_TYPE.LOBBY_PAGE);
+			if (isLastFeedback) safeNavigate(PAGE_TYPE.LOBBY_PAGE);
 			else safeNavigate(PAGE_TYPE.WAITTING_PAGE);
 		});
 	}, [docsUUID, feedbackList]);
