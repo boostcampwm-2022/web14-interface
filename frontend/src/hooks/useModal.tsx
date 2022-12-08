@@ -1,19 +1,20 @@
-import { useSetRecoilState } from 'recoil';
+import { useResetRecoilState, useSetRecoilState } from 'recoil';
 import { currentModalState } from '@store/currentModal.atom';
 import { useRef, useEffect } from 'react';
 
 const useModal = () => {
 	const modalParentRef = useRef<HTMLDivElement>(document.querySelector('#popup-root'));
-	const setCurremtModal = useSetRecoilState(currentModalState);
+	const setCurrentModal = useSetRecoilState(currentModalState);
+	const resetCurrentModal = useResetRecoilState(currentModalState);
 
 	const openModal = (modal: string, props?) => {
 		modalParentRef.current.style.display = 'flex';
-		setCurremtModal({ modal, props });
+		setCurrentModal({ modal, props });
 	};
 
 	const closeModal = () => {
 		modalParentRef.current.style.display = 'none';
-		setCurremtModal(null);
+		resetCurrentModal();
 	};
 
 	const parentCloseModal = (e) => {
