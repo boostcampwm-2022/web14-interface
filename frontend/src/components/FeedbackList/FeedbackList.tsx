@@ -1,13 +1,12 @@
 import React, { useEffect, useRef } from 'react';
-import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
-import EditableFeedbackBox from '@components/EditableFeedbackBox/EditableFeedbackBox';
+import EditableFeedbackBox from '@components/FeedbackItem/FeedbackItem';
 import { useRecoilValue } from 'recoil';
 import { feedbackListSelector, isFbSyncState } from '@store/feedback.store';
 import { focusIndexSelector } from '@store/currentVideoTime.store';
 
-import { feedbackAreaStyle, feedbackListStyle } from './FeedbackArea.style';
+import { feedbackListStyle } from './FeedbackList.style';
 
-const FeedbackArea = () => {
+const FeedbackList = () => {
 	const feedbackRef = useRef([]);
 	const feedbackList = useRecoilValue(feedbackListSelector);
 	const focusIndex = useRecoilValue(focusIndexSelector);
@@ -22,20 +21,17 @@ const FeedbackArea = () => {
 	}, [focusIndex, isFbSync]);
 
 	return (
-		<div css={feedbackAreaStyle}>
-			<div css={feedbackListStyle}>
-				{feedbackList.map((feedback, idx) => (
-					<EditableFeedbackBox
-						key={feedback.id}
-						feedback={feedback}
-						feedbackRef={feedbackRef}
-						index={idx}
-					/>
-				))}
-			</div>
-			<FeedbackForm />
+		<div css={feedbackListStyle}>
+			{feedbackList.map((feedback, idx) => (
+				<EditableFeedbackBox
+					key={feedback.id}
+					feedback={feedback}
+					feedbackRef={feedbackRef}
+					index={idx}
+				/>
+			))}
 		</div>
 	);
 };
 
-export default FeedbackArea;
+export default FeedbackList;

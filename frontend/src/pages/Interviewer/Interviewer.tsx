@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
-import FeedbackArea from '@components/FeedbackArea/FeedbackArea';
+import FeedbackList from '@components/FeedbackList/FeedbackList';
 import Video from '@components/@shared/Video/Video';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
@@ -57,7 +57,7 @@ const Interviewer = () => {
 				/>
 			))}
 
-			<FeedbackArea />
+			<FeedbackList />
 			<button onClick={hadleEndInterview}>면접 종료</button>
 		</div>
 	);
