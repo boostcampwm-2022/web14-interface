@@ -9,7 +9,7 @@ import {
 import { Inject, Injectable } from '@nestjs/common';
 import { Socket, Namespace } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
-import { RoomRepository } from 'src/room/repository/interface-room.repository';
+import { RoomRepository } from 'src/room/repository/room.repository';
 import { User } from '@types';
 import { WsException } from '@nestjs/websockets';
 
@@ -20,42 +20,41 @@ export class InterviewService {
 		private readonly roomRepository: RoomRepository
 	) {}
 
-	startInterview(client: Socket) {
-		const user = this.roomRepository.getUserByClientId(client.id);
+	async startInterview(client: Socket) {
+		const user = await this.roomRepository.getUserByClientId(client.id);
 		const roomUUID = user.roomUUID;
-		const usersInRoom = this.roomRepository.getUsersInRoom(roomUUID);
+		const usersInRoom = await this.roomRepository.getUsersInRoom(roomUUID);
 
 		if (usersInRoom.length < MIN_USER_COUNT) {
 			return { success: false, message: ERROR_MSG.NOT_ENOUGHT_USER };
 		}
-		this.validateRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.INTERVIEW });
+		await this.validateRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.INTERVIEW });
 
-		this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.INTERVIEW });
-		this.updateUsersRoleAtStartInterview({ emitter: user, users: usersInRoom });
+		await this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.INTERVIEW });
+		await this.updateUsersRoleAtStartInterview({ emitter: user, users: usersInRoom });
 
 		client.to(roomUUID).emit(EVENT.JOIN_INTERVIEW, { user });
 
 		return {};
 	}
 
-	endInterview({ client, server }: { client: Socket; server: Namespace }) {
+	async endInterview({ client, server }: { client: Socket; server: Namespace }) {
 		const docsUUID = uuidv4();
 
-		const user = this.roomRepository.getUserByClientId(client.id);
+		const user = await this.roomRepository.getUserByClientId(client.id);
 		const roomUUID = user.roomUUID;
-		const usersInRoom = this.roomRepository.getUsersInRoom(roomUUID);
+		const usersInRoom = await this.roomRepository.getUsersInRoom(roomUUID);
 
-		this.validateRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.FEEDBACK });
-		this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.FEEDBACK });
+		await this.validateRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.FEEDBACK });
+		await this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.FEEDBACK });
 
-		usersInRoom.forEach((user) => {
-			const clientId = this.roomRepository.getClientIdByUser(user.uuid);
+		usersInRoom.forEach(async (user) => {
+			const clientId = await this.roomRepository.getClientIdByUser(user.uuid);
 
 			const emitEvent = this.getEventAtEndInterviewByRole(user.role);
 			server.to(clientId).emit(emitEvent, { docsUUID });
 		});
 
-		// TODO video object storage upload
 		return {};
 	}
 
@@ -66,43 +65,61 @@ export class InterviewService {
 			case USER_ROLE.INTERVIEWER:
 				return EVENT.START_FEEDBACK;
 			default:
-			// TODO exception handling
+				throw new WsException(ERROR_MSG.BAD_REQUEST);
 		}
 	}
 
-	endFeedback(client: Socket) {
-		const user = this.roomRepository.getUserByClientId(client.id);
-		const users = this.roomRepository.getUsersInRoom(user.roomUUID);
+	async endFeedback({ client, server }: { client: Socket; server: Namespace }) {
+		const user = await this.roomRepository.getUserByClientId(client.id);
+		const users = await this.roomRepository.getUsersInRoom(user.roomUUID);
 		const MAX_FEEDBACK_COUNT = users.length - 1;
 
-		this.updateUserRole({ uuid: user.uuid, role: USER_ROLE.FEEDBACKED });
-		const currentFeedbackCount = this.getFeedbackEndCount(user.roomUUID);
+		await this.updateUserRole({ uuid: user.uuid, role: USER_ROLE.FEEDBACKED });
+		const currentFeedbackCount = await this.getFeedbackEndCount(user.roomUUID);
 
 		return currentFeedbackCount < MAX_FEEDBACK_COUNT
-			? this.inProgressCycle({ client, count: currentFeedbackCount, users })
-			: this.terminateCycle({ client, user, users });
+			? await this.inProgressCycle({ server, count: currentFeedbackCount, users })
+			: await this.terminateCycle({ server, user, users });
 	}
 
-	inProgressCycle({ client, count, users }: { client: Socket; count: number; users: User[] }) {
+	async inProgressCycle({
+		server,
+		count,
+		users,
+	}: {
+		server: Namespace;
+		count: number;
+		users: User[];
+	}) {
 		const interviewee = users.find((user) => user.role === USER_ROLE.INTERVIEWEE);
-		const clientId = this.roomRepository.getClientIdByUser(interviewee.uuid);
-		client.to(clientId).emit(EVENT.COUNT_FEEDBACK, { count });
+		const clientId = await this.roomRepository.getClientIdByUser(interviewee.uuid);
+		server.to(clientId).emit(EVENT.COUNT_FEEDBACK, { count });
+
 		return { data: { isLastFeedback: false, count } };
 	}
 
-	terminateCycle({ client, user, users }: { client: Socket; user: User; users: User[] }) {
+	async terminateCycle({
+		server,
+		user,
+		users,
+	}: {
+		server: Namespace;
+		user: User;
+		users: User[];
+	}) {
 		const roomUUID = user.roomUUID;
 
-		this.validateRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.LOBBY });
-		this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.LOBBY });
+		await this.validateRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.LOBBY });
+		await this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.LOBBY });
 
-		this.updateUsersRoleAtEndInterview(users);
-		client.to(roomUUID).emit(EVENT.TERMINATE_SESSION);
+		await this.updateUsersRoleAtEndInterview(users);
+		server.to(roomUUID).emit(EVENT.TERMINATE_SESSION);
+
 		return { data: { isLastFeedback: true } };
 	}
 
-	getFeedbackEndCount(roomUUID: string) {
-		const users = this.roomRepository.getUsersInRoom(roomUUID);
+	async getFeedbackEndCount(roomUUID: string) {
+		const users = await this.roomRepository.getUsersInRoom(roomUUID);
 
 		const count = users.reduce((prev, user) => {
 			if (user.role === USER_ROLE.FEEDBACKED) prev += 1;
@@ -112,28 +129,28 @@ export class InterviewService {
 		return count;
 	}
 
-	updateUserRole({ uuid, role }: { uuid: string; role: USER_ROLE }) {
-		this.roomRepository.updateUserInfo({ uuid, updateUser: { role } });
+	async updateUserRole({ uuid, role }: { uuid: string; role: USER_ROLE }) {
+		await this.roomRepository.updateUserInfo({ uuid, updateUser: { role } });
 	}
 
-	updateUsersRoleAtStartInterview({ emitter, users }: { emitter: User; users: User[] }) {
-		users.forEach((user) => {
+	async updateUsersRoleAtStartInterview({ emitter, users }: { emitter: User; users: User[] }) {
+		users.forEach(async (user) => {
 			if (emitter.uuid === user.uuid) {
-				this.updateUserRole({ uuid: user.uuid, role: USER_ROLE.INTERVIEWEE });
+				await this.updateUserRole({ uuid: user.uuid, role: USER_ROLE.INTERVIEWEE });
 				return;
 			}
-			this.updateUserRole({ uuid: user.uuid, role: USER_ROLE.INTERVIEWER });
+			await this.updateUserRole({ uuid: user.uuid, role: USER_ROLE.INTERVIEWER });
 		});
 	}
 
-	updateUsersRoleAtEndInterview(users: User[]) {
-		users.forEach((user) => {
-			this.updateUserRole({ uuid: user.uuid, role: USER_ROLE.NONE });
+	async updateUsersRoleAtEndInterview(users: User[]) {
+		users.forEach(async (user) => {
+			await this.updateUserRole({ uuid: user.uuid, role: USER_ROLE.NONE });
 		});
 	}
 
-	validateRoomPhaseUpdate({ roomUUID, phase }: { roomUUID: string; phase: string }) {
-		const currentPhase = this.roomRepository.getRoomPhase(roomUUID);
+	async validateRoomPhaseUpdate({ roomUUID, phase }: { roomUUID: string; phase: string }) {
+		const currentPhase = await this.roomRepository.getRoomPhase(roomUUID);
 		if (currentPhase === ROOM_PHASE.LOBBY && phase === ROOM_PHASE.INTERVIEW) return true;
 		if (currentPhase === ROOM_PHASE.INTERVIEW && phase === ROOM_PHASE.FEEDBACK) return true;
 		if (currentPhase === ROOM_PHASE.FEEDBACK && phase === ROOM_PHASE.LOBBY) return true;
