@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import AWS, { S3 } from 'aws-sdk';
 import {
@@ -13,7 +13,7 @@ import {
 } from '@constant';
 import { Socket } from 'socket.io';
 import { clientId } from '@types';
-import { RoomRepository } from 'src/room/repository/interface-room.repository';
+import { RoomRepository } from 'src/room/repository/room.repository';
 
 @Injectable()
 export class ObjectStorageService {
@@ -81,7 +81,7 @@ export class ObjectStorageService {
 		}).promise();
 
 		this.deleteVideoData(client.id);
-		const user = this.roomRepository.getUserByClientId(client.id);
+		const user = await this.roomRepository.getUserByClientId(client.id);
 		const videoUrl = [this.objectStorageUrl, this.bucketName, fileName].join('/');
 
 		client.to(user.roomUUID).emit(EVENT.DOWNLOAD_VIDEO, { videoUrl });

@@ -3,7 +3,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import axios from 'axios';
 
 import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
-import FeedbackArea from '@components/FeedbackArea/FeedbackArea';
+import FeedbackList from '@components/FeedbackList/FeedbackList';
 import BottomBar from '@components/BottomBar/BottomBar';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import usePreventLeave from '@hooks/usePreventLeave';
@@ -13,13 +13,19 @@ import { completedFbCntState, docsUUIDState, meInRoomState } from '@store/room.s
 
 import { ReactComponent as LinkIcon } from '@assets/icon/link.svg';
 import { socket } from '../../service/socket';
-import { feedbackWrapperStyle, feedbackPageContainerStyle } from './Feedback.style';
+import {
+	feedbackWrapperStyle,
+	feedbackPageContainerStyle,
+	feedbackAreaStyle,
+	feedbackSyncBtnStyle,
+} from './Feedback.style';
 import { PAGE_TYPE } from '@constants/page.constant';
 import theme from '@styles/theme';
 import { iconBgStyle } from '@styles/commonStyle';
 import { socketEmit } from '@api/socket.api';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { FeedbackDtoType } from '@customType/dto';
+import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
 import { REST_TYPE } from '@constants/rest.constant';
 
 const Feedback = () => {
@@ -43,7 +49,7 @@ const Feedback = () => {
 			};
 			axios.post(REST_TYPE.FEEDBACK, feedbackDto);
 
-			if (!isLastFeedback) safeNavigate(PAGE_TYPE.LOBBY_PAGE);
+			if (isLastFeedback) safeNavigate(PAGE_TYPE.LOBBY_PAGE);
 			else safeNavigate(PAGE_TYPE.WAITTING_PAGE);
 		});
 	}, [docsUUID, feedbackList]);
@@ -77,15 +83,7 @@ const Feedback = () => {
 			<div css={feedbackPageContainerStyle}>
 				<IntervieweeVideo src={videoUrl} width={400} autoplay muted controls />
 				<button
-					style={{
-						backgroundColor: isFbSync ? theme.colors.primary : theme.colors.white,
-						width: 50,
-						height: 50,
-						borderRadius: '25px',
-						display: 'flex',
-						justifyContent: 'center',
-						alignItems: 'center',
-					}}
+					css={(theme) => feedbackSyncBtnStyle(theme, isFbSync)}
 					onClick={() => setIsFbSync((current) => !current)}
 				>
 					<LinkIcon
@@ -93,7 +91,10 @@ const Feedback = () => {
 						fill={isFbSync ? theme.colors.white : theme.colors.primary}
 					/>
 				</button>
-				<FeedbackArea />
+				<div css={feedbackAreaStyle}>
+					<FeedbackList editable />
+					<FeedbackForm />
+				</div>
 			</div>
 			<BottomBar mainController={finishFeedbackBtn} />
 		</div>

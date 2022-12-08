@@ -1,19 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useRecoilRefresher_UNSTABLE, useSetRecoilState } from 'recoil';
 import axios from 'axios';
-import { useSetRecoilState } from 'recoil';
+import { useNavigate } from 'react-router-dom';
 
+import isAuthQuery from '@store/auth.store';
+import { meInRoomState, othersInRoomState, roomUUIDState } from '@store/room.store';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
-import useModal from '@hooks/useModal';
-import Button from '@components/@shared/Button/Button';
-
-import { meInRoomState, othersInRoomState, roomUUIDState } from '@store/room.store';
-
-import { PAGE_TYPE } from '@constants/page.constant';
-import { MODAL_TYPE } from '@constants/modal.constant';
-import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 
 import { socketEmit } from '../../api/socket.api';
+import { PAGE_TYPE } from '@constants/page.constant';
+import { ROUTE_TYPE } from '@constants/route.constant';
+import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { UserType } from '@customType/user';
 
 import { flexColumn, flexRow } from '@styles/globalStyle';
@@ -44,15 +42,18 @@ const Landing = () => {
 	const setRoom = useSetRecoilState(roomUUIDState);
 	const setOthers = useSetRecoilState<UserType[]>(othersInRoomState);
 	const setMe = useSetRecoilState<UserType>(meInRoomState);
+	const refreshAuth = useRecoilRefresher_UNSTABLE(isAuthQuery);
 
 	const { safeNavigate } = useSafeNavigate();
 	const { openModal } = useModal();
+	const naviagte = useNavigate();
 
 	const handleSignOut = async () => {
 		//TODO TOAST로 교체
 		const res = await axios.get('/api/auth/logout');
-		alert(res.data.statusCode);
-		safeNavigate(PAGE_TYPE.LOGIN_PAGE);
+		alert(res.status);
+		refreshAuth();
+		naviagte(ROUTE_TYPE.LOGIN_ROUTE);
 	};
 
 	const handleCreate = async () => {
