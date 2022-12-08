@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { flexColumn } from '@styles/globalStyle';
 import React from 'react';
-import { TextFieldHelperTextStyle, TextFieldStyle } from './TextField.style';
+import { TextFieldHelperTextStyle, TextFieldStyle, TextFieldWrapperStyle } from './TextField.style';
 
 export interface TextFieldPropType {
 	width?: string;
@@ -9,6 +9,7 @@ export interface TextFieldPropType {
 	disabled?: boolean;
 	readOnly?: boolean;
 	error?: boolean;
+	textAlign?: 'left' | 'center' | 'right';
 	helperText?: string;
 	onChange?: React.ChangeEventHandler<HTMLInputElement>;
 	value?: string;
@@ -20,14 +21,15 @@ const TextField = ({
 	disabled = false,
 	readOnly = false,
 	error = false,
+	textAlign = 'left',
 	helperText,
 	onChange,
 	value,
 }: TextFieldPropType) => {
 	return (
-		<div css={flexColumn({ gap: '4px' })}>
+		<div css={TextFieldWrapperStyle(width)}>
 			<input
-				css={(theme) => TextFieldStyle(theme, width, error, disabled)}
+				css={(theme) => TextFieldStyle(theme, error, disabled, textAlign)}
 				type="text"
 				placeholder={placeholder}
 				disabled={disabled}
@@ -35,7 +37,7 @@ const TextField = ({
 				onChange={onChange}
 				value={value}
 			/>
-			{!disabled && helperText?.trim().length > 0 ? (
+			{helperText?.trim().length > 0 ? (
 				<span css={(theme) => TextFieldHelperTextStyle(theme, error)}>{helperText}</span>
 			) : null}
 		</div>
