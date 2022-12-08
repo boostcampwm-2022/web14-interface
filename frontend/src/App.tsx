@@ -18,6 +18,7 @@ function App() {
 							<RootRoutes />
 						</Suspense>
 					</div>
+					<div id="popup-root"></div>
 				</ThemeProvider>
 			</BrowserRouter>
 		</RecoilRoot>
