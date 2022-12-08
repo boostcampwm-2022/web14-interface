@@ -47,7 +47,7 @@ export class InterviewService {
 	}): Promise<string> {
 		const { docsUUID, feedbackList } = feedbackRequestDto;
 		const docs = await this.interviewRepository.getInterviewDocsByDocsUUID(docsUUID);
-		if (!docs) throw new BadRequestException(HTTP_ERROR_MSG.MATCHED_DOCS_NOT_FOUND);
+		if (!docs) throw new BadRequestException(HTTP_ERROR_MSG.NOT_FOUND_MATCHED_DOCS);
 
 		await Promise.all(
 			feedbackList.map((feedbackBoxDto: feedbackBoxDto) => {
