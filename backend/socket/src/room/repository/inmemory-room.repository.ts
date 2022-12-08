@@ -9,27 +9,27 @@ export class InmemoryRoomRepository implements RoomRepository {
 	private userClientIdMap = new Map<userUUID, clientId>();
 	private userMap = new Map<userUUID, User>();
 
-	createRoom({ roomUUID, room }: { roomUUID: string; room: InmemoryRoom }) {
+	async createRoom({ roomUUID, room }: { roomUUID: string; room: InmemoryRoom }) {
 		this.rooms.set(roomUUID, room);
 		this.usersInRoom.set(roomUUID, new Set());
 		return room;
 	}
 
-	deleteRoom(roomUUID: string) {
+	async deleteRoom(roomUUID: string) {
 		this.rooms.delete(roomUUID);
 		this.usersInRoom.delete(roomUUID);
 	}
 
-	getRoom(roomUUID: string) {
+	async getRoom(roomUUID: string) {
 		return this.rooms.get(roomUUID);
 	}
 
-	getUsersInRoom(roomUUID: string) {
+	async getUsersInRoom(roomUUID: string) {
 		const userSet = this.usersInRoom.get(roomUUID);
 		return [...userSet].map((uuid) => this.userMap.get(uuid));
 	}
 
-	saveUserInRoom({
+	async saveUserInRoom({
 		clientId,
 		roomUUID,
 		user,
@@ -46,17 +46,17 @@ export class InmemoryRoomRepository implements RoomRepository {
 		this.userClientIdMap.set(user.uuid, clientId);
 	}
 
-	getUserByClientId(clientId: string) {
+	async getUserByClientId(clientId: string) {
 		const uuid = this.clientUserIdMap.get(clientId);
 		return this.userMap.get(uuid);
 	}
 
-	getClientIdByUser(uuid: string) {
+	async getClientIdByUser(uuid: string) {
 		const clientId = this.userClientIdMap.get(uuid);
 		return clientId;
 	}
 
-	removeUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }) {
+	async removeUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }) {
 		const userSet = this.usersInRoom.get(roomUUID);
 		userSet.delete(user.uuid);
 
@@ -67,17 +67,17 @@ export class InmemoryRoomRepository implements RoomRepository {
 		this.clientUserIdMap.delete(clientId);
 	}
 
-	getRoomPhase(roomUUID: string): ROOM_PHASE {
+	async getRoomPhase(roomUUID: string) {
 		const room = this.rooms.get(roomUUID);
 		return room.phase;
 	}
 
-	updateRoomPhase({ roomUUID, phase }: { roomUUID: string; phase: ROOM_PHASE }) {
+	async updateRoomPhase({ roomUUID, phase }: { roomUUID: string; phase: ROOM_PHASE }) {
 		const room = this.rooms.get(roomUUID);
 		room.phase = phase;
 	}
 
-	updateUserInfo({ uuid, updateUser }: { uuid: string; updateUser: Partial<User> }) {
+	async updateUserInfo({ uuid, updateUser }: { uuid: string; updateUser: Partial<User> }) {
 		const user = this.userMap.get(uuid);
 		for (const key in updateUser) {
 			user[key] = updateUser[key];
