@@ -16,7 +16,7 @@ import { PAGE_TYPE } from '@constants/page.constant';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { socketEmit } from '@api/socket.api';
 import { REST_TYPE } from '@constants/rest.constant';
-import { DocsReqDtoType } from '@customType/dto';
+import { DocsReqDtoType } from '@customType/DTO';
 
 const Interviewee = () => {
 	usePreventLeave();

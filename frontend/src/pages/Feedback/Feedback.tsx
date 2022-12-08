@@ -14,7 +14,7 @@ import { socketEmit } from '@api/socket.api';
 import { PAGE_TYPE } from '@constants/page.constant';
 import { REST_TYPE } from '@constants/rest.constant';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
-import { FeedbackDtoType } from '@customType/dto';
+import { FeedbackDtoType } from '@customType/DTO';
 import { feedbackPageStyle, feedbackPageContainerStyle } from './Feddback.style';
 
 const Feedback = () => {

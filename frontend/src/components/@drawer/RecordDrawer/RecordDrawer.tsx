@@ -1,6 +1,6 @@
 import DocsItem from '@components/@shared/DocsItem/DocsItem';
 import { REST_TYPE } from '@constants/rest.constant';
-import { DocsItemDtoType } from '@customType/dto';
+import { DocsItemDtoType } from '@customType/DTO';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
