@@ -6,9 +6,9 @@ import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
 import Video from '@components/@shared/Video/Video';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
-import { webRTCStreamSelector, webRTCUserMapState } from '@store/webRTC.atom';
-import { currentVideoTimeState } from '@store/currentVideoTime.atom';
-import { docsUUIDState, userRoleSelector } from '@store/room.atom';
+import { webRTCStreamSelector, webRTCUserMapState } from '@store/webRTC.store';
+import { currentVideoTimeState } from '@store/currentVideoTime.store';
+import { docsUUIDState, userRoleSelector } from '@store/room.store';
 
 import { socket } from '@service/socket';
 import mediaStreamer from '@service/mediaStreamer';

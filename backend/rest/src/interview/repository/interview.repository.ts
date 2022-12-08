@@ -13,13 +13,7 @@ export interface InterviewRepository<T> {
 		docsDto: DocsRequestDto;
 	}): Promise<string>;
 
-	getInterviewDocsListByUserId({
-		userId,
-		docsUUID,
-	}: {
-		userId: string;
-		docsUUID: string;
-	}): Promise<T>;
+	getInterviewDocsListByUserId(docsUUID: string): Promise<T>;
 
 	getInterviewDocsByDocsUUID(docsUUID: string): Promise<T>;
 

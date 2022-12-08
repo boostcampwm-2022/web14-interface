@@ -1,5 +1,5 @@
 import { atom, selector } from 'recoil';
-import { feedbackIdsState } from './feedback.atom';
+import { feedbackIdsState } from './feedback.store';
 import { lowerBound } from '@utils/lowerBound';
 
 export const currentVideoTimeState = atom({
