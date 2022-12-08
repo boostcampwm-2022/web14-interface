@@ -98,7 +98,7 @@ const Landing = () => {
 				<div css={flexColumn({ gap: '32px' })}>
 					<div css={introTextStyle}>interface님, 안녕하세요!</div>
 					<div css={flexRow({ gap: '16px' })}>
-						<button onClick={handleCreate} iconColor={true}>
+						<button onClick={handleCreate}>
 							<PlusIcon />
 							<span>방 만들기</span>
 						</button>
