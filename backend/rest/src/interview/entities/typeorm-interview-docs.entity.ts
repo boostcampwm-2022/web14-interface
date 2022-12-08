@@ -18,7 +18,7 @@ export class TypeormInterviewDocsEntity
 	@IsString()
 	userId: string;
 
-	@Column({ length: 100 })
+	@Column({ length: 200 })
 	@IsString()
 	videoUrl: string;
 
