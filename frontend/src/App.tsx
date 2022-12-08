@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import RootRoutes from '@routes/RootRoutes';
 import globalStyle from '@styles/globalStyle';
 import theme from '@styles/theme';
+import ModalManager from '@components/ModalManager';
 
 function App() {
 	return (
@@ -16,6 +17,7 @@ function App() {
 						<Global styles={globalStyle} />
 						<Suspense fallback={<>spinner...</>}>
 							<RootRoutes />
+							<ModalManager />
 						</Suspense>
 					</div>
 					<div id="popup-root"></div>

@@ -27,7 +27,7 @@ const ModalButtonArea = ({ children }: ModalPropType) => {
 };
 
 const ModalWrapper = ({ children }: ModalPropType) => {
-	return <dialog css={ModalWrapperStyle}>{children}</dialog>;
+	return <div css={ModalWrapperStyle}>{children}</div>;
 };
 
 const Modal = Object.assign(ModalWrapper, {
