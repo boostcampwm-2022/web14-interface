@@ -67,7 +67,7 @@ const globalStyle = css`
 
 interface flexPropType {
 	gap?: string;
-	justifyContent?: 'center' | 'space-between';
+	justifyContent?: 'center' | 'space-between' | 'space-around';
 	alignItems?: 'center';
 }
 
