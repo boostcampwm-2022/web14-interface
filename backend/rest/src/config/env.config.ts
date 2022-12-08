@@ -15,8 +15,6 @@ export const envConfig: ConfigModuleOptions = {
 		JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
 		JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.string().required(),
 
-		SERVER_ORIGIN_URL: Joi.string().required(),
-
 		NAVER_CLIENT_ID: Joi.string().required(),
 		NAVER_CLIENT_SECRET: Joi.string().required(),
 

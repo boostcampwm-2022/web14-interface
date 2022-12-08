@@ -27,12 +27,8 @@ export class InterviewController {
 	}
 
 	@Get('docs/:docsUUID')
-	async getInterviewDocs(@Req() req: Request, @Param('docsUUID') docsUUID: string) {
-		const payload = req.user as JwtPayload;
-		const interviewDocs = await this.interviewService.getInterviewDocs({
-			userId: payload.id,
-			docsUUID,
-		});
+	async getInterviewDocs(@Param('docsUUID') docsUUID: string) {
+		const interviewDocs = await this.interviewService.getInterviewDocs(docsUUID);
 
 		return interviewDocs;
 	}

@@ -58,17 +58,8 @@ export class InterviewService {
 		return userId;
 	}
 
-	async getInterviewDocs({
-		userId,
-		docsUUID,
-	}: {
-		userId: string;
-		docsUUID: string;
-	}): Promise<DocsResponseDto> {
-		const docs = await this.interviewRepository.getInterviewDocsListByUserId({
-			userId,
-			docsUUID,
-		});
+	async getInterviewDocs(docsUUID: string): Promise<DocsResponseDto> {
+		const docs = await this.interviewRepository.getInterviewDocsListByUserId(docsUUID);
 
 		const result: DocsResponseDto = {
 			docsUUID: docs.id,
