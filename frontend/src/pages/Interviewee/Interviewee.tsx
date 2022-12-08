@@ -42,12 +42,16 @@ const Interviewee = () => {
 			setDocsUUID(docsUUID);
 			stopStream(docsUUID);
 			const docsRequestDTO: DocsReqDtoType = {
+				roomUUID: interviewee.roomUUID,
 				docsUUID,
 				videoPlayTime: currentVideoTime,
 			};
 			axios.post(REST_TYPE.INTERVIEW_DOCS, docsRequestDTO);
 			safeNavigate(PAGE_TYPE.WAITTING_PAGE);
 		});
+		return () => {
+			socket.off(SOCKET_EVENT_TYPE.START_WAITING);
+		};
 	}, [currentVideoTime]);
 
 	useEffect(() => {
