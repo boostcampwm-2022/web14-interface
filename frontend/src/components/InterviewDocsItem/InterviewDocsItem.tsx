@@ -3,7 +3,7 @@ import React from 'react';
 import { DocsItemDtoType } from '@customType/dto';
 import { ReactComponent as DownloadIcon } from '@assets/icon/download.svg';
 import { iconSmStyle } from '@styles/commonStyle';
-import { createdAtStyle, docsItemWrapper, indexStyle, playTimeStyle } from './DocsItem.style';
+import { createdAtStyle, docsItemWrapper, indexStyle, playTimeStyle } from './InterviewDocsItem.style';
 import { mmssFormatter } from '@utils/common.util';
 import { ONE_SECOND } from '@constants/time.constant';
 import useModal from '@hooks/useModal';
@@ -15,7 +15,7 @@ export interface Props {
 	style: 'card' | 'list';
 }
 
-const DocsItem = ({ docs, idx, style }: Props) => {
+const InterviewDocsItem = ({ docs, idx, style }: Props) => {
 	const { openModal } = useModal();
 	const handleClickDocsItem = () => {
 		openModal(MODAL_TYPE.InterviewDocsItemModal, { docsUUID: docs.id, idx });
@@ -36,4 +36,4 @@ const DocsItem = ({ docs, idx, style }: Props) => {
 	);
 };
 
-export default DocsItem;
+export default InterviewDocsItem;

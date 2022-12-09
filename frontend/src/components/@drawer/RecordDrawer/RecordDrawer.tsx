@@ -1,6 +1,6 @@
 import React from 'react';
 
-import DocsItem from '@components/DocsItem/DocsItem';
+import DocsItem from '@components/InterviewDocsItem/InterviewDocsItem';
 import { docsListQuery } from '@store/interviewDocs.store';
 import { roomUUIDState } from '@store/room.store';
 

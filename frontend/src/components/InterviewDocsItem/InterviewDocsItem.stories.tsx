@@ -1,6 +1,6 @@
 import React from 'react';
 import { Story } from '@storybook/react';
-import DocsItem, { Props } from './DocsItem';
+import DocsItem, { Props } from './InterviewDocsItem';
 
 export default {
 	component: DocsItem,
