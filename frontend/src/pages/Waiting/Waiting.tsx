@@ -9,9 +9,11 @@ import { PAGE_TYPE } from '@constants/page.constant';
 import { socket } from '../../service/socket';
 import BottomBar from '@components/BottomBar/BottomBar';
 import { waitingWrapperStyle } from './Waiting.style';
+import useCleanupInterview from '@hooks/useCleanupInterview';
 
 const Waiting = () => {
 	usePreventLeave();
+	const cleanupInterview = useCleanupInterview();
 	const { safeNavigate } = useSafeNavigate();
 	const totalUser = useRecoilValue(othersInRoomState);
 	const [completedFbCnt, setCompletedFbCnt] = useRecoilState(completedFbCntState);
@@ -25,6 +27,10 @@ const Waiting = () => {
 			setCompletedFbCnt(totalUser.length);
 			safeNavigate(PAGE_TYPE.LOBBY_PAGE);
 		});
+	}, []);
+
+	useEffect(() => {
+		return cleanupInterview;
 	}, []);
 
 	return (

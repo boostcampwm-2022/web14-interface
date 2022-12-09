@@ -8,6 +8,7 @@ import BottomBar from '@components/BottomBar/BottomBar';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import usePreventLeave from '@hooks/usePreventLeave';
 import useSafeNavigate from '@hooks/useSafeNavigate';
+import useCleanupInterview from '@hooks/useCleanupInterview';
 import { feedbackDtoSelector, isFbSyncState } from '@store/feedback.store';
 import { completedFbCntState, docsUUIDState, meInRoomState } from '@store/room.store';
 
@@ -35,13 +36,16 @@ interface endFeedbackResponseType {
 
 const Feedback = () => {
 	usePreventLeave();
-	const setCompletedFbCnt = useSetRecoilState(completedFbCntState);
 	const { safeNavigate } = useSafeNavigate();
+	const cleanupInterview = useCleanupInterview();
+
+	const setCompletedFbCnt = useSetRecoilState(completedFbCntState);
 	const [isFbSync, setIsFbSync] = useRecoilState(isFbSyncState);
-	const [videoUrl, setVideoUrl] = useState('');
 	const docsUUID = useRecoilValue(docsUUIDState);
 	const feedbackList = useRecoilValue(feedbackDtoSelector);
+
 	const me = useRecoilValue(meInRoomState);
+	const [videoUrl, setVideoUrl] = useState('');
 
 	const handleEndFeedback = useCallback(async () => {
 		const { isLastFeedback, count } = await socketEmit<endFeedbackResponseType>(
@@ -63,6 +67,10 @@ const Feedback = () => {
 		socket.on(SOCKET_EVENT_TYPE.DOWNLOAD_VIDEO, ({ videoUrl }) => {
 			setVideoUrl(videoUrl);
 		});
+	}, []);
+
+	useEffect(() => {
+		return cleanupInterview;
 	}, []);
 
 	const finishFeedbackBtn = (
