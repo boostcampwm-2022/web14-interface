@@ -1,18 +1,20 @@
 import React, { useEffect, useRef } from 'react';
 import FeedbackItem from '@components/FeedbackItem/FeedbackItem';
 import { useRecoilValue } from 'recoil';
-import { feedbackListSelector, isFbSyncState } from '@store/feedback.store';
+import { isFbSyncState } from '@store/feedback.store';
 import { focusIndexSelector } from '@store/currentVideoTime.store';
 
 import { feedbackListStyle } from './FeedbackList.style';
 import FeedbackEditBtn from '@components/FeedbackEditBtns/FeedbackEditBtns';
+import { FeedbackItemType } from '@customType/feedback';
 
 interface Props {
-	editable: boolean;
+	editable?: boolean;
+	feedbackList: FeedbackItemType[];
 }
-const FeedbackList = ({ editable }: Props) => {
+const FeedbackList = ({ editable = false, feedbackList }: Props) => {
 	const feedbackRef = useRef([]);
-	const feedbackList = useRecoilValue(feedbackListSelector);
+
 	const focusIndex = useRecoilValue(focusIndexSelector);
 	const isFbSync = useRecoilValue(isFbSyncState);
 

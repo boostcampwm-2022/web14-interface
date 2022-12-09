@@ -8,6 +8,7 @@ import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import { webRTCStreamSelector } from '@store/webRTC.store';
 import { docsUUIDState, userRoleSelector } from '@store/room.store';
+import { feedbackListSelector } from '@store/feedback.store';
 
 import { socket } from '../../service/socket';
 import { PAGE_TYPE } from '@constants/page.constant';
@@ -24,6 +25,7 @@ const Interviewer = () => {
 	const { safeNavigate } = useSafeNavigate();
 	usePreventLeave();
 
+	const feedbackList = useRecoilValue(feedbackListSelector);
 	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);
 	const streamList = useRecoilValue(webRTCStreamSelector);
 	const setDocsUUID = useSetRecoilState(docsUUIDState);
@@ -79,7 +81,7 @@ const Interviewer = () => {
 					))}
 				</div>
 				<div css={feedbackAreaStyle}>
-					<FeedbackList editable />
+					<FeedbackList feedbackList={feedbackList} editable />
 					<FeedbackForm />
 				</div>
 			</div>

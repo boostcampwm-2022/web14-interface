@@ -17,7 +17,7 @@ export interface DocsResDtoType {
 	docsUUID: string;
 	createdAt: Date;
 	videoPlayTime: number;
-	feedbacks: namedFeedback;
+	feedbacks: namedFeedback[];
 }
 
 interface namedFeedback {

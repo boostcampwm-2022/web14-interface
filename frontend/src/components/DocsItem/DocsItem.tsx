@@ -18,7 +18,7 @@ export interface Props {
 const DocsItem = ({ docs, idx, style }: Props) => {
 	const { openModal } = useModal();
 	const handleClickDocsItem = () => {
-		openModal(MODAL_TYPE.InterviewDocsItemModal, { docsUUID: docs.id });
+		openModal(MODAL_TYPE.InterviewDocsItemModal, { docsUUID: docs.id, idx });
 	};
 	return (
 		<article onClick={handleClickDocsItem} css={(theme) => docsItemWrapper(theme, style)}>

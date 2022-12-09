@@ -9,7 +9,7 @@ import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import usePreventLeave from '@hooks/usePreventLeave';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import useCleanupInterview from '@hooks/useCleanupInterview';
-import { feedbackDtoSelector, isFbSyncState } from '@store/feedback.store';
+import { feedbackDtoSelector, feedbackListSelector, isFbSyncState } from '@store/feedback.store';
 import { completedFbCntState, docsUUIDState, meInRoomState } from '@store/room.store';
 
 import { ReactComponent as LinkIcon } from '@assets/icon/link.svg';
@@ -42,7 +42,8 @@ const Feedback = () => {
 	const setCompletedFbCnt = useSetRecoilState(completedFbCntState);
 	const [isFbSync, setIsFbSync] = useRecoilState(isFbSyncState);
 	const docsUUID = useRecoilValue(docsUUIDState);
-	const feedbackList = useRecoilValue(feedbackDtoSelector);
+	const feedbackListDto = useRecoilValue(feedbackDtoSelector);
+	const feedbackList = useRecoilValue(feedbackListSelector);
 
 	const me = useRecoilValue(meInRoomState);
 	const [videoUrl, setVideoUrl] = useState('');
@@ -55,13 +56,13 @@ const Feedback = () => {
 		const feedbackDto: FeedbackDtoType = {
 			docsUUID,
 			userUUID: me.uuid,
-			feedbackList,
+			feedbackList: feedbackListDto,
 		};
 		axios.post(REST_TYPE.FEEDBACK, feedbackDto);
 
 		if (isLastFeedback) safeNavigate(PAGE_TYPE.LOBBY_PAGE);
 		else safeNavigate(PAGE_TYPE.WAITTING_PAGE);
-	}, [docsUUID, feedbackList, me]);
+	}, [docsUUID, feedbackListDto, me]);
 
 	useEffect(() => {
 		socket.on(SOCKET_EVENT_TYPE.DOWNLOAD_VIDEO, ({ videoUrl }) => {
@@ -101,7 +102,7 @@ const Feedback = () => {
 					/>
 				</button>
 				<div css={feedbackAreaStyle}>
-					<FeedbackList editable />
+					<FeedbackList feedbackList={feedbackList} editable />
 					<FeedbackForm />
 				</div>
 			</div>
