@@ -89,11 +89,11 @@ export class RedisRoomRepository implements RoomRepository {
 		updateUser: Partial<User>;
 	}): Promise<void> {
 		for (const key in updateUser) {
-			await R.hSet(`users:${uuid}`, `${key}`, key);
+			await R.hSet(`users:${uuid}`, `${key}`, updateUser[key]);
 		}
 	}
 
-	transformEmptyObject(object) {
+	transformEmptyObject(object: any) {
 		if (Object.keys(object).length === 0) {
 			return null;
 		}
