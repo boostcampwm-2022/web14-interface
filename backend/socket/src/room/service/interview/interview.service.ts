@@ -48,12 +48,12 @@ export class InterviewService {
 		await this.validateRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.FEEDBACK });
 		await this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.FEEDBACK });
 
-		usersInRoom.forEach(async (user) => {
+		for (const user of usersInRoom) {
 			const clientId = await this.roomRepository.getClientIdByUser(user.uuid);
 
 			const emitEvent = this.getEventAtEndInterviewByRole(user.role);
 			server.to(clientId).emit(emitEvent, { docsUUID });
-		});
+		}
 
 		return {};
 	}
