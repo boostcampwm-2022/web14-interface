@@ -7,10 +7,16 @@ const theme = {
 		black: '#222222',
 		gray1: '#888888',
 		gray2: '#BBBBBB',
-		gray3: '#D7D7D7',
-		white: '#ffffff',
-		blue1: '#1F7CD2',
+		gray3: '#EEECEC',
+		white: '#FEFEFE',
 	},
+	fontSize: {
+		xSmall: '12px',
+		small: '16px',
+		medium: '20px',
+		large: '24px',
+	},
+	borderRaduis: '8px',
 };
 
 export default theme;

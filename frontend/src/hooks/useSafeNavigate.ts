@@ -1,5 +1,5 @@
 import { useSetRecoilState } from 'recoil';
-import { pageState } from '@store/page.atom';
+import { pageState } from '@store/page.store';
 import { PAGE_TYPE } from '@constants/page.constant';
 
 const useSafeNavigate = () => {

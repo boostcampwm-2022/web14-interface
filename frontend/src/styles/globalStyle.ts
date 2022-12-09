@@ -18,6 +18,26 @@ const globalStyle = css`
 		height: 100%;
 	}
 
+	.App {
+		position: absolute;
+	}
+
+	#popup-root {
+		display: none;
+		justify-content: center;
+		align-items: center;
+
+		width: 100%;
+		height: 100%;
+
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, 0.3);
+	}
+
 	ul,
 	li {
 		list-style: none;
@@ -39,17 +59,39 @@ const globalStyle = css`
 		outline: none;
 		font-family: 'Noto Sans KR', sans-serif;
 	}
+
+	textarea {
+		resize: none;
+	}
 `;
 
-export const flexRow = ({ gap }) => css`
+interface flexPropType {
+	gap?: string;
+	justifyContent?: 'center' | 'space-between' | 'space-around';
+	alignItems?: 'center';
+}
+
+export const flexRow = ({
+	gap = '0px',
+	justifyContent = 'center',
+	alignItems = 'center',
+}: flexPropType) => css`
 	display: flex;
 	flex-direction: row;
+	justify-content: ${justifyContent};
+	align-items: ${alignItems};
 	gap: ${gap};
 `;
 
-export const flexColumn = ({ gap }) => css`
+export const flexColumn = ({
+	gap = '0px',
+	justifyContent = 'center',
+	alignItems = 'center',
+}: flexPropType) => css`
 	display: flex;
 	flex-direction: column;
+	justify-content: ${justifyContent};
+	align-items: ${alignItems};
 	gap: ${gap};
 `;
 

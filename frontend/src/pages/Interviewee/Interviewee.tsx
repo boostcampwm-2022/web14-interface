@@ -6,9 +6,9 @@ import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
 import Video from '@components/@shared/Video/Video';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
-import { webRTCStreamSelector, webRTCUserMapState } from '@store/webRTC.atom';
-import { currentVideoTimeState } from '@store/currentVideoTime.atom';
-import { docsUUIDState, userRoleSelector } from '@store/room.atom';
+import { webRTCStreamSelector, webRTCUserMapState } from '@store/webRTC.store';
+import { currentVideoTimeState } from '@store/currentVideoTime.store';
+import { docsUUIDState, userRoleSelector } from '@store/room.store';
 
 import { socket } from '@service/socket';
 import mediaStreamer from '@service/mediaStreamer';
@@ -17,6 +17,10 @@ import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { socketEmit } from '@api/socket.api';
 import { REST_TYPE } from '@constants/rest.constant';
 import { DocsReqDtoType } from '@customType/dto';
+import { intervieweeWrapperStyle } from './Interviewee.style';
+import BottomBar from '@components/BottomBar/BottomBar';
+import RoundButton from '@components/@shared/RoundButton/RoundButton';
+import theme from '@styles/theme';
 
 const Interviewee = () => {
 	usePreventLeave();
@@ -38,31 +42,51 @@ const Interviewee = () => {
 	};
 
 	useEffect(() => {
-		socket.on(SOCKET_EVENT_TYPE.START_WAITING, ({ docsUUID }) => {
-			setDocsUUID(docsUUID);
-			stopStream(docsUUID);
-			const docsRequestDTO: DocsReqDtoType = {
-				docsUUID,
-				videoPlayTime: currentVideoTime,
-			};
-			axios.post(REST_TYPE.INTERVIEW_DOCS, docsRequestDTO);
-			safeNavigate(PAGE_TYPE.WAITTING_PAGE);
-		});
-	}, [currentVideoTime]);
-
-	useEffect(() => {
 		const effect = () => {
+			console.log('E!');
 			if (!interviewee) return;
 			const myStream = getStreamFromUUID(interviewee.uuid);
 			if (!myStream) return;
 			startStream(myStream);
 		};
 		effect();
-	}, [webRTCUserMap, interviewee]);
+		return stopStream;
+	}, []);
+
+	useEffect(() => {
+		socket.on(SOCKET_EVENT_TYPE.START_WAITING, ({ docsUUID }) => {
+			setDocsUUID(docsUUID);
+			socketEmit('finish_streaming', docsUUID);
+			const docsRequestDto: DocsReqDtoType = {
+				roomUUID: interviewee.roomUUID,
+				docsUUID,
+				videoPlayTime: currentVideoTime,
+			};
+			axios.post(REST_TYPE.INTERVIEW_DOCS, docsRequestDto);
+			safeNavigate(PAGE_TYPE.WAITTING_PAGE);
+		});
+
+		return () => {
+			socket.off(SOCKET_EVENT_TYPE.START_WAITING);
+		};
+	}, [currentVideoTime]);
+
+	const endInterviewBtn = (
+		<RoundButton
+			style={{
+				backgroundColor: theme.colors.primary,
+				width: 200,
+				height: 50,
+				color: theme.colors.white,
+			}}
+			onClick={hadleEndInterview}
+		>
+			<div>면접 종료</div>
+		</RoundButton>
+	);
 
 	return (
-		<>
-			<div>Interviewee</div>
+		<div css={intervieweeWrapperStyle}>
 			<IntervieweeVideo
 				key={interviewee.uuid}
 				src={getStreamFromUUID(interviewee.uuid)}
@@ -79,8 +103,8 @@ const Interviewee = () => {
 					muted
 				/>
 			))}
-			<button onClick={hadleEndInterview}>면접 종료</button>
-		</>
+			<BottomBar mainController={endInterviewBtn} />
+		</div>
 	);
 };
 

@@ -1,10 +1,12 @@
+import { ONE_SECOND } from '@constants/time.constant';
 import { EditableFeedbackType } from '@customType/feedback';
-import { currentVideoTimeState } from '@store/currentVideoTime.atom';
-import { feedbackIdsState, feedbackIdxMapState, feedbackState } from '@store/feedback.atom';
+import { currentVideoTimeState } from '@store/currentVideoTime.store';
+import { feedbackIdsState, feedbackIdxMapState, feedbackState } from '@store/feedback.store';
+import { mmssFormatter } from '@utils/common.util';
 import React, { useState } from 'react';
 import { useRecoilTransaction_UNSTABLE, useRecoilValue } from 'recoil';
 
-import { fbFormStyle, fbInputStyle, fbStartTimeStyle } from './FeedbackForm.style';
+import { fbFormWrapperStyle, fbInputStyle, fbStartTimeStyle } from './FeedbackForm.style';
 
 const FeedbackForm = () => {
 	const [inputVal, setInputVal] = useState('');
@@ -19,18 +21,19 @@ const FeedbackForm = () => {
 		setInputVal(e.target.value);
 	};
 
-	const handleAddFeedback = (e) => {
-		e.preventDefault();
+	const handleAddFeedback = () => {
 		feedbackIdxMap.set(startTime, feedbackIdxMap.get(startTime) + 1 || 1);
 		const nextInnerIdx = feedbackIdxMap.get(startTime);
+		const newFeedbackId = generateFeedbackId(startTime, nextInnerIdx);
 		const newFeedback = {
+			id: newFeedbackId,
 			startTime: startTime,
 			innerIndex: nextInnerIdx,
 			content: inputVal,
 			readOnly: true,
 		};
 
-		insertFeedback(newFeedback);
+		insertFeedback(newFeedback, newFeedbackId);
 		setInputVal('');
 	};
 
@@ -40,23 +43,31 @@ const FeedbackForm = () => {
 
 	const insertFeedback = useRecoilTransaction_UNSTABLE(
 		({ set }) =>
-			(newFeedback: EditableFeedbackType) => {
-				const newFeedbackId = generateFeedbackId(
-					newFeedback.startTime,
-					newFeedback.innerIndex
-				);
+			(newFeedback: EditableFeedbackType, newFeedbackId: string) => {
 				set(feedbackIdsState, (todoId) => todoId.concat(newFeedbackId).sort());
 				set(feedbackState(newFeedbackId), newFeedback);
 			},
 		[]
 	);
 
+	const handleKeyDown = (e) => {
+		if (e.keyCode === 13 && !e.shiftKey) {
+			e.preventDefault();
+			handleAddFeedback();
+		}
+	};
+
 	return (
-		<div css={fbFormStyle}>
-			<div css={fbStartTimeStyle}>{inputVal ? startTime : currentVideoTime}</div>
-			<form onSubmit={handleAddFeedback}>
-				<input type="text" value={inputVal} onChange={handleChange} css={fbInputStyle} />
-			</form>
+		<div css={fbFormWrapperStyle}>
+			<div css={fbStartTimeStyle}>
+				{mmssFormatter((inputVal ? startTime : currentVideoTime) * ONE_SECOND)}
+			</div>
+			<textarea
+				value={inputVal}
+				onKeyDown={handleKeyDown}
+				onChange={handleChange}
+				css={fbInputStyle}
+			/>
 		</div>
 	);
 };

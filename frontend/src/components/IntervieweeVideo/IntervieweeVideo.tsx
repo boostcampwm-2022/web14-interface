@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Video, { VideoPropType } from '@components/@shared/Video/Video';
 import { useRecoilState } from 'recoil';
-import { currentVideoTimeState } from '@store/currentVideoTime.atom';
-import { isFbClickedState } from '@store/feedback.atom';
+import { currentVideoTimeState } from '@store/currentVideoTime.store';
+import { isFbClickedState } from '@store/feedback.store';
 
 const IntervieweeVideo = (props: VideoPropType) => {
 	const videoRef = useRef<HTMLVideoElement>(null);
