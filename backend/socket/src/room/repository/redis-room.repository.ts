@@ -6,7 +6,7 @@ import { pubClient as R } from '@config';
 export class RedisRoomRepository implements RoomRepository {
 	async createRoom({ roomUUID, room }: { roomUUID: string; room: Room }): Promise<Room> {
 		await R.hSet(`rooms:${roomUUID}`, { ...room });
-		return room;
+		return this.transformEmptyObject(room);
 	}
 
 	async deleteRoom(roomUUID: string): Promise<void> {
@@ -14,19 +14,18 @@ export class RedisRoomRepository implements RoomRepository {
 	}
 
 	async getRoom(roomUUID: string): Promise<Room> {
-		const phase = await R.hGet(`rooms:${roomUUID}`, 'phase');
-		return { roomUUID, phase } as Room;
+		const room: any = await R.hGetAll(`rooms:${roomUUID}`);
+		return this.transformEmptyObject(room);
 	}
 
 	async getUsersInRoom(roomUUID: string): Promise<User[]> {
-		const userStrList = await R.sMembers(`memberIds:${roomUUID}`);
+		const userIdList = await R.sMembers(`memberIds:${roomUUID}`);
 
-		return Promise.all(
-			userStrList.map((userStr) => {
-				const user: any = R.hGetAll(userStr);
-				return user;
-			})
+		const users: any[] = await Promise.all(
+			userIdList.map((userId) => R.hGetAll(`users:${userId}`))
 		);
+
+		return users.filter((user) => this.transformEmptyObject(user));
 	}
 
 	async saveUserInRoom({
@@ -40,8 +39,8 @@ export class RedisRoomRepository implements RoomRepository {
 	}): Promise<void> {
 		await R.multi()
 			.sAdd(`memberIds:${roomUUID}`, user.uuid)
-			.hSet(user.uuid, { ...user })
-			.set(clientId, user.uuid)
+			.hSet(`users:${user.uuid}`, { ...user })
+			.set(`userIds:${clientId}`, user.uuid)
 			.set(`clientIds:${user.uuid}`, clientId)
 			.exec();
 	}
@@ -49,7 +48,7 @@ export class RedisRoomRepository implements RoomRepository {
 	async getUserByClientId(clientId: string): Promise<User> {
 		const userUUID = await R.get(`userIds:${clientId}`);
 		const user: any = await R.hGetAll(`users:${userUUID}`);
-		return user;
+		return this.transformEmptyObject(user);
 	}
 
 	async getClientIdByUser(uuid: string): Promise<string> {
@@ -92,5 +91,12 @@ export class RedisRoomRepository implements RoomRepository {
 		for (const key in updateUser) {
 			await R.hSet(`users:${uuid}`, `${key}`, key);
 		}
+	}
+
+	transformEmptyObject(object) {
+		if (Object.keys(object).length === 0) {
+			return null;
+		}
+		return object;
 	}
 }
