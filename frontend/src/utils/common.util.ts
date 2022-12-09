@@ -20,7 +20,8 @@ export const getFirstLabeledFbList = (
 	fbList: EditableFeedbackType[] | FeedbackType[]
 ): FeedbackItemType[] => {
 	let prev = -1;
-	return fbList.map((fb) => {
+	return fbList.map((fb_) => {
+		const fb = { ...fb_ };
 		fb.isFirst = false;
 		if (fb.startTime > prev) {
 			prev = fb.startTime;

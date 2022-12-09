@@ -30,9 +30,7 @@ export const isFbSyncState = atom({
 export const feedbackListSelector = selector({
 	key: 'feedbackListSelector',
 	get: ({ get }) => {
-		const fbList = get(feedbackIdsState).map((id) => {
-			return { ...get(feedbackState(id)) };
-		});
+		const fbList = get(feedbackIdsState).map((id) => get(feedbackState(id)));
 		const firstLabeledFbList = getFirstLabeledFbList(fbList);
 		return firstLabeledFbList;
 	},
