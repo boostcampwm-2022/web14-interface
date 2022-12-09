@@ -62,6 +62,20 @@ const globalStyle = css`
 
 	textarea {
 		resize: none;
+		height: inherit;
+	}
+
+	div,
+	textarea {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+	div::-webkit-scrollbar {
+		display: none;
+	}
+
+	textarea::-webkit-scrollbar {
+		display: none;
 	}
 `;
 
