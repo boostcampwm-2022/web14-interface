@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
 import FeedbackList from '@components/FeedbackList/FeedbackList';
@@ -7,7 +7,7 @@ import Video from '@components/@shared/Video/Video';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import { webRTCStreamSelector } from '@store/webRTC.store';
-import { userRoleSelector } from '@store/room.store';
+import { docsUUIDState, userRoleSelector } from '@store/room.store';
 
 import { socket } from '../../service/socket';
 import { PAGE_TYPE } from '@constants/page.constant';
@@ -26,6 +26,7 @@ const Interviewer = () => {
 
 	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);
 	const streamList = useRecoilValue(webRTCStreamSelector);
+	const setDocsUUID = useSetRecoilState(docsUUIDState);
 
 	const hadleEndInterview = () => {
 		socketEmit(SOCKET_EVENT_TYPE.END_INTERVIEW);
@@ -36,7 +37,8 @@ const Interviewer = () => {
 	};
 
 	useEffect(() => {
-		socket.on(SOCKET_EVENT_TYPE.START_FEEDBACK, () => {
+		socket.on(SOCKET_EVENT_TYPE.START_FEEDBACK, ({ docsUUID }) => {
+			setDocsUUID(docsUUID);
 			safeNavigate(PAGE_TYPE.FEEDBACK_PAGE);
 		});
 	}, []);
