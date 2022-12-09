@@ -6,7 +6,7 @@ import {
 	ERROR_MSG,
 	USER_ROLE,
 } from '@constant';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { Room, User } from 'src/types/room.type';
 import { v4 as uuidv4 } from 'uuid';
@@ -15,6 +15,8 @@ import { getRandomNickname } from '@woowa-babble/random-nickname';
 
 @Injectable()
 export class ConnectionService {
+	private readonly logger = new Logger('Room Connection');
+
 	constructor(
 		@Inject(ROOM_REPOSITORY_INTERFACE)
 		private readonly roomRepository: RoomRepository
@@ -25,8 +27,13 @@ export class ConnectionService {
 	 * @returns uuid - 방의 uuid
 	 */
 	async createRoom() {
-		const room = this.createDefaultRoom();
-		await this.roomRepository.createRoom({ roomUUID: room.roomUUID, room });
+		const defaultRoom = this.createDefaultRoom();
+		const room = await this.roomRepository.createRoom({
+			roomUUID: defaultRoom.roomUUID,
+			room: defaultRoom,
+		});
+
+		this.logger.log(JSON.stringify(room));
 
 		return { data: { uuid: room.roomUUID } };
 	}
@@ -45,6 +52,8 @@ export class ConnectionService {
 
 		const user = await this.createDefaultUser(roomUUID);
 		const others = await this.roomRepository.getUsersInRoom(roomUUID);
+
+		this.logger.log(others);
 
 		client.join(roomUUID);
 		await this.roomRepository.saveUserInRoom({ clientId: client.id, roomUUID, user });

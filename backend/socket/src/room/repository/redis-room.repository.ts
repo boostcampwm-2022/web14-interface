@@ -1,32 +1,35 @@
 import { ROOM_PHASE } from '@constant';
-import { InmemoryRoom, User } from '@types';
+import { Room, User } from '@types';
 import { RoomRepository } from './room.repository';
 import { pubClient as R } from '@config';
 
 export class RedisRoomRepository implements RoomRepository {
-	// private rooms = new Map<roomUUID, InmemoryRoom>();
-	// private usersInRoom = new Map<roomUUID, Set<userUUID>>();
-	// private clientUserIdMap = new Map<clientId, userUUID>();
-	// private userClientIdMap = new Map<userUUID, clientId>();
-	// private userMap = new Map<userUUID, User>();
-
-	createRoom({ roomUUID, room }: { roomUUID: string; room: InmemoryRoom }): InmemoryRoom {
-		throw new Error('Method not implemented.');
+	async createRoom({ roomUUID, room }: { roomUUID: string; room: Room }): Promise<Room> {
+		await R.hSet(`rooms:${roomUUID}`, { ...room });
+		return room;
 	}
 
-	deleteRoom(roomUUID: string): void {
-		throw new Error('Method not implemented.');
+	async deleteRoom(roomUUID: string): Promise<void> {
+		await R.del(`rooms:${roomUUID}`);
 	}
 
-	getRoom(roomUUID: string): InmemoryRoom {
-		throw new Error('Method not implemented.');
+	async getRoom(roomUUID: string): Promise<Room> {
+		const phase = await R.hGet(`rooms:${roomUUID}`, 'phase');
+		return { roomUUID, phase } as Room;
 	}
 
-	getUsersInRoom(roomUUID: string): User[] {
-		throw new Error('Method not implemented.');
+	async getUsersInRoom(roomUUID: string): Promise<User[]> {
+		const userStrList = await R.sMembers(`memberIds:${roomUUID}`);
+
+		return Promise.all(
+			userStrList.map((userStr) => {
+				const user: any = R.hGetAll(userStr);
+				return user;
+			})
+		);
 	}
 
-	saveUserInRoom({
+	async saveUserInRoom({
 		clientId,
 		roomUUID,
 		user,
@@ -34,31 +37,60 @@ export class RedisRoomRepository implements RoomRepository {
 		clientId: string;
 		roomUUID: string;
 		user: User;
-	}): void {
-		throw new Error('Method not implemented.');
+	}): Promise<void> {
+		await R.multi()
+			.sAdd(`memberIds:${roomUUID}`, user.uuid)
+			.hSet(user.uuid, { ...user })
+			.set(clientId, user.uuid)
+			.set(`clientIds:${user.uuid}`, clientId)
+			.exec();
 	}
 
-	getUserByClientId(clientId: string): User {
-		throw new Error('Method not implemented.');
+	async getUserByClientId(clientId: string): Promise<User> {
+		const userUUID = await R.get(`userIds:${clientId}`);
+		const user: any = await R.hGetAll(`users:${userUUID}`);
+		return user;
 	}
 
-	getClientIdByUser(uuid: string): string {
-		throw new Error('Method not implemented.');
+	async getClientIdByUser(uuid: string): Promise<string> {
+		const clientId = await R.get(`clientIds:${uuid}`);
+		return clientId;
 	}
 
-	removeUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }): void {
-		throw new Error('Method not implemented.');
+	async removeUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }): Promise<void> {
+		const clientId = await R.get(`clientIds:${user.uuid}`);
+		await R.multi()
+			.sRem(`memberIds:${roomUUID}`, user.uuid)
+			.del(`users:${user.uuid}`)
+			.del(`clientIds:${user.uuid}`)
+			.del(`userIds:${clientId}`)
+			.exec();
 	}
 
-	getRoomPhase(roomUUID: string): ROOM_PHASE {
-		throw new Error('Method not implemented.');
+	async getRoomPhase(roomUUID: string): Promise<ROOM_PHASE> {
+		const phase: any = await R.hGet(`rooms:${roomUUID}`, 'phase');
+		return phase;
 	}
 
-	updateRoomPhase({ roomUUID, phase }: { roomUUID: string; phase: ROOM_PHASE }): void {
-		throw new Error('Method not implemented.');
+	async updateRoomPhase({
+		roomUUID,
+		phase,
+	}: {
+		roomUUID: string;
+		phase: ROOM_PHASE;
+	}): Promise<void> {
+		await R.hSet(`rooms:${roomUUID}`, 'phase', phase);
 	}
 
-	updateUserInfo({ uuid, updateUser }: { uuid: string; updateUser: Partial<User> }) {
-		throw new Error('Method not implemented.');
+	async updateUserInfo({
+		uuid,
+		updateUser,
+	}: {
+		uuid: string;
+		updateUser: Partial<User>;
+	}): Promise<void> {
+		for (const key in updateUser) {
+			await R.hSet(`users:${uuid}`, `${key}`, key);
+		}
 	}
 }
