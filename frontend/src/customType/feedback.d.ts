@@ -9,6 +9,7 @@ export interface EditableFeedbackType extends FeedbackType {
 	readOnly: boolean;
 }
 
-export interface FeedbackItemType extends EditableFeedbackType {
+export interface FeedbackItemType extends FeedbackType {
 	isFirst: boolean;
+	readOnly?: boolean;
 }

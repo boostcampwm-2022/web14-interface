@@ -5,6 +5,7 @@ import { ReactComponent as DownloadIcon } from '@assets/icon/download.svg';
 import { iconSmStyle } from '@styles/commonStyle';
 import { createdAtStyle, docsItemWrapper, indexStyle, playTimeStyle } from './DocsItem.style';
 import { mmssFormatter } from '@utils/common.util';
+import { ONE_SECOND } from '@constants/time.constant';
 
 export interface Props {
 	docs: DocsItemDtoType;
@@ -17,14 +18,10 @@ const DocsItem = ({ docs, idx, style }: Props) => {
 		//open modal
 	};
 	return (
-		<article
-			key={docs.docsUUID}
-			onClick={handleClickDocsItem}
-			css={(theme) => docsItemWrapper(theme, style)}
-		>
+		<article onClick={handleClickDocsItem} css={(theme) => docsItemWrapper(theme, style)}>
 			<div>
 				<div css={indexStyle}>#{idx}</div>
-				<div css={playTimeStyle}>{mmssFormatter(docs.playTime)}</div>
+				<div css={playTimeStyle}>{mmssFormatter(docs.videoPlayTime * ONE_SECOND)}</div>
 			</div>
 			<div>
 				<div css={createdAtStyle}>{docs.createdAt.toLocaleString()}</div>
