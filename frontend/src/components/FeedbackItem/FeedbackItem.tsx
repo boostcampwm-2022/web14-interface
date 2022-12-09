@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import useCrudFeedback from '@hooks/useCrudFeedback';
+import useEditFeedback from '@hooks/useEditFeedback';
 import { isFbClickedState, isFbSyncState } from '@store/feedback.store';
 import { currentVideoTimeState } from '@store/currentVideoTime.store';
 
@@ -23,12 +23,7 @@ const FeedbackItem = ({ feedback, feedbackRef, index, editableBtns }: Props) => 
 	const isFbSync = useRecoilValue(isFbSyncState);
 	const setIsFbClicked = useSetRecoilState(isFbClickedState);
 	const setCurrentVideoTime = useSetRecoilState(currentVideoTimeState);
-	const { handleFbChange } = useCrudFeedback(feedback.id);
-
-	useEffect(() => {
-		if (feedbackRef)
-			feedbackRef.current[index].style.height = textareaRef.current.scrollHeight + 'px';
-	});
+	const { handleFbChange } = useEditFeedback(feedback.id);
 
 	const { startTime, isFirst, content, readOnly } = feedback;
 
@@ -37,6 +32,9 @@ const FeedbackItem = ({ feedback, feedbackRef, index, editableBtns }: Props) => 
 		setIsFbClicked(true);
 		setCurrentVideoTime(startTime);
 	};
+
+	if (feedbackRef)
+		feedbackRef.current[index].style.height = textareaRef.current.scrollHeight + 'px';
 
 	return (
 		<div ref={(el) => (feedbackRef.current[index] = el)} css={feedbackBoxStyle}>
