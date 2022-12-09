@@ -9,6 +9,7 @@ export const docsItemWrapper = (theme, style) =>
 		margin: 20px 0px;
 		width: 100%;
 		gap: 40px;
+		cursor: pointer;
 
 		${style === 'card' ? cardDocsStyle(theme) : listDocsStyle(theme)};
 		div {
