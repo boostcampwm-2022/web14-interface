@@ -25,15 +25,12 @@ interface joinInterviewResponseType {
 }
 
 const Lobby = () => {
+	usePreventLeave();
 	const { safeNavigate } = useSafeNavigate();
 	const [me, setMe] = useRecoilState<UserType>(meInRoomState);
 	const [others, setOthers] = useRecoilState<UserType[]>(othersInRoomState);
-
-	usePreventLeave();
-
 	const [webRTCUserList, setWebRTCUserList] = useRecoilState(webRTCUserMapState);
 	const { startConnection } = useWebRTCSignaling(webRTCUserList, setWebRTCUserList);
-
 	const streamList = useRecoilValue(webRTCStreamSelector);
 
 	useEffect(() => {
