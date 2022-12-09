@@ -4,7 +4,7 @@ import { currentModalState } from '@store/currentModal.store';
 import ReactDOM from 'react-dom';
 import EnterRoomModal from './@modal/EnterRoomModal';
 import InterviewDocsListModal from './@modal/InterviewDocsListModal/InterviewDocsListModal';
-import InterviewDocsItemModal from './@modal/InterviewDocsItemModal/InterviewDocsItemModal';
+import InterviewDocsItemModal from './@modal/InterviewDocsModal/InterviewDocsModal';
 
 const ModalManager = () => {
 	const currentModal = useRecoilValue(currentModalState);

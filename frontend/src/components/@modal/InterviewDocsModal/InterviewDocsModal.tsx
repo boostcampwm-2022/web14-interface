@@ -16,14 +16,14 @@ import {
 	docsItemVideoAreaStyle,
 	docsItemVideoInfoStyle,
 	docsItemFbListStyle,
-} from './InterviewDocsItemModal.style';
+} from './InterviewDocsModal.style';
 
 interface Props {
 	docsUUID: string;
 	idx: number;
 }
 
-const InterviewDocsItemModal = ({ docsUUID, idx }: Props) => {
+const InterviewDocsModal = ({ docsUUID, idx }: Props) => {
 	const docsItem = useRecoilValue(docsItemQuery(docsUUID));
 	const { createdAt, videoPlayTime, feedbacks } = docsItem;
 	const createdAtDate = new Date(createdAt);
@@ -88,4 +88,4 @@ const InterviewDocsItemModal = ({ docsUUID, idx }: Props) => {
 	);
 };
 
-export default InterviewDocsItemModal;
+export default InterviewDocsModal;

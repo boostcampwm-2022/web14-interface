@@ -2,7 +2,7 @@ import React from 'react';
 import Modal from '@components/@shared/Modal/Modal';
 import { useRecoilValue } from 'recoil';
 import { docsListQuery } from '@store/interviewDocs.store';
-import DocsItem from '@components/DocsItem/DocsItem';
+import DocsItem from '@components/InterviewDocsItem/InterviewDocsItem';
 import Button from '@components/@shared/Button/Button';
 import {
 	docsListBodyStyle,
