@@ -71,9 +71,15 @@ const InterviewDocsItemModal = ({ docsUUID, idx }: Props) => {
 							))}
 						</div>
 						<div css={docsItemFbListStyle}>
-							<FeedbackList
-								feedbackList={getFirstLabeledFbList(feedbacks[docIdx].feedbackList)}
-							/>
+							{feedbacks[docIdx] ? (
+								<FeedbackList
+									feedbackList={getFirstLabeledFbList(
+										feedbacks[docIdx].feedbackList
+									)}
+								/>
+							) : (
+								<div>작성된 피드백이 없습니다.</div>
+							)}
 						</div>
 					</div>
 				</div>
