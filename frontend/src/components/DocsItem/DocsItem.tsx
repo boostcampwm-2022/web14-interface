@@ -6,6 +6,8 @@ import { iconSmStyle } from '@styles/commonStyle';
 import { createdAtStyle, docsItemWrapper, indexStyle, playTimeStyle } from './DocsItem.style';
 import { mmssFormatter } from '@utils/common.util';
 import { ONE_SECOND } from '@constants/time.constant';
+import useModal from '@hooks/useModal';
+import { MODAL_TYPE } from '@constants/modal.constant';
 
 export interface Props {
 	docs: DocsItemDtoType;
@@ -14,8 +16,9 @@ export interface Props {
 }
 
 const DocsItem = ({ docs, idx, style }: Props) => {
+	const { openModal } = useModal();
 	const handleClickDocsItem = () => {
-		//open modal
+		openModal(MODAL_TYPE.InterviewDocsItemModal, { docsUUID: docs.id });
 	};
 	return (
 		<article onClick={handleClickDocsItem} css={(theme) => docsItemWrapper(theme, style)}>
