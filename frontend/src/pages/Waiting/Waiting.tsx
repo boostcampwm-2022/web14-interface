@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { completedFbCntState, othersInRoomState } from '@store/room.store';
+import { othersInRoomState } from '@store/room.store';
+import { completedFbCntState } from '@store/interview.store';
 import usePreventLeave from '@hooks/usePreventLeave';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import { PAGE_TYPE } from '@constants/page.constant';

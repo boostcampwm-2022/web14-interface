@@ -7,7 +7,7 @@ import Video from '@components/@shared/Video/Video';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import { webRTCStreamSelector } from '@store/webRTC.store';
-import { docsUUIDState, userRoleSelector } from '@store/room.store';
+import { docsUUIDState, userRoleSelector } from '@store/interview.store';
 import { feedbackListSelector } from '@store/feedback.store';
 
 import { socket } from '../../service/socket';

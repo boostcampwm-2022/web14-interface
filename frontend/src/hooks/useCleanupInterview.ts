@@ -1,7 +1,8 @@
 import { currentVideoTimeState } from '@store/currentVideoTime.store';
 import { feedbackIdsState, feedbackIdxMapState } from '@store/feedback.store';
 import { docsListQuery } from '@store/interviewDocs.store';
-import { completedFbCntState, docsUUIDState, roomUUIDState } from '@store/room.store';
+import { roomUUIDState } from '@store/room.store';
+import { completedFbCntState, docsUUIDState } from '@store/interview.store';
 import { useCallback } from 'react';
 import { useRecoilRefresher_UNSTABLE, useRecoilValue, useResetRecoilState } from 'recoil';
 

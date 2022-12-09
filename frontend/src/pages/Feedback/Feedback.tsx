@@ -10,7 +10,8 @@ import usePreventLeave from '@hooks/usePreventLeave';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import useCleanupInterview from '@hooks/useCleanupInterview';
 import { feedbackDtoSelector, feedbackListSelector, isFbSyncState } from '@store/feedback.store';
-import { completedFbCntState, docsUUIDState, meInRoomState } from '@store/room.store';
+import { meInRoomState } from '@store/room.store';
+import { completedFbCntState, docsUUIDState } from '@store/interview.store';
 
 import { ReactComponent as LinkIcon } from '@assets/icon/link.svg';
 import { socket } from '../../service/socket';
