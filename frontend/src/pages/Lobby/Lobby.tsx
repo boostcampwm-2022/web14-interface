@@ -16,8 +16,9 @@ import { UserType } from '@customType/user';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { PAGE_TYPE } from '@constants/page.constant';
 import { iconBgStyle } from '@styles/commonStyle';
-import { lobbyWrapperStyle, startInterviewBtnStyle, VideoAreaStyle } from './Lobby.style';
+import { lobbyWrapperStyle, VideoAreaStyle } from './Lobby.style';
 import { ReactComponent as BroadcastIcon } from '@assets/icon/broadcast.svg';
+import RoundButton from '@components/@shared/RoundButton/RoundButton';
 
 interface joinInterviewResponseType {
 	usersInRoom: UserType[];
@@ -81,10 +82,16 @@ const Lobby = () => {
 	};
 
 	const startInterviewBtn = (
-		<button css={startInterviewBtnStyle} onClick={handleStartInterviewee}>
+		<RoundButton
+			onClick={handleStartInterviewee}
+			style={{
+				width: 180,
+				height: 50,
+			}}
+		>
 			<BroadcastIcon {...iconBgStyle} />
-			<div>면접 시작</div>
-		</button>
+			<span>면접 시작</span>
+		</RoundButton>
 	);
 
 	return (

@@ -15,12 +15,7 @@ import { completedFbCntState, docsUUIDState } from '@store/interview.store';
 
 import { ReactComponent as LinkIcon } from '@assets/icon/link.svg';
 import { socket } from '../../service/socket';
-import {
-	feedbackWrapperStyle,
-	feedbackContainerStyle,
-	feedbackAreaStyle,
-	feedbackSyncBtnStyle,
-} from './Feedback.style';
+import { feedbackWrapperStyle, feedbackContainerStyle, feedbackAreaStyle } from './Feedback.style';
 import { PAGE_TYPE } from '@constants/page.constant';
 import theme from '@styles/theme';
 import { iconBgStyle } from '@styles/commonStyle';
@@ -78,14 +73,12 @@ const Feedback = () => {
 	const finishFeedbackBtn = (
 		<RoundButton
 			style={{
-				backgroundColor: theme.colors.primary,
-				width: 200,
+				width: 160,
 				height: 50,
-				color: theme.colors.white,
 			}}
 			onClick={handleEndFeedback}
 		>
-			<div>피드백 종료</div>
+			<span>피드백 종료</span>
 		</RoundButton>
 	);
 
@@ -93,15 +86,19 @@ const Feedback = () => {
 		<div css={feedbackWrapperStyle}>
 			<div css={feedbackContainerStyle}>
 				<IntervieweeVideo src={videoUrl} width={400} autoplay muted controls />
-				<button
-					css={(theme) => feedbackSyncBtnStyle(theme, isFbSync)}
+				<RoundButton
+					style={{
+						width: 50,
+						height: 50,
+						backgroundColor: isFbSync ? theme.colors.primary : theme.colors.white,
+					}}
 					onClick={() => setIsFbSync((current) => !current)}
 				>
 					<LinkIcon
 						{...iconBgStyle}
 						fill={isFbSync ? theme.colors.white : theme.colors.primary}
 					/>
-				</button>
+				</RoundButton>
 				<div css={feedbackAreaStyle}>
 					<FeedbackList feedbackList={feedbackList} editable />
 					<FeedbackForm />

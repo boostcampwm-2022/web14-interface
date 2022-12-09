@@ -48,14 +48,12 @@ const Interviewer = () => {
 	const endInterviewBtn = (
 		<RoundButton
 			style={{
-				backgroundColor: theme.colors.primary,
-				width: 200,
+				width: 160,
 				height: 50,
-				color: theme.colors.white,
 			}}
 			onClick={hadleEndInterview}
 		>
-			<div>면접 종료</div>
+			<span>면접 종료</span>
 		</RoundButton>
 	);
 
