@@ -1,17 +1,20 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import AWS, { S3 } from 'aws-sdk';
-import { EVENT, NAVER_API_KEY, NAVER_API_PWD, ROOM_REPOSITORY_INTERFACE } from '@constant';
-import { Socket } from 'socket.io';
-import { clientId } from '@types';
-import { RoomRepository } from 'src/room/repository/room.repository';
 import {
+	EVENT,
+	NAVER_API_KEY,
+	NAVER_API_PWD,
+	ROOM_REPOSITORY_INTERFACE,
 	AWS_S3_RESION,
 	BUCKET_CORS_ALLOW_SEC,
 	BUCKET_NAME,
 	MAX_VIDEO_COUNT,
 	OBJECT_STORAGE_ENDPOINT,
-} from 'src/constant/object-storage.constant';
+} from '@constant';
+import { Socket } from 'socket.io';
+import { clientId } from '@types';
+import { RoomRepository } from 'src/room/repository/room.repository';
 
 @Injectable()
 export class ObjectStorageService {
