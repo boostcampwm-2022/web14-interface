@@ -1,19 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import AWS, { S3 } from 'aws-sdk';
+import { EVENT, NAVER_API_KEY, NAVER_API_PWD, ROOM_REPOSITORY_INTERFACE } from '@constant';
+import { Socket } from 'socket.io';
+import { clientId } from '@types';
+import { RoomRepository } from 'src/room/repository/room.repository';
 import {
 	AWS_S3_RESION,
 	BUCKET_CORS_ALLOW_SEC,
 	BUCKET_NAME,
-	EVENT,
-	NAVER_API_KEY,
-	NAVER_API_PWD,
-	NAVER_OBJECT_STORAGE_ENDPOINT,
-	ROOM_REPOSITORY_INTERFACE,
-} from '@constant';
-import { Socket } from 'socket.io';
-import { clientId } from '@types';
-import { RoomRepository } from 'src/room/repository/room.repository';
+	MAX_VIDEO_COUNT,
+	OBJECT_STORAGE_ENDPOINT,
+} from 'src/constant/object-storage.constant';
 
 @Injectable()
 export class ObjectStorageService {
@@ -34,12 +32,11 @@ export class ObjectStorageService {
 
 	private clientPacketMap = new Map<clientId, Buffer[]>();
 
-	private objectStorageUrl = this.configService.get(NAVER_OBJECT_STORAGE_ENDPOINT);
-	private endpoint = new AWS.Endpoint(this.objectStorageUrl);
-	private region = this.configService.get(AWS_S3_RESION);
+	private endpoint = new AWS.Endpoint(OBJECT_STORAGE_ENDPOINT);
+	private region = AWS_S3_RESION;
+	private bucketName = BUCKET_NAME;
 	private ApiAccessKey = this.configService.get(NAVER_API_KEY);
 	private ApiSecretKey = this.configService.get(NAVER_API_PWD);
-	private bucketName = this.configService.get(BUCKET_NAME);
 	private S3: AWS.S3;
 
 	mediaStreaming({ client, videoBuffer }: { client: Socket; videoBuffer: Buffer }) {
@@ -63,6 +60,8 @@ export class ObjectStorageService {
 	}
 
 	async uploadVideo({ client, docsUUID }: { client: Socket; docsUUID: string }) {
+		this.handleMaxVideoCountByUser(client);
+
 		const folderName = 'userId/'; // TODO: user id로 폴더 생성
 		const fileName = folderName + docsUUID;
 		const videoBuffer = this.getVideoBuffer(client.id);
@@ -82,11 +81,41 @@ export class ObjectStorageService {
 
 		this.deleteVideoData(client.id);
 		const user = await this.roomRepository.getUserByClientId(client.id);
-		const videoUrl = [this.objectStorageUrl, this.bucketName, fileName].join('/');
+		const videoUrl = [this.bucketName, this.bucketName, fileName].join('/');
 
 		client.to(user.roomUUID).emit(EVENT.DOWNLOAD_VIDEO, { videoUrl });
 
 		return {};
+	}
+
+	async handleMaxVideoCountByUser(client: Socket) {
+		const videoList = await this.getUserVideoList('userId');
+		if (videoList.length > MAX_VIDEO_COUNT) {
+			const overs = videoList
+				.sort((a, b) => a.LastModified.getTime() - b.LastModified.getTime())
+				.filter((_, idx) => idx >= MAX_VIDEO_COUNT);
+
+			Promise.all(
+				overs.map((video) => {
+					const params: S3.Types.DeleteObjectRequest = {
+						Bucket: this.bucketName,
+						Key: video.Key,
+					};
+					this.S3.deleteObject(params).promise();
+				})
+			);
+		}
+	}
+
+	async getUserVideoList(userId: string) {
+		const params: S3.Types.ListObjectsV2Request = {
+			Bucket: this.bucketName,
+			MaxKeys: 300,
+			Prefix: `${userId}/`,
+		};
+
+		const res = await this.S3.listObjectsV2(params).promise();
+		return res.Contents.slice(1); // index 0 is folder
 	}
 
 	async setCorsAtBucket() {
