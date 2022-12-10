@@ -42,6 +42,11 @@ export class ObjectStorageService {
 	private ApiSecretKey = this.configService.get(NAVER_API_PWD);
 	private S3: AWS.S3;
 
+	/**
+	 * client가 보내는 video buffer를 받아서 저장하는 메서드입니다.
+	 * client id를 key로 배열에 buffer로 저장됩니다.
+	 * @params videoBuffer - client의 실시간 영상 stream가 buffer로 변환 된 후 전달
+	 */
 	mediaStreaming({ client, videoBuffer }: { client: Socket; videoBuffer: Buffer }) {
 		if (!this.clientPacketMap.get(client.id)) {
 			this.clientPacketMap.set(client.id, []);
@@ -53,15 +58,31 @@ export class ObjectStorageService {
 		return {};
 	}
 
+	/**
+	 * 저장된 buffer 배열을 하나의 buffer로 변환 후 반환하는 메서드입니다.
+	 * @param clientId
+	 * @returns
+	 */
 	getVideoBuffer(clientId: string): Buffer {
 		const buffers = this.clientPacketMap.get(clientId);
 		return Buffer.concat(buffers);
 	}
 
+	/**
+	 * client id로 저장된 video buffer를 비웁니다.
+	 * 영상이 저장될 때도 실행되며, 또한 client socket이 disconnect 될 때 실행됩니다.
+	 * @param clientId
+	 */
 	deleteVideoMemoryData(clientId: string) {
 		this.clientPacketMap.delete(clientId);
 	}
 
+	/**
+	 * 해당 client가 전달한 실시간 영상을 ncloud object storage에 upload합니다.
+	 * 영상의 제목(key)는 interview docs의 uuid입니다.
+	 * @param docsUUID - 영상의 이름으로 쓰일 interview docs uuid
+	 * @returns
+	 */
 	async uploadVideo({ client, docsUUID }: { client: Socket; docsUUID: string }) {
 		const folderName = client.data.userId;
 		const fileName = folderName + docsUUID;
@@ -93,6 +114,10 @@ export class ObjectStorageService {
 		return {};
 	}
 
+	/**
+	 * user가 저장한 영상이 max count를 넘었을 때, 넘긴 영상들을 삭제하는 메서드입니다.
+	 * @param client
+	 */
 	async handleMaxVideoCountByUser(client: Socket) {
 		const videoList = await this.getUserVideoList(client.data.userId);
 		if (videoList.length > MAX_VIDEO_COUNT) {
@@ -112,6 +137,11 @@ export class ObjectStorageService {
 		}
 	}
 
+	/**
+	 * user id를 기반으로 object storage에 저장된 영상 list를 조회 후 반환합니다.
+	 * @param userId - 회원 가입한 유저의 id
+	 * @returns
+	 */
 	async getUserVideoList(userId: string) {
 		const params: S3.Types.ListObjectsV2Request = {
 			Bucket: this.bucketName,
@@ -123,6 +153,10 @@ export class ObjectStorageService {
 		return res.Contents.slice(1); // index 0 is folder
 	}
 
+	/**
+	 * bucket에 cors 설정을 하는 메서드입니다.
+	 * @returns
+	 */
 	async setCorsAtBucket() {
 		const params: S3.Types.PutBucketCorsRequest = {
 			Bucket: this.bucketName,
