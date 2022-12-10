@@ -55,41 +55,43 @@ export class ObjectStorageService {
 		return Buffer.concat(buffers);
 	}
 
-	deleteVideoData(clientId: string) {
+	deleteVideoMemoryData(clientId: string) {
 		this.clientPacketMap.delete(clientId);
 	}
 
 	async uploadVideo({ client, docsUUID }: { client: Socket; docsUUID: string }) {
-		this.handleMaxVideoCountByUser(client);
-
-		const folderName = 'userId/'; // TODO: user id로 폴더 생성
+		const folderName = client.data.userId;
 		const fileName = folderName + docsUUID;
 		const videoBuffer = this.getVideoBuffer(client.id);
+		this.deleteVideoMemoryData(client.id);
 
 		await this.S3.putObject({
 			Bucket: this.bucketName,
 			Key: folderName,
 		}).promise();
 
-		await this.S3.putObject({
-			Bucket: this.bucketName,
-			Key: fileName,
-			ACL: 'public-read',
-			Body: videoBuffer,
-			ContentType: 'video/webm',
-		}).promise();
+		this.S3.putObject(
+			{
+				Bucket: this.bucketName,
+				Key: fileName,
+				ACL: 'public-read',
+				Body: videoBuffer,
+				ContentType: 'video/webm',
+			},
+			async () => {
+				this.handleMaxVideoCountByUser(client);
+				const user = await this.roomRepository.getUserByClientId(client.id);
+				const videoUrl = [this.bucketName, this.bucketName, fileName].join('/');
 
-		this.deleteVideoData(client.id);
-		const user = await this.roomRepository.getUserByClientId(client.id);
-		const videoUrl = [this.bucketName, this.bucketName, fileName].join('/');
-
-		client.to(user.roomUUID).emit(EVENT.DOWNLOAD_VIDEO, { videoUrl });
+				client.to(user.roomUUID).emit(EVENT.DOWNLOAD_VIDEO, { videoUrl });
+			}
+		);
 
 		return {};
 	}
 
 	async handleMaxVideoCountByUser(client: Socket) {
-		const videoList = await this.getUserVideoList('userId');
+		const videoList = await this.getUserVideoList(client.data.userId);
 		if (videoList.length > MAX_VIDEO_COUNT) {
 			const overs = videoList
 				.sort((a, b) => a.LastModified.getTime() - b.LastModified.getTime())
@@ -110,7 +112,7 @@ export class ObjectStorageService {
 	async getUserVideoList(userId: string) {
 		const params: S3.Types.ListObjectsV2Request = {
 			Bucket: this.bucketName,
-			MaxKeys: 300,
+			MaxKeys: 100,
 			Prefix: `${userId}/`,
 		};
 

@@ -57,7 +57,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	handleDisconnect(@ConnectedSocket() client: Socket) {
 		this.logger.log(`disconnected: ${client.id}`);
-		this.objectStorageService.deleteVideoData(client.id);
+		this.objectStorageService.deleteVideoMemoryData(client.id);
 		this.webrtcService.disconnectWebrtc(client);
 		this.connectionService.leaveRoom(client);
 	}
