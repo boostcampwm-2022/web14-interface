@@ -12,6 +12,7 @@ import {
 import { Namespace, Socket } from 'socket.io';
 import { SocketExceptionFilter } from 'src/filter/socket-exception.filter';
 import { SocketResponseInterceptor } from 'src/interceptor/socket-response.interceptor';
+import { setUserIdInClient } from 'util/user.util';
 import { WebrtcAnswerDto, WebrtcIcecandidateDto, WebrtcOfferDto } from './dto/webrtc.dto';
 import { ConnectionService } from './service/connection/connection.service';
 import { InterviewService } from './service/interview/interview.service';
@@ -49,7 +50,8 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		return this.connectionService.leaveRoom(client);
 	}
 
-	handleConnection(@ConnectedSocket() client: Socket) {
+	async handleConnection(@ConnectedSocket() client: Socket) {
+		await setUserIdInClient(client);
 		this.logger.log(`connected: ${client.id}`);
 	}
 

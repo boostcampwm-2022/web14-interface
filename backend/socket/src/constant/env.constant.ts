@@ -5,3 +5,5 @@ export const AWS_S3_RESION = 'kr-standard';
 export const BUCKET_NAME = 'BUCKET_NAME';
 
 export const BUCKET_CORS_ALLOW_SEC = 60 * 5;
+
+export const REST_SERVER_ORIGIN = 'REST_SERVER_ORIGIN';
