@@ -7,7 +7,7 @@ import { UserType } from '@customType/user';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import { PAGE_TYPE } from '@constants/page.constant';
 import { useSetRecoilState } from 'recoil';
-import { meInRoomState, othersInRoomState } from '@store/room.store';
+import { meInRoomState, othersInRoomState, roomUUIDState } from '@store/room.store';
 
 interface attendRoomResponseType {
 	success?: boolean;
@@ -21,6 +21,7 @@ const EnterRoomModal = () => {
 	const [errorMsg, setErrorMsg] = useState('');
 	const setOthers = useSetRecoilState(othersInRoomState);
 	const setMe = useSetRecoilState(meInRoomState);
+	const setRoom = useSetRecoilState(roomUUIDState);
 
 	const { closeModal } = useModal();
 	const { safeNavigate } = useSafeNavigate();
@@ -40,6 +41,7 @@ const EnterRoomModal = () => {
 			closeModal();
 			setOthers(others);
 			setMe(me);
+			setRoom(roomUUID);
 			safeNavigate(PAGE_TYPE.LOBBY_PAGE);
 		} catch (e) {
 			setErrorMsg(e.message);

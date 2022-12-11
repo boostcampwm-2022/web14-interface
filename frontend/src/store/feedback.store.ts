@@ -1,4 +1,5 @@
 import { EditableFeedbackType } from '@customType/feedback';
+import { getFirstLabeledFbList } from '@utils/common.util';
 import { atom, atomFamily, selector } from 'recoil';
 
 export const feedbackState = atomFamily<EditableFeedbackType, string>({
@@ -29,16 +30,9 @@ export const isFbSyncState = atom({
 export const feedbackListSelector = selector({
 	key: 'feedbackListSelector',
 	get: ({ get }) => {
-		let prev = -1;
-		const fbList = get(feedbackIdsState).map((id) => {
-			const fb = { ...get(feedbackState(id)), isFirst: false };
-			if (fb.startTime > prev) {
-				prev = fb.startTime;
-				fb.isFirst = true;
-			}
-			return fb;
-		});
-		return fbList;
+		const fbList = get(feedbackIdsState).map((id) => get(feedbackState(id)));
+		const firstLabeledFbList = getFirstLabeledFbList(fbList);
+		return firstLabeledFbList;
 	},
 });
 

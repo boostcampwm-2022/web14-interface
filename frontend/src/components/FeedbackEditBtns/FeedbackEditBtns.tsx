@@ -1,6 +1,6 @@
 import React from 'react';
 
-import useCrudFeedback from '@hooks/useCrudFeedback';
+import useEditFeedback from '@hooks/useEditFeedback';
 
 import { ReactComponent as DeleteIcon } from '@assets/icon/delete.svg';
 import { ReactComponent as EditIcon } from '@assets/icon/edit.svg';
@@ -15,7 +15,7 @@ interface Props {
 
 const FeedbackEditBtn = ({ id, readOnly }: Props) => {
 	const { handleStartEditFeedback, handleEndEditFeedback, handleDeleteFeedback } =
-		useCrudFeedback(id);
+		useEditFeedback(id);
 
 	return (
 		<div css={fbBtnContainer}>

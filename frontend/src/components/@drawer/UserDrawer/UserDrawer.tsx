@@ -22,6 +22,13 @@ const UserDrawer = () => {
 	return (
 		<>
 			<div css={userListStyle}>
+				<div>
+					<div>{me.nickname}</div>
+					<div>
+						<MicOnIcon {...iconSmStyle} />
+						<CameraOnIcon {...iconSmStyle} />
+					</div>
+				</div>
 				{others.map((other, i) => (
 					<div key={i}>
 						<div>{other.nickname}</div>

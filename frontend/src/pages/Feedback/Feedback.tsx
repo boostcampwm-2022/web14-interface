@@ -8,17 +8,14 @@ import BottomBar from '@components/BottomBar/BottomBar';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import usePreventLeave from '@hooks/usePreventLeave';
 import useSafeNavigate from '@hooks/useSafeNavigate';
-import { feedbackDtoSelector, isFbSyncState } from '@store/feedback.store';
-import { completedFbCntState, docsUUIDState, meInRoomState } from '@store/room.store';
+import useCleanupInterview from '@hooks/useCleanupInterview';
+import { feedbackDtoSelector, feedbackListSelector, isFbSyncState } from '@store/feedback.store';
+import { meInRoomState } from '@store/room.store';
+import { completedFbCntState, docsUUIDState } from '@store/interview.store';
 
 import { ReactComponent as LinkIcon } from '@assets/icon/link.svg';
 import { socket } from '../../service/socket';
-import {
-	feedbackWrapperStyle,
-	feedbackContainerStyle,
-	feedbackAreaStyle,
-	feedbackSyncBtnStyle,
-} from './Feedback.style';
+import { feedbackWrapperStyle, feedbackContainerStyle, feedbackAreaStyle } from './Feedback.style';
 import { PAGE_TYPE } from '@constants/page.constant';
 import theme from '@styles/theme';
 import { iconBgStyle } from '@styles/commonStyle';
@@ -35,13 +32,17 @@ interface endFeedbackResponseType {
 
 const Feedback = () => {
 	usePreventLeave();
-	const setCompletedFbCnt = useSetRecoilState(completedFbCntState);
 	const { safeNavigate } = useSafeNavigate();
+	const cleanupInterview = useCleanupInterview();
+
+	const setCompletedFbCnt = useSetRecoilState(completedFbCntState);
 	const [isFbSync, setIsFbSync] = useRecoilState(isFbSyncState);
-	const [videoUrl, setVideoUrl] = useState('');
 	const docsUUID = useRecoilValue(docsUUIDState);
-	const feedbackList = useRecoilValue(feedbackDtoSelector);
+	const feedbackListDto = useRecoilValue(feedbackDtoSelector);
+	const feedbackList = useRecoilValue(feedbackListSelector);
+
 	const me = useRecoilValue(meInRoomState);
+	const [videoUrl, setVideoUrl] = useState('');
 
 	const handleEndFeedback = useCallback(async () => {
 		const { isLastFeedback, count } = await socketEmit<endFeedbackResponseType>(
@@ -51,13 +52,13 @@ const Feedback = () => {
 		const feedbackDto: FeedbackDtoType = {
 			docsUUID,
 			userUUID: me.uuid,
-			feedbackList,
+			feedbackList: feedbackListDto,
 		};
 		axios.post(REST_TYPE.FEEDBACK, feedbackDto);
 
 		if (isLastFeedback) safeNavigate(PAGE_TYPE.LOBBY_PAGE);
 		else safeNavigate(PAGE_TYPE.WAITTING_PAGE);
-	}, [docsUUID, feedbackList, me]);
+	}, [docsUUID, feedbackListDto, me]);
 
 	useEffect(() => {
 		socket.on(SOCKET_EVENT_TYPE.DOWNLOAD_VIDEO, ({ videoUrl }) => {
@@ -65,17 +66,19 @@ const Feedback = () => {
 		});
 	}, []);
 
+	useEffect(() => {
+		return cleanupInterview;
+	}, []);
+
 	const finishFeedbackBtn = (
 		<RoundButton
 			style={{
-				backgroundColor: theme.colors.primary,
-				width: 200,
+				width: 160,
 				height: 50,
-				color: theme.colors.white,
 			}}
 			onClick={handleEndFeedback}
 		>
-			<div>피드백 종료</div>
+			<span>피드백 종료</span>
 		</RoundButton>
 	);
 
@@ -83,17 +86,21 @@ const Feedback = () => {
 		<div css={feedbackWrapperStyle}>
 			<div css={feedbackContainerStyle}>
 				<IntervieweeVideo src={videoUrl} width={400} autoplay muted controls />
-				<button
-					css={(theme) => feedbackSyncBtnStyle(theme, isFbSync)}
+				<RoundButton
+					style={{
+						width: 50,
+						height: 50,
+						backgroundColor: isFbSync ? theme.colors.primary : theme.colors.white,
+					}}
 					onClick={() => setIsFbSync((current) => !current)}
 				>
 					<LinkIcon
 						{...iconBgStyle}
 						fill={isFbSync ? theme.colors.white : theme.colors.primary}
 					/>
-				</button>
+				</RoundButton>
 				<div css={feedbackAreaStyle}>
-					<FeedbackList editable />
+					<FeedbackList feedbackList={feedbackList} editable />
 					<FeedbackForm />
 				</div>
 			</div>

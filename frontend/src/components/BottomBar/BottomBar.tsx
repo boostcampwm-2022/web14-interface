@@ -30,6 +30,7 @@ import { socketEmit } from '@api/socket.api';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import { PAGE_TYPE } from '@constants/page.constant';
+import useCleanupRoom from '@hooks/useCleanupRoom';
 
 interface Props {
 	mainController?: React.ReactNode;
@@ -43,6 +44,7 @@ enum DRAWER_TYPE {
 
 const BottomBar = ({ mainController }: Props) => {
 	const { safeNavigate } = useSafeNavigate();
+	const cleanupRoom = useCleanupRoom();
 	const [isMicOn, setIsMicOn] = useState(true);
 	const [isCameraOn, setIsCameraOn] = useState(true);
 
@@ -78,6 +80,7 @@ const BottomBar = ({ mainController }: Props) => {
 
 	const handleLeaveRoom = () => {
 		socketEmit(SOCKET_EVENT_TYPE.LEAVE_ROOM);
+		cleanupRoom();
 		safeNavigate(PAGE_TYPE.LANDING_PAGE);
 	};
 
