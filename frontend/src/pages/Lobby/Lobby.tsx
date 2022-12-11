@@ -42,14 +42,14 @@ const Lobby = () => {
 	const userInfoList = useRecoilValue(userInfoSelector);
 
 	useEffect(() => {
+		socket.on(SOCKET_EVENT_TYPE.ENTER_USER, ({ user }) => {
+			setOthers((prevOthers) => [...prevOthers, user]);
+		});
+
 		socket.on(SOCKET_EVENT_TYPE.JOIN_INTERVIEW, ({ user: interviewee }) => {
 			setUserRole(interviewee);
 
 			safeNavigate(PAGE_TYPE.INTERVIEWER_PAGE);
-		});
-
-		socket.on(SOCKET_EVENT_TYPE.ENTER_USER, ({ user }) => {
-			setOthers((prevOthers) => [...prevOthers, user]);
 		});
 
 		return () => {
