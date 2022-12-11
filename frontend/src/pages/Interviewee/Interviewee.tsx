@@ -3,7 +3,6 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import axios from 'axios';
 
 import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
-import Video from '@components/@shared/Video/Video';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import { webRTCStreamSelector } from '@store/webRTC.store';
@@ -20,11 +19,12 @@ import { DocsReqDtoType } from '@customType/dto';
 import { intervieweeWrapperStyle } from './Interviewee.style';
 import BottomBar from '@components/BottomBar/BottomBar';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
-import theme from '@styles/theme';
 import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
+import useModal from '@hooks/useModal';
 
 const Interviewee = () => {
 	usePreventLeave();
+	const { openModal } = useModal();
 	const { safeNavigate } = useSafeNavigate();
 	const { startStream, stopStream } = mediaStreamer();
 
@@ -34,7 +34,11 @@ const Interviewee = () => {
 	const setDocsUUID = useSetRecoilState(docsUUIDState);
 
 	const hadleEndInterview = () => {
-		socketEmit(SOCKET_EVENT_TYPE.END_INTERVIEW);
+		openModal('EndInterviewModal');
+	};
+
+	const hadleCancelInterview = () => {
+		openModal('CancelInterviewModal');
 	};
 
 	const getStreamFromUUID = (uuid) => {
@@ -72,15 +76,26 @@ const Interviewee = () => {
 	}, [currentVideoTime]);
 
 	const endInterviewBtn = (
-		<RoundButton
-			style={{
-				width: 160,
-				height: 50,
-			}}
-			onClick={hadleEndInterview}
-		>
-			<span>면접 종료</span>
-		</RoundButton>
+		<>
+			<RoundButton
+				style={{
+					width: 160,
+					height: 50,
+				}}
+				onClick={hadleEndInterview}
+			>
+				<span>면접 종료</span>
+			</RoundButton>
+			<RoundButton
+				style={{
+					width: 50,
+					height: 50,
+				}}
+				onClick={hadleCancelInterview}
+			>
+				<span>X</span>
+			</RoundButton>
+		</>
 	);
 
 	return (
