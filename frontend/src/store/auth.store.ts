@@ -1,3 +1,5 @@
+import { REST_TYPE } from '@constants/rest.constant';
+import { SC_TYPE } from '@constants/statusCode.constants';
 import axios from 'axios';
 import { selector } from 'recoil';
 
@@ -5,12 +7,10 @@ const isAuthQuery = selector({
 	key: 'isAUth',
 	get: async () => {
 		try {
-			const res = await axios.get('/api/auth/login');
-			console.log(res);
-			return res.status === 200;
+			const res = await axios.get(REST_TYPE.LOGIN);
+			return res.status === SC_TYPE.OK;
 		} catch (e) {
-			console.log(e);
-			if (e.response.status === 401) return false;
+			if (e.response.status === SC_TYPE.UNAUTHORIZED) return false;
 			throw e;
 		}
 	},

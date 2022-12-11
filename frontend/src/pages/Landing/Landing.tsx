@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useRecoilRefresher_UNSTABLE, useSetRecoilState } from 'recoil';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -53,8 +53,8 @@ const Landing = () => {
 
 	const handleSignOut = async () => {
 		//TODO TOAST로 교체
-		const res = await axios.get('/api/auth/logout');
-		alert(res.status);
+		await axios.get('/api/auth/logout');
+		alert('로그아웃 되었습니다.');
 		refreshAuth();
 		naviagte(ROUTE_TYPE.LOGIN_ROUTE);
 	};
@@ -84,7 +84,7 @@ const Landing = () => {
 					<Button
 						size="small"
 						color="black"
-						onClick={() => openModal(MODAL_TYPE.InterviewDocsModal)}
+						onClick={() => openModal(MODAL_TYPE.InterviewDocsListModal)}
 					>
 						<FolderIcon />
 						<span>기록</span>

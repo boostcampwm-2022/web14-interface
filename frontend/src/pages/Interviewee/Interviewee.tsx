@@ -6,9 +6,9 @@ import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
 import Video from '@components/@shared/Video/Video';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
-import { webRTCStreamSelector, webRTCUserMapState } from '@store/webRTC.store';
+import { webRTCStreamSelector } from '@store/webRTC.store';
 import { currentVideoTimeState } from '@store/currentVideoTime.store';
-import { docsUUIDState, userRoleSelector } from '@store/room.store';
+import { docsUUIDState, userRoleSelector } from '@store/interview.store';
 
 import { socket } from '@service/socket';
 import mediaStreamer from '@service/mediaStreamer';
@@ -29,7 +29,6 @@ const Interviewee = () => {
 	const { startStream, stopStream } = mediaStreamer();
 
 	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);
-	const webRTCUserMap = useRecoilValue(webRTCUserMapState);
 	const currentVideoTime = useRecoilValue(currentVideoTimeState);
 	const streamList = useRecoilValue(webRTCStreamSelector);
 	const setDocsUUID = useSetRecoilState(docsUUIDState);
@@ -75,14 +74,12 @@ const Interviewee = () => {
 	const endInterviewBtn = (
 		<RoundButton
 			style={{
-				backgroundColor: theme.colors.primary,
-				width: 200,
+				width: 160,
 				height: 50,
-				color: theme.colors.white,
 			}}
 			onClick={hadleEndInterview}
 		>
-			<div>면접 종료</div>
+			<span>면접 종료</span>
 		</RoundButton>
 	);
 

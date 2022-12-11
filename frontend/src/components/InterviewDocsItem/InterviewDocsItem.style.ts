@@ -9,6 +9,7 @@ export const docsItemWrapper = (theme, style) =>
 		margin: 20px 0px;
 		width: 100%;
 		gap: 40px;
+		cursor: pointer;
 
 		${style === 'card' ? cardDocsStyle(theme) : listDocsStyle(theme)};
 		div {
@@ -18,7 +19,7 @@ export const docsItemWrapper = (theme, style) =>
 	`;
 
 const cardDocsStyle = (theme) => css`
-	background-color: ${theme.colors.blue1};
+	background-color: ${theme.colors.primary};
 	height: 150px;
 	color: white;
 	border-radius: 4px;
