@@ -25,8 +25,8 @@ export const ModalButtonAreaStyle = (isArray) => css`
 	width: 100%;
 `;
 
-export const ModalContentAreaStyle = () => css`
-	${flexColumn({ gap: '32px' })}
+export const ModalContentAreaStyle = (flexDirection) => css`
+	${flexDirection === 'row' ? flexRow({ gap: '16px' }) : flexColumn({ gap: '16px' })}
 
 	width: 100%;
 `;
