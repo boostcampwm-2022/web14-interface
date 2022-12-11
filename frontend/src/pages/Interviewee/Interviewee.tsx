@@ -21,9 +21,11 @@ import BottomBar from '@components/BottomBar/BottomBar';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
 import useModal from '@hooks/useModal';
+import useLeaveUser from '@hooks/useLeaveUser';
 
 const Interviewee = () => {
 	usePreventLeave();
+	useLeaveUser();
 	const { openModal } = useModal();
 	const { safeNavigate } = useSafeNavigate();
 	const { startStream, stopStream } = mediaStreamer();

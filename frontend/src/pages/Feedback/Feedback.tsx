@@ -17,6 +17,7 @@ import { iconBgStyle } from '@styles/commonStyle';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
 import useModal from '@hooks/useModal';
+import useLeaveUser from '@hooks/useLeaveUser';
 
 interface endFeedbackResponseType {
 	isLastFeedback: boolean;
@@ -25,6 +26,8 @@ interface endFeedbackResponseType {
 
 const Feedback = () => {
 	usePreventLeave();
+	useLeaveUser();
+
 	const { openModal } = useModal();
 	const cleanupInterview = useCleanupInterview();
 

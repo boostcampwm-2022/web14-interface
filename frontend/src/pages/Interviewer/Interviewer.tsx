@@ -20,11 +20,13 @@ import useModal from '@hooks/useModal';
 import { userRoleSelector } from '@store/user.store';
 
 import { interviewerContainerStyle, interviewerWrapperStyle } from './Interviewer.style';
+import useLeaveUser from '@hooks/useLeaveUser';
 
 const Interviewer = () => {
 	const { openModal } = useModal();
 	const { safeNavigate } = useSafeNavigate();
 	usePreventLeave();
+	useLeaveUser();
 
 	const feedbackList = useRecoilValue(feedbackListSelector);
 	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);

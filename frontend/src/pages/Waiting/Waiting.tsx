@@ -12,9 +12,12 @@ import { waitingWrapperStyle } from './Waiting.style';
 import useCleanupInterview from '@hooks/useCleanupInterview';
 import { othersInRoomState } from '@store/user.store';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
+import useLeaveUser from '@hooks/useLeaveUser';
 
 const Waiting = () => {
 	usePreventLeave();
+	useLeaveUser();
+
 	const cleanupInterview = useCleanupInterview();
 	const { safeNavigate } = useSafeNavigate();
 	const totalUser = useRecoilValue(othersInRoomState);

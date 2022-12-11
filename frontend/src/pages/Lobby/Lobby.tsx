@@ -24,11 +24,13 @@ import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
 import useModal from '@hooks/useModal';
 import { useUserRole } from '@hooks/useUserRole';
+import useLeaveUser from '@hooks/useLeaveUser';
 
 const Lobby = () => {
 	usePreventLeave();
 	const { safeNavigate } = useSafeNavigate();
 	const { openModal } = useModal();
+	useLeaveUser();
 
 	const [me, setMe] = useRecoilState<UserType>(meInRoomState);
 	const [others, setOthers] = useRecoilState<UserType[]>(othersInRoomState);
