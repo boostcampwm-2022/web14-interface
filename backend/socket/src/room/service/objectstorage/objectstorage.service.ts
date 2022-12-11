@@ -87,7 +87,7 @@ export class ObjectStorageService {
 	 * @returns
 	 */
 	async uploadVideo({ client, docsUUID }: { client: Socket; docsUUID: string }) {
-		const folderName = client.data.userId;
+		const folderName = `${client.data.userId}/`;
 		const fileName = folderName + docsUUID;
 		const videoBuffer = this.getVideoBuffer(client.id);
 		this.deleteVideoMemoryData(client.id);
