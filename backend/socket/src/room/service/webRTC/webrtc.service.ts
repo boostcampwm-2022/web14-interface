@@ -29,10 +29,10 @@ export class WebrtcService {
 		eventType: EVENT;
 	}) {
 		const { myId, opponentId } = connectSignal;
-		const opponentClientId = await this.roomRepository.getClientIdByUser(opponentId);
+		const opponent = await this.roomRepository.getUserByUserId(opponentId);
 
 		client
-			.to(opponentClientId)
+			.to(opponent.clientId)
 			.emit(eventType, { ...connectSignal, myId: opponentId, opponentId: myId });
 
 		return {};

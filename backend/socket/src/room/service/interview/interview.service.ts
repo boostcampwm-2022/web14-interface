@@ -50,10 +50,8 @@ export class InterviewService {
 		await this.roomRepository.updateRoomPhase({ roomUUID, phase: ROOM_PHASE.FEEDBACK });
 
 		usersInRoom.forEach(async (user) => {
-			const clientId = await this.roomRepository.getClientIdByUser(user.uuid);
-
 			const emitEvent = this.getEventAtEndInterviewByRole(user.role);
-			server.to(clientId).emit(emitEvent, { docsUUID });
+			server.to(user.clientId).emit(emitEvent, { docsUUID });
 		});
 
 		return {};
@@ -93,8 +91,7 @@ export class InterviewService {
 		users: User[];
 	}) {
 		const interviewee = users.find((user) => user.role === USER_ROLE.INTERVIEWEE);
-		const clientId = await this.roomRepository.getClientIdByUser(interviewee.uuid);
-		server.to(clientId).emit(EVENT.COUNT_FEEDBACK, { count });
+		server.to(interviewee.clientId).emit(EVENT.COUNT_FEEDBACK, { count });
 
 		return { data: { isLastFeedback: false, count } };
 	}
@@ -151,7 +148,8 @@ export class InterviewService {
 	}
 
 	async validateRoomPhaseUpdate({ roomUUID, phase }: { roomUUID: string; phase: string }) {
-		const currentPhase = await this.roomRepository.getRoomPhase(roomUUID);
+		const room = await this.roomRepository.getRoom(roomUUID);
+		const currentPhase = room.phase;
 		if (currentPhase === ROOM_PHASE.LOBBY && phase === ROOM_PHASE.INTERVIEW) return true;
 		if (currentPhase === ROOM_PHASE.INTERVIEW && phase === ROOM_PHASE.FEEDBACK) return true;
 		if (currentPhase === ROOM_PHASE.FEEDBACK && phase === ROOM_PHASE.LOBBY) return true;
