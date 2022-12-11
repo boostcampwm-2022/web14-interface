@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { othersInRoomState } from '@store/room.store';
 import { completedFbCntState } from '@store/interview.store';
 import usePreventLeave from '@hooks/usePreventLeave';
 import useSafeNavigate from '@hooks/useSafeNavigate';
@@ -11,6 +10,7 @@ import { socket } from '../../service/socket';
 import BottomBar from '@components/BottomBar/BottomBar';
 import { waitingWrapperStyle } from './Waiting.style';
 import useCleanupInterview from '@hooks/useCleanupInterview';
+import { othersInRoomState } from '@store/user.store';
 
 const Waiting = () => {
 	usePreventLeave();

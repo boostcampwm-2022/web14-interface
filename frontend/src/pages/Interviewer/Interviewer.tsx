@@ -17,7 +17,7 @@ import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
 import { feedbackAreaStyle } from '@pages/Feedback/Feedback.style';
 import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
 import useModal from '@hooks/useModal';
-import { userRoleSelector } from '@store/webRTC.store';
+import { userRoleSelector } from '@store/user.store';
 
 import { interviewerContainerStyle, interviewerWrapperStyle } from './Interviewer.style';
 

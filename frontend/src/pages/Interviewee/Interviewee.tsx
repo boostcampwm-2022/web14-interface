@@ -5,7 +5,7 @@ import axios from 'axios';
 import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
-import { userRoleSelector } from '@store/webRTC.store';
+import { userRoleSelector } from '@store/user.store';
 import { currentVideoTimeState } from '@store/currentVideoTime.store';
 import { docsUUIDState } from '@store/interview.store';
 

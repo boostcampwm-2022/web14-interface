@@ -6,8 +6,12 @@ import BottomBar from '@components/BottomBar/BottomBar';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import useWebRTCSignaling from '@hooks/useWebRTCSignaling';
-import { meInRoomState, othersInRoomState } from '@store/room.store';
-import { userInfoSelector, webRTCUserMapState } from '@store/webRTC.store';
+import {
+	meInRoomState,
+	othersInRoomState,
+	userInfoSelector,
+	webRTCUserMapState,
+} from '@store/user.store';
 
 import { socket } from '../../service/socket';
 import { UserType } from '@customType/user';

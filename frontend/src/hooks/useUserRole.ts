@@ -1,6 +1,6 @@
 import { ROLE_TYPE } from '@constants/role.constant';
 import { UserType } from '@customType/user';
-import { meInRoomState, othersInRoomState } from '@store/room.store';
+import { meInRoomState, othersInRoomState } from '@store/user.store';
 import { useRecoilState } from 'recoil';
 
 export const useUserRole = () => {
