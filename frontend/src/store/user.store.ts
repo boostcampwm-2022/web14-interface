@@ -1,13 +1,23 @@
+import { UserType } from '@customType/user';
 import { atom, selector } from 'recoil';
-import { meInRoomState, othersInRoomState } from './room.store';
 
 export const webRTCUserMapState = atom({
 	key: 'webRTCUserMapState',
 	default: new Map(),
 });
 
+export const othersInRoomState = atom<UserType[]>({
+	key: 'othersInRoomState',
+	default: [],
+});
+
+export const meInRoomState = atom<UserType>({
+	key: 'meInRoomState',
+	default: null,
+});
+
 export const userInfoSelector = selector({
-	key: 'webRTCStreamSelector',
+	key: 'userInfoSelector',
 	get: ({ get }) => {
 		return Array.from(get(webRTCUserMapState).entries()).map((userInfo) => {
 			const [uuid, { connection, stream }] = userInfo;
