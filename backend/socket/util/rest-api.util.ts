@@ -2,7 +2,7 @@ import { REST_SERVER_ORIGIN } from '@constant';
 import axios from 'axios';
 import { Socket } from 'socket.io';
 
-export const setUserIdInClient = async (client: Socket): Promise<string> => {
+export const setUserIdInClient = async (client: Socket) => {
 	try {
 		const res = await axios.get(`${process.env[REST_SERVER_ORIGIN]}/api/auth/id`, {
 			headers: {
@@ -13,5 +13,14 @@ export const setUserIdInClient = async (client: Socket): Promise<string> => {
 	} catch (err) {
 		// not handle 401 error
 	}
-	return '';
+};
+
+export const deleteInterviewDocs = async ({
+	client,
+	docsUUID,
+}: {
+	client: Socket;
+	docsUUID: string;
+}) => {
+	debugger;
 };

@@ -11,10 +11,12 @@ import {
 	BUCKET_NAME,
 	MAX_VIDEO_COUNT,
 	OBJECT_STORAGE_ENDPOINT,
+	REST_SERVER_ORIGIN,
 } from '@constant';
 import { Socket } from 'socket.io';
 import { clientId } from '@types';
 import { RoomRepository } from 'src/room/repository/room.repository';
+import { deleteInterviewDocs } from 'util/rest-api.util';
 
 @Injectable()
 export class ObjectStorageService {
@@ -40,6 +42,7 @@ export class ObjectStorageService {
 	private bucketName = BUCKET_NAME;
 	private ApiAccessKey = this.configService.get(NAVER_API_KEY);
 	private ApiSecretKey = this.configService.get(NAVER_API_PWD);
+	private restServerOrigin = this.configService.get(REST_SERVER_ORIGIN);
 	private S3: AWS.S3;
 
 	/**
@@ -125,16 +128,24 @@ export class ObjectStorageService {
 				.sort((a, b) => a.LastModified.getTime() - b.LastModified.getTime())
 				.filter((_, idx) => idx >= MAX_VIDEO_COUNT);
 
-			Promise.all(
-				overs.map((video) => {
-					const params: S3.Types.DeleteObjectRequest = {
-						Bucket: this.bucketName,
-						Key: video.Key,
-					};
-					this.S3.deleteObject(params).promise();
-				})
-			);
+			Promise.all([overs.map((video) => this.deleteInterviewHistory({ client, video }))]);
 		}
+	}
+
+	/**
+	 * 영상 정보를 기반으로 object storage의 영상과, database의 interview docs를 삭제하는 메서드입니다.
+	 * @param video - object storage에서 받아온 영상 object
+	 */
+	async deleteInterviewHistory({ client, video }: { client: Socket; video: S3.Object }) {
+		const docsUUID = video.Key.split('/')[1];
+		const params: S3.Types.DeleteObjectRequest = {
+			Bucket: this.bucketName,
+			Key: video.Key,
+		};
+
+		this.S3.deleteObject(params).promise();
+
+		deleteInterviewDocs({ client, docsUUID });
 	}
 
 	/**
