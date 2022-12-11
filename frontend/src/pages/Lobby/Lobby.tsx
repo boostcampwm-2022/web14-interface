@@ -7,7 +7,7 @@ import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import useWebRTCSignaling from '@hooks/useWebRTCSignaling';
 import { meInRoomState, othersInRoomState } from '@store/room.store';
-import { webRTCStreamSelector, webRTCUserMapState } from '@store/webRTC.store';
+import { userInfoSelector, webRTCUserMapState } from '@store/webRTC.store';
 
 import { socket } from '../../service/socket';
 import { UserType } from '@customType/user';
@@ -19,27 +19,24 @@ import { ReactComponent as BroadcastIcon } from '@assets/icon/broadcast.svg';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
 import useModal from '@hooks/useModal';
+import { useUserRole } from '@hooks/useUserRole';
 
 const Lobby = () => {
 	usePreventLeave();
 	const { safeNavigate } = useSafeNavigate();
 	const { openModal } = useModal();
+
 	const [me, setMe] = useRecoilState<UserType>(meInRoomState);
 	const [others, setOthers] = useRecoilState<UserType[]>(othersInRoomState);
 	const [webRTCUserList, setWebRTCUserList] = useRecoilState(webRTCUserMapState);
+	const { setUserRole } = useUserRole();
+
 	const { startConnection } = useWebRTCSignaling(webRTCUserList, setWebRTCUserList);
-	const streamList = useRecoilValue(webRTCStreamSelector);
+	const userInfoList = useRecoilValue(userInfoSelector);
 
 	useEffect(() => {
 		socket.on(SOCKET_EVENT_TYPE.JOIN_INTERVIEW, ({ user: interviewee }) => {
-			const newOthers = others.map((user) => {
-				return user.uuid === interviewee.uuid
-					? { ...user, role: 'interviewee' }
-					: { ...user, role: 'interviewer' };
-			});
-
-			setOthers(newOthers);
-			setMe({ ...me, role: 'interviewer' });
+			setUserRole(interviewee);
 
 			safeNavigate(PAGE_TYPE.INTERVIEWER_PAGE);
 		});
@@ -87,8 +84,8 @@ const Lobby = () => {
 		<div css={lobbyWrapperStyle}>
 			<div css={VideoAreaStyle}>
 				<VideoGrid>
-					{streamList.map(({ uuid, stream }) => (
-						<StreamVideo key={uuid} src={stream} nickname={uuid} muted />
+					{userInfoList.map(({ uuid, stream, nickname }) => (
+						<StreamVideo key={uuid} src={stream} nickname={nickname} muted />
 					))}
 				</VideoGrid>
 			</div>

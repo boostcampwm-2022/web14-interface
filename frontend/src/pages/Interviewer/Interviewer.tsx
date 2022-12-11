@@ -1,24 +1,25 @@
 import React, { useEffect } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
 import FeedbackList from '@components/FeedbackList/FeedbackList';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
-import { webRTCStreamSelector } from '@store/webRTC.store';
-import { docsUUIDState, userRoleSelector } from '@store/interview.store';
+import { docsUUIDState } from '@store/interview.store';
 import { feedbackListSelector } from '@store/feedback.store';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { socket } from '../../service/socket';
+import { socket } from '@service/socket';
 import { PAGE_TYPE } from '@constants/page.constant';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
-import { interviewerContainerStyle, interviewerWrapperStyle } from './Interviewer.style';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import BottomBar from '@components/BottomBar/BottomBar';
 import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
 import { feedbackAreaStyle } from '@pages/Feedback/Feedback.style';
 import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
 import useModal from '@hooks/useModal';
+import { userRoleSelector } from '@store/webRTC.store';
+
+import { interviewerContainerStyle, interviewerWrapperStyle } from './Interviewer.style';
 
 const Interviewer = () => {
 	const { openModal } = useModal();
@@ -27,7 +28,6 @@ const Interviewer = () => {
 
 	const feedbackList = useRecoilValue(feedbackListSelector);
 	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);
-	const streamList = useRecoilValue(webRTCStreamSelector);
 	const setDocsUUID = useSetRecoilState(docsUUIDState);
 
 	const hadleEndInterview = () => {
@@ -36,10 +36,6 @@ const Interviewer = () => {
 
 	const hadleCancelInterview = () => {
 		openModal('CancelInterviewModal');
-	};
-
-	const getStreamFromUUID = (uuid) => {
-		return streamList.find((stream) => stream.uuid === uuid).stream;
 	};
 
 	useEffect(() => {
@@ -78,7 +74,7 @@ const Interviewer = () => {
 				<div>
 					<IntervieweeVideo
 						key={interviewee.uuid}
-						src={getStreamFromUUID(interviewee.uuid)}
+						src={interviewee.stream}
 						nickname={interviewee.uuid}
 						width={'400px'}
 						autoplay
@@ -87,7 +83,7 @@ const Interviewer = () => {
 					{interviewerList.map((interviewer) => (
 						<StreamVideo
 							key={interviewer.uuid}
-							src={getStreamFromUUID(interviewer.uuid)}
+							src={interviewer.stream}
 							nickname={interviewer.uuid}
 							width={'200px'}
 							muted
