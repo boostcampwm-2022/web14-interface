@@ -1,13 +1,12 @@
 import React from 'react';
 import Modal from '@components/@shared/Modal/Modal';
 import { ReactComponent as CopyIcon } from '@assets/icon/copy.svg';
-import useModal from '@hooks/useModal';
 
-export interface CopyTextFieldModalPropType {
+export interface RoomInfoModelPropType {
 	value: string;
 }
 
-const CopyTextFieldModal = ({ value }: CopyTextFieldModalPropType) => {
+const RoomInfoModal = ({ value }: RoomInfoModelPropType) => {
 	const copyValue = async () => {
 		await navigator.clipboard.writeText(value);
 		//TODO Toast로 변경
@@ -37,4 +36,4 @@ const CopyTextFieldModal = ({ value }: CopyTextFieldModalPropType) => {
 	);
 };
 
-export default CopyTextFieldModal;
+export default RoomInfoModal;

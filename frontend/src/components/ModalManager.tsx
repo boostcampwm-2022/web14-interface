@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import EnterRoomModal from './@modal/EnterRoomModal/EnterRoomModal';
 import InterviewDocsListModal from './@modal/InterviewDocsListModal/InterviewDocsListModal';
 import InterviewDocsItemModal from './@modal/InterviewDocsModal/InterviewDocsModal';
-import CopyTextFieldModal from './@modal/CopyTextFieldModal/CopyTextFieldModal';
+import RoomInfoModal from './@modal/RoomInfoModal/RoomInfoModal';
 import StartInterviewModal from './@modal/StartInterviewModal/StartInterviewModal';
 import ExitRoomModal from './@modal/ExitRoomModal/StartInterviewModal/ExitRoomModal';
 import CancelInterviewModal from './@modal/CancelInterviewModal/CancelInterviewModal';
@@ -19,7 +19,7 @@ const modalStore = {
 	EnterRoomModal,
 	InterviewDocsListModal,
 	InterviewDocsItemModal,
-	CopyTextFieldModal,
+	RoomInfoModal,
 	StartInterviewModal,
 	ExitRoomModal,
 	EndInterviewModal,
