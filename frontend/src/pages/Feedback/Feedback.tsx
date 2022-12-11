@@ -41,6 +41,10 @@ const Feedback = () => {
 		socket.on(SOCKET_EVENT_TYPE.DOWNLOAD_VIDEO, ({ videoUrl }) => {
 			setVideoUrl(videoUrl);
 		});
+
+		return () => {
+			socket.off(SOCKET_EVENT_TYPE.DOWNLOAD_VIDEO);
+		};
 	}, []);
 
 	useEffect(() => {
