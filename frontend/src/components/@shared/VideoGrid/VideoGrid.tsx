@@ -1,11 +1,11 @@
 import React from 'react';
 import { videoGridStyle } from './VideoGrid.style';
 
-interface propType {
+export interface VideoGridPropType {
 	children: React.ReactNode | React.ReactNode[];
 }
 
-const VideoGrid = ({ children }: propType) => {
+const VideoGrid = ({ children }: VideoGridPropType) => {
 	const colNumber = Array.isArray(children) ? Math.ceil(children.length ** 0.5) : 1;
 	const rowNumber =
 		Array.isArray(children) && children.length === colNumber ** 2 ? colNumber : colNumber - 1;
