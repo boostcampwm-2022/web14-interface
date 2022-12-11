@@ -43,6 +43,10 @@ const Interviewer = () => {
 			setDocsUUID(docsUUID);
 			safeNavigate(PAGE_TYPE.FEEDBACK_PAGE);
 		});
+
+		return () => {
+			socket.off(SOCKET_EVENT_TYPE.START_FEEDBACK);
+		};
 	}, []);
 
 	const endInterviewBtn = (
