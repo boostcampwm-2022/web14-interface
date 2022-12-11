@@ -28,7 +28,6 @@ import {
 	previewStyle,
 } from './Landing.style';
 import Button from '@components/@shared/Button/Button';
-import { MODAL_TYPE } from '@constants/modal.constant';
 import useModal from '@hooks/useModal';
 
 interface createRoomResponseType {
@@ -84,7 +83,7 @@ const Landing = () => {
 					<Button
 						size="small"
 						color="black"
-						onClick={() => openModal(MODAL_TYPE.InterviewDocsListModal)}
+						onClick={() => openModal('InterviewDocsListModal')}
 					>
 						<FolderIcon />
 						<span>기록</span>
@@ -102,10 +101,7 @@ const Landing = () => {
 							<PlusIcon />
 							<span>방 만들기</span>
 						</Button>
-						<Button
-							color="secondary"
-							onClick={() => openModal(MODAL_TYPE.EnterRoomModal)}
-						>
+						<Button color="secondary" onClick={() => openModal('EnterRoomModal')}>
 							<span>참가하기</span>
 						</Button>
 					</div>
