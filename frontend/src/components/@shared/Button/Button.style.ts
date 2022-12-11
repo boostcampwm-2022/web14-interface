@@ -7,9 +7,9 @@ export const buttonStyle = (theme, width, size, style, color, iconColor, justify
 	gap: 8px;
 
 	width: ${width};
-	padding: ${size === 'small' ? '12px' : '16px'};
+	padding: ${size === 'small' ? '10px' : '14px'};
 	font-size: ${size === 'small' ? '16px' : '20px'};
-	line-height: ${size === 'small' ? '14px' : '17px'};
+	line-height: ${size === 'small' ? '16px' : '20px'};
 
 	border-radius: 8px;
 

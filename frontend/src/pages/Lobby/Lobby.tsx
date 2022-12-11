@@ -10,7 +10,6 @@ import { meInRoomState, othersInRoomState } from '@store/room.store';
 import { webRTCStreamSelector, webRTCUserMapState } from '@store/webRTC.store';
 
 import { socket } from '../../service/socket';
-import { socketEmit } from '@api/socket.api';
 import { UserType } from '@customType/user';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { PAGE_TYPE } from '@constants/page.constant';
@@ -19,14 +18,12 @@ import { lobbyWrapperStyle, VideoAreaStyle } from './Lobby.style';
 import { ReactComponent as BroadcastIcon } from '@assets/icon/broadcast.svg';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
-
-interface joinInterviewResponseType {
-	usersInRoom: UserType[];
-}
+import useModal from '@hooks/useModal';
 
 const Lobby = () => {
 	usePreventLeave();
 	const { safeNavigate } = useSafeNavigate();
+	const { openModal } = useModal();
 	const [me, setMe] = useRecoilState<UserType>(meInRoomState);
 	const [others, setOthers] = useRecoilState<UserType[]>(othersInRoomState);
 	const [webRTCUserList, setWebRTCUserList] = useRecoilState(webRTCUserMapState);
@@ -63,19 +60,14 @@ const Lobby = () => {
 	}, [others]);
 
 	useEffect(() => {
-		if (!webRTCUserList.has(me.uuid)) startConnection(me.uuid);
+		if (!webRTCUserList.has(me.uuid)) {
+			startConnection(me.uuid);
+			openModal('RoomInfoModal', { value: me.roomUUID });
+		}
 	}, []);
 
 	const handleStartInterviewee = async () => {
-		await socketEmit<joinInterviewResponseType>(SOCKET_EVENT_TYPE.START_INTERVIEW);
-
-		const newOthers = others.map((user) => {
-			return { ...user, role: 'interviewer' };
-		});
-
-		setMe({ ...me, role: 'interviewee' });
-		setOthers(newOthers);
-		safeNavigate(PAGE_TYPE.INTERVIEWEE_PAGE);
+		openModal('StartInterviewModal', { me, setMe, others, setOthers });
 	};
 
 	const startInterviewBtn = (

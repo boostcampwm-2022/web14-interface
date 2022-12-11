@@ -3,7 +3,6 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
 import FeedbackList from '@components/FeedbackList/FeedbackList';
-import Video from '@components/@shared/Video/Video';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 import { webRTCStreamSelector } from '@store/webRTC.store';
@@ -13,16 +12,16 @@ import { feedbackListSelector } from '@store/feedback.store';
 import { socket } from '../../service/socket';
 import { PAGE_TYPE } from '@constants/page.constant';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
-import { socketEmit } from '@api/socket.api';
 import { interviewerContainerStyle, interviewerWrapperStyle } from './Interviewer.style';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
-import theme from '@styles/theme';
 import BottomBar from '@components/BottomBar/BottomBar';
 import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
 import { feedbackAreaStyle } from '@pages/Feedback/Feedback.style';
 import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
+import useModal from '@hooks/useModal';
 
 const Interviewer = () => {
+	const { openModal } = useModal();
 	const { safeNavigate } = useSafeNavigate();
 	usePreventLeave();
 
@@ -32,7 +31,11 @@ const Interviewer = () => {
 	const setDocsUUID = useSetRecoilState(docsUUIDState);
 
 	const hadleEndInterview = () => {
-		socketEmit(SOCKET_EVENT_TYPE.END_INTERVIEW);
+		openModal('EndInterviewModal');
+	};
+
+	const hadleCancelInterview = () => {
+		openModal('CancelInterviewModal');
 	};
 
 	const getStreamFromUUID = (uuid) => {
@@ -47,15 +50,26 @@ const Interviewer = () => {
 	}, []);
 
 	const endInterviewBtn = (
-		<RoundButton
-			style={{
-				width: 160,
-				height: 50,
-			}}
-			onClick={hadleEndInterview}
-		>
-			<span>면접 종료</span>
-		</RoundButton>
+		<>
+			<RoundButton
+				style={{
+					width: 160,
+					height: 50,
+				}}
+				onClick={hadleEndInterview}
+			>
+				<span>면접 종료</span>
+			</RoundButton>
+			<RoundButton
+				style={{
+					width: 50,
+					height: 50,
+				}}
+				onClick={hadleCancelInterview}
+			>
+				<span>X</span>
+			</RoundButton>
+		</>
 	);
 
 	return (
