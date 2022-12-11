@@ -24,41 +24,52 @@ import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
 import useModal from '@hooks/useModal';
 import { useUserRole } from '@hooks/useUserRole';
+import useLeaveUser from '@hooks/useLeaveUser';
 
 const Lobby = () => {
 	usePreventLeave();
 	const { safeNavigate } = useSafeNavigate();
 	const { openModal } = useModal();
+	useLeaveUser();
 
 	const [me, setMe] = useRecoilState<UserType>(meInRoomState);
 	const [others, setOthers] = useRecoilState<UserType[]>(othersInRoomState);
 	const [webRTCUserList, setWebRTCUserList] = useRecoilState(webRTCUserMapState);
 	const { setUserRole } = useUserRole();
 
-	const { startConnection } = useWebRTCSignaling(webRTCUserList, setWebRTCUserList);
+	const { startConnection, closeConnection } = useWebRTCSignaling(
+		webRTCUserList,
+		setWebRTCUserList
+	);
 	const userInfoList = useRecoilValue(userInfoSelector);
 
 	useEffect(() => {
+		socket.on(SOCKET_EVENT_TYPE.ENTER_USER, ({ user }) => {
+			setOthers((prevOthers) => [...prevOthers, user]);
+		});
+
 		socket.on(SOCKET_EVENT_TYPE.JOIN_INTERVIEW, ({ user: interviewee }) => {
 			setUserRole(interviewee);
 
 			safeNavigate(PAGE_TYPE.INTERVIEWER_PAGE);
 		});
 
-		socket.on(SOCKET_EVENT_TYPE.ENTER_USER, ({ user }) => {
-			setOthers((prevOthers) => [...prevOthers, user]);
-		});
+		return () => {
+			socket.off(SOCKET_EVENT_TYPE.JOIN_INTERVIEW);
+			socket.off(SOCKET_EVENT_TYPE.ENTER_USER);
+		};
+	}, [others]);
 
+	useEffect(() => {
 		socket.on(SOCKET_EVENT_TYPE.LEAVE_USER, ({ user }) => {
+			closeConnection(user);
 			setOthers((prevOhters) => prevOhters.filter((other) => other.uuid !== user.uuid));
 		});
 
 		return () => {
-			socket.off(SOCKET_EVENT_TYPE.JOIN_INTERVIEW);
-			socket.off(SOCKET_EVENT_TYPE.ENTER_USER);
 			socket.off(SOCKET_EVENT_TYPE.LEAVE_USER);
 		};
-	}, [others]);
+	}, [others, webRTCUserList]);
 
 	useEffect(() => {
 		if (!webRTCUserList.has(me.uuid)) {

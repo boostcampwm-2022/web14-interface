@@ -6,6 +6,10 @@ import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import useModal from '@hooks/useModal';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import useCleanupRoom from '@hooks/useCleanupRoom';
+import useWebRTCSignaling from '@hooks/useWebRTCSignaling';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { meInRoomState, webRTCUserMapState } from '@store/user.store';
+import { socket } from '@service/socket';
 
 export interface ExitRoomModalPropType {
 	content?: string;
@@ -16,10 +20,17 @@ const ExitRoomModal = ({ content }: ExitRoomModalPropType) => {
 	const cleanupRoom = useCleanupRoom();
 	const { safeNavigate } = useSafeNavigate();
 
+	const me = useRecoilValue(meInRoomState);
+	const [webRTCUserList, setWebRTCUserList] = useRecoilState(webRTCUserMapState);
+	const { closeConnection } = useWebRTCSignaling(webRTCUserList, setWebRTCUserList);
+
 	const handleLeaveRoom = async () => {
 		await socketEmit(SOCKET_EVENT_TYPE.LEAVE_ROOM);
-		closeModal();
+		closeConnection(me);
+		socket.removeAllListeners();
 		cleanupRoom();
+
+		closeModal();
 		safeNavigate(PAGE_TYPE.LANDING_PAGE);
 	};
 
