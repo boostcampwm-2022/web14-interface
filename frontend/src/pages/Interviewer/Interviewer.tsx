@@ -56,7 +56,6 @@ const Interviewer = () => {
 			<RoundButton
 				style={{
 					width: 160,
-					height: 50,
 				}}
 				onClick={hadleEndInterview}
 			>
@@ -65,7 +64,6 @@ const Interviewer = () => {
 			<RoundButton
 				style={{
 					width: 50,
-					height: 50,
 				}}
 				onClick={hadleCancelInterview}
 			>

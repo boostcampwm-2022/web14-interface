@@ -58,7 +58,6 @@ const Feedback = () => {
 		<RoundButton
 			style={{
 				width: 160,
-				height: 50,
 			}}
 			onClick={handleEndFeedback}
 		>
@@ -73,8 +72,7 @@ const Feedback = () => {
 				<RoundButton
 					style={{
 						width: 50,
-						height: 50,
-						backgroundColor: isFbSync ? theme.colors.primary : theme.colors.white,
+						color: isFbSync ? 'primary' : 'secondary',
 					}}
 					onClick={() => setIsFbSync((current) => !current)}
 				>
