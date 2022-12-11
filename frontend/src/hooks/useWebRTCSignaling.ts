@@ -154,15 +154,15 @@ const useWebRTCSignaling = (
 	 * @param closeId 서버가 보낸 나간 UserId
 	 */
 	const closeConnection = ({ uuid: closeId }) => {
-		console.log('close', closeId, webRTCUserList);
 		const oldStream = webRTCUserList.get(closeId).stream;
 		const oldConnection = webRTCUserList.get(closeId).connection;
+
 		oldStream.getTracks().forEach((track) => track.stop());
-		oldConnection.close();
+		oldConnection?.close();
 		connectionListRef.current?.delete(closeId);
+
 		const newUserList = new Map(webRTCUserList);
 		newUserList.delete(closeId);
-
 		setWebRTCUserList(newUserList);
 	};
 
