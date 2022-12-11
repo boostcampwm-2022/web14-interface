@@ -16,7 +16,7 @@ const theme = {
 		medium: '20px',
 		large: '24px',
 	},
-	borderRaduis: '8px',
+	borderRadius: '8px',
 };
 
 export default theme;
