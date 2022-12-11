@@ -125,7 +125,7 @@ export class ObjectStorageService {
 		const videoList = await this.getUserVideoList(client.data.userId);
 		if (videoList.length > MAX_VIDEO_COUNT) {
 			const overs = videoList
-				.sort((a, b) => a.LastModified.getTime() - b.LastModified.getTime())
+				.sort((a, b) => b.LastModified.getTime() - a.LastModified.getTime())
 				.filter((_, idx) => idx >= MAX_VIDEO_COUNT);
 
 			Promise.all([overs.map((video) => this.deleteInterviewHistory({ client, video }))]);
