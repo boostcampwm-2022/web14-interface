@@ -11,7 +11,8 @@ import {
 	BUCKET_NAME,
 	MAX_VIDEO_COUNT,
 	OBJECT_STORAGE_ENDPOINT,
-	REST_SERVER_ORIGIN,
+	SOCKET_MESSAGE,
+	VIDEO_RUNNING_SEC_LIMIT,
 } from '@constant';
 import { Socket } from 'socket.io';
 import { clientId } from '@types';
@@ -42,7 +43,6 @@ export class ObjectStorageService {
 	private bucketName = BUCKET_NAME;
 	private ApiAccessKey = this.configService.get(NAVER_API_KEY);
 	private ApiSecretKey = this.configService.get(NAVER_API_PWD);
-	private restServerOrigin = this.configService.get(REST_SERVER_ORIGIN);
 	private S3: AWS.S3;
 
 	/**
@@ -58,7 +58,19 @@ export class ObjectStorageService {
 		const buffers = this.clientPacketMap.get(client.id);
 		buffers.push(videoBuffer);
 
-		return {};
+		return this.handleRunningTimeOver(client);
+	}
+
+	/**
+	 *
+	 * @returns
+	 */
+	handleRunningTimeOver(client: Socket) {
+		const videoSize = this.clientPacketMap.get(client.id).length;
+
+		return videoSize >= VIDEO_RUNNING_SEC_LIMIT
+			? { success: false, message: SOCKET_MESSAGE.VIDEO_TIME_LIMIT_OVER }
+			: {};
 	}
 
 	/**
