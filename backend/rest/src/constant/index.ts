@@ -1,3 +1,3 @@
 export * from './auth.constant';
-export * from './http.constant';
+export * from './exception-message.constant';
 export * from './interview.constant';

@@ -1,4 +1,5 @@
 import { REST_SERVER_ORIGIN } from '@constant';
+import { WsException } from '@nestjs/websockets';
 import axios from 'axios';
 import { Socket } from 'socket.io';
 
@@ -11,7 +12,8 @@ export const setUserIdInClient = async (client: Socket) => {
 		});
 		client.data.userId = res.data.data.userId;
 	} catch (err) {
-		// not handle 401 error
+		// not handle http error
+		throw new WsException(err);
 	}
 };
 
@@ -22,5 +24,14 @@ export const deleteInterviewDocs = async ({
 	client: Socket;
 	docsUUID: string;
 }) => {
-	debugger;
+	try {
+		await axios.delete(`${process.env[REST_SERVER_ORIGIN]}/api/interview/docs/${docsUUID}`, {
+			headers: {
+				Cookie: client.handshake.headers.cookie,
+			},
+		});
+	} catch (err) {
+		// not handle http error
+		throw new WsException(err);
+	}
 };
