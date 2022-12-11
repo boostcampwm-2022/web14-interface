@@ -31,6 +31,9 @@ import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import { PAGE_TYPE } from '@constants/page.constant';
 import useCleanupRoom from '@hooks/useCleanupRoom';
+import useModal from '@hooks/useModal';
+import { useRecoilValue } from 'recoil';
+import { pageState } from '@store/page.store';
 
 interface Props {
 	mainController?: React.ReactNode;
@@ -43,8 +46,8 @@ enum DRAWER_TYPE {
 }
 
 const BottomBar = ({ mainController }: Props) => {
-	const { safeNavigate } = useSafeNavigate();
-	const cleanupRoom = useCleanupRoom();
+	const { openModal } = useModal();
+	const page = useRecoilValue(pageState);
 	const [isMicOn, setIsMicOn] = useState(true);
 	const [isCameraOn, setIsCameraOn] = useState(true);
 
@@ -79,9 +82,17 @@ const BottomBar = ({ mainController }: Props) => {
 	};
 
 	const handleLeaveRoom = () => {
-		socketEmit(SOCKET_EVENT_TYPE.LEAVE_ROOM);
-		cleanupRoom();
-		safeNavigate(PAGE_TYPE.LANDING_PAGE);
+		const exitRoomProp =
+			page === PAGE_TYPE.LOBBY_PAGE
+				? null
+				: {
+						content:
+							page === PAGE_TYPE.WAITTING_PAGE
+								? '작성된 피드백은 기록 메뉴에서 확인할 수 있습니다.'
+								: '현재까지 진행 상황이 저장되지 않습니다.',
+				  };
+
+		openModal('ExitRoomModal', exitRoomProp);
 	};
 
 	return (
