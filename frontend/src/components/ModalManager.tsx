@@ -2,15 +2,15 @@ import React from 'react';
 import { useRecoilValue } from 'recoil';
 import { currentModalState } from '@store/currentModal.store';
 import ReactDOM from 'react-dom';
-import EnterRoomModal from './@modal/EnterRoomModal/EnterRoomModal';
+import EnterRoomModal from './@modal/EnterRoomModal';
 import InterviewDocsListModal from './@modal/InterviewDocsListModal/InterviewDocsListModal';
 import InterviewDocsItemModal from './@modal/InterviewDocsModal/InterviewDocsModal';
-import RoomInfoModal from './@modal/RoomInfoModal/RoomInfoModal';
-import StartInterviewModal from './@modal/StartInterviewModal/StartInterviewModal';
-import ExitRoomModal from './@modal/ExitRoomModal/StartInterviewModal/ExitRoomModal';
-import CancelInterviewModal from './@modal/CancelInterviewModal/CancelInterviewModal';
-import EndInterviewModal from './@modal/EndInterviewModal/EndInterviewModal';
-import EndFeedbackModal from './@modal/EndFeedbackModal/EndFeedbackModal';
+import RoomInfoModal from './@modal/RoomInfoModal';
+import StartInterviewModal from './@modal/StartInterviewModal';
+import ExitRoomModal from './@modal/ExitRoomModal';
+import CancelInterviewModal from './@modal/CancelInterviewModal';
+import EndInterviewModal from './@modal/EndInterviewModal';
+import EndFeedbackModal from './@modal/EndFeedbackModal';
 
 export type MODAL_TYPE = keyof typeof modalStore;
 
