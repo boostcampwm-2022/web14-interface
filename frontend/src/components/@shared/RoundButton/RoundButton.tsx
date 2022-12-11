@@ -6,15 +6,15 @@ export interface roundButtonPropType {
 	onClick?: React.MouseEventHandler<HTMLButtonElement>;
 	style: StyleType;
 }
-interface StyleType {
+
+export interface StyleType {
+	theme?: any;
 	width?: number;
-	height?: number;
-	backgroundColor?: string;
-	color?: string;
+	size?: 'small' | 'medium';
+	color?: 'primary' | 'secondary' | 'red' | 'black';
 }
 
-const RoundButton = (prop: roundButtonPropType) => {
-	const { children, onClick, style } = prop;
+const RoundButton = ({ children, onClick, style }: roundButtonPropType) => {
 	return (
 		<button css={(theme) => roundButtonStyle({ ...style, theme })} onClick={onClick}>
 			{children}
