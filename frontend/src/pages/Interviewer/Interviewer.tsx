@@ -19,6 +19,7 @@ import theme from '@styles/theme';
 import BottomBar from '@components/BottomBar/BottomBar';
 import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
 import { feedbackAreaStyle } from '@pages/Feedback/Feedback.style';
+import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
 
 const Interviewer = () => {
 	const { safeNavigate } = useSafeNavigate();
@@ -62,16 +63,17 @@ const Interviewer = () => {
 					<IntervieweeVideo
 						key={interviewee.uuid}
 						src={getStreamFromUUID(interviewee.uuid)}
+						nickname={interviewee.uuid}
 						width={'400px'}
 						autoplay
 						muted
 					/>
 					{interviewerList.map((interviewer) => (
-						<Video
+						<StreamVideo
 							key={interviewer.uuid}
 							src={getStreamFromUUID(interviewer.uuid)}
+							nickname={interviewer.uuid}
 							width={'200px'}
-							autoplay
 							muted
 						/>
 					))}

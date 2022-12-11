@@ -21,6 +21,7 @@ import { intervieweeWrapperStyle } from './Interviewee.style';
 import BottomBar from '@components/BottomBar/BottomBar';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import theme from '@styles/theme';
+import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
 
 const Interviewee = () => {
 	usePreventLeave();
@@ -90,16 +91,17 @@ const Interviewee = () => {
 			<IntervieweeVideo
 				key={interviewee.uuid}
 				src={getStreamFromUUID(interviewee.uuid)}
+				nickname={interviewee.uuid}
 				width={'400px'}
 				autoplay
 				muted
 			/>
 			{interviewerList.map((interviewer) => (
-				<Video
+				<StreamVideo
 					key={interviewer.uuid}
 					src={getStreamFromUUID(interviewer.uuid)}
+					nickname={interviewer.uuid}
 					width={'400px'}
-					autoplay
 					muted
 				/>
 			))}
