@@ -28,6 +28,8 @@ export const VideoAreaStyle = () => css`
 	justify-content: center;
 	align-content: center;
 
+	padding: 24px;
+
 	width: 100%;
 	height: calc(100% - 72px);
 `;

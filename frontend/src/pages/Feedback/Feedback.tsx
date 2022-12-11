@@ -82,7 +82,7 @@ const Feedback = () => {
 	return (
 		<div css={feedbackWrapperStyle}>
 			<div css={feedbackContainerStyle}>
-				<IntervieweeVideo src={videoUrl} width={400} autoplay muted controls />
+				<IntervieweeVideo src={videoUrl} width={'400px'} autoplay muted controls />
 				<button
 					css={(theme) => feedbackSyncBtnStyle(theme, isFbSync)}
 					onClick={() => setIsFbSync((current) => !current)}

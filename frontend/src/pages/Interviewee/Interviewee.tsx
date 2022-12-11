@@ -90,7 +90,7 @@ const Interviewee = () => {
 			<IntervieweeVideo
 				key={interviewee.uuid}
 				src={getStreamFromUUID(interviewee.uuid)}
-				width={400}
+				width={'400px'}
 				autoplay
 				muted
 			/>
@@ -98,7 +98,7 @@ const Interviewee = () => {
 				<Video
 					key={interviewer.uuid}
 					src={getStreamFromUUID(interviewer.uuid)}
-					width={200}
+					width={'400px'}
 					autoplay
 					muted
 				/>

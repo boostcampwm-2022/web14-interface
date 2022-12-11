@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import Video from '@components/@shared/Video/Video';
 import VideoGrid from '@components/@shared/VideoGrid/VideoGrid';
 import BottomBar from '@components/BottomBar/BottomBar';
 import useSafeNavigate from '@hooks/useSafeNavigate';
@@ -18,6 +17,7 @@ import { PAGE_TYPE } from '@constants/page.constant';
 import { iconBgStyle } from '@styles/commonStyle';
 import { lobbyWrapperStyle, startInterviewBtnStyle, VideoAreaStyle } from './Lobby.style';
 import { ReactComponent as BroadcastIcon } from '@assets/icon/broadcast.svg';
+import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
 
 interface joinInterviewResponseType {
 	usersInRoom: UserType[];
@@ -92,7 +92,7 @@ const Lobby = () => {
 			<div css={VideoAreaStyle}>
 				<VideoGrid>
 					{streamList.map(({ uuid, stream }) => (
-						<Video key={uuid} src={stream} autoplay muted />
+						<StreamVideo key={uuid} src={stream} nickname={uuid} muted />
 					))}
 				</VideoGrid>
 			</div>
