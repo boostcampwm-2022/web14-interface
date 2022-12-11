@@ -1,11 +1,14 @@
 import React from 'react';
 import { ReactComponent as PreviewError } from '@assets/preview_error.svg';
-import { css } from '@emotion/react';
 import Button from '@components/@shared/Button/Button';
-import { flexColumn, flexRow } from '@styles/globalStyle';
 import { useNavigate } from 'react-router-dom';
 import { PAGE_TYPE } from '@constants/page.constant';
-import { Link } from 'react-router-dom';
+import {
+	buttonAreaStyle,
+	ContentWrapperStyle,
+	NotFoundWrapperStyle,
+	PreviewErrorStyle,
+} from './NotFount.style';
 
 const NotFound = () => {
 	const navigate = useNavigate();
