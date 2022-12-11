@@ -10,7 +10,7 @@ export const setUserIdInClient = async (client: Socket) => {
 				Cookie: client.handshake.headers.cookie,
 			},
 		});
-		client.data.userId = res.data.data.userId;
+		client.data.authId = res.data.data.userId;
 	} catch (err) {
 		// not handle http error
 		throw new WsException(err.message);

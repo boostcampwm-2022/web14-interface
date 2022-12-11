@@ -47,6 +47,7 @@ export enum SOCKET_MESSAGE {
 	BUSY_ROOM = 'busy_room',
 	NOT_ENOUGHT_USER = 'not_enought_user',
 	VIDEO_TIME_LIMIT_OVER = 'video_time_limit_over',
+	EXIST_SAME_AUTH_ID = 'exist_same_auth_id',
 }
 
 export enum EXCEPTION_MESSAGE {

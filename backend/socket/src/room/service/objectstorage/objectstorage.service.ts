@@ -99,7 +99,7 @@ export class ObjectStorageService {
 	 * @returns
 	 */
 	async uploadVideo({ client, docsUUID }: { client: Socket; docsUUID: string }) {
-		const folderName = `${client.data.userId}/`;
+		const folderName = `${client.data.authId}/`;
 		const fileName = folderName + docsUUID;
 		const videoBuffer = this.getVideoBuffer(client.id);
 		this.deleteVideoMemoryData(client.id);
@@ -134,7 +134,7 @@ export class ObjectStorageService {
 	 * @param client
 	 */
 	async handleMaxVideoCountByUser(client: Socket) {
-		const videoList = await this.getUserVideoList(client.data.userId);
+		const videoList = await this.getUserVideoList(client.data.authId);
 		if (videoList.length > MAX_VIDEO_COUNT) {
 			const overs = videoList
 				.sort((a, b) => b.LastModified.getTime() - a.LastModified.getTime())
