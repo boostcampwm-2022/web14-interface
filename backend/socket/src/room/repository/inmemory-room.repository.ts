@@ -16,6 +16,13 @@ export class InmemoryRoomRepository implements RoomRepository {
 	}
 
 	async deleteRoom(roomUUID: string) {
+		// cascading
+		const users = this.usersInRoom.get(roomUUID);
+		users.forEach(async (userUUID) => {
+			const user = await this.getUserByUserId(userUUID);
+			this.removeUser(user);
+		});
+
 		this.rooms.delete(roomUUID);
 		this.usersInRoom.delete(roomUUID);
 	}
@@ -53,7 +60,7 @@ export class InmemoryRoomRepository implements RoomRepository {
 		this.clientUserIdMap.set(user.clientId, user.uuid);
 	}
 
-	async removeUserInRoom(user: User) {
+	async removeUser(user: User) {
 		const userSet = this.usersInRoom.get(user.roomUUID);
 		userSet.delete(user.uuid);
 

@@ -90,7 +90,7 @@ export class ConnectionService {
 		client.to(roomUUID).emit(EVENT.LEAVE_USER, { user });
 
 		client.leave(roomUUID);
-		await this.roomRepository.removeUserInRoom(user);
+		await this.roomRepository.removeUser(user);
 
 		const usersInRoom = await this.roomRepository.getUsersInRoom(roomUUID);
 		if (!usersInRoom) {

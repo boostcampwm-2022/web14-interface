@@ -63,7 +63,7 @@ export interface RoomRepository {
 	 * @param clientId socket id
 	 * @param user User
 	 */
-	removeUserInRoom(user: User): Promise<void>;
+	removeUser(user: User): Promise<void>;
 
 	/**
 	 * 해당 room uuid의 room의 interview phase를 update 합니다.
