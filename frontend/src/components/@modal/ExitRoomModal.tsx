@@ -7,11 +7,11 @@ import useModal from '@hooks/useModal';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import useCleanupRoom from '@hooks/useCleanupRoom';
 
-export interface ExitRoomModalPropTYpe {
+export interface ExitRoomModalPropType {
 	content?: string;
 }
 
-const ExitRoomModal = ({ content }: ExitRoomModalPropTYpe) => {
+const ExitRoomModal = ({ content }: ExitRoomModalPropType) => {
 	const { closeModal } = useModal();
 	const cleanupRoom = useCleanupRoom();
 	const { safeNavigate } = useSafeNavigate();
