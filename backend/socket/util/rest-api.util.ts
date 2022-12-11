@@ -13,7 +13,7 @@ export const setUserIdInClient = async (client: Socket) => {
 		client.data.userId = res.data.data.userId;
 	} catch (err) {
 		// not handle http error
-		throw new WsException(err);
+		throw new WsException(err.message);
 	}
 };
 
@@ -32,6 +32,6 @@ export const deleteInterviewDocs = async ({
 		});
 	} catch (err) {
 		// not handle http error
-		throw new WsException(err);
+		throw new WsException(err.message);
 	}
 };

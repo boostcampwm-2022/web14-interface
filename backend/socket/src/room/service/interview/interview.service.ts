@@ -1,10 +1,11 @@
 import {
-	ERROR_MSG,
 	EVENT,
 	MIN_USER_COUNT,
 	ROOM_PHASE,
 	ROOM_REPOSITORY_INTERFACE,
 	USER_ROLE,
+	SOCKET_MESSAGE,
+	EXCEPTION_MESSAGE,
 } from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
 import { Socket, Namespace } from 'socket.io';
@@ -26,7 +27,7 @@ export class InterviewService {
 		const usersInRoom = await this.roomRepository.getUsersInRoom(roomUUID);
 
 		if (usersInRoom.length < MIN_USER_COUNT) {
-			return { success: false, message: ERROR_MSG.NOT_ENOUGHT_USER };
+			return { success: false, message: SOCKET_MESSAGE.NOT_ENOUGHT_USER };
 		}
 		await this.validateRoomPhaseUpdate({ roomUUID, phase: ROOM_PHASE.INTERVIEW });
 
@@ -65,7 +66,7 @@ export class InterviewService {
 			case USER_ROLE.INTERVIEWER:
 				return EVENT.START_FEEDBACK;
 			default:
-				throw new WsException(ERROR_MSG.BAD_REQUEST);
+				throw new WsException(EXCEPTION_MESSAGE.INVALID_USER_ROLE);
 		}
 	}
 
@@ -155,6 +156,6 @@ export class InterviewService {
 		if (currentPhase === ROOM_PHASE.INTERVIEW && phase === ROOM_PHASE.FEEDBACK) return true;
 		if (currentPhase === ROOM_PHASE.FEEDBACK && phase === ROOM_PHASE.LOBBY) return true;
 
-		throw new WsException(ERROR_MSG.BAD_REQUEST);
+		throw new WsException(EXCEPTION_MESSAGE.INVALID_CHANGE_PHASE);
 	}
 }
