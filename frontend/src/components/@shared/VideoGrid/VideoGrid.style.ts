@@ -6,7 +6,7 @@ export const videoGridStyle = (rowNumber: number, colNumber: number) => css`
 	grid-template-columns: repeat(${colNumber}, 1fr);
 	gap: 2px;
 
-	video {
-		width: 100% !important;
-	}
+	align-items: center;
+
+	aspect-ratio: 16 / 9;
 `;

@@ -1,9 +1,10 @@
 import React, { forwardRef, useEffect, useRef } from 'react';
+import { videoStyle, videoWrapperStyle } from './Video.style';
 
 export interface VideoPropType {
-	src: string | MediaStream;
-	width?: number;
-	height?: number;
+	src: string;
+	width?: string;
+	height?: string;
 	autoplay?: boolean;
 	controls?: boolean;
 	muted?: boolean;
@@ -11,7 +12,6 @@ export interface VideoPropType {
 
 const Video = ({ src, width, height, autoplay, controls, muted }: VideoPropType, ref) => {
 	const videoRef = ref ? ref : useRef<HTMLVideoElement>(null);
-	const isStatic = typeof src === 'string';
 
 	useEffect(() => {
 		if (!videoRef.current) return;
@@ -19,16 +19,12 @@ const Video = ({ src, width, height, autoplay, controls, muted }: VideoPropType,
 		videoRef.current.autoplay = autoplay;
 		videoRef.current.controls = controls;
 		videoRef.current.muted = muted;
-
-		if (isStatic) return;
-
-		videoRef.current.srcObject = src;
 	}, [src]);
 
-	return isStatic ? (
-		<video src={src} width={width} height={height} ref={videoRef} />
-	) : (
-		<video width={width} height={height} ref={videoRef} />
+	return (
+		<div css={(theme) => videoWrapperStyle(theme, width, height)}>
+			<video css={videoStyle} src={src} ref={videoRef} />
+		</div>
 	);
 };
 

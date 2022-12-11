@@ -46,7 +46,7 @@ const InterviewDocsModal = ({ docsUUID, idx }: Props) => {
 				</div>
 				<div css={docsItemBodyStyle}>
 					<div css={docsItemVideoAreaStyle}>
-						<Video width={100} src="" />
+						<Video width={'100px'} src="" />
 						<div css={docsItemVideoInfoStyle}>
 							<div>
 								<div>일시</div>

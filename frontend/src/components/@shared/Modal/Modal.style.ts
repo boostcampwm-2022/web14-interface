@@ -9,7 +9,7 @@ export const ModalWrapperStyle = (theme) => css`
 	padding: 40px 32px 32px 32px;
 
 	border: 1px solid ${theme.colors.gray2};
-	border-radius: ${theme.borderRaduis};
+	border-radius: ${theme.borderRadius};
 `;
 
 export const ModalTitleStyle = (theme) => css`

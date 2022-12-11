@@ -20,6 +20,8 @@ import { DocsReqDtoType } from '@customType/dto';
 import { intervieweeWrapperStyle } from './Interviewee.style';
 import BottomBar from '@components/BottomBar/BottomBar';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
+import theme from '@styles/theme';
+import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
 
 const Interviewee = () => {
 	usePreventLeave();
@@ -86,16 +88,17 @@ const Interviewee = () => {
 			<IntervieweeVideo
 				key={interviewee.uuid}
 				src={getStreamFromUUID(interviewee.uuid)}
-				width={400}
+				nickname={interviewee.uuid}
+				width={'400px'}
 				autoplay
 				muted
 			/>
 			{interviewerList.map((interviewer) => (
-				<Video
+				<StreamVideo
 					key={interviewer.uuid}
 					src={getStreamFromUUID(interviewer.uuid)}
-					width={200}
-					autoplay
+					nickname={interviewer.uuid}
+					width={'400px'}
 					muted
 				/>
 			))}
