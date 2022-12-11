@@ -8,7 +8,7 @@ import useSafeNavigate from '@hooks/useSafeNavigate';
 import { UserType } from '@customType/user';
 import { useUserRole } from '@hooks/useUserRole';
 import { useRecoilValue } from 'recoil';
-import { meInRoomState } from '@store/room.store';
+import { meInRoomState } from '@store/user.store';
 
 interface joinInterviewResponseType {
 	usersInRoom: UserType[];

@@ -11,8 +11,8 @@ import useModal from '@hooks/useModal';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import { feedbackDtoSelector } from '@store/feedback.store';
 import { completedFbCntState, docsUUIDState } from '@store/interview.store';
-import { meInRoomState } from '@store/room.store';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { meInRoomState } from '@store/user.store';
 
 interface endFeedbackResponseType {
 	isLastFeedback: boolean;
