@@ -24,7 +24,6 @@ import {
 	drawerStyle,
 	drawerHeaderStyle,
 } from './BottomBar.style';
-import theme from '@styles/theme';
 import { iconBgStyle } from '@styles/commonStyle';
 import { socketEmit } from '@api/socket.api';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
@@ -34,6 +33,8 @@ import useCleanupRoom from '@hooks/useCleanupRoom';
 import useModal from '@hooks/useModal';
 import { useRecoilValue } from 'recoil';
 import { pageState } from '@store/page.store';
+import BottomBarButtom from '@components/@shared/BottomBarButton/BottomBarButton';
+import Button from '@components/@shared/Button/Button';
 
 interface Props {
 	mainController?: React.ReactNode;
@@ -70,17 +71,6 @@ const BottomBar = ({ mainController }: Props) => {
 		setDrawerCategory(null);
 	};
 
-	const drawerContentsSwitch = () => {
-		switch (drawerCategory) {
-			case DRAWER_TYPE.CHAT_DRAWER:
-				return <ChatDrawer />;
-			case DRAWER_TYPE.USER_DRAWER:
-				return <UserDrawer />;
-			case DRAWER_TYPE.RECORD_DRAWER:
-				return <RecordDrawer />;
-		}
-	};
-
 	const handleLeaveRoom = () => {
 		const exitRoomProp =
 			page === PAGE_TYPE.LOBBY_PAGE
@@ -95,57 +85,67 @@ const BottomBar = ({ mainController }: Props) => {
 		openModal('ExitRoomModal', exitRoomProp);
 	};
 
+	const drawerContentsSwitch = () => {
+		switch (drawerCategory) {
+			case DRAWER_TYPE.CHAT_DRAWER:
+				return <ChatDrawer />;
+			case DRAWER_TYPE.USER_DRAWER:
+				return <UserDrawer />;
+			case DRAWER_TYPE.RECORD_DRAWER:
+				return <RecordDrawer />;
+		}
+	};
+
 	return (
 		<>
 			<div css={bottomBarStyle}>
 				<div css={iconGroupStyle}>
-					<button>
-						<UserIcon {...iconBgStyle} />
-					</button>
-
+					<BottomBarButtom>
+						<UserIcon />
+					</BottomBarButtom>
 					<div css={horzLineStyle} />
 					{isMicOn ? (
-						<button onClick={() => setIsMicOn(false)}>
-							<MicOnIcon {...iconBgStyle} />
-						</button>
+						<BottomBarButtom onClick={() => setIsMicOn(false)}>
+							<MicOnIcon />
+						</BottomBarButtom>
 					) : (
-						<button onClick={() => setIsMicOn(true)}>
-							<MicOffIcon {...iconBgStyle} fill={theme.colors.red} />
-						</button>
+						<BottomBarButtom color="red" onClick={() => setIsMicOn(true)}>
+							<MicOffIcon />
+						</BottomBarButtom>
 					)}
 					{isCameraOn ? (
-						<button onClick={() => setIsCameraOn(false)}>
-							<CameraOnIcon {...iconBgStyle} />
-						</button>
+						<BottomBarButtom onClick={() => setIsCameraOn(false)}>
+							<CameraOnIcon />
+						</BottomBarButtom>
 					) : (
-						<button onClick={() => setIsCameraOn(true)}>
-							<CameraOffIcon {...iconBgStyle} fill={theme.colors.red} />
-						</button>
+						<BottomBarButtom color="red" onClick={() => setIsCameraOn(true)}>
+							<CameraOffIcon />
+						</BottomBarButtom>
 					)}
 				</div>
 				{mainController}
 				<div css={iconGroupStyle}>
-					<button onClick={() => handleToggleDrawer(DRAWER_TYPE.CHAT_DRAWER)}>
-						<ChatIcon {...iconBgStyle} />
-					</button>
-					<button onClick={() => handleToggleDrawer(DRAWER_TYPE.USER_DRAWER)}>
-						<UsersIcon {...iconBgStyle} />
-					</button>
-					<button onClick={() => handleToggleDrawer(DRAWER_TYPE.RECORD_DRAWER)}>
-						<FolderIcon {...iconBgStyle} />
-					</button>
+					<BottomBarButtom onClick={() => handleToggleDrawer(DRAWER_TYPE.CHAT_DRAWER)}>
+						<ChatIcon />
+					</BottomBarButtom>
+					<BottomBarButtom onClick={() => handleToggleDrawer(DRAWER_TYPE.USER_DRAWER)}>
+						<UsersIcon />
+					</BottomBarButtom>
+					<BottomBarButtom onClick={() => handleToggleDrawer(DRAWER_TYPE.RECORD_DRAWER)}>
+						<FolderIcon />
+					</BottomBarButtom>
 					<div css={horzLineStyle} />
-					<button onClick={handleLeaveRoom}>
-						<EnterIcon {...iconBgStyle} fill={theme.colors.red} />
-					</button>
+					<BottomBarButtom color="red" onClick={handleLeaveRoom}>
+						<EnterIcon />
+					</BottomBarButtom>
 				</div>
 			</div>
 			<aside css={drawerStyle(isDrawerOpen)}>
 				<div css={drawerHeaderStyle}>
 					<div>{drawerCategory}</div>
-					<button onClick={handleCloseDrawer}>
-						<CloseIcon {...iconBgStyle} width={25} height={25} />
-					</button>
+					<Button style="text" color="secondary" size="large" onClick={handleCloseDrawer}>
+						<CloseIcon />
+					</Button>
 				</div>
 				<div>{drawerContentsSwitch()}</div>
 			</aside>
