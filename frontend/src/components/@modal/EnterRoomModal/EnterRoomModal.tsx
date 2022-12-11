@@ -62,9 +62,9 @@ const EnterRoomModal = () => {
 				/>
 			</Modal.ContentArea>
 			<Modal.ButtonArea>
-				<Modal.Button style="text" color="black" onClick={closeModal}>
-					취소
-				</Modal.Button>
+				<Modal.CloseButton style="contained" color="red">
+					닫기
+				</Modal.CloseButton>
 				<Modal.Button onClick={handleAttendRoom}>참가</Modal.Button>
 			</Modal.ButtonArea>
 		</Modal>
