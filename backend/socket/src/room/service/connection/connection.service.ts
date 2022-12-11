@@ -3,7 +3,7 @@ import {
 	EVENT,
 	ROOM_REPOSITORY_INTERFACE,
 	ROOM_PHASE,
-	ERROR_MSG,
+	SOCKET_MESSAGE,
 	USER_ROLE,
 } from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
@@ -61,17 +61,17 @@ export class ConnectionService {
 	 */
 	async isEnterableRoom(room: Room) {
 		if (room === undefined) {
-			return { success: false, message: ERROR_MSG.NO_ROOM };
+			return { success: false, message: SOCKET_MESSAGE.NO_ROOM };
 		}
 
 		if (room.phase !== ROOM_PHASE.LOBBY) {
-			return { success: false, message: ERROR_MSG.BUSY_ROOM };
+			return { success: false, message: SOCKET_MESSAGE.BUSY_ROOM };
 		}
 
 		const users = await this.roomRepository.getUsersInRoom(room.roomUUID);
 		const countInRoom = users.length;
 		if (countInRoom >= MAX_USER_COUNT) {
-			return { success: false, message: ERROR_MSG.FULL_ROOM };
+			return { success: false, message: SOCKET_MESSAGE.FULL_ROOM };
 		}
 
 		return null;
