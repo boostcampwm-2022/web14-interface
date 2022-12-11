@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 import isAuthQuery from '@store/auth.store';
-import { meInRoomState, othersInRoomState, roomUUIDState } from '@store/room.store';
+import { roomUUIDState } from '@store/room.store';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 
@@ -29,6 +29,7 @@ import {
 } from './Landing.style';
 import Button from '@components/@shared/Button/Button';
 import useModal from '@hooks/useModal';
+import { meInRoomState, othersInRoomState } from '@store/user.store';
 
 interface createRoomResponseType {
 	uuid: string;

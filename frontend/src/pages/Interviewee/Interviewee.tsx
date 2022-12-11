@@ -5,9 +5,9 @@ import axios from 'axios';
 import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
-import { webRTCStreamSelector } from '@store/webRTC.store';
+import { userRoleSelector } from '@store/user.store';
 import { currentVideoTimeState } from '@store/currentVideoTime.store';
-import { docsUUIDState, userRoleSelector } from '@store/interview.store';
+import { docsUUIDState } from '@store/interview.store';
 
 import { socket } from '@service/socket';
 import mediaStreamer from '@service/mediaStreamer';
@@ -30,7 +30,6 @@ const Interviewee = () => {
 
 	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);
 	const currentVideoTime = useRecoilValue(currentVideoTimeState);
-	const streamList = useRecoilValue(webRTCStreamSelector);
 	const setDocsUUID = useSetRecoilState(docsUUIDState);
 
 	const hadleEndInterview = () => {
@@ -41,15 +40,10 @@ const Interviewee = () => {
 		openModal('CancelInterviewModal');
 	};
 
-	const getStreamFromUUID = (uuid) => {
-		return streamList.find((stream) => stream.uuid === uuid).stream;
-	};
-
 	useEffect(() => {
 		const effect = () => {
-			console.log('E!');
 			if (!interviewee) return;
-			const myStream = getStreamFromUUID(interviewee.uuid);
+			const myStream = interviewee.stream;
 			if (!myStream) return;
 			startStream(myStream);
 		};
@@ -102,7 +96,7 @@ const Interviewee = () => {
 		<div css={intervieweeWrapperStyle}>
 			<IntervieweeVideo
 				key={interviewee.uuid}
-				src={getStreamFromUUID(interviewee.uuid)}
+				src={interviewee.stream}
 				nickname={interviewee.uuid}
 				width={'400px'}
 				autoplay
@@ -111,7 +105,7 @@ const Interviewee = () => {
 			{interviewerList.map((interviewer) => (
 				<StreamVideo
 					key={interviewer.uuid}
-					src={getStreamFromUUID(interviewer.uuid)}
+					src={interviewer.stream}
 					nickname={interviewer.uuid}
 					width={'400px'}
 					muted

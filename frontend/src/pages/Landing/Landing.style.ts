@@ -20,6 +20,7 @@ export const headerStyle = () => css`
 	${flexRow({ justifyContent: 'space-between' })};
 
 	width: 100%;
+	height: 72px;
 
 	padding: 16px 24px;
 `;

@@ -7,7 +7,8 @@ import { UserType } from '@customType/user';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import { PAGE_TYPE } from '@constants/page.constant';
 import { useSetRecoilState } from 'recoil';
-import { meInRoomState, othersInRoomState, roomUUIDState } from '@store/room.store';
+import { roomUUIDState } from '@store/room.store';
+import { meInRoomState, othersInRoomState } from '@store/user.store';
 
 interface attendRoomResponseType {
 	success?: boolean;
