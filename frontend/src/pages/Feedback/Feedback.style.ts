@@ -1,9 +1,9 @@
 import { css } from '@emotion/react';
+import { flexColumn } from '@styles/globalStyle';
 
 export const feedbackWrapperStyle = (theme) => css`
 	width: 100%;
 	height: 100%;
-	box-sizing: border-box;
 	background-color: ${theme.colors.tertiary};
 `;
 
@@ -18,9 +18,8 @@ export const feedbackContainerStyle = css`
 `;
 
 export const feedbackAreaStyle = css`
-	display: flex;
-	flex-direction: column;
-	width: 50%;
+	${flexColumn({ gap: '24px' })};
+
+	width: 32%;
 	height: 80%;
-	gap: 25px;
 `;
