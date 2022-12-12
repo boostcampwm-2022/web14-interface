@@ -1,4 +1,16 @@
-import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	HttpCode,
+	HttpStatus,
+	Param,
+	Post,
+	Query,
+	Req,
+	UseGuards,
+} from '@nestjs/common';
 import { JwtPayload } from '@types';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { DocsRequestDto } from '../dto/request-docs.dto';
@@ -42,5 +54,13 @@ export class InterviewController {
 		});
 
 		return interviewDocsList;
+	}
+
+	@Delete('docs/:docsUUID')
+	@HttpCode(HttpStatus.NO_CONTENT)
+	async deleteInterviewDocs(@Req() req: Request, @Param('docsUUID') docsUUID: string) {
+		const payload = req.user as JwtPayload;
+		await this.interviewService.deleteInterviewDocs({ userId: payload.id, docsUUID });
+		return {};
 	}
 }

@@ -1,12 +1,12 @@
 import { ROOM_PHASE } from '@constant';
-import { clientId, Room, roomUUID, User, userUUID } from '@types';
+import { authId, clientId, Room, roomUUID, User, userUUID } from '@types';
 import { RoomRepository } from './room.repository';
 
 export class InmemoryRoomRepository implements RoomRepository {
 	private rooms = new Map<roomUUID, Room>();
 	private usersInRoom = new Map<roomUUID, Set<userUUID>>();
 	private clientUserIdMap = new Map<clientId, userUUID>();
-	private userClientIdMap = new Map<userUUID, clientId>();
+	private authIdUserIdMap = new Map<authId, userUUID>();
 	private userMap = new Map<userUUID, User>();
 
 	async createRoom({ roomUUID, room }: { roomUUID: string; room: Room }) {
@@ -16,6 +16,13 @@ export class InmemoryRoomRepository implements RoomRepository {
 	}
 
 	async deleteRoom(roomUUID: string) {
+		// cascading
+		const users = this.usersInRoom.get(roomUUID);
+		users.forEach(async (userUUID) => {
+			const user = await this.getUserByUserId(userUUID);
+			this.removeUser(user);
+		});
+
 		this.rooms.delete(roomUUID);
 		this.usersInRoom.delete(roomUUID);
 	}
@@ -29,21 +36,14 @@ export class InmemoryRoomRepository implements RoomRepository {
 		return [...userSet].map((uuid) => this.userMap.get(uuid));
 	}
 
-	async saveUserInRoom({
-		clientId,
-		roomUUID,
-		user,
-	}: {
-		clientId: string;
-		roomUUID: string;
-		user: User;
-	}) {
-		const userSet = this.usersInRoom.get(roomUUID);
-		userSet.add(user.uuid);
+	async getUserByUserId(userUUID: string) {
+		const user = this.userMap.get(userUUID);
+		return user;
+	}
 
-		this.userMap.set(user.uuid, user);
-		this.clientUserIdMap.set(clientId, user.uuid);
-		this.userClientIdMap.set(user.uuid, clientId);
+	async getUserIdByAuthId(authId: string) {
+		const userUUID = this.authIdUserIdMap.get(authId);
+		return userUUID;
 	}
 
 	async getUserByClientId(clientId: string) {
@@ -51,25 +51,23 @@ export class InmemoryRoomRepository implements RoomRepository {
 		return this.userMap.get(uuid);
 	}
 
-	async getClientIdByUser(uuid: string) {
-		const clientId = this.userClientIdMap.get(uuid);
-		return clientId;
+	async saveUserInRoom(user: User) {
+		const userSet = this.usersInRoom.get(user.roomUUID);
+		userSet.add(user.uuid);
+
+		this.userMap.set(user.uuid, user);
+		this.authIdUserIdMap.set(user.authId, user.uuid);
+		this.clientUserIdMap.set(user.clientId, user.uuid);
 	}
 
-	async removeUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }) {
-		const userSet = this.usersInRoom.get(roomUUID);
+	async removeUser(user: User) {
+		const userSet = this.usersInRoom.get(user.roomUUID);
 		userSet.delete(user.uuid);
 
 		// cascading
-		const clientId = this.userClientIdMap.get(user.uuid);
 		this.userMap.delete(user.uuid);
-		this.userClientIdMap.delete(user.uuid);
-		this.clientUserIdMap.delete(clientId);
-	}
-
-	async getRoomPhase(roomUUID: string) {
-		const room = this.rooms.get(roomUUID);
-		return room.phase;
+		this.clientUserIdMap.delete(user.clientId);
+		this.authIdUserIdMap.delete(user.authId);
 	}
 
 	async updateRoomPhase({ roomUUID, phase }: { roomUUID: string; phase: ROOM_PHASE }) {
@@ -83,5 +81,7 @@ export class InmemoryRoomRepository implements RoomRepository {
 			user[key] = updateUser[key];
 		}
 		this.userMap.set(user.uuid, user);
+
+		return this.userMap.get(user.uuid);
 	}
 }

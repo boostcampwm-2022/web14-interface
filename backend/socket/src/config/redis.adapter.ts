@@ -2,8 +2,9 @@ import { IoAdapter } from '@nestjs/platform-socket.io';
 import { ServerOptions } from 'socket.io';
 import { createAdapter } from '@socket.io/redis-adapter';
 import { createClient } from 'redis';
+import { REDIS_URL } from '@constant';
 
-export const pubClient = createClient({ url: process.env.REDIS_URL });
+export const pubClient = createClient({ url: process.env[REDIS_URL] });
 const subClient = pubClient.duplicate();
 
 export class RedisIoAdapter extends IoAdapter {

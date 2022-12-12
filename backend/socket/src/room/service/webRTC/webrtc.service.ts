@@ -1,6 +1,6 @@
 import { EVENT, ROOM_REPOSITORY_INTERFACE } from '@constant';
 import { Inject, Injectable } from '@nestjs/common';
-import { Namespace, Socket } from 'socket.io';
+import { Socket } from 'socket.io';
 import { WebrtcBaseDto } from 'src/room/dto/webrtc.dto';
 import { RoomRepository } from '../../repository/room.repository';
 
@@ -29,10 +29,10 @@ export class WebrtcService {
 		eventType: EVENT;
 	}) {
 		const { myId, opponentId } = connectSignal;
-		const opponentClientId = await this.roomRepository.getClientIdByUser(opponentId);
+		const opponent = await this.roomRepository.getUserByUserId(opponentId);
 
 		client
-			.to(opponentClientId)
+			.to(opponent.clientId)
 			.emit(eventType, { ...connectSignal, myId: opponentId, opponentId: myId });
 
 		return {};

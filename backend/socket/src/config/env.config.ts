@@ -7,8 +7,6 @@ export const envConfig: ConfigModuleOptions = {
 	validationSchema: Joi.object({
 		NAVER_API_KEY: Joi.string().required(),
 		NAVER_API_PWD: Joi.string().required(),
-		NAVER_OBJECT_STORAGE_ENDPOINT: Joi.string().required(),
-		AWS_S3_RESION: Joi.string().required(),
-		BUCKET_NAME: Joi.string().required(),
+		REST_SERVER_ORIGIN: Joi.string().required(),
 	}),
 };

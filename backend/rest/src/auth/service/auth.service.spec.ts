@@ -1,5 +1,11 @@
 import { JoinUserBuilder } from '../../user/entities/typeorm-user.builder';
-import { JWT_ENV, USER_REPOSITORY_INTERFACE } from '@constant';
+import {
+	JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+	JWT_ACCESS_TOKEN_SECRET,
+	JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+	JWT_REFRESH_TOKEN_SECRET,
+	USER_REPOSITORY_INTERFACE,
+} from '@constant';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -23,14 +29,10 @@ const CONFIG_JWT_EXPIRATION = '3600';
 const mockConfigService = {
 	get: jest.fn((key: string) => {
 		switch (key) {
-			case JWT_ENV.JWT_REFRESH_TOKEN_SECRET:
+			case JWT_ACCESS_TOKEN_SECRET:
 				return CONFIG_JWT_SECRET;
-			case JWT_ENV.JWT_REFRESH_TOKEN_EXPIRATION_TIME:
-				return CONFIG_JWT_EXPIRATION;
-			case JWT_ENV.JWT_REFRESH_TOKEN_SECRET:
+			case JWT_REFRESH_TOKEN_SECRET:
 				return CONFIG_JWT_SECRET;
-			case JWT_ENV.JWT_REFRESH_TOKEN_EXPIRATION_TIME:
-				return CONFIG_JWT_EXPIRATION;
 			default:
 				return null;
 		}
@@ -123,8 +125,8 @@ describe('AuthService', () => {
 			const spyFn = jest.spyOn(jwtService, 'sign');
 			authService.createJwt({
 				payload,
-				secret: JWT_ENV.JWT_REFRESH_TOKEN_SECRET,
-				expirationTime: JWT_ENV.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+				secret: JWT_ACCESS_TOKEN_SECRET,
+				expirationTime: JWT_ACCESS_TOKEN_EXPIRATION_TIME,
 			});
 
 			expect(spyFn).toHaveBeenCalledTimes(1);
@@ -140,8 +142,8 @@ describe('AuthService', () => {
 			const spyFn = jest.spyOn(jwtService, 'sign');
 			authService.createJwt({
 				payload,
-				secret: JWT_ENV.JWT_REFRESH_TOKEN_SECRET,
-				expirationTime: JWT_ENV.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+				secret: JWT_REFRESH_TOKEN_SECRET,
+				expirationTime: JWT_REFRESH_TOKEN_EXPIRATION_TIME,
 			});
 
 			expect(spyFn).toHaveBeenCalledTimes(1);

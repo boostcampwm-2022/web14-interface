@@ -9,6 +9,11 @@ export interface RoomRepository {
 	 */
 	createRoom({ roomUUID, room }: { roomUUID: string; room: Room }): Promise<Room>;
 
+	/**
+	 * room uuid에 해당되는 room 정보를 삭제합니다.
+	 * room에 속해있는 user의 정보도 전부 삭제합니다.
+	 * @param roomUUID
+	 */
 	deleteRoom(roomUUID: string): Promise<void>;
 
 	/**
@@ -30,15 +35,7 @@ export interface RoomRepository {
 	 * @param roomUUID
 	 * @param user User
 	 */
-	saveUserInRoom({
-		clientId,
-		roomUUID,
-		user,
-	}: {
-		clientId: string;
-		roomUUID: string;
-		user: User;
-	}): Promise<void>;
+	saveUserInRoom(user: User): Promise<void>;
 
 	/**
 	 * client socket id로 mapping된 user 객체를 반환합니다.
@@ -47,21 +44,26 @@ export interface RoomRepository {
 	 */
 	getUserByClientId(clientId: string): Promise<User>;
 
-	getClientIdByUser(uuid: string): Promise<string>;
+	/**
+	 * user uuid로 mapping된 user 객체를 반환합니다.
+	 * @param userUUID
+	 * @returns User
+	 */
+	getUserByUserId(userUUID: string): Promise<User>;
+
+	/**
+	 * auth id로 mapping된 user 객체를 반환합니다.
+	 * @param authId
+	 * @returns User
+	 */
+	getUserIdByAuthId(authId: string): Promise<string>;
 
 	/**
 	 * roomUUID를 기반으로 해당 방에 있는 user를 제거합니다.
 	 * @param clientId socket id
 	 * @param user User
 	 */
-	removeUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }): Promise<void>;
-
-	/**
-	 * 방의 현재 phase를 반환합니다.
-	 * @param roomUUID
-	 * @returns ROOM_PHASE
-	 */
-	getRoomPhase(roomUUID: string): Promise<ROOM_PHASE>;
+	removeUser(user: User): Promise<void>;
 
 	/**
 	 * 해당 room uuid의 room의 interview phase를 update 합니다.
@@ -70,11 +72,15 @@ export interface RoomRepository {
 	 */
 	updateRoomPhase({ roomUUID, phase }: { roomUUID: string; phase: ROOM_PHASE }): Promise<void>;
 
+	/**
+	 * update할 user 정보를 업데이트 합니다.
+	 * @param updateUser - update할 props를 가진 partial user 객체
+	 */
 	updateUserInfo({
 		uuid,
 		updateUser,
 	}: {
 		uuid: string;
 		updateUser: Partial<User>;
-	}): Promise<void>;
+	}): Promise<User>;
 }
