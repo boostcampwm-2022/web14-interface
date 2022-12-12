@@ -99,7 +99,12 @@ const Lobby = () => {
 			<div css={VideoAreaStyle}>
 				<VideoGrid>
 					{userInfoList.map(({ uuid, stream, nickname }) => (
-						<StreamVideo key={uuid} src={stream} nickname={nickname} muted />
+						<StreamVideo
+							key={uuid}
+							src={stream}
+							nickname={nickname}
+							muted={uuid === me.uuid}
+						/>
 					))}
 				</VideoGrid>
 			</div>
