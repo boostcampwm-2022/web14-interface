@@ -34,8 +34,8 @@ export const drawerStyle = (isOpen) => (theme) =>
 		right: 0px;
 		top: 0px;
 
-		padding: 32px 24px;
-		width: 400px;
+		padding: 12px 24px;
+		width: 344px;
 		height: calc(100% - 64px);
 		background-color: ${theme.colors.black};
 
