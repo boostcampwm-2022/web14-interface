@@ -5,8 +5,8 @@ import useEditFeedback from '@hooks/useEditFeedback';
 import { ReactComponent as DeleteIcon } from '@assets/icon/delete.svg';
 import { ReactComponent as EditIcon } from '@assets/icon/edit.svg';
 import { ReactComponent as CheckIcon } from '@assets/icon/check.svg';
-import { iconSxStyle } from '@styles/commonStyle';
 import { fbBtnContainer } from './FeedbackEditBtns.style';
+import Button from '@components/@shared/Button/Button';
 
 interface Props {
 	id: string;
@@ -20,17 +20,17 @@ const FeedbackEditBtn = ({ id, readOnly }: Props) => {
 	return (
 		<div css={fbBtnContainer}>
 			{readOnly ? (
-				<button onClick={handleStartEditFeedback}>
-					<EditIcon {...iconSxStyle} fill="black" />
-				</button>
+				<Button color="black" size="small" style="text" onClick={handleStartEditFeedback}>
+					<EditIcon />
+				</Button>
 			) : (
-				<button onClick={handleEndEditFeedback}>
-					<CheckIcon {...iconSxStyle} fill="black" />
-				</button>
+				<Button size="small" style="text" onClick={handleEndEditFeedback}>
+					<CheckIcon />
+				</Button>
 			)}
-			<button onClick={handleDeleteFeedback}>
-				<DeleteIcon {...iconSxStyle} fill="black" />
-			</button>
+			<Button color="red" size="small" style="text" onClick={handleDeleteFeedback}>
+				<DeleteIcon />
+			</Button>
 		</div>
 	);
 };
