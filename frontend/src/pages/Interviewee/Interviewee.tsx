@@ -99,14 +99,6 @@ const Interviewee = () => {
 
 	return (
 		<div css={intervieweeWrapperStyle}>
-			<IntervieweeVideo
-				key={interviewee.uuid}
-				src={interviewee.stream}
-				nickname={interviewee.nickname}
-				height="64%"
-				autoplay
-				muted
-			/>
 			<div css={VideoListAreaStyle}>
 				{interviewerList.map((interviewer) => (
 					<StreamVideo
@@ -118,6 +110,15 @@ const Interviewee = () => {
 					/>
 				))}
 			</div>
+			<IntervieweeVideo
+				key={interviewee.uuid}
+				src={interviewee.stream}
+				nickname={interviewee.nickname}
+				height="64%"
+				autoplay
+				muted
+			/>
+
 			<BottomBar mainController={endInterviewBtn} />
 		</div>
 	);
