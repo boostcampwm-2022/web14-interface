@@ -28,20 +28,32 @@ export class RedisRoomRepository implements RoomRepository {
 		return users.filter((user) => this.transformEmptyObject(user));
 	}
 
-	async saveUserInRoom({
-		clientId,
-		roomUUID,
-		user,
-	}: {
-		clientId: string;
-		roomUUID: string;
-		user: User;
-	}): Promise<void> {
+	async saveUserInRoom(user: User): Promise<void> {
 		await R.multi()
-			.sAdd(`memberIds:${roomUUID}`, user.uuid)
+			.sAdd(`memberIds:${user.roomUUID}`, user.uuid)
 			.hSet(`users:${user.uuid}`, { ...user })
-			.set(`userIds:${clientId}`, user.uuid)
-			.set(`clientIds:${user.uuid}`, clientId)
+			.set(`userIds:${user.authId}`, user.uuid)
+			.set(`userIds:${user.clientId}`, user.uuid)
+			.exec();
+	}
+
+	async getUserByUserId(userUUID: string): Promise<User> {
+		const user: any = await R.hGetAll(`users:${userUUID}`);
+		return this.transformEmptyObject(user);
+	}
+
+	async getUserIdByAuthId(authId: string): Promise<string> {
+		const userUUID = await R.get(`userIds:${authId}`);
+		return userUUID;
+	}
+
+	async removeUser(user: User): Promise<void> {
+		await R.multi()
+			.sRem(`memberIds:${user.roomUUID}`, user.uuid)
+			.del(`users:${user.uuid}`)
+			.del(`clientIds:${user.uuid}`)
+			.del(`userIds:${user.clientId}`)
+			.del(`userIds:${user.authId}`)
 			.exec();
 	}
 
@@ -49,26 +61,6 @@ export class RedisRoomRepository implements RoomRepository {
 		const userUUID = await R.get(`userIds:${clientId}`);
 		const user: any = await R.hGetAll(`users:${userUUID}`);
 		return this.transformEmptyObject(user);
-	}
-
-	async getClientIdByUser(uuid: string): Promise<string> {
-		const clientId = await R.get(`clientIds:${uuid}`);
-		return clientId;
-	}
-
-	async removeUserInRoom({ roomUUID, user }: { roomUUID: string; user: User }): Promise<void> {
-		const clientId = await R.get(`clientIds:${user.uuid}`);
-		await R.multi()
-			.sRem(`memberIds:${roomUUID}`, user.uuid)
-			.del(`users:${user.uuid}`)
-			.del(`clientIds:${user.uuid}`)
-			.del(`userIds:${clientId}`)
-			.exec();
-	}
-
-	async getRoomPhase(roomUUID: string): Promise<ROOM_PHASE> {
-		const phase: any = await R.hGet(`rooms:${roomUUID}`, 'phase');
-		return phase;
 	}
 
 	async updateRoomPhase({
@@ -87,10 +79,13 @@ export class RedisRoomRepository implements RoomRepository {
 	}: {
 		uuid: string;
 		updateUser: Partial<User>;
-	}): Promise<void> {
+	}): Promise<User> {
 		for (const key in updateUser) {
 			await R.hSet(`users:${uuid}`, `${key}`, updateUser[key]);
 		}
+
+		const user: any = await R.hGetAll(`users:${uuid}`);
+		return this.transformEmptyObject(user);
 	}
 
 	transformEmptyObject(object: any) {
