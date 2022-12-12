@@ -17,6 +17,7 @@ const theme = {
 		large: '24px',
 	},
 	borderRadius: '8px',
+	bottomBarHeight: '64px',
 };
 
 export default theme;

@@ -16,6 +16,7 @@ export enum SOCKET_EVENT_TYPE {
 	DOWNLOAD_VIDEO = 'download_video',
 	SEND_MESSAGE = 'send_message',
 	RECEIVE_MESSAGE = 'receive_message',
+	FINISH_STREAMING = 'finish_streaming',
 }
 
 export enum WEBRTC_EVENT_TYPE {

@@ -9,7 +9,7 @@ export const bottomBarStyle = (theme) => css`
 	align-items: center;
 	box-sizing: border-box;
 	width: 100%;
-	height: 70px;
+	height: ${theme.bottomBarHeight};
 	padding: 0px 30px;
 `;
 
