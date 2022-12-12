@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import ChatDrawer from '@components/@drawer/ChatDrawer/ChatDrawer';
 import UserDrawer from '@components/@drawer/UserDrawer/UserDrawer';
@@ -35,6 +35,7 @@ import { useRecoilValue } from 'recoil';
 import { pageState } from '@store/page.store';
 import BottomBarButtom from '@components/@shared/BottomBarButton/BottomBarButton';
 import Button from '@components/@shared/Button/Button';
+import { meInRoomState, userInfoSelector } from '@store/user.store';
 
 interface Props {
 	mainController?: React.ReactNode;
@@ -49,7 +50,12 @@ enum DRAWER_TYPE {
 const BottomBar = ({ mainController }: Props) => {
 	const { openModal } = useModal();
 	const page = useRecoilValue(pageState);
-	const [isMicOn, setIsMicOn] = useState(true);
+	const me = useRecoilValue(meInRoomState);
+	const userInfo = useRecoilValue(userInfoSelector);
+
+	const myStream = userInfo.find((user) => user.uuid === me.uuid);
+
+	const [isMicOn, setIsMicOn] = useState(false);
 	const [isCameraOn, setIsCameraOn] = useState(true);
 
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -96,6 +102,24 @@ const BottomBar = ({ mainController }: Props) => {
 		}
 	};
 
+	const handleMic = () => {
+		myStream.stream.getAudioTracks().forEach((track) => {
+			track.enabled = !isMicOn;
+			console.log(track.enabled);
+		});
+
+		setIsMicOn((current) => !current);
+	};
+
+	const handleCamera = () => {
+		myStream.stream.getVideoTracks().forEach((track) => {
+			track.enabled = !isCameraOn;
+			console.log(track.enabled);
+		});
+
+		setIsCameraOn((current) => !current);
+	};
+
 	return (
 		<>
 			<div css={bottomBarStyle}>
@@ -104,24 +128,15 @@ const BottomBar = ({ mainController }: Props) => {
 						<UserIcon />
 					</BottomBarButtom>
 					<div css={horzLineStyle} />
-					{isMicOn ? (
-						<BottomBarButtom onClick={() => setIsMicOn(false)}>
-							<MicOnIcon />
-						</BottomBarButtom>
-					) : (
-						<BottomBarButtom color="red" onClick={() => setIsMicOn(true)}>
-							<MicOffIcon />
-						</BottomBarButtom>
-					)}
-					{isCameraOn ? (
-						<BottomBarButtom onClick={() => setIsCameraOn(false)}>
-							<CameraOnIcon />
-						</BottomBarButtom>
-					) : (
-						<BottomBarButtom color="red" onClick={() => setIsCameraOn(true)}>
-							<CameraOffIcon />
-						</BottomBarButtom>
-					)}
+					<BottomBarButtom color={isMicOn ? 'secondary' : 'red'} onClick={handleMic}>
+						{isMicOn ? <MicOnIcon /> : <MicOffIcon />}
+					</BottomBarButtom>
+					<BottomBarButtom
+						color={isCameraOn ? 'secondary' : 'red'}
+						onClick={handleCamera}
+					>
+						{isCameraOn ? <CameraOnIcon /> : <CameraOffIcon />}
+					</BottomBarButtom>
 				</div>
 				{mainController}
 				<div css={iconGroupStyle}>
@@ -143,7 +158,12 @@ const BottomBar = ({ mainController }: Props) => {
 			<aside css={drawerStyle(isDrawerOpen)}>
 				<div css={drawerHeaderStyle}>
 					<div>{drawerCategory}</div>
-					<Button style="text" color="secondary" size="large" onClick={handleCloseDrawer}>
+					<Button
+						style="text"
+						color="secondary"
+						size="medium"
+						onClick={handleCloseDrawer}
+					>
 						<CloseIcon />
 					</Button>
 				</div>
