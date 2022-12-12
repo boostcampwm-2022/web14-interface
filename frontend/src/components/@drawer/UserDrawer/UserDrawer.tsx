@@ -10,10 +10,14 @@ import {
 	dividerStyle,
 	drawerBottomBoxStyle,
 	roomUUIDStyle,
+	userIconStyle,
+	userItemStyle,
 	userListStyle,
 } from './UserDrawer.style';
 import { iconSmStyle } from '@styles/commonStyle';
 import { meInRoomState, othersInRoomState } from '@store/user.store';
+import Button from '@components/@shared/Button/Button';
+import { flexRow } from '@styles/globalStyle';
 
 const UserDrawer = () => {
 	const others = useRecoilValue(othersInRoomState);
@@ -22,9 +26,9 @@ const UserDrawer = () => {
 	return (
 		<>
 			<div css={userListStyle}>
-				<div>
+				<div css={userItemStyle}>
 					<div>{me.nickname}</div>
-					<div>
+					<div css={userIconStyle}>
 						<MicOnIcon {...iconSmStyle} />
 						<CameraOnIcon {...iconSmStyle} />
 					</div>
@@ -43,9 +47,14 @@ const UserDrawer = () => {
 				<div css={dividerStyle} />
 				<div css={roomUUIDStyle}>
 					{me.roomUUID}
-					<button onClick={() => navigator.clipboard.writeText(me.roomUUID)}>
-						<CopyIcon {...iconSmStyle} />
-					</button>
+					<Button
+						size="small"
+						style="text"
+						color="secondary"
+						onClick={() => navigator.clipboard.writeText(me.roomUUID)}
+					>
+						<CopyIcon />
+					</Button>
 				</div>
 			</div>
 		</>
