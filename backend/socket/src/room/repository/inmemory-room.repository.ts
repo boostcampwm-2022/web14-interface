@@ -81,5 +81,7 @@ export class InmemoryRoomRepository implements RoomRepository {
 			user[key] = updateUser[key];
 		}
 		this.userMap.set(user.uuid, user);
+
+		return this.userMap.get(user.uuid);
 	}
 }

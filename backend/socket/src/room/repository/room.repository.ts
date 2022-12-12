@@ -82,5 +82,5 @@ export interface RoomRepository {
 	}: {
 		uuid: string;
 		updateUser: Partial<User>;
-	}): Promise<void>;
+	}): Promise<User>;
 }

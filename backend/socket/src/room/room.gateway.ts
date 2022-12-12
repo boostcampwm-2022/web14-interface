@@ -10,9 +10,11 @@ import {
 	WebSocketServer,
 } from '@nestjs/websockets';
 import { Namespace, Socket } from 'socket.io';
+import { Client } from 'socket.io/dist/client';
 import { SocketExceptionFilter } from 'src/filter/socket-exception.filter';
 import { SocketResponseInterceptor } from 'src/interceptor/socket-response.interceptor';
 import { setUserIdInClient } from 'util/rest-api.util';
+import { UpdateMediaDto } from './dto/update-media-info.dto';
 import { WebrtcAnswerDto, WebrtcIcecandidateDto, WebrtcOfferDto } from './dto/webrtc.dto';
 import { ConnectionService } from './service/connection/connection.service';
 import { InterviewService } from './service/interview/interview.service';
@@ -48,6 +50,11 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage(EVENT.LEAVE_ROOM)
 	handleLeaveRoom(@ConnectedSocket() client: Socket) {
 		return this.connectionService.leaveRoom(client);
+	}
+
+	@SubscribeMessage(EVENT.UPDATE_MEDIA_INFO)
+	handleUpdateMediaInfo(@ConnectedSocket() client: Socket, updateMediaDto: UpdateMediaDto) {
+		return this.connectionService.updateUserMediaInfo({ client, updateMediaDto });
 	}
 
 	async handleConnection(@ConnectedSocket() client: Socket) {

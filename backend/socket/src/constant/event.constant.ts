@@ -5,6 +5,7 @@ export enum EVENT {
 	LEAVE_ROOM = 'leave_room',
 	ENTER_USER = 'enter_user',
 	LEAVE_USER = 'leave_user',
+	UPDATE_MEDIA_INFO = 'update_media_info',
 
 	// interview
 	START_INTERVIEW = 'start_interview',

@@ -12,6 +12,8 @@ import { Room, User } from 'src/types/room.type';
 import { v4 as uuidv4 } from 'uuid';
 import { RoomRepository } from '../../repository/room.repository';
 import { getRandomNickname } from '@woowa-babble/random-nickname';
+import { UpdateMediaDto } from 'src/room/dto/update-media-info.dto';
+import { UserDto } from 'src/room/dto/user.dto';
 
 @Injectable()
 export class ConnectionService {
@@ -49,9 +51,10 @@ export class ConnectionService {
 		client.join(roomUUID);
 		await this.roomRepository.saveUserInRoom(user);
 
-		client.to(roomUUID).emit(EVENT.ENTER_USER, { user });
+		const userDto = new UserDto(user);
+		client.to(roomUUID).emit(EVENT.ENTER_USER, { user: userDto });
 
-		return { data: { others, me: user } };
+		return { data: { others, me: userDto } };
 	}
 
 	/**
@@ -122,6 +125,24 @@ export class ConnectionService {
 		return {};
 	}
 
+	async updateUserMediaInfo({
+		client,
+		updateMediaDto,
+	}: {
+		client: Socket;
+		updateMediaDto: UpdateMediaDto;
+	}) {
+		const user = await this.roomRepository.getUserByClientId(client.id);
+		const updatedUser = await this.roomRepository.updateUserInfo({
+			uuid: user.uuid,
+			updateUser: updateMediaDto,
+		});
+
+		client.to(user.roomUUID).emit(EVENT.UPDATE_MEDIA_INFO, { user: new UserDto(updatedUser) });
+
+		return {};
+	}
+
 	/**
 	 * default room을 생성해서 반환합니다.
 	 * @returns room
@@ -156,6 +177,8 @@ export class ConnectionService {
 			roomUUID,
 			clientId: client.id,
 			authId: client.data.authId,
+			video: true,
+			audio: false,
 		};
 	}
 }
