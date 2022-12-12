@@ -86,8 +86,7 @@ const Lobby = () => {
 		<RoundButton
 			onClick={handleStartInterviewee}
 			style={{
-				width: 180,
-				height: 50,
+				width: 160,
 			}}
 		>
 			<BroadcastIcon {...iconBgStyle} />

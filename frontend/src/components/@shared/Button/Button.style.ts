@@ -1,24 +1,59 @@
 import { css } from '@emotion/react';
+import { flexRow } from '@styles/globalStyle';
 
 export const buttonStyle = (theme, width, size, style, color, iconColor, justifyContent) => css`
-	display: flex;
-	justify-content: ${justifyContent};
-	align-items: center;
-	gap: 8px;
+	${flexRow({ gap: '8px', justifyContent })};
 
-	width: ${width};
-	padding: ${size === 'small' ? '10px' : '14px'};
-	font-size: ${size === 'small' ? '16px' : '20px'};
-	line-height: ${size === 'small' ? '16px' : '20px'};
-
-	border-radius: 8px;
+	${size === 'small'
+		? smallButtonStyle(theme, width)
+		: size === 'medium'
+		? mediumButtonStyle(theme, width)
+		: largeButtonStyle(theme, width)}
 
 	${style === 'contained'
 		? containedButtonStyle(theme, color, iconColor)
 		: textButtonStyle(theme, color, iconColor)}
+`;
+
+const smallButtonStyle = (theme, width) => css`
+	width: ${width};
+	padding: ${theme.fontSize.xSmall};
+
+	font-size: ${theme.fontSize.small};
+	line-height: ${theme.fontSize.small};
+
+	border-radius: ${theme.borderRadius};
 
 	svg {
-		width: ${size === 'small' ? '16px' : '20px'};
+		width: ${theme.fontSize.small};
+	}
+`;
+
+const mediumButtonStyle = (theme, width) => css`
+	width: ${width};
+	padding: 14px;
+
+	font-size: ${theme.fontSize.medium};
+	line-height: ${theme.fontSize.medium};
+
+	border-radius: ${theme.borderRadius};
+
+	svg {
+		width: ${theme.fontSize.medium};
+	}
+`;
+
+const largeButtonStyle = (theme, width) => css`
+	width: ${width};
+	padding: ${theme.fontSize.small};
+
+	font-size: ${theme.fontSize.large};
+	line-height: ${theme.fontSize.large};
+
+	border-radius: ${theme.borderRadius};
+
+	svg {
+		width: ${theme.fontSize.large};
 	}
 `;
 
@@ -26,11 +61,7 @@ const containedButtonStyle = (theme, color, iconColor) => css`
 	background-color: ${theme.colors[color]};
 	color: ${color === 'secondary' ? theme.colors.primary : theme.colors.white};
 
-	${iconColor
-		? `svg {
-    fill: ${color === 'secondary' ? theme.colors.primary : theme.colors.white};
-}`
-		: ''}
+	${iconColor ? constrainedButtonIconColor(theme, color) : ''}
 
 	&:disabled {
 		background-color: ${theme.colors.gray3};
@@ -53,11 +84,7 @@ const containedButtonStyle = (theme, color, iconColor) => css`
 const textButtonStyle = (theme, color, iconColor) => css`
 	color: ${theme.colors[color]};
 
-	${iconColor
-		? `svg {
-    fill: ${color === 'secondary' ? theme.colors.primary : theme.colors.white};
-}`
-		: ''}
+	${iconColor ? textButtonIconColor(theme, color) : ''}
 
 	&:disabled {
 		background-color: ${theme.colors.gray3};
@@ -75,5 +102,17 @@ const textButtonStyle = (theme, color, iconColor) => css`
 
 	&:active {
 		background-color: ${theme.colors[color] + '24'};
+	}
+`;
+
+const constrainedButtonIconColor = (theme, color) => css`
+	svg {
+		fill: ${color === 'secondary' ? theme.colors.primary : theme.colors.white};
+	}
+`;
+
+const textButtonIconColor = (theme, color) => css`
+	svg {
+		fill: ${theme.colors[color]};
 	}
 `;

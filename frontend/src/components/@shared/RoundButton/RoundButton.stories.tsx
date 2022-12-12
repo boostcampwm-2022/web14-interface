@@ -17,7 +17,7 @@ const Template: Story<roundButtonPropType> = (args) => (
 );
 export const Default = Template.bind({});
 Default.args = {
-	style: { backgroundColor: theme.colors.primary, width: 100, height: 50 },
+	style: { width: 500, size: 'medium', color: 'primary' },
 };
 
 const IconTemplate: Story<roundButtonPropType> = (args) => (
@@ -28,7 +28,7 @@ const IconTemplate: Story<roundButtonPropType> = (args) => (
 );
 export const IconButton = IconTemplate.bind({});
 IconButton.args = {
-	style: { backgroundColor: theme.colors.primary, width: 130, height: 50 },
+	style: { width: 200, size: 'medium', color: 'primary' },
 };
 
 const IconOnlyTemplate: Story<roundButtonPropType> = (args) => (
@@ -38,5 +38,5 @@ const IconOnlyTemplate: Story<roundButtonPropType> = (args) => (
 );
 export const IconOnlyButton = IconOnlyTemplate.bind({});
 IconOnlyButton.args = {
-	style: { backgroundColor: theme.colors.primary, width: 50, height: 50 },
+	style: { size: 'medium', color: 'primary' },
 };
