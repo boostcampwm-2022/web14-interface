@@ -10,19 +10,12 @@ export const envConfig: ConfigModuleOptions = {
 		DB_USER: Joi.string().required(),
 		DB_PASSWORD: Joi.string().required(),
 		DB_NAME: Joi.string().required(),
+
 		JWT_ACCESS_TOKEN_SECRET: Joi.string().required(),
-		JWT_ACCESS_TOKEN_EXPIRATION_TIME: Joi.string().required(),
 		JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
-		JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.string().required(),
 
-		NAVER_CLIENT_ID: Joi.string().required(),
 		NAVER_CLIENT_SECRET: Joi.string().required(),
-
-		KAKAO_CLIENT_ID: Joi.string().required(),
 		KAKAO_CLIENT_SECRET: Joi.string().required(),
-
 		CLIENT_ORIGIN_URL: Joi.string().required(),
-
-		OBJECT_STORAGE_ENDPOINT: Joi.string().required(),
 	}),
 };

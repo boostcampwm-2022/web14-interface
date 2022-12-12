@@ -1,4 +1,3 @@
-import { JWT_ENV } from '@constant';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
@@ -6,6 +5,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
 import { JwtPayload, UserInfo } from 'src/types/auth.type';
 import { AuthService } from '../service/auth.service';
+import { JWT_ACCESS_TOKEN_SECRET } from 'src/constant/env.constant';
 
 @Injectable()
 export class JwtAccessStrategy extends PassportStrategy(Strategy, 'jwt-access') {
@@ -21,7 +21,7 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'jwt-access') 
 					return token ?? null;
 				},
 			]),
-			secretOrKey: configService.get(JWT_ENV.JWT_ACCESS_TOKEN_SECRET),
+			secretOrKey: configService.get(JWT_ACCESS_TOKEN_SECRET),
 			passReqToCallback: true,
 		});
 	}
