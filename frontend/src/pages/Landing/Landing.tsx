@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useRecoilRefresher_UNSTABLE, useSetRecoilState } from 'recoil';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 import isAuthQuery from '@store/auth.store';
-import { meInRoomState, othersInRoomState, roomUUIDState } from '@store/room.store';
+import { roomUUIDState } from '@store/room.store';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 
@@ -28,8 +28,8 @@ import {
 	previewStyle,
 } from './Landing.style';
 import Button from '@components/@shared/Button/Button';
-import { MODAL_TYPE } from '@constants/modal.constant';
 import useModal from '@hooks/useModal';
+import { meInRoomState, othersInRoomState } from '@store/user.store';
 
 interface createRoomResponseType {
 	uuid: string;
@@ -53,8 +53,8 @@ const Landing = () => {
 
 	const handleSignOut = async () => {
 		//TODO TOAST로 교체
-		const res = await axios.get('/api/auth/logout');
-		alert(res.status);
+		await axios.get('/api/auth/logout');
+		alert('로그아웃 되었습니다.');
 		refreshAuth();
 		naviagte(ROUTE_TYPE.LOGIN_ROUTE);
 	};
@@ -84,7 +84,7 @@ const Landing = () => {
 					<Button
 						size="small"
 						color="black"
-						onClick={() => openModal(MODAL_TYPE.InterviewDocsModal)}
+						onClick={() => openModal('InterviewDocsListModal')}
 					>
 						<FolderIcon />
 						<span>기록</span>
@@ -102,10 +102,7 @@ const Landing = () => {
 							<PlusIcon />
 							<span>방 만들기</span>
 						</Button>
-						<Button
-							color="secondary"
-							onClick={() => openModal(MODAL_TYPE.EnterRoomModal)}
-						>
+						<Button color="secondary" onClick={() => openModal('EnterRoomModal')}>
 							<span>참가하기</span>
 						</Button>
 					</div>

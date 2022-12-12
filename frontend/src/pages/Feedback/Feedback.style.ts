@@ -17,16 +17,6 @@ export const feedbackContainerStyle = css`
 	margin: auto;
 `;
 
-export const feedbackSyncBtnStyle = (theme, isFbSync) => css`
-	background-color: ${isFbSync ? theme.colors.primary : theme.colors.white};
-	width: 50px;
-	height: 50px;
-	border-radius: 50%;
-	display: 'flex';
-	justify-content: 'center';
-	align-items: 'center';
-`;
-
 export const feedbackAreaStyle = css`
 	display: flex;
 	flex-direction: column;

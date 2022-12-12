@@ -7,7 +7,8 @@ import { UserType } from '@customType/user';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import { PAGE_TYPE } from '@constants/page.constant';
 import { useSetRecoilState } from 'recoil';
-import { meInRoomState, othersInRoomState } from '@store/room.store';
+import { roomUUIDState } from '@store/room.store';
+import { meInRoomState, othersInRoomState } from '@store/user.store';
 
 interface attendRoomResponseType {
 	success?: boolean;
@@ -21,6 +22,7 @@ const EnterRoomModal = () => {
 	const [errorMsg, setErrorMsg] = useState('');
 	const setOthers = useSetRecoilState(othersInRoomState);
 	const setMe = useSetRecoilState(meInRoomState);
+	const setRoom = useSetRecoilState(roomUUIDState);
 
 	const { closeModal } = useModal();
 	const { safeNavigate } = useSafeNavigate();
@@ -40,6 +42,7 @@ const EnterRoomModal = () => {
 			closeModal();
 			setOthers(others);
 			setMe(me);
+			setRoom(roomUUID);
 			safeNavigate(PAGE_TYPE.LOBBY_PAGE);
 		} catch (e) {
 			setErrorMsg(e.message);
@@ -60,9 +63,9 @@ const EnterRoomModal = () => {
 				/>
 			</Modal.ContentArea>
 			<Modal.ButtonArea>
-				<Modal.Button style="text" color="black" onClick={closeModal}>
-					취소
-				</Modal.Button>
+				<Modal.CloseButton style="contained" color="red">
+					닫기
+				</Modal.CloseButton>
 				<Modal.Button onClick={handleAttendRoom}>참가</Modal.Button>
 			</Modal.ButtonArea>
 		</Modal>

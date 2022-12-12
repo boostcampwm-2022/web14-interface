@@ -1,58 +1,77 @@
 import React, { useEffect } from 'react';
-import { useRecoilValue } from 'recoil';
 
 import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
 import FeedbackList from '@components/FeedbackList/FeedbackList';
-import Video from '@components/@shared/Video/Video';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
-import { webRTCStreamSelector } from '@store/webRTC.store';
-import { userRoleSelector } from '@store/room.store';
+import { docsUUIDState } from '@store/interview.store';
+import { feedbackListSelector } from '@store/feedback.store';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { socket } from '../../service/socket';
+import { socket } from '@service/socket';
 import { PAGE_TYPE } from '@constants/page.constant';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
-import { socketEmit } from '@api/socket.api';
-import { interviewerContainerStyle, interviewerWrapperStyle } from './Interviewer.style';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
-import theme from '@styles/theme';
 import BottomBar from '@components/BottomBar/BottomBar';
 import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
 import { feedbackAreaStyle } from '@pages/Feedback/Feedback.style';
+import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
+import useModal from '@hooks/useModal';
+import { userRoleSelector } from '@store/user.store';
+
+import { interviewerContainerStyle, interviewerWrapperStyle } from './Interviewer.style';
+import useLeaveUser from '@hooks/useLeaveUser';
 
 const Interviewer = () => {
+	const { openModal } = useModal();
 	const { safeNavigate } = useSafeNavigate();
 	usePreventLeave();
+	useLeaveUser();
 
+	const feedbackList = useRecoilValue(feedbackListSelector);
 	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);
-	const streamList = useRecoilValue(webRTCStreamSelector);
+	const setDocsUUID = useSetRecoilState(docsUUIDState);
 
 	const hadleEndInterview = () => {
-		socketEmit(SOCKET_EVENT_TYPE.END_INTERVIEW);
+		openModal('EndInterviewModal');
 	};
 
-	const getStreamFromUUID = (uuid) => {
-		return streamList.find((stream) => stream.uuid === uuid).stream;
+	const hadleCancelInterview = () => {
+		openModal('CancelInterviewModal');
 	};
 
 	useEffect(() => {
-		socket.on(SOCKET_EVENT_TYPE.START_FEEDBACK, () => {
+		socket.on(SOCKET_EVENT_TYPE.START_FEEDBACK, ({ docsUUID }) => {
+			setDocsUUID(docsUUID);
 			safeNavigate(PAGE_TYPE.FEEDBACK_PAGE);
 		});
+
+		return () => {
+			socket.off(SOCKET_EVENT_TYPE.START_FEEDBACK);
+		};
 	}, []);
 
 	const endInterviewBtn = (
-		<RoundButton
-			style={{
-				backgroundColor: theme.colors.primary,
-				width: 200,
-				height: 50,
-				color: theme.colors.white,
-			}}
-			onClick={hadleEndInterview}
-		>
-			<div>면접 종료</div>
-		</RoundButton>
+		<>
+			<RoundButton
+				style={{
+					width: 160,
+					height: 50,
+				}}
+				onClick={hadleEndInterview}
+			>
+				<span>면접 종료</span>
+			</RoundButton>
+			<RoundButton
+				style={{
+					width: 50,
+					height: 50,
+				}}
+				onClick={hadleCancelInterview}
+			>
+				<span>X</span>
+			</RoundButton>
+		</>
 	);
 
 	return (
@@ -61,23 +80,24 @@ const Interviewer = () => {
 				<div>
 					<IntervieweeVideo
 						key={interviewee.uuid}
-						src={getStreamFromUUID(interviewee.uuid)}
-						width={400}
+						src={interviewee.stream}
+						nickname={interviewee.uuid}
+						width={'400px'}
 						autoplay
 						muted
 					/>
 					{interviewerList.map((interviewer) => (
-						<Video
+						<StreamVideo
 							key={interviewer.uuid}
-							src={getStreamFromUUID(interviewer.uuid)}
-							width={200}
-							autoplay
+							src={interviewer.stream}
+							nickname={interviewer.uuid}
+							width={'200px'}
 							muted
 						/>
 					))}
 				</div>
 				<div css={feedbackAreaStyle}>
-					<FeedbackList editable />
+					<FeedbackList feedbackList={feedbackList} editable />
 					<FeedbackForm />
 				</div>
 			</div>

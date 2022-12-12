@@ -9,7 +9,7 @@ export const ModalWrapperStyle = (theme) => css`
 	padding: 40px 32px 32px 32px;
 
 	border: 1px solid ${theme.colors.gray2};
-	border-radius: ${theme.borderRaduis};
+	border-radius: ${theme.borderRadius};
 `;
 
 export const ModalTitleStyle = (theme) => css`
@@ -25,8 +25,8 @@ export const ModalButtonAreaStyle = (isArray) => css`
 	width: 100%;
 `;
 
-export const ModalContentAreaStyle = () => css`
-	${flexColumn({ gap: '32px' })}
+export const ModalContentAreaStyle = (flexDirection) => css`
+	${flexDirection === 'row' ? flexRow({ gap: '16px' }) : flexColumn({ gap: '16px' })}
 
 	width: 100%;
 `;

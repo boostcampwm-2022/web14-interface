@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import ChatDrawer from '@components/@drawer/ChatDrawer/ChatDrawer';
 import UserDrawer from '@components/@drawer/UserDrawer/UserDrawer';
@@ -24,12 +24,18 @@ import {
 	drawerStyle,
 	drawerHeaderStyle,
 } from './BottomBar.style';
-import theme from '@styles/theme';
 import { iconBgStyle } from '@styles/commonStyle';
 import { socketEmit } from '@api/socket.api';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import { PAGE_TYPE } from '@constants/page.constant';
+import useCleanupRoom from '@hooks/useCleanupRoom';
+import useModal from '@hooks/useModal';
+import { useRecoilValue } from 'recoil';
+import { pageState } from '@store/page.store';
+import BottomBarButtom from '@components/@shared/BottomBarButton/BottomBarButton';
+import Button from '@components/@shared/Button/Button';
+import { meInRoomState, userInfoSelector } from '@store/user.store';
 
 interface Props {
 	mainController?: React.ReactNode;
@@ -42,8 +48,14 @@ enum DRAWER_TYPE {
 }
 
 const BottomBar = ({ mainController }: Props) => {
-	const { safeNavigate } = useSafeNavigate();
-	const [isMicOn, setIsMicOn] = useState(true);
+	const { openModal } = useModal();
+	const page = useRecoilValue(pageState);
+	const me = useRecoilValue(meInRoomState);
+	const userInfo = useRecoilValue(userInfoSelector);
+
+	const myStream = userInfo.find((user) => user.uuid === me.uuid);
+
+	const [isMicOn, setIsMicOn] = useState(false);
 	const [isCameraOn, setIsCameraOn] = useState(true);
 
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -65,6 +77,20 @@ const BottomBar = ({ mainController }: Props) => {
 		setDrawerCategory(null);
 	};
 
+	const handleLeaveRoom = () => {
+		const exitRoomProp =
+			page === PAGE_TYPE.LOBBY_PAGE
+				? null
+				: {
+						content:
+							page === PAGE_TYPE.WAITTING_PAGE
+								? '작성된 피드백은 기록 메뉴에서 확인할 수 있습니다.'
+								: '현재까지 진행 상황이 저장되지 않습니다.',
+				  };
+
+		openModal('ExitRoomModal', exitRoomProp);
+	};
+
 	const drawerContentsSwitch = () => {
 		switch (drawerCategory) {
 			case DRAWER_TYPE.CHAT_DRAWER:
@@ -76,62 +102,73 @@ const BottomBar = ({ mainController }: Props) => {
 		}
 	};
 
-	const handleLeaveRoom = () => {
-		socketEmit(SOCKET_EVENT_TYPE.LEAVE_ROOM);
-		safeNavigate(PAGE_TYPE.LANDING_PAGE);
+	const handleMic = () => {
+		myStream.stream.getAudioTracks().forEach((track) => {
+			track.enabled = !isMicOn;
+			console.log(track.enabled);
+		});
+
+		setIsMicOn((current) => !current);
+	};
+
+	const handleCamera = () => {
+		myStream.stream.getVideoTracks().forEach((track) => {
+			track.enabled = !isCameraOn;
+			console.log(track.enabled);
+		});
+
+		setIsCameraOn((current) => !current);
 	};
 
 	return (
 		<>
 			<div css={bottomBarStyle}>
 				<div css={iconGroupStyle}>
-					<button>
-						<UserIcon {...iconBgStyle} />
-					</button>
-
+					<BottomBarButtom>
+						<UserIcon />
+					</BottomBarButtom>
 					<div css={horzLineStyle} />
-					{isMicOn ? (
-						<button onClick={() => setIsMicOn(false)}>
-							<MicOnIcon {...iconBgStyle} />
-						</button>
-					) : (
-						<button onClick={() => setIsMicOn(true)}>
-							<MicOffIcon {...iconBgStyle} fill={theme.colors.red} />
-						</button>
-					)}
-					{isCameraOn ? (
-						<button onClick={() => setIsCameraOn(false)}>
-							<CameraOnIcon {...iconBgStyle} />
-						</button>
-					) : (
-						<button onClick={() => setIsCameraOn(true)}>
-							<CameraOffIcon {...iconBgStyle} fill={theme.colors.red} />
-						</button>
-					)}
+					<BottomBarButtom color={isMicOn ? 'secondary' : 'red'} onClick={handleMic}>
+						{isMicOn ? <MicOnIcon /> : <MicOffIcon />}
+					</BottomBarButtom>
+					<BottomBarButtom
+						color={isCameraOn ? 'secondary' : 'red'}
+						onClick={handleCamera}
+					>
+						{isCameraOn ? <CameraOnIcon /> : <CameraOffIcon />}
+					</BottomBarButtom>
+					<BottomBarButtom visibility={'hidden'} disabled={true}>
+						<UserIcon />
+					</BottomBarButtom>
 				</div>
 				{mainController}
 				<div css={iconGroupStyle}>
-					<button onClick={() => handleToggleDrawer(DRAWER_TYPE.CHAT_DRAWER)}>
-						<ChatIcon {...iconBgStyle} />
-					</button>
-					<button onClick={() => handleToggleDrawer(DRAWER_TYPE.USER_DRAWER)}>
-						<UsersIcon {...iconBgStyle} />
-					</button>
-					<button onClick={() => handleToggleDrawer(DRAWER_TYPE.RECORD_DRAWER)}>
-						<FolderIcon {...iconBgStyle} />
-					</button>
+					<BottomBarButtom onClick={() => handleToggleDrawer(DRAWER_TYPE.CHAT_DRAWER)}>
+						<ChatIcon />
+					</BottomBarButtom>
+					<BottomBarButtom onClick={() => handleToggleDrawer(DRAWER_TYPE.USER_DRAWER)}>
+						<UsersIcon />
+					</BottomBarButtom>
+					<BottomBarButtom onClick={() => handleToggleDrawer(DRAWER_TYPE.RECORD_DRAWER)}>
+						<FolderIcon />
+					</BottomBarButtom>
 					<div css={horzLineStyle} />
-					<button onClick={handleLeaveRoom}>
-						<EnterIcon {...iconBgStyle} fill={theme.colors.red} />
-					</button>
+					<BottomBarButtom color="red" onClick={handleLeaveRoom}>
+						<EnterIcon />
+					</BottomBarButtom>
 				</div>
 			</div>
 			<aside css={drawerStyle(isDrawerOpen)}>
 				<div css={drawerHeaderStyle}>
 					<div>{drawerCategory}</div>
-					<button onClick={handleCloseDrawer}>
-						<CloseIcon {...iconBgStyle} width={25} height={25} />
-					</button>
+					<Button
+						style="text"
+						color="secondary"
+						size="medium"
+						onClick={handleCloseDrawer}
+					>
+						<CloseIcon />
+					</Button>
 				</div>
 				<div>{drawerContentsSwitch()}</div>
 			</aside>

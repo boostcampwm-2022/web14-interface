@@ -1,7 +1,7 @@
 import { feedbackIdsState, feedbackState } from '@store/feedback.store';
 import { useResetRecoilState, useSetRecoilState } from 'recoil';
 
-const useCrudFeedback = (feedbackId: string) => {
+const useEditFeedback = (feedbackId: string) => {
 	const setFeedback = useSetRecoilState(feedbackState(feedbackId));
 	const deleteFeedback = useResetRecoilState(feedbackState(feedbackId));
 	const setFeedbackIds = useSetRecoilState(feedbackIdsState);
@@ -32,4 +32,4 @@ const useCrudFeedback = (feedbackId: string) => {
 	return { handleStartEditFeedback, handleEndEditFeedback, handleFbChange, handleDeleteFeedback };
 };
 
-export default useCrudFeedback;
+export default useEditFeedback;

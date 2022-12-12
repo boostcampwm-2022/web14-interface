@@ -17,7 +17,7 @@ export const TextFieldStyle = (theme, error, disabled, textAlign) => css`
 	font-size: ${theme.fontSize.small};
 
 	border: 1px solid ${!disabled && error ? theme.colors.red : theme.colors.gray2};
-	border-radius: ${theme.borderRaduis};
+	border-radius: ${theme.borderRadius};
 
 	&::placeholder {
 		color: ${theme.colors.gray2};

@@ -3,12 +3,11 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import axios from 'axios';
 
 import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
-import Video from '@components/@shared/Video/Video';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
-import { webRTCStreamSelector, webRTCUserMapState } from '@store/webRTC.store';
+import { userRoleSelector } from '@store/user.store';
 import { currentVideoTimeState } from '@store/currentVideoTime.store';
-import { docsUUIDState, userRoleSelector } from '@store/room.store';
+import { docsUUIDState } from '@store/interview.store';
 
 import { socket } from '@service/socket';
 import mediaStreamer from '@service/mediaStreamer';
@@ -17,35 +16,39 @@ import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { socketEmit } from '@api/socket.api';
 import { REST_TYPE } from '@constants/rest.constant';
 import { DocsReqDtoType } from '@customType/dto';
-import { intervieweeWrapperStyle } from './Interviewee.style';
+import { intervieweeWrapperStyle, VideoListAreaStyle } from './Interviewee.style';
 import BottomBar from '@components/BottomBar/BottomBar';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
-import theme from '@styles/theme';
+import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
+import useModal from '@hooks/useModal';
+import useLeaveUser from '@hooks/useLeaveUser';
+import { ReactComponent as StopIcon } from '@assets/icon/stop.svg';
+import { ReactComponent as CancelIcon } from '@assets/icon/close.svg';
+import { flexRow } from '@styles/globalStyle';
 
 const Interviewee = () => {
 	usePreventLeave();
+	useLeaveUser();
+	const { openModal } = useModal();
 	const { safeNavigate } = useSafeNavigate();
 	const { startStream, stopStream } = mediaStreamer();
 
 	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);
-	const webRTCUserMap = useRecoilValue(webRTCUserMapState);
 	const currentVideoTime = useRecoilValue(currentVideoTimeState);
-	const streamList = useRecoilValue(webRTCStreamSelector);
 	const setDocsUUID = useSetRecoilState(docsUUIDState);
 
 	const hadleEndInterview = () => {
-		socketEmit(SOCKET_EVENT_TYPE.END_INTERVIEW);
+		openModal('EndInterviewModal');
 	};
 
-	const getStreamFromUUID = (uuid) => {
-		return streamList.find((stream) => stream.uuid === uuid).stream;
+	const hadleCancelInterview = () => {
+		openModal('CancelInterviewModal');
 	};
 
 	useEffect(() => {
 		const effect = () => {
-			console.log('E!');
 			if (!interviewee) return;
-			const myStream = getStreamFromUUID(interviewee.uuid);
+			const myStream = interviewee.stream;
 			if (!myStream) return;
 			startStream(myStream);
 		};
@@ -56,7 +59,7 @@ const Interviewee = () => {
 	useEffect(() => {
 		socket.on(SOCKET_EVENT_TYPE.START_WAITING, ({ docsUUID }) => {
 			setDocsUUID(docsUUID);
-			socketEmit('finish_streaming', docsUUID);
+			socketEmit(SOCKET_EVENT_TYPE.FINISH_STREAMING, docsUUID);
 			const docsRequestDto: DocsReqDtoType = {
 				roomUUID: interviewee.roomUUID,
 				docsUUID,
@@ -72,37 +75,49 @@ const Interviewee = () => {
 	}, [currentVideoTime]);
 
 	const endInterviewBtn = (
-		<RoundButton
-			style={{
-				backgroundColor: theme.colors.primary,
-				width: 200,
-				height: 50,
-				color: theme.colors.white,
-			}}
-			onClick={hadleEndInterview}
-		>
-			<div>면접 종료</div>
-		</RoundButton>
+		<div css={flexRow({ gap: '8px' })}>
+			<RoundButton
+				style={{
+					width: 104,
+					color: 'red',
+				}}
+				onClick={hadleEndInterview}
+			>
+				<StopIcon />
+			</RoundButton>
+			<RoundButton
+				style={{
+					width: 48,
+					color: 'secondary',
+				}}
+				onClick={hadleCancelInterview}
+			>
+				<CancelIcon />
+			</RoundButton>
+		</div>
 	);
 
 	return (
 		<div css={intervieweeWrapperStyle}>
 			<IntervieweeVideo
 				key={interviewee.uuid}
-				src={getStreamFromUUID(interviewee.uuid)}
-				width={400}
+				src={interviewee.stream}
+				nickname={interviewee.nickname}
+				height="64%"
 				autoplay
 				muted
 			/>
-			{interviewerList.map((interviewer) => (
-				<Video
-					key={interviewer.uuid}
-					src={getStreamFromUUID(interviewer.uuid)}
-					width={200}
-					autoplay
-					muted
-				/>
-			))}
+			<div css={VideoListAreaStyle}>
+				{interviewerList.map((interviewer) => (
+					<StreamVideo
+						key={interviewer.uuid}
+						src={interviewer.stream}
+						nickname={interviewer.nickname}
+						height={'100%'}
+						muted
+					/>
+				))}
+			</div>
 			<BottomBar mainController={endInterviewBtn} />
 		</div>
 	);
