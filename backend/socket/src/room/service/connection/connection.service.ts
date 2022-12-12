@@ -180,8 +180,8 @@ export class ConnectionService {
 			roomUUID,
 			clientId: client.id,
 			authId: client.data.authId,
-			video: true,
-			audio: false,
+			video: 'true',
+			audio: 'false',
 		};
 	}
 }
