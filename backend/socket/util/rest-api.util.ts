@@ -12,8 +12,7 @@ export const setUserIdInClient = async (client: Socket) => {
 		});
 		client.data.authId = res.data.data.userId;
 	} catch (err) {
-		// not handle http error
-		new Logger('Rest Exception').error(err.response.data.message);
+		errerLogger(err);
 	}
 };
 
@@ -31,7 +30,12 @@ export const deleteInterviewDocs = async ({
 			},
 		});
 	} catch (err) {
-		// not handle http error
-		new Logger('Rest Exception').error(err.response.data.message);
+		errerLogger(err);
 	}
+};
+
+const errerLogger = (err) => {
+	const logger = new Logger('Rest Exception');
+	const { message }: any = err.response.data;
+	logger.error(message);
 };
