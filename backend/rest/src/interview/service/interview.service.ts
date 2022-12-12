@@ -129,8 +129,9 @@ export class InterviewService {
 	}
 
 	/**
-	 *
-	 * @param param0
+	 * docs UUID에 해당하는 interview docs를 삭제합니다.
+	 * @param userId user id
+	 * @param docsUUID docs uuid
 	 */
 	async deleteInterviewDocs({ userId, docsUUID }: { userId: string; docsUUID: string }) {
 		const docs = await this.interviewRepository.getInterviewDocsByDocsUUID(docsUUID);
