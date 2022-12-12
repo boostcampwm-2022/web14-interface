@@ -12,8 +12,8 @@ export interface User {
 	roomUUID: string;
 	clientId: string;
 	authId: string;
-	video: boolean;
-	audio: boolean;
+	video: string;
+	audio: string;
 }
 
 export type userUUID = string;

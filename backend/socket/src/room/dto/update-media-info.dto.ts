@@ -3,9 +3,9 @@ import { IsBoolean, IsNotEmpty } from 'class-validator';
 export class UpdateMediaDto {
 	@IsBoolean()
 	@IsNotEmpty()
-	video?: boolean;
+	video?: string;
 
 	@IsBoolean()
 	@IsNotEmpty()
-	audio?: boolean;
+	audio?: string;
 }
