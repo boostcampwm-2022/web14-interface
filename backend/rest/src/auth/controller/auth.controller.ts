@@ -1,14 +1,21 @@
-import { Controller, Get, Param, Query, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Param, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import { Request, Response } from 'express';
 import { tokenCookieOptions, JWT_TYPE } from '@constant';
 import { JwtAuthGuard } from '../guard/jwt.guard';
 import { JwtPayload } from '@types';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
+	@ApiOperation({ summary: 'type별 oauth URL 가져오기' })
+	@ApiResponse({
+		status: HttpStatus.OK,
+		description: 'url 요청 성공',
+	})
 	@Get('oauth/redirect/:type')
 	redirectOauthPage(@Param('type') type: string) {
 		const pageUrl = this.authService.getSocialUrl(type);
@@ -35,6 +42,15 @@ export class AuthController {
 		res.redirect(process.env.CLIENT_ORIGIN_URL);
 	}
 
+	@ApiOperation({ summary: '로그인 및 로그인 여부 확인하기' })
+	@ApiResponse({
+		status: HttpStatus.OK,
+		description: '로그인 성공',
+	})
+	@ApiResponse({
+		status: HttpStatus.UNAUTHORIZED,
+		description: '로그인 실패',
+	})
 	@UseGuards(JwtAuthGuard)
 	@Get('login')
 	loginValidate(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
@@ -43,6 +59,15 @@ export class AuthController {
 		res.cookie(JWT_TYPE.REFRESH_TOKEN, refreshToken, tokenCookieOptions);
 	}
 
+	@ApiOperation({ summary: '유저 id 가져오기' })
+	@ApiResponse({
+		status: HttpStatus.OK,
+		description: 'id 요청 성공',
+	})
+	@ApiResponse({
+		status: HttpStatus.UNAUTHORIZED,
+		description: '인증 실패',
+	})
 	@UseGuards(JwtAuthGuard)
 	@Get('id')
 	getUserId(@Req() req: Request) {
@@ -50,6 +75,15 @@ export class AuthController {
 		return { userId: userPayload.id };
 	}
 
+	@ApiOperation({ summary: 'logout 하기' })
+	@ApiResponse({
+		status: HttpStatus.OK,
+		description: '로그아웃 성공',
+	})
+	@ApiResponse({
+		status: HttpStatus.UNAUTHORIZED,
+		description: '로그아웃 실패',
+	})
 	@UseGuards(JwtAuthGuard)
 	@Get('logout')
 	logout(@Res({ passthrough: true }) res: Response) {
