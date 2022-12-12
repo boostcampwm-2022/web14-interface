@@ -1,9 +1,28 @@
 import { css } from '@emotion/react';
+import { flexRow } from '@styles/globalStyle';
 
-export const feedbackBoxStyle = css`
-	display: flex;
-	gap: 10px;
-	position: relative;
+export const feedbackBoxStyle = () => css`
+	${flexRow({ gap: '8px', justifyContent: 'space-between', alignItems: 'flex-start' })};
+
+	width: 100%;
+`;
+
+export const feedbackContentAreaStyle = (theme) => css`
+	${flexRow({ gap: '8px', justifyContent: 'space-between', alignItems: 'flex-start' })}
+	width: 100%;
+	min-height: 96px;
+	background-color: ${theme.colors.secondary};
+	padding: 12px;
+
+	border-radius: ${theme.borderRadius};
+
+	word-break: break-all;
+`;
+
+export const feedbackContentStyle = (theme) => css`
+	width: 100%;
+
+	outline: none;
 `;
 
 export const fbTextAreaStyle = (theme) => css`
