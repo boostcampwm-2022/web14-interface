@@ -22,9 +22,9 @@ import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
 import useModal from '@hooks/useModal';
 import useLeaveUser from '@hooks/useLeaveUser';
-import VideoGrid from '@components/@shared/VideoGrid/VideoGrid';
-import { flexColumn, flexRow } from '@styles/globalStyle';
-import { css } from '@emotion/react';
+import { ReactComponent as StopIcon } from '@assets/icon/stop.svg';
+import { ReactComponent as CancelIcon } from '@assets/icon/close.svg';
+import { flexRow } from '@styles/globalStyle';
 
 const Interviewee = () => {
 	usePreventLeave();
@@ -59,7 +59,7 @@ const Interviewee = () => {
 	useEffect(() => {
 		socket.on(SOCKET_EVENT_TYPE.START_WAITING, ({ docsUUID }) => {
 			setDocsUUID(docsUUID);
-			socketEmit('finish_streaming', docsUUID);
+			socketEmit(SOCKET_EVENT_TYPE.FINISH_STREAMING, docsUUID);
 			const docsRequestDto: DocsReqDtoType = {
 				roomUUID: interviewee.roomUUID,
 				docsUUID,
@@ -75,26 +75,26 @@ const Interviewee = () => {
 	}, [currentVideoTime]);
 
 	const endInterviewBtn = (
-		<>
+		<div css={flexRow({ gap: '8px' })}>
 			<RoundButton
 				style={{
-					width: 160,
-					height: 50,
+					width: 104,
+					color: 'red',
 				}}
 				onClick={hadleEndInterview}
 			>
-				<span>면접 종료</span>
+				<StopIcon />
 			</RoundButton>
 			<RoundButton
 				style={{
-					width: 50,
-					height: 50,
+					width: 48,
+					color: 'secondary',
 				}}
 				onClick={hadleCancelInterview}
 			>
-				<span>X</span>
+				<CancelIcon />
 			</RoundButton>
-		</>
+		</div>
 	);
 
 	return (
