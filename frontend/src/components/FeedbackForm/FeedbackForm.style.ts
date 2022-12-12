@@ -18,6 +18,15 @@ export const fbInputStyle = (theme) => css`
 	background-color: ${theme.colors.secondary};
 	padding: 15px;
 	box-sizing: border-box;
+
+	outline: none;
+
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
+
+	&&::-webkit-scrollbar {
+		display: none; /* Chrome, Safari, Opera*/
+	}
 `;
 
 export const fbStartTimeStyle = (theme) => css`
