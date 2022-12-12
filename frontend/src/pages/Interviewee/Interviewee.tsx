@@ -10,7 +10,7 @@ import { currentVideoTimeState } from '@store/currentVideoTime.store';
 import { docsUUIDState } from '@store/interview.store';
 
 import { socket } from '@service/socket';
-import mediaStreamer from '@service/mediaStreamer';
+import useMediaStreamer from '@hooks/useMediaStreamer';
 import { PAGE_TYPE } from '@constants/page.constant';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { socketEmit } from '@api/socket.api';
@@ -31,7 +31,7 @@ const Interviewee = () => {
 	useLeaveUser();
 	const { openModal } = useModal();
 	const { safeNavigate } = useSafeNavigate();
-	const { startStream, stopStream } = mediaStreamer();
+	const { startStream, stopStream } = useMediaStreamer();
 
 	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);
 	const currentVideoTime = useRecoilValue(currentVideoTimeState);
@@ -99,14 +99,6 @@ const Interviewee = () => {
 
 	return (
 		<div css={intervieweeWrapperStyle}>
-			<IntervieweeVideo
-				key={interviewee.uuid}
-				src={interviewee.stream}
-				nickname={interviewee.nickname}
-				height="64%"
-				autoplay
-				muted
-			/>
 			<div css={VideoListAreaStyle}>
 				{interviewerList.map((interviewer) => (
 					<StreamVideo
@@ -118,6 +110,15 @@ const Interviewee = () => {
 					/>
 				))}
 			</div>
+			<IntervieweeVideo
+				key={interviewee.uuid}
+				src={interviewee.stream}
+				nickname={interviewee.nickname}
+				height="64%"
+				autoplay
+				muted
+			/>
+
 			<BottomBar mainController={endInterviewBtn} />
 		</div>
 	);
