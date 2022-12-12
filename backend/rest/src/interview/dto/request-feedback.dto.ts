@@ -14,6 +14,10 @@ export class FeedbackRequestDto {
 	@ApiProperty({
 		example: '{ startTime: 0, innerIndex: 0, content: "목소리에서 울림이 느껴지네요." }',
 		description: 'feedbackbox (startTime, innerIndex, content)',
+		type: 'array',
+		items: {
+			type: 'feedbackBoxDto',
+		},
 	})
 	feedbackList: feedbackBoxDto[];
 }

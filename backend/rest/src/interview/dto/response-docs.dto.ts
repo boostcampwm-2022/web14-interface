@@ -31,6 +31,10 @@ export class DocsResponseDto {
 		example:
 			'{ nickname: "엉큼한 거북이", feedbackList: [{ startTime: 0, innerIndex: 0, content: "목소리에서 울림이 느껴지네요." }] }',
 		description: '닉네임과 피드백들',
+		type: 'array',
+		items: {
+			type: 'UserFeedback',
+		},
 	})
 	feedbacks: UserFeedback[];
 }
