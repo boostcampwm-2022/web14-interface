@@ -128,6 +128,11 @@ export class ConnectionService {
 		return {};
 	}
 
+	/**
+	 * 현재 user의 audio와 video 상태를 업데이트하고 같은 방의 유저들에게 emit합니다.
+	 * @param client Socket
+	 * @param updateMediaDto video, audio boolean
+	 */
 	async updateUserMediaInfo({
 		client,
 		updateMediaDto,
