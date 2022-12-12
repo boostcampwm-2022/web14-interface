@@ -16,12 +16,15 @@ import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { socketEmit } from '@api/socket.api';
 import { REST_TYPE } from '@constants/rest.constant';
 import { DocsReqDtoType } from '@customType/dto';
-import { intervieweeWrapperStyle } from './Interviewee.style';
+import { intervieweeWrapperStyle, VideoListAreaStyle } from './Interviewee.style';
 import BottomBar from '@components/BottomBar/BottomBar';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
 import useModal from '@hooks/useModal';
 import useLeaveUser from '@hooks/useLeaveUser';
+import VideoGrid from '@components/@shared/VideoGrid/VideoGrid';
+import { flexColumn, flexRow } from '@styles/globalStyle';
+import { css } from '@emotion/react';
 
 const Interviewee = () => {
 	usePreventLeave();
@@ -99,20 +102,22 @@ const Interviewee = () => {
 			<IntervieweeVideo
 				key={interviewee.uuid}
 				src={interviewee.stream}
-				nickname={interviewee.uuid}
-				width={'400px'}
+				nickname={interviewee.nickname}
+				height="64%"
 				autoplay
 				muted
 			/>
-			{interviewerList.map((interviewer) => (
-				<StreamVideo
-					key={interviewer.uuid}
-					src={interviewer.stream}
-					nickname={interviewer.uuid}
-					width={'400px'}
-					muted
-				/>
-			))}
+			<div css={VideoListAreaStyle}>
+				{interviewerList.map((interviewer) => (
+					<StreamVideo
+						key={interviewer.uuid}
+						src={interviewer.stream}
+						nickname={interviewer.nickname}
+						height={'100%'}
+						muted
+					/>
+				))}
+			</div>
 			<BottomBar mainController={endInterviewBtn} />
 		</div>
 	);
