@@ -18,6 +18,12 @@ export class InterviewService {
 		private readonly configService: ConfigService
 	) {}
 
+	/**
+	 * interview docs를 만들고 저장합니다.
+	 * @param userId user UUID
+	 * @param docsRequestDto docs UUID, videoPlayTIme, roomUUID
+	 * @returns docsUUID
+	 */
 	async createInterviewDocs({
 		userId,
 		docsRequestDto,
@@ -38,6 +44,11 @@ export class InterviewService {
 		return docsUUID;
 	}
 
+	/**
+	 * docs UUID에 해당하는 feedback들을 저장합니다.
+	 * @param userId user id
+	 * @returns userId user id
+	 */
 	async saveFeedback({
 		userId,
 		feedbackRequestDto,
@@ -58,8 +69,13 @@ export class InterviewService {
 		return userId;
 	}
 
+	/**
+	 * docsUUID에 해당하는 interview docs와 feedback들을 반환합니다.
+	 * @param docsUUID docs UUID
+	 * @returns DocsResponseDto
+	 */
 	async getInterviewDocs(docsUUID: string): Promise<DocsResponseDto> {
-		const docs = await this.interviewRepository.getInterviewDocsList(docsUUID);
+		const docs = await this.interviewRepository.getInterviewDocs(docsUUID);
 
 		const result: DocsResponseDto = {
 			docsUUID: docs.id,
@@ -71,6 +87,11 @@ export class InterviewService {
 		return result;
 	}
 
+	/**
+	 * UserFeedback의 배열을 반환합니다.
+	 * @param feedbackList
+	 * @returns UserFeedback[]
+	 */
 	parseFeedbackByUserId(feedbackList: Feedback[]) {
 		const result: UserFeedback[] = [];
 		const userFeedbackMap = new Map<string, feedbackBoxDto[]>();
@@ -89,6 +110,11 @@ export class InterviewService {
 		return result;
 	}
 
+	/**
+	 * DocsWhereCondition에 따른 docsList를 반환합니다.
+	 * @param param0
+	 * @returns docsList
+	 */
 	async getInterviewDocsList({ userId, roomUUID }: DocsWhereCondition) {
 		const whereCondition: DocsWhereCondition = { userId };
 		if (roomUUID) {
@@ -102,6 +128,10 @@ export class InterviewService {
 		return docsList;
 	}
 
+	/**
+	 *
+	 * @param param0
+	 */
 	async deleteInterviewDocs({ userId, docsUUID }: { userId: string; docsUUID: string }) {
 		const docs = await this.interviewRepository.getInterviewDocsByDocsUUID(docsUUID);
 		if (docs.userId !== userId) {

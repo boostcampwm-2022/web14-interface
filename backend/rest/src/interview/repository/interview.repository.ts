@@ -25,7 +25,7 @@ export interface InterviewRepository<T> {
 	 * @param docsUUID docs UUID
 	 * @returns InterviewDocsEntity
 	 */
-	getInterviewDocsList(docsUUID: string): Promise<T>;
+	getInterviewDocs(docsUUID: string): Promise<T>;
 
 	/**
 	 * docs UUID로 interview docs를 찾습니다.
