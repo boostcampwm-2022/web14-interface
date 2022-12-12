@@ -25,8 +25,11 @@ export class ConnectionService {
 	 * @returns uuid - 방의 uuid
 	 */
 	async createRoom() {
-		const room = this.createDefaultRoom();
-		await this.roomRepository.createRoom({ roomUUID: room.roomUUID, room });
+		const defaultRoom = this.createDefaultRoom();
+		const room = await this.roomRepository.createRoom({
+			roomUUID: defaultRoom.roomUUID,
+			room: defaultRoom,
+		});
 
 		return { data: { uuid: room.roomUUID } };
 	}
