@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { flexColumn } from '@styles/globalStyle';
+import { flexColumn, flexRow } from '@styles/globalStyle';
 
 export const feedbackListStyle = css`
 	${flexColumn({ gap: '8px', justifyContent: 'unset' })};
@@ -13,4 +13,12 @@ export const feedbackListStyle = css`
 	&&::-webkit-scrollbar {
 		display: none; /* Chrome, Safari, Opera*/
 	}
+`;
+
+export const emptyFeedbackStyle = (theme) => css`
+	${flexRow({})};
+
+	width: 100%;
+	height: 100%;
+	color: ${theme.colors.white};
 `;
