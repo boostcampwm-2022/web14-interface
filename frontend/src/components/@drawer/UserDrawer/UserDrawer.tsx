@@ -9,6 +9,7 @@ import { ReactComponent as CameraOffIcon } from '@assets/icon/camera_off.svg';
 import {
 	dividerStyle,
 	drawerBottomBoxStyle,
+	offIconStyle,
 	roomUUIDStyle,
 	userIconStyle,
 	userItemStyle,
@@ -17,7 +18,6 @@ import {
 import { iconSmStyle } from '@styles/commonStyle';
 import { meInRoomState, othersInRoomState } from '@store/user.store';
 import Button from '@components/@shared/Button/Button';
-import { flexRow } from '@styles/globalStyle';
 
 const UserDrawer = () => {
 	const others = useRecoilValue(othersInRoomState);
@@ -29,16 +29,32 @@ const UserDrawer = () => {
 				<div css={userItemStyle}>
 					<div>{me.nickname}</div>
 					<div css={userIconStyle}>
-						<MicOnIcon {...iconSmStyle} />
-						<CameraOnIcon {...iconSmStyle} />
+						{me.audio ? (
+							<MicOnIcon {...iconSmStyle} />
+						) : (
+							<MicOffIcon css={offIconStyle} {...iconSmStyle} />
+						)}
+						{me.video ? (
+							<CameraOnIcon {...iconSmStyle} />
+						) : (
+							<CameraOffIcon css={offIconStyle} {...iconSmStyle} />
+						)}
 					</div>
 				</div>
 				{others.map((other, i) => (
 					<div css={userItemStyle} key={i}>
 						<div>{other.nickname}</div>
-						<div>
-							<MicOnIcon {...iconSmStyle} />
-							<CameraOnIcon {...iconSmStyle} />
+						<div css={userIconStyle}>
+							{other.audio ? (
+								<MicOnIcon {...iconSmStyle} />
+							) : (
+								<MicOffIcon css={offIconStyle} {...iconSmStyle} />
+							)}
+							{other.video ? (
+								<CameraOnIcon {...iconSmStyle} />
+							) : (
+								<CameraOffIcon css={offIconStyle} {...iconSmStyle} />
+							)}
 						</div>
 					</div>
 				))}

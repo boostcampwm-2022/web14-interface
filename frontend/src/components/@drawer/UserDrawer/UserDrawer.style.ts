@@ -18,6 +18,7 @@ export const userIconStyle = () => css`
 	${flexRow({ gap: '16px' })};
 	padding-right: 12px;
 `;
+
 export const drawerBottomBoxStyle = css`
 	${flexColumn({ justifyContent: 'center' })};
 
@@ -42,4 +43,8 @@ export const roomUUIDStyle = (theme) => css`
 
 	color: ${theme.colors.secondary};
 	font-size: ${theme.fontSize.xSmall};
+`;
+
+export const offIconStyle = (theme) => css`
+	fill: ${theme.colors.red};
 `;
