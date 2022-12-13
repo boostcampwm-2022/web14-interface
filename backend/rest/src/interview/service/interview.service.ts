@@ -8,7 +8,8 @@ import { InterviewDocs } from '../entities/interview-docs.entity';
 import { InterviewRepository } from '../repository/interview.repository';
 import { getRandomNickname } from '@woowa-babble/random-nickname';
 import { DocsWhereCondition } from 'src/types/query.type';
-import { DocsResponseDto, UserFeedback } from '../dto/response-docs.dto';
+import { DocsGetResponseDto, UserFeedback } from '../dto/docs.dto';
+import { DocsListResponseDto } from '../dto/docs-list.dto';
 
 @Injectable()
 export class InterviewService {
@@ -74,10 +75,10 @@ export class InterviewService {
 	 * @param docsUUID docs UUID
 	 * @returns DocsResponseDto
 	 */
-	async getInterviewDocs(docsUUID: string): Promise<DocsResponseDto> {
+	async getInterviewDocs(docsUUID: string): Promise<DocsGetResponseDto> {
 		const docs = await this.interviewRepository.getInterviewDocs(docsUUID);
 
-		const result: DocsResponseDto = {
+		const result: DocsGetResponseDto = {
 			docsUUID: docs.id,
 			createdAt: docs.createdAt,
 			videoPlayTime: docs.videoPlayTime,
@@ -125,7 +126,13 @@ export class InterviewService {
 			whereCondition
 		);
 
-		return docsList;
+		return docsList.reduce((prev: DocsListResponseDto[], docs: DocsListResponseDto) => {
+			const { id, videoPlayTime, createdAt } = docs;
+
+			const docsListResponseDto = new DocsListResponseDto({ id, videoPlayTime, createdAt });
+			prev.push(docsListResponseDto);
+			return prev;
+		}, []);
 	}
 
 	/**

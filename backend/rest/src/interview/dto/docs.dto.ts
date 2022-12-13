@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { feedbackBoxDto } from './request-feedback.dto';
 
-export class DocsResponseDto {
+export class DocsGetResponseDto {
 	@IsString()
 	@IsNotEmpty()
 	@ApiProperty({
@@ -45,4 +45,10 @@ export class UserFeedback {
 	nickname: string;
 
 	feedbackList: feedbackBoxDto[];
+}
+
+export class DocsGetRequestDto {
+	@IsString()
+	@IsNotEmpty()
+	docsUUID: string;
 }

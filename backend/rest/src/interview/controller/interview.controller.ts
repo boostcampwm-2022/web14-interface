@@ -17,8 +17,9 @@ import { DocsRequestDto } from '../dto/request-docs.dto';
 import { InterviewService } from '../service/interview.service';
 import { Request } from 'express';
 import { FeedbackRequestDto } from '../dto/request-feedback.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { DocsResponseDto } from '../dto/response-docs.dto';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { DocsGetRequestDto, DocsGetResponseDto } from '../dto/docs.dto';
+import { DocsListResponseDto } from '../dto/docs-list.dto';
 
 @ApiTags('interview')
 @UseGuards(JwtAuthGuard)
@@ -34,6 +35,9 @@ export class InterviewController {
 	@ApiResponse({
 		status: HttpStatus.UNAUTHORIZED,
 		description: '생성 실패',
+	})
+	@ApiBody({
+		type: DocsRequestDto,
 	})
 	@Post('docs')
 	async createInterviewDocs(@Req() req: Request, @Body() docsRequestDto: DocsRequestDto) {
@@ -52,6 +56,9 @@ export class InterviewController {
 		status: HttpStatus.UNAUTHORIZED,
 		description: '생성 실패',
 	})
+	@ApiBody({
+		type: FeedbackRequestDto,
+	})
 	@Post('feedback')
 	async createFeedback(@Req() req: Request, @Body() feedbackRequestDto: FeedbackRequestDto) {
 		const payload = req.user as JwtPayload;
@@ -63,14 +70,18 @@ export class InterviewController {
 	@ApiResponse({
 		status: HttpStatus.OK,
 		description: '성공',
-		type: DocsResponseDto,
+		type: DocsGetResponseDto,
 	})
 	@ApiResponse({
 		status: HttpStatus.UNAUTHORIZED,
 		description: '인증 실패',
 	})
+	@ApiBody({
+		type: DocsGetRequestDto,
+	})
 	@Get('docs/:docsUUID')
-	async getInterviewDocs(@Param('docsUUID') docsUUID: string) {
+	async getInterviewDocs(@Param('docsUUID') docsRequestDto: DocsGetRequestDto) {
+		const { docsUUID } = docsRequestDto;
 		const interviewDocs = await this.interviewService.getInterviewDocs(docsUUID);
 
 		return interviewDocs;
@@ -80,6 +91,7 @@ export class InterviewController {
 	@ApiResponse({
 		status: HttpStatus.OK,
 		description: '성공',
+		type: [DocsListResponseDto],
 	})
 	@ApiResponse({
 		status: HttpStatus.UNAUTHORIZED,
