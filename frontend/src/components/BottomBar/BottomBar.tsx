@@ -31,7 +31,7 @@ import useSafeNavigate from '@hooks/useSafeNavigate';
 import { PAGE_TYPE } from '@constants/page.constant';
 import useCleanupRoom from '@hooks/useCleanupRoom';
 import useModal from '@hooks/useModal';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { pageState } from '@store/page.store';
 import BottomBarButtom from '@components/@shared/BottomBarButton/BottomBarButton';
 import Button from '@components/@shared/Button/Button';
@@ -50,7 +50,7 @@ enum DRAWER_TYPE {
 const BottomBar = ({ mainController }: Props) => {
 	const { openModal } = useModal();
 	const page = useRecoilValue(pageState);
-	const me = useRecoilValue(meInRoomState);
+	const [me, setMe] = useRecoilState(meInRoomState);
 	const userInfo = useRecoilValue(userInfoSelector);
 
 	const myStream = userInfo.find((user) => user.uuid === me.uuid);
@@ -105,7 +105,9 @@ const BottomBar = ({ mainController }: Props) => {
 	const handleMic = () => {
 		myStream.stream.getAudioTracks().forEach((track) => {
 			track.enabled = !isMicOn;
-			console.log(track.enabled);
+			console.log('오디오', track.enabled);
+			socketEmit(SOCKET_EVENT_TYPE.UPDATE_MEDIA_INFO, { audio: track.enabled });
+			setMe({ ...me, audio: track.enabled });
 		});
 
 		setIsMicOn((current) => !current);
@@ -114,7 +116,9 @@ const BottomBar = ({ mainController }: Props) => {
 	const handleCamera = () => {
 		myStream.stream.getVideoTracks().forEach((track) => {
 			track.enabled = !isCameraOn;
-			console.log(track.enabled);
+			console.log('비디오', track.enabled);
+			socketEmit(SOCKET_EVENT_TYPE.UPDATE_MEDIA_INFO, { video: track.enabled });
+			setMe({ ...me, video: track.enabled });
 		});
 
 		setIsCameraOn((current) => !current);
