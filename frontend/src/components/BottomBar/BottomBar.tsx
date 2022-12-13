@@ -174,7 +174,7 @@ const BottomBar = ({ mainController }: Props) => {
 						<CloseIcon />
 					</Button>
 				</div>
-				<div>{drawerContentsSwitch()}</div>
+				{drawerContentsSwitch()}
 			</aside>
 		</>
 	);
