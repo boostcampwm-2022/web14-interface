@@ -132,15 +132,3 @@ const textButtonIconColor = (theme, color) => css`
 		fill: ${theme.colors[color]};
 	}
 `;
-
-const constrainedButtonIconColor = (theme, color) => css`
-	svg {
-		fill: ${color === 'secondary' ? theme.colors.primary : theme.colors.white};
-	}
-`;
-
-const textButtonIconColor = (theme, color) => css`
-	svg {
-		fill: ${theme.colors[color]};
-	}
-`;
