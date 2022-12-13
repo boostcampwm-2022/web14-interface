@@ -21,6 +21,10 @@ import { userRoleSelector } from '@store/user.store';
 
 import { interviewerContainerStyle, interviewerWrapperStyle } from './Interviewer.style';
 import useLeaveUser from '@hooks/useLeaveUser';
+import { flexColumn, flexRow } from '@styles/globalStyle';
+import { ReactComponent as StopIcon } from '@assets/icon/stop.svg';
+import { ReactComponent as CancelIcon } from '@assets/icon/close.svg';
+import { css } from '@emotion/react';
 
 const Interviewer = () => {
 	const { openModal } = useModal();
@@ -52,47 +56,52 @@ const Interviewer = () => {
 	}, []);
 
 	const endInterviewBtn = (
-		<>
+		<div css={flexRow({ gap: '8px' })}>
 			<RoundButton
 				style={{
-					width: 160,
+					width: 104,
+					color: 'red',
 				}}
 				onClick={hadleEndInterview}
 			>
-				<span>면접 종료</span>
+				<StopIcon />
 			</RoundButton>
 			<RoundButton
 				style={{
-					width: 50,
+					width: 48,
+					color: 'secondary',
 				}}
 				onClick={hadleCancelInterview}
 			>
-				<span>X</span>
+				<CancelIcon />
 			</RoundButton>
-		</>
+		</div>
 	);
 
 	return (
 		<div css={interviewerWrapperStyle}>
 			<div css={interviewerContainerStyle}>
-				<div>
+				<div css={interviewerVideoAreaStyle}>
 					<IntervieweeVideo
 						key={interviewee.uuid}
 						src={interviewee.stream}
-						nickname={interviewee.uuid}
-						width={'400px'}
+						nickname={interviewee.nickname}
+						width="100%"
 						autoplay
 						muted
 					/>
-					{interviewerList.map((interviewer) => (
-						<StreamVideo
-							key={interviewer.uuid}
-							src={interviewer.stream}
-							nickname={interviewer.uuid}
-							width={'200px'}
-							muted
-						/>
-					))}
+					<div css={VideoListAreaStyle}>
+						{interviewerList.map((interviewer) => (
+							<StreamVideo
+								key={interviewer.uuid}
+								src={interviewer.stream}
+								nickname={interviewer.nickname}
+								width="33%"
+								muted
+							/>
+						))}
+					</div>
+					<BottomBar mainController={endInterviewBtn} />
 				</div>
 				<div css={feedbackAreaStyle}>
 					<FeedbackList feedbackList={feedbackList} editable />
@@ -105,3 +114,17 @@ const Interviewer = () => {
 };
 
 export default Interviewer;
+
+export const interviewerVideoAreaStyle = (theme) => css`
+	${flexColumn({ gap: '24px', justifyContent: 'center' })};
+
+	width: 50%;
+	height: calc(100% - ${theme.bottomBarHeight});
+	padding: 24px;
+	background-color: ${theme.colors.tertiary};
+`;
+
+export const VideoListAreaStyle = () => css`
+	${flexRow({ gap: '20px', justifyContent: 'center' })};
+	width: 100%;
+`;

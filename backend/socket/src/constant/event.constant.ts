@@ -5,6 +5,7 @@ export enum EVENT {
 	LEAVE_ROOM = 'leave_room',
 	ENTER_USER = 'enter_user',
 	LEAVE_USER = 'leave_user',
+	UPDATE_MEDIA_INFO = 'update_media_info',
 
 	// interview
 	START_INTERVIEW = 'start_interview',
@@ -41,11 +42,16 @@ export enum EVENT {
 	BAD_REQUEST = 'bad_request',
 }
 
-export enum ERROR_MSG {
-	FULL_ROOM = '방이 꽉 찼습니다.',
-	NO_ROOM = '없는 방입니다.',
-	BUSY_ROOM = '현재 면접이 진행중입니다.',
-	NOT_ENOUGHT_USER = '인원이 부족합니다.',
-	INVALID_REQUEST = 'invalid_request',
-	BAD_REQUEST = 'invalid socket request',
+export enum SOCKET_MESSAGE {
+	FULL_ROOM = 'full_room',
+	NO_ROOM = 'no_room',
+	BUSY_ROOM = 'busy_room',
+	NOT_ENOUGHT_USER = 'not_enought_user',
+	VIDEO_TIME_LIMIT_OVER = 'video_time_limit_over',
+	EXIST_SAME_AUTH_ID = 'exist_same_auth_id',
+}
+
+export enum EXCEPTION_MESSAGE {
+	INVALID_USER_ROLE = '해당하는 유저의 역할이 없습니다.',
+	INVALID_CHANGE_PHASE = 'interview 진행 단계가 옳바르지 않습니다.',
 }

@@ -77,13 +77,13 @@ export class AuthService {
 	}: {
 		payload: CreateJwtPayloadDto;
 		secret: string;
-		expirationTime: string;
+		expirationTime: number;
 	}) {
 		const token = this.jwtService.sign(
 			{ ...payload },
 			{
 				secret: this.configService.get(secret),
-				expiresIn: `${this.configService.get(expirationTime)}s`,
+				expiresIn: `${expirationTime}s`,
 			}
 		);
 

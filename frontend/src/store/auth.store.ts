@@ -7,7 +7,9 @@ const isAuthQuery = selector({
 	key: 'isAUth',
 	get: async () => {
 		try {
-			const res = await axios.get(REST_TYPE.LOGIN);
+			const res = await axios.get(REST_TYPE.LOGIN, {
+				headers: { 'Cache-Control': 'no-cache' },
+			});
 			return res.status === SC_TYPE.OK;
 		} catch (e) {
 			if (e.response.status === SC_TYPE.UNAUTHORIZED) return false;

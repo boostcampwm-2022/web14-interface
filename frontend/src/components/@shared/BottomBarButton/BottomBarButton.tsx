@@ -12,6 +12,7 @@ export interface buttonPropType {
 	iconColor?: boolean;
 	disabled?: boolean;
 	onClick?: React.MouseEventHandler<HTMLButtonElement>;
+	visibility?: 'visible' | 'hidden';
 }
 
 const BottomBarButtom = ({
@@ -24,12 +25,13 @@ const BottomBarButtom = ({
 	iconColor = true,
 	disabled = false,
 	onClick,
+	visibility,
 }: buttonPropType) => {
 	return (
 		<button
 			css={[
 				(theme) => buttonStyle(theme, width, size, style, color, iconColor, justifyContent),
-				bottomBarPadding,
+				bottomBarPadding(visibility),
 			]}
 			disabled={disabled}
 			onClick={onClick}
@@ -41,6 +43,7 @@ const BottomBarButtom = ({
 
 export default BottomBarButtom;
 
-const bottomBarPadding = () => css`
+const bottomBarPadding = (visibility) => css`
+	visibility: ${visibility};
 	padding: 8px 12px;
 `;

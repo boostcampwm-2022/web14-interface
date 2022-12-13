@@ -137,6 +137,9 @@ const BottomBar = ({ mainController }: Props) => {
 					>
 						{isCameraOn ? <CameraOnIcon /> : <CameraOffIcon />}
 					</BottomBarButtom>
+					<BottomBarButtom visibility={'hidden'} disabled={true}>
+						<UserIcon />
+					</BottomBarButtom>
 				</div>
 				{mainController}
 				<div css={iconGroupStyle}>

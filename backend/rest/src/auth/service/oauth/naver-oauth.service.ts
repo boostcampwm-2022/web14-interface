@@ -2,6 +2,7 @@ import {
 	AUTHORIZATION_TOKEN_TYPE,
 	NAVER_ACCESS_TOKEN_URL,
 	NAVER_AUTHORIZE_PAGE_URL,
+	NAVER_CLIENT_ID,
 	NAVER_PROFILE_API_URL,
 	OAUTH_CALLBACK_URL,
 	OAUTH_TYPE,
@@ -10,11 +11,15 @@ import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { UserSocialInfo } from '@types';
 import { OauthService } from './interface-oauth.service';
+import { ConfigService } from '@nestjs/config';
+import { NAVER_CLIENT_SECRET } from 'src/constant/env.constant';
 
 @Injectable()
 export class OauthNaverService implements OauthService {
-	private clientId = process.env.NAVER_CLIENT_ID;
-	private clientSecret = process.env.NAVER_CLIENT_SECRET;
+	constructor(private readonly configService: ConfigService) {}
+
+	private clientId = NAVER_CLIENT_ID;
+	private clientSecret = this.configService.get(NAVER_CLIENT_SECRET);
 	private callbackUrl = [
 		process.env.CLIENT_ORIGIN_URL,
 		OAUTH_CALLBACK_URL,

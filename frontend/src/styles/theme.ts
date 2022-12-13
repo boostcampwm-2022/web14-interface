@@ -18,6 +18,7 @@ const theme = {
 		xLarge: '28px',
 	},
 	borderRadius: '8px',
+	bottomBarHeight: '64px',
 };
 
 export default theme;

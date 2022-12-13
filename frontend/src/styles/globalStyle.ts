@@ -62,13 +62,27 @@ const globalStyle = css`
 
 	textarea {
 		resize: none;
+		height: inherit;
+	}
+
+	div,
+	textarea {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+	div::-webkit-scrollbar {
+		display: none;
+	}
+
+	textarea::-webkit-scrollbar {
+		display: none;
 	}
 `;
 
 interface flexPropType {
 	gap?: string;
-	justifyContent?: 'center' | 'space-between' | 'space-around';
-	alignItems?: 'center';
+	justifyContent?: 'center' | 'space-between' | 'space-around' | 'unset' | 'flex-end';
+	alignItems?: 'center' | 'baseline' | 'flex-start';
 }
 
 export const flexRow = ({

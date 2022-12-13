@@ -10,8 +10,9 @@ export interface roundButtonPropType {
 export interface StyleType {
 	theme?: any;
 	width?: number;
-	size?: 'small' | 'medium';
+	size?: 'small' | 'medium' | 'large';
 	color?: 'primary' | 'secondary' | 'red' | 'black';
+	style?: 'contained' | 'text';
 }
 
 const RoundButton = ({ children, onClick, style }: roundButtonPropType) => {

@@ -101,4 +101,13 @@ export class InterviewService {
 
 		return docsList;
 	}
+
+	async deleteInterviewDocs({ userId, docsUUID }: { userId: string; docsUUID: string }) {
+		const docs = await this.interviewRepository.getInterviewDocsByDocsUUID(docsUUID);
+		if (docs.userId !== userId) {
+			throw new BadRequestException(HTTP_ERROR_MSG.CANT_DELETE_ANOTHER_DOCS);
+		}
+
+		await this.interviewRepository.deleteInterviewDocs(docsUUID);
+	}
 }

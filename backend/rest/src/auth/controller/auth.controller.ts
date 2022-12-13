@@ -47,7 +47,7 @@ export class AuthController {
 	@Get('id')
 	getUserId(@Req() req: Request) {
 		const userPayload = req.user as JwtPayload;
-		return userPayload.id;
+		return { userId: userPayload.id };
 	}
 
 	@UseGuards(JwtAuthGuard)
