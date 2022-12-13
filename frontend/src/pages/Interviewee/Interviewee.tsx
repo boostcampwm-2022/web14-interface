@@ -5,7 +5,7 @@ import axios from 'axios';
 import IntervieweeVideo from '@components/IntervieweeVideo/IntervieweeVideo';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
-import { userRoleSelector } from '@store/user.store';
+import { meInRoomState, userRoleSelector } from '@store/user.store';
 import { currentVideoTimeState } from '@store/currentVideoTime.store';
 import { docsUUIDState } from '@store/interview.store';
 
@@ -36,6 +36,8 @@ const Interviewee = () => {
 	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);
 	const currentVideoTime = useRecoilValue(currentVideoTimeState);
 	const setDocsUUID = useSetRecoilState(docsUUIDState);
+
+	const me = useRecoilValue(meInRoomState);
 
 	const hadleEndInterview = () => {
 		openModal('EndInterviewModal');
@@ -106,7 +108,8 @@ const Interviewee = () => {
 						src={interviewer.stream}
 						nickname={interviewer.nickname}
 						height={'100%'}
-						muted
+						audio={interviewer.audio}
+						isMyStream={interviewer.uuid === me.uuid}
 					/>
 				))}
 			</div>
@@ -116,7 +119,8 @@ const Interviewee = () => {
 				nickname={interviewee.nickname}
 				height="64%"
 				autoplay
-				muted
+				audio={interviewee.audio}
+				isMyStream={interviewee.uuid === me.uuid}
 			/>
 
 			<BottomBar mainController={endInterviewBtn} />
