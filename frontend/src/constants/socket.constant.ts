@@ -17,6 +17,7 @@ export enum SOCKET_EVENT_TYPE {
 	SEND_MESSAGE = 'send_message',
 	RECEIVE_MESSAGE = 'receive_message',
 	FINISH_STREAMING = 'finish_streaming',
+	UPDATE_MEDIA_INFO = 'update_media_info',
 }
 
 export enum WEBRTC_EVENT_TYPE {
