@@ -1,14 +1,14 @@
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateMediaDto {
-	@IsBoolean()
+	@IsString()
 	@IsNotEmpty()
-	@Transform((bool) => Number(bool))
-	video?: number;
+	@Transform((obj) => String(obj.value))
+	video?: string;
 
-	@IsBoolean()
+	@IsString()
 	@IsNotEmpty()
-	@Transform((bool) => Number(bool))
-	audio?: number;
+	@Transform((obj) => String(obj.value))
+	audio?: string;
 }
