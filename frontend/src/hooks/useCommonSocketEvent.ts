@@ -33,8 +33,13 @@ const ussCommonSocketEvent = () => {
 			setOthers(newUser);
 		});
 
+		socket.on(SOCKET_EVENT_TYPE.RECEIVE_MESSAGE, (res) => {
+			console.log('chat', res);
+		});
+
 		return () => {
-			socket.off(SOCKET_EVENT_TYPE.LEAVE_USER);
+			socket.off(SOCKET_EVENT_TYPE.UPDATE_MEDIA_INFO);
+			socket.off(SOCKET_EVENT_TYPE.RECEIVE_MESSAGE);
 		};
 	}, []);
 
