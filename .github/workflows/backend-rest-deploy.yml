@@ -50,7 +50,7 @@ jobs:
             export CURRENT_CONTAINER=$(docker ps -aq -f "name=rest-server")
             docker stop $(echo $CURRENT_CONTAINER) && docker rm $(echo $CURRENT_CONTAINER)
             docker pull ${{ secrets.DOCKER_REST_IMAGE }}:${{ secrets.VERSION }} 
-            docker run --name rest-server --restart always -d -p 8080:8080 \
+            docker run --name rest-server  \
             -e DB_USER=${{ secrets.DB_USER }} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
             -e DB_NAME=${{ secrets.DB_NAME }} \ 
@@ -59,4 +59,4 @@ jobs:
             -e NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }} \ 
             -e KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }} \
             -e CLIENT_ORIGIN_URL=${{ secrets.CLIENT_ORIGIN_URL }} \
-            ${{ secrets.DOCKER_REST_IMAGE }}:${{ secrets.VERSION }}
+            --restart always -d -p 8080:8080 ${{ secrets.DOCKER_REST_IMAGE }}:${{ secrets.VERSION }}
