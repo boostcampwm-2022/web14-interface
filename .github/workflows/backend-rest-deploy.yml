@@ -51,7 +51,7 @@ jobs:
             docker stop $(echo $CURRENT_CONTAINER) && docker rm $(echo $CURRENT_CONTAINER)
             docker pull ${{ secrets.DOCKER_REST_IMAGE }}:${{ secrets.VERSION }} 
             docker run --name rest-server --restart always -d -p 8080:8080 \
-            -e DB_USER=${{ secretss.DB_USER }} \
+            -e DB_USER=${{ secrets.DB_USER }} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
             -e DB_NAME=${{ secrets.DB_NAME }} \ 
             -e JWT_ACCESS_TOKEN_SECRET=${{ secrets.JWT_ACCESS_TOKEN_SECRET }} \
