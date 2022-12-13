@@ -53,7 +53,10 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage(EVENT.UPDATE_MEDIA_INFO)
-	handleUpdateMediaInfo(@ConnectedSocket() client: Socket, updateMediaDto: UpdateMediaDto) {
+	handleUpdateMediaInfo(
+		@ConnectedSocket() client: Socket,
+		@MessageBody() updateMediaDto: UpdateMediaDto
+	) {
 		return this.connectionService.updateUserMediaInfo({ client, updateMediaDto });
 	}
 
