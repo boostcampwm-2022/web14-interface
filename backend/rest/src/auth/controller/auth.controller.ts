@@ -1,7 +1,14 @@
 import { Controller, Get, HttpStatus, Param, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import { Request, Response } from 'express';
-import { tokenCookieOptions, JWT_TYPE } from '@constant';
+import {
+	tokenCookieOptions,
+	JWT_TYPE,
+	REDIRECT_URL_SWAGGER,
+	LOGIN_SWAGGER,
+	USERID_SWAGGER,
+	LOGOUT_SWAGGER,
+} from '@constant';
 import { JwtAuthGuard } from '../guard/jwt.guard';
 import { JwtPayload } from '@types';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -13,12 +20,8 @@ import { UserIdResponseDto } from '../dto/user-id.dto';
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
-	@ApiOperation({ summary: 'type별 oauth URL 가져오기' })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		description: 'url 요청 성공',
-		type: RedirectUrlResponseDto,
-	})
+	@ApiOperation(REDIRECT_URL_SWAGGER.SUMMARY)
+	@ApiResponse(REDIRECT_URL_SWAGGER.SUCCESS)
 	@Get('oauth/redirect/:type')
 	redirectOauthPage(@Param('type') type: string) {
 		const pageUrl = this.authService.getSocialUrl(type);
@@ -48,15 +51,9 @@ export class AuthController {
 		res.redirect(process.env.CLIENT_ORIGIN_URL);
 	}
 
-	@ApiOperation({ summary: '로그인 및 로그인 여부 확인하기' })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		description: '로그인 성공',
-	})
-	@ApiResponse({
-		status: HttpStatus.UNAUTHORIZED,
-		description: '로그인 실패',
-	})
+	@ApiOperation(LOGIN_SWAGGER.SUMMARY)
+	@ApiResponse(LOGIN_SWAGGER.SUCCESS)
+	@ApiResponse(LOGIN_SWAGGER.FAIL)
 	@UseGuards(JwtAuthGuard)
 	@Get('login')
 	loginValidate(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
@@ -65,16 +62,9 @@ export class AuthController {
 		res.cookie(JWT_TYPE.REFRESH_TOKEN, refreshToken, tokenCookieOptions);
 	}
 
-	@ApiOperation({ summary: '유저 id 가져오기' })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		description: 'id 요청 성공',
-		type: UserIdResponseDto,
-	})
-	@ApiResponse({
-		status: HttpStatus.UNAUTHORIZED,
-		description: '인증 실패',
-	})
+	@ApiOperation(USERID_SWAGGER.SUMMARY)
+	@ApiResponse(USERID_SWAGGER.SUCCESS)
+	@ApiResponse(USERID_SWAGGER.FAIL)
 	@UseGuards(JwtAuthGuard)
 	@Get('id')
 	getUserId(@Req() req: Request) {
@@ -85,15 +75,9 @@ export class AuthController {
 		return userIdResponseDto;
 	}
 
-	@ApiOperation({ summary: 'logout 하기' })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		description: '로그아웃 성공',
-	})
-	@ApiResponse({
-		status: HttpStatus.UNAUTHORIZED,
-		description: '로그아웃 실패',
-	})
+	@ApiOperation(LOGOUT_SWAGGER.SUMMARY)
+	@ApiResponse(LOGOUT_SWAGGER.SUCCESS)
+	@ApiResponse(LOGOUT_SWAGGER.FAIL)
 	@UseGuards(JwtAuthGuard)
 	@Get('logout')
 	logout(@Res({ passthrough: true }) res: Response) {
