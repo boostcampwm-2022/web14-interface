@@ -4,7 +4,9 @@ import { flexRow } from '@styles/globalStyle';
 export const buttonStyle = (theme, width, size, style, color, iconColor, justifyContent) => css`
 	${flexRow({ gap: '8px', justifyContent })};
 
-	${size === 'small'
+	${size === 'xSmall'
+		? xSmallButtonStyle(theme, width)
+		: size === 'small'
 		? smallButtonStyle(theme, width)
 		: size === 'medium'
 		? mediumButtonStyle(theme, width)
@@ -13,6 +15,20 @@ export const buttonStyle = (theme, width, size, style, color, iconColor, justify
 	${style === 'contained'
 		? containedButtonStyle(theme, color, iconColor)
 		: textButtonStyle(theme, color, iconColor)}
+`;
+
+const xSmallButtonStyle = (theme, width) => css`
+	width: ${width};
+	padding: 8px;
+
+	font-size: ${theme.fontSize.xSmall};
+	line-height: ${theme.fontSize.xSmall};
+
+	border-radius: ${theme.borderRadius};
+
+	svg {
+		width: ${theme.fontSize.small};
+	}
 `;
 
 const smallButtonStyle = (theme, width) => css`
