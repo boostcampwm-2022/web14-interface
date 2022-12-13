@@ -3,7 +3,7 @@ import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { UserType } from '@customType/user';
 import { socket } from '@service/socket';
 import { othersInRoomState, webRTCUserMapState } from '@store/user.store';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import useWebRTCSignaling from './useWebRTCSignaling';
 import { chatListState } from '@store/chatList.store';
 
@@ -38,9 +38,12 @@ const ussCommonSocketEvent = () => {
 
 	useEffect(() => {
 		socket.on(SOCKET_EVENT_TYPE.UPDATE_MEDIA_INFO, ({ user: changeUser }) => {
-			const newUser = others
-				.filter((user) => user.uuid !== changeUser.uuid)
-				.concat(changeUser);
+			const newUser = others.reduce((acc, other) => {
+				if (other.uuid !== changeUser.uuid) acc.push(other);
+				else acc.push(changeUser);
+
+				return acc;
+			}, []);
 
 			console.log(changeUser, newUser);
 
@@ -50,7 +53,7 @@ const ussCommonSocketEvent = () => {
 		return () => {
 			socket.off(SOCKET_EVENT_TYPE.UPDATE_MEDIA_INFO);
 		};
-	}, []);
+	}, [others]);
 
 	return { others, setOthers, webRTCUserList, setWebRTCUserList };
 };
