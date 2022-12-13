@@ -16,7 +16,7 @@ import { feedbackWrapperStyle, feedbackContainerStyle, feedbackAreaStyle } from 
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
 import useModal from '@hooks/useModal';
-import useLeaveUser from '@hooks/useLeaveUser';
+import ussCommonSocketEvent from '@hooks/useCommonSocketEvent';
 import { flexRow } from '@styles/globalStyle';
 import { css } from '@emotion/react';
 
@@ -27,7 +27,7 @@ interface endFeedbackResponseType {
 
 const Feedback = () => {
 	usePreventLeave();
-	useLeaveUser();
+	ussCommonSocketEvent();
 
 	const { openModal } = useModal();
 	const cleanupInterview = useCleanupInterview();

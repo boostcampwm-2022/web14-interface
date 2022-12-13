@@ -20,7 +20,7 @@ import useModal from '@hooks/useModal';
 import { meInRoomState, userRoleSelector } from '@store/user.store';
 
 import { interviewerContainerStyle, interviewerWrapperStyle } from './Interviewer.style';
-import useLeaveUser from '@hooks/useLeaveUser';
+import ussCommonSocketEvent from '@hooks/useCommonSocketEvent';
 import { flexColumn, flexRow } from '@styles/globalStyle';
 import { ReactComponent as StopIcon } from '@assets/icon/stop.svg';
 import { ReactComponent as CancelIcon } from '@assets/icon/close.svg';
@@ -30,7 +30,7 @@ const Interviewer = () => {
 	const { openModal } = useModal();
 	const { safeNavigate } = useSafeNavigate();
 	usePreventLeave();
-	useLeaveUser();
+	ussCommonSocketEvent();
 
 	const feedbackList = useRecoilValue(feedbackListSelector);
 	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);

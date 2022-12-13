@@ -6,7 +6,7 @@ import { othersInRoomState, webRTCUserMapState } from '@store/user.store';
 import { useRecoilState } from 'recoil';
 import useWebRTCSignaling from './useWebRTCSignaling';
 
-const useLeaveUser = () => {
+const ussCommonSocketEvent = () => {
 	const [others, setOthers] = useRecoilState<UserType[]>(othersInRoomState);
 	const [webRTCUserList, setWebRTCUserList] = useRecoilState(webRTCUserMapState);
 	const { closeConnection } = useWebRTCSignaling(webRTCUserList, setWebRTCUserList);
@@ -22,7 +22,23 @@ const useLeaveUser = () => {
 		};
 	}, [others, webRTCUserList]);
 
+	useEffect(() => {
+		socket.on(SOCKET_EVENT_TYPE.UPDATE_MEDIA_INFO, ({ user: changeUser }) => {
+			const newUser = others
+				.filter((user) => user.uuid !== changeUser.uuid)
+				.concat(changeUser);
+
+			console.log(changeUser, newUser);
+
+			setOthers(newUser);
+		});
+
+		return () => {
+			socket.off(SOCKET_EVENT_TYPE.LEAVE_USER);
+		};
+	}, []);
+
 	return { others, setOthers, webRTCUserList, setWebRTCUserList };
 };
 
-export default useLeaveUser;
+export default ussCommonSocketEvent;

@@ -24,13 +24,13 @@ import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
 import useModal from '@hooks/useModal';
 import { useUserRole } from '@hooks/useUserRole';
-import useLeaveUser from '@hooks/useLeaveUser';
+import ussCommonSocketEvent from '@hooks/useCommonSocketEvent';
 
 const Lobby = () => {
 	usePreventLeave();
 	const { safeNavigate } = useSafeNavigate();
 	const { openModal } = useModal();
-	useLeaveUser();
+	ussCommonSocketEvent();
 
 	const [me, setMe] = useRecoilState<UserType>(meInRoomState);
 	const [others, setOthers] = useRecoilState<UserType[]>(othersInRoomState);
@@ -45,23 +45,13 @@ const Lobby = () => {
 
 	useEffect(() => {
 		socket.on(SOCKET_EVENT_TYPE.ENTER_USER, ({ user }) => {
+			//TODO BE 대응시 변경
 			setOthers((prevOthers) => [...prevOthers, { ...user, audio: false }]);
 		});
 
 		socket.on(SOCKET_EVENT_TYPE.JOIN_INTERVIEW, ({ user: interviewee }) => {
 			setUserRole(interviewee);
-
 			safeNavigate(PAGE_TYPE.INTERVIEWER_PAGE);
-		});
-
-		socket.on(SOCKET_EVENT_TYPE.UPDATE_MEDIA_INFO, ({ user: changeUser }) => {
-			const newUser = others
-				.filter((user) => user.uuid !== changeUser.uuid)
-				.concat(changeUser);
-
-			console.log(changeUser, newUser);
-
-			setOthers(newUser);
 		});
 
 		return () => {
@@ -71,7 +61,6 @@ const Lobby = () => {
 	}, [others]);
 
 	useEffect(() => {
-		console.log('others', others);
 		socket.on(SOCKET_EVENT_TYPE.LEAVE_USER, ({ user }) => {
 			closeConnection(user);
 			setOthers((prevOhters) => prevOhters.filter((other) => other.uuid !== user.uuid));

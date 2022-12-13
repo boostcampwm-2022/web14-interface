@@ -21,14 +21,14 @@ import BottomBar from '@components/BottomBar/BottomBar';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
 import useModal from '@hooks/useModal';
-import useLeaveUser from '@hooks/useLeaveUser';
+import ussCommonSocketEvent from '@hooks/useCommonSocketEvent';
 import { ReactComponent as StopIcon } from '@assets/icon/stop.svg';
 import { ReactComponent as CancelIcon } from '@assets/icon/close.svg';
 import { flexRow } from '@styles/globalStyle';
 
 const Interviewee = () => {
 	usePreventLeave();
-	useLeaveUser();
+	ussCommonSocketEvent();
 	const { openModal } = useModal();
 	const { safeNavigate } = useSafeNavigate();
 	const { startStream, stopStream } = mediaStreamer();
