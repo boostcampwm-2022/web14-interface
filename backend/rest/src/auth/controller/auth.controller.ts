@@ -5,6 +5,8 @@ import { tokenCookieOptions, JWT_TYPE } from '@constant';
 import { JwtAuthGuard } from '../guard/jwt.guard';
 import { JwtPayload } from '@types';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { RedirectUrlResponseDto } from '../dto/redirect-url.dto';
+import { UserIdResponseDto } from '../dto/user-id.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -15,11 +17,15 @@ export class AuthController {
 	@ApiResponse({
 		status: HttpStatus.OK,
 		description: 'url 요청 성공',
+		type: RedirectUrlResponseDto,
 	})
 	@Get('oauth/redirect/:type')
 	redirectOauthPage(@Param('type') type: string) {
 		const pageUrl = this.authService.getSocialUrl(type);
-		return { url: pageUrl };
+
+		const redirectUrlResponseDto = new RedirectUrlResponseDto(pageUrl);
+
+		return redirectUrlResponseDto;
 	}
 
 	@Get('oauth/callback/:type')
@@ -63,6 +69,7 @@ export class AuthController {
 	@ApiResponse({
 		status: HttpStatus.OK,
 		description: 'id 요청 성공',
+		type: UserIdResponseDto,
 	})
 	@ApiResponse({
 		status: HttpStatus.UNAUTHORIZED,
@@ -72,7 +79,10 @@ export class AuthController {
 	@Get('id')
 	getUserId(@Req() req: Request) {
 		const userPayload = req.user as JwtPayload;
-		return { userId: userPayload.id };
+
+		const userIdResponseDto = new UserIdResponseDto(userPayload.id);
+
+		return userIdResponseDto;
 	}
 
 	@ApiOperation({ summary: 'logout 하기' })
