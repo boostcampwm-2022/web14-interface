@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import { RestInterceptor } from './interceptor/http.interceptor';
 import { HttpExceptionFilter } from './filter/http-exception.filter';
 import expressBasicAuth from 'express-basic-auth';
+import { SWAGGER_AUTH_OPTIONS, SWAGGER_PATH } from './constant/swagger.constant';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
@@ -15,15 +16,7 @@ async function bootstrap() {
 	app.useGlobalInterceptors(new RestInterceptor());
 	app.useGlobalFilters(new HttpExceptionFilter());
 
-	app.use(
-		['/docs/api'],
-		expressBasicAuth({
-			challenge: true,
-			users: {
-				[process.env.SWAGGER_USER]: process.env.SWAGGER_PASSWORD,
-			},
-		})
-	);
+	app.use([SWAGGER_PATH], expressBasicAuth(SWAGGER_AUTH_OPTIONS));
 
 	setupSwagger(app);
 

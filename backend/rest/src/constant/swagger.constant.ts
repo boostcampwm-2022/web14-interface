@@ -119,3 +119,11 @@ export const DELETE_INTERVIEW_DOCS_SWAGGER = {
 		description: '인증 실패',
 	},
 };
+
+export const SWAGGER_PATH = '/docs/api';
+export const SWAGGER_AUTH_OPTIONS = {
+	challenge: true,
+	users: {
+		[process.env.SWAGGER_USER]: process.env.SWAGGER_PASSWORD,
+	},
+};
