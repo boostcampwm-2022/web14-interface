@@ -45,13 +45,23 @@ const Lobby = () => {
 
 	useEffect(() => {
 		socket.on(SOCKET_EVENT_TYPE.ENTER_USER, ({ user }) => {
-			setOthers((prevOthers) => [...prevOthers, user]);
+			setOthers((prevOthers) => [...prevOthers, { ...user, audio: false }]);
 		});
 
 		socket.on(SOCKET_EVENT_TYPE.JOIN_INTERVIEW, ({ user: interviewee }) => {
 			setUserRole(interviewee);
 
 			safeNavigate(PAGE_TYPE.INTERVIEWER_PAGE);
+		});
+
+		socket.on(SOCKET_EVENT_TYPE.UPDATE_MEDIA_INFO, ({ user: changeUser }) => {
+			const newUser = others
+				.filter((user) => user.uuid !== changeUser.uuid)
+				.concat(changeUser);
+
+			console.log(changeUser, newUser);
+
+			setOthers(newUser);
 		});
 
 		return () => {
@@ -61,6 +71,7 @@ const Lobby = () => {
 	}, [others]);
 
 	useEffect(() => {
+		console.log('others', others);
 		socket.on(SOCKET_EVENT_TYPE.LEAVE_USER, ({ user }) => {
 			closeConnection(user);
 			setOthers((prevOhters) => prevOhters.filter((other) => other.uuid !== user.uuid));
@@ -98,12 +109,13 @@ const Lobby = () => {
 		<div css={lobbyWrapperStyle}>
 			<div css={VideoAreaStyle}>
 				<VideoGrid>
-					{userInfoList.map(({ uuid, stream, nickname }) => (
+					{userInfoList.map(({ uuid, stream, nickname, audio }) => (
 						<StreamVideo
 							key={uuid}
 							src={stream}
 							nickname={nickname}
-							muted={uuid === me.uuid}
+							isMyStream={uuid === me.uuid}
+							audio={audio}
 						/>
 					))}
 				</VideoGrid>
