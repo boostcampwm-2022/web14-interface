@@ -6,7 +6,6 @@ import { isFbClickedState, isFbSyncState } from '@store/feedback.store';
 import { currentVideoTimeState } from '@store/currentVideoTime.store';
 
 import {
-	fbTextAreaStyle,
 	fbStartTimeStyle,
 	feedbackBoxStyle,
 	feedbackContentStyle,
@@ -16,13 +15,10 @@ import {
 import { FeedbackItemType } from '@customType/feedback';
 import { mmssFormatter } from '@utils/common.util';
 import { ONE_SECOND } from '@constants/time.constant';
-import { css } from '@emotion/react';
-import { flexRow } from '@styles/globalStyle';
 
 export interface FeedbackItemPropType {
 	feedback: FeedbackItemType;
-	//TODO ref type any
-	feedbackRef: React.MutableRefObject<any[]>;
+	feedbackRef: React.MutableRefObject<HTMLDivElement[]>;
 	index: number;
 	editableBtns: React.ReactNode;
 }
@@ -41,16 +37,25 @@ const FeedbackItem = ({ feedback, feedbackRef, index, editableBtns }: FeedbackIt
 	};
 
 	return (
-		<div ref={(el) => (feedbackRef.current[index] = el)} css={feedbackBoxStyle}>
-			<div css={fbStartTimeStyle} style={{ visibility: isFirst ? 'visible' : 'hidden' }}>
+		<div
+			ref={(el) => (feedbackRef.current[index] = el)}
+			css={(theme) => feedbackBoxStyle(theme, readOnly)}
+		>
+			<div
+				css={(theme) => fbStartTimeStyle(theme, readOnly)}
+				style={{ visibility: isFirst ? 'visible' : 'hidden' }}
+			>
 				{mmssFormatter(startTime * ONE_SECOND)}
 			</div>
-			<div css={feedbackContentAreaStyle} onClick={handleClickFeedback}>
+			<div
+				css={(theme) => feedbackContentAreaStyle(theme, readOnly)}
+				onClick={handleClickFeedback}
+			>
 				<div css={feedbackContentStyle} contentEditable={!readOnly}>
 					{content}
 				</div>
-				{editableBtns}
 			</div>
+			{editableBtns}
 		</div>
 	);
 };
