@@ -1,5 +1,4 @@
 import { User } from '@types';
-import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class UserDto {
@@ -8,8 +7,8 @@ export class UserDto {
 		this.nickname = user.nickname;
 		this.role = user.role;
 		this.roomUUID = user.roomUUID;
-		this.video = user.video;
-		this.audio = user.video;
+		this.video = Number(user.video);
+		this.audio = Number(user.video);
 	}
 
 	@IsString()
@@ -30,11 +29,9 @@ export class UserDto {
 
 	@IsNumber()
 	@IsNotEmpty()
-	@Transform((str) => Number(str))
 	video: number;
 
 	@IsNumber()
 	@IsNotEmpty()
-	@Transform((str) => Number(str))
 	audio: number;
 }
