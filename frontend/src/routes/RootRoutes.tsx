@@ -7,7 +7,6 @@ import isAuthQuery from '@store/auth.store';
 
 const RootRoutes = () => {
 	const isAuth = useRecoilValue(isAuthQuery);
-	// const isAuth = true;
 	return (
 		<Routes>
 			<Route path="*" element={isAuth ? <PrivateRoutes /> : <PublicRoutes />} />

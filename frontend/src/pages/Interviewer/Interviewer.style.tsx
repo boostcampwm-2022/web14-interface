@@ -1,17 +1,14 @@
 import { css } from '@emotion/react';
+import { flexRow } from '@styles/globalStyle';
 
 export const interviewerWrapperStyle = (theme) => css`
 	width: 100%;
-	height: 100%;
+	height: calc(100% - ${theme.bottomBarHeight});
 	background-color: ${theme.colors.tertiary};
 `;
 
-export const interviewerContainerStyle = css`
+export const interviewerContainerStyle = (theme) => css`
+	${flexRow({ gap: '48px' })};
+
 	height: 100%;
-	display: flex;
-	gap: 25px;
-	justify-content: center;
-	align-items: center;
-	max-width: 1200px;
-	margin: auto;
 `;

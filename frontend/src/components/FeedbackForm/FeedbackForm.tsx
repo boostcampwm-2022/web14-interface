@@ -7,7 +7,12 @@ import { currentVideoTimeState } from '@store/currentVideoTime.store';
 import { ONE_SECOND } from '@constants/time.constant';
 import { mmssFormatter } from '@utils/common.util';
 
-import { fbFormWrapperStyle, fbInputStyle, fbStartTimeStyle } from './FeedbackForm.style';
+import {
+	fbFormWrapperStyle,
+	fbInputStyle,
+	fbFormStartTimeStyle,
+	fbInputWrapperStyle,
+} from './FeedbackForm.style';
 
 const FeedbackForm = () => {
 	const [inputVal, setInputVal] = useState('');
@@ -34,15 +39,17 @@ const FeedbackForm = () => {
 
 	return (
 		<div css={fbFormWrapperStyle}>
-			<div css={fbStartTimeStyle}>
+			<div css={fbFormStartTimeStyle}>
 				{mmssFormatter((inputVal ? startTime : currentVideoTime) * ONE_SECOND)}
 			</div>
-			<textarea
-				value={inputVal}
-				onKeyDown={handleKeyDown}
-				onChange={handleChange}
-				css={fbInputStyle}
-			/>
+			<div css={fbInputWrapperStyle}>
+				<textarea
+					value={inputVal}
+					onKeyDown={handleKeyDown}
+					onChange={handleChange}
+					css={fbInputStyle}
+				/>
+			</div>
 		</div>
 	);
 };

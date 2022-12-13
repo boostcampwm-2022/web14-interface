@@ -81,8 +81,8 @@ const globalStyle = css`
 
 interface flexPropType {
 	gap?: string;
-	justifyContent?: 'center' | 'space-between' | 'space-around';
-	alignItems?: 'center';
+	justifyContent?: 'center' | 'space-between' | 'space-around' | 'unset' | 'flex-end';
+	alignItems?: 'center' | 'baseline' | 'flex-start';
 }
 
 export const flexRow = ({

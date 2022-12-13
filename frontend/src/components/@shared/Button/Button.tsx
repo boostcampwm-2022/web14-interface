@@ -4,7 +4,7 @@ import { buttonStyle } from './Button.style';
 export interface buttonPropType {
 	children?: React.ReactNode | React.ReactNode[];
 	width?: string;
-	size?: 'small' | 'medium' | 'large';
+	size?: 'xSmall' | 'small' | 'medium' | 'large';
 	style?: 'contained' | 'text';
 	color?: 'primary' | 'secondary' | 'red' | 'black';
 	justifyContent?: 'center' | 'space-between';
