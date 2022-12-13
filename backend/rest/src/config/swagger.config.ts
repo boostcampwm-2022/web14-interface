@@ -1,4 +1,3 @@
-import { SWAGGER_AUTH_OPTIONS, SWAGGER_PATH } from '@constant';
 import { INestApplication } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import expressBasicAuth from 'express-basic-auth';
@@ -17,7 +16,15 @@ const swaggerConfig = new DocumentBuilder()
 	.build();
 
 export function setupSwagger(app: INestApplication) {
-	app.use([SWAGGER_PATH], expressBasicAuth(SWAGGER_AUTH_OPTIONS));
+	app.use(
+		['/docs/api'],
+		expressBasicAuth({
+			challenge: true,
+			users: {
+				[process.env.SWAGGER_USER]: process.env.SWAGGER_PASSWORD,
+			},
+		})
+	);
 
 	const document = SwaggerModule.createDocument(app, swaggerConfig);
 	SwaggerModule.setup('docs/api', app, document);
