@@ -33,6 +33,7 @@ import { pageState } from '@store/page.store';
 import BottomBarButtom from '@components/@shared/BottomBarButton/BottomBarButton';
 import Button from '@components/@shared/Button/Button';
 import { meInRoomState, userInfoSelector } from '@store/user.store';
+import { MEDIA_ACTIVE_TYPE } from '@constants/media.constant';
 
 interface Props {
 	mainController?: React.ReactNode;
@@ -103,10 +104,10 @@ const BottomBar = ({ mainController }: Props) => {
 		myStream.stream.getAudioTracks().forEach((track) => {
 			track.enabled = !isMicOn;
 			console.log('오디오', track.enabled);
-			socketEmit(SOCKET_EVENT_TYPE.UPDATE_MEDIA_INFO, { audio: track.enabled });
-			setMe({ ...me, audio: track.enabled });
 		});
 
+		socketEmit(SOCKET_EVENT_TYPE.UPDATE_MEDIA_INFO, { audio: !isMicOn });
+		setMe({ ...me, audio: !isMicOn });
 		setIsMicOn((current) => !current);
 	};
 
@@ -114,10 +115,10 @@ const BottomBar = ({ mainController }: Props) => {
 		myStream.stream.getVideoTracks().forEach((track) => {
 			track.enabled = !isCameraOn;
 			console.log('비디오', track.enabled);
-			socketEmit(SOCKET_EVENT_TYPE.UPDATE_MEDIA_INFO, { video: track.enabled });
-			setMe({ ...me, video: track.enabled });
 		});
 
+		socketEmit(SOCKET_EVENT_TYPE.UPDATE_MEDIA_INFO, { video: !isCameraOn });
+		setMe({ ...me, video: !isCameraOn });
 		setIsCameraOn((current) => !current);
 	};
 
