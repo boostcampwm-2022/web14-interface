@@ -1,5 +1,5 @@
 import { User } from '@types';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 
 export class UserDto {
 	constructor(user: User) {
@@ -7,31 +7,31 @@ export class UserDto {
 		this.nickname = user.nickname;
 		this.role = user.role;
 		this.roomUUID = user.roomUUID;
-		this.video = user.video;
-		this.audio = user.audio;
+		this.video = JSON.parse(user.video);
+		this.audio = JSON.parse(user.video);
 	}
 
 	@IsString()
 	@IsNotEmpty()
-	private uuid: string;
+	uuid: string;
 
 	@IsString()
 	@IsNotEmpty()
-	private nickname: string;
+	nickname: string;
 
 	@IsString()
 	@IsNotEmpty()
-	private role: string;
+	role: string;
 
 	@IsString()
 	@IsNotEmpty()
 	roomUUID: string;
 
-	@IsNumber()
+	@IsBoolean()
 	@IsNotEmpty()
-	video: number;
+	video: boolean;
 
-	@IsNumber()
+	@IsBoolean()
 	@IsNotEmpty()
-	audio: number;
+	audio: boolean;
 }
