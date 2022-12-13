@@ -9,10 +9,14 @@ export interface StreamVideoPropType {
 	nickname: string;
 	width?: string;
 	height?: string;
-	muted?: boolean;
+	audio?: boolean;
+	isMyStream?: boolean;
 }
 
-const Video = ({ src, nickname, width, height, muted }: StreamVideoPropType, ref) => {
+const StreamVideo = (
+	{ src, nickname, width, height, audio, isMyStream }: StreamVideoPropType,
+	ref
+) => {
 	const videoRef = ref ? ref : useRef<HTMLVideoElement>(null);
 
 	useEffect(() => {
@@ -20,21 +24,17 @@ const Video = ({ src, nickname, width, height, muted }: StreamVideoPropType, ref
 
 		videoRef.current.srcObject = src;
 		videoRef.current.controls = false;
-
-		src.getAudioTracks().forEach((track) => {
-			track.enabled = !muted;
-		});
 	}, [src]);
 
 	return (
 		<div css={(theme) => streamVideoWrapperStyle(theme, width, height)}>
-			<video css={streamVideoStyle} ref={videoRef} autoPlay playsInline />
-			<span css={(theme) => nameTagStyle(theme, muted)}>
-				{muted ? <MicOffIcon /> : <MicOnIcon />}
+			<video css={streamVideoStyle} ref={videoRef} muted={isMyStream} autoPlay playsInline />
+			<span css={(theme) => nameTagStyle(theme, audio)}>
+				{audio ? <MicOnIcon /> : <MicOffIcon />}
 				<span>{nickname}</span>
 			</span>
 		</div>
 	);
 };
 
-export default forwardRef(Video);
+export default forwardRef(StreamVideo);

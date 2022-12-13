@@ -24,13 +24,13 @@ import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
 import useModal from '@hooks/useModal';
 import { useUserRole } from '@hooks/useUserRole';
-import useLeaveUser from '@hooks/useLeaveUser';
+import ussCommonSocketEvent from '@hooks/useCommonSocketEvent';
 
 const Lobby = () => {
 	usePreventLeave();
 	const { safeNavigate } = useSafeNavigate();
 	const { openModal } = useModal();
-	useLeaveUser();
+	ussCommonSocketEvent();
 
 	const [me, setMe] = useRecoilState<UserType>(meInRoomState);
 	const [others, setOthers] = useRecoilState<UserType[]>(othersInRoomState);
@@ -45,12 +45,12 @@ const Lobby = () => {
 
 	useEffect(() => {
 		socket.on(SOCKET_EVENT_TYPE.ENTER_USER, ({ user }) => {
-			setOthers((prevOthers) => [...prevOthers, user]);
+			//TODO BE 대응시 변경
+			setOthers((prevOthers) => [...prevOthers, { ...user, audio: false }]);
 		});
 
 		socket.on(SOCKET_EVENT_TYPE.JOIN_INTERVIEW, ({ user: interviewee }) => {
 			setUserRole(interviewee);
-
 			safeNavigate(PAGE_TYPE.INTERVIEWER_PAGE);
 		});
 
@@ -98,8 +98,14 @@ const Lobby = () => {
 		<div css={lobbyWrapperStyle}>
 			<div css={VideoAreaStyle}>
 				<VideoGrid>
-					{userInfoList.map(({ uuid, stream, nickname }) => (
-						<StreamVideo key={uuid} src={stream} nickname={nickname} muted />
+					{userInfoList.map(({ uuid, stream, nickname, audio }) => (
+						<StreamVideo
+							key={uuid}
+							src={stream}
+							nickname={nickname}
+							isMyStream={uuid === me.uuid}
+							audio={audio}
+						/>
 					))}
 				</VideoGrid>
 			</div>

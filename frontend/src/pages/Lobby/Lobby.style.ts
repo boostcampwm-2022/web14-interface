@@ -14,5 +14,5 @@ export const VideoAreaStyle = () => css`
 	padding: 24px;
 
 	width: 100%;
-	height: calc(100% - 72px);
+	height: calc(100% - 64px);
 `;
