@@ -4,7 +4,7 @@ import { WsException } from '@nestjs/websockets';
 import { User, userUUID } from '@types';
 import { Namespace, Socket } from 'socket.io';
 import { ROOM_REPOSITORY_INTERFACE } from '@constant';
-import { ChatRequestDto, ChatTarget } from 'src/room/dto/chat.dto';
+import { ChatRequestDto, ChatResponseDto, ChatTarget } from 'src/room/dto/chat.dto';
 import { RoomRepository } from 'src/room/repository/room.repository';
 
 @Injectable()
@@ -31,8 +31,9 @@ export class ChatService {
 			chatRequestDto,
 		});
 
+		const chatResponse = new ChatResponseDto(chatRequestDto);
 		targetIds.forEach((targetId: userUUID) => {
-			server.to(targetId).emit(EVENT.RECEIVE_MESSAGE);
+			server.to(targetId).emit(EVENT.RECEIVE_MESSAGE, { data: { chat: chatResponse } });
 		});
 
 		return {};
