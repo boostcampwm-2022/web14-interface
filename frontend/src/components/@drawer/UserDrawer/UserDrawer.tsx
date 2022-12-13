@@ -34,7 +34,7 @@ const UserDrawer = () => {
 					</div>
 				</div>
 				{others.map((other, i) => (
-					<div key={i}>
+					<div css={userItemStyle} key={i}>
 						<div>{other.nickname}</div>
 						<div>
 							<MicOnIcon {...iconSmStyle} />
