@@ -10,12 +10,13 @@ import {
 	WebSocketServer,
 } from '@nestjs/websockets';
 import { Namespace, Socket } from 'socket.io';
-import { Client } from 'socket.io/dist/client';
 import { SocketExceptionFilter } from 'src/filter/socket-exception.filter';
 import { SocketResponseInterceptor } from 'src/interceptor/socket-response.interceptor';
 import { setUserIdInClient } from 'util/rest-api.util';
+import { ChatRequestDto } from './dto/chat.dto';
 import { UpdateMediaDto } from './dto/update-media-info.dto';
 import { WebrtcAnswerDto, WebrtcIcecandidateDto, WebrtcOfferDto } from './dto/webrtc.dto';
+import { ChatService } from './service/chat/chat.service';
 import { ConnectionService } from './service/connection/connection.service';
 import { InterviewService } from './service/interview/interview.service';
 import { ObjectStorageService } from './service/objectstorage/objectstorage.service';
@@ -31,6 +32,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	constructor(
 		private readonly connectionService: ConnectionService,
 		private readonly interviewService: InterviewService,
+		private readonly chatService: ChatService,
 		private readonly webrtcService: WebrtcService,
 		private readonly objectStorageService: ObjectStorageService
 	) {}
@@ -101,6 +103,16 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage(EVENT.FINISH_STEAMING)
 	handleFinishStreaming(@ConnectedSocket() client: Socket, @MessageBody() docsUUID: string) {
 		return this.objectStorageService.uploadVideo({ client, docsUUID });
+	}
+
+	// chat
+
+	@SubscribeMessage(EVENT.SEND_MESSAGE)
+	handleReceiveMessage(
+		@ConnectedSocket() client: Socket,
+		@MessageBody() chatRequestDto: ChatRequestDto
+	) {
+		return this.chatService.handleChat({ client, server: this.server, chatRequestDto });
 	}
 
 	// webRTC
