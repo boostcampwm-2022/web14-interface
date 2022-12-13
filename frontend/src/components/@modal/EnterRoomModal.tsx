@@ -39,17 +39,20 @@ const EnterRoomModal = () => {
 				roomUUID
 			);
 
-			//TODO BE 대응 시 변경
-			const newOthers = others.map((user) => {
-				return { ...user, video: true, audio: false };
-			});
-			console.log('newOthers', newOthers);
-			setOthers(newOthers);
-			//TODO BE 대응 시 변경
-			setMe({ ...me, audio: false });
+			// //TODO BE 대응 시 변경
+			// const newOthers = others.map((user) => {
+			// 	return { ...user, video: true, audio: false };
+			// });
+			// console.log('newOthers', newOthers);
+			// setOthers(newOthers);
+			// //TODO BE 대응 시 변경
+			// setMe({ ...me, audio: false });
+
+			setRoom(roomUUID);
+			setOthers(others);
+			setMe(me);
 
 			closeModal();
-			setRoom(roomUUID);
 			safeNavigate(PAGE_TYPE.LOBBY_PAGE);
 		} catch (e) {
 			setErrorMsg(e.message);
