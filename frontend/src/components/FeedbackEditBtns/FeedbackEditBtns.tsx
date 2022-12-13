@@ -20,15 +20,15 @@ const FeedbackEditBtn = ({ id, readOnly }: Props) => {
 	return (
 		<div css={fbBtnContainer}>
 			{readOnly ? (
-				<Button color="black" size="small" style="text" onClick={handleStartEditFeedback}>
+				<Button color="secondary" size="xSmall" onClick={handleStartEditFeedback}>
 					<EditIcon />
 				</Button>
 			) : (
-				<Button size="small" style="text" onClick={handleEndEditFeedback}>
+				<Button size="xSmall" onClick={handleEndEditFeedback}>
 					<CheckIcon />
 				</Button>
 			)}
-			<Button color="red" size="small" style="text" onClick={handleDeleteFeedback}>
+			<Button color="red" size="xSmall" onClick={handleDeleteFeedback}>
 				<DeleteIcon />
 			</Button>
 		</div>
