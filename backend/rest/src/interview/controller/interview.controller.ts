@@ -17,8 +17,8 @@ import { DocsRequestDto } from '../dto/request-docs.dto';
 import { InterviewService } from '../service/interview.service';
 import { Request } from 'express';
 import { FeedbackRequestDto } from '../dto/request-feedback.dto';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { DocsGetRequestDto, DocsGetResponseDto } from '../dto/docs.dto';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { DocsGetResponseDto } from '../dto/docs.dto';
 import { DocsListResponseDto } from '../dto/docs-list.dto';
 
 @ApiTags('interview')
@@ -76,12 +76,8 @@ export class InterviewController {
 		status: HttpStatus.UNAUTHORIZED,
 		description: '인증 실패',
 	})
-	@ApiBody({
-		type: DocsGetRequestDto,
-	})
 	@Get('docs/:docsUUID')
-	async getInterviewDocs(@Param('docsUUID') docsRequestDto: DocsGetRequestDto) {
-		const { docsUUID } = docsRequestDto;
+	async getInterviewDocs(@Param('docsUUID') docsUUID: string) {
 		const interviewDocs = await this.interviewService.getInterviewDocs(docsUUID);
 
 		return interviewDocs;

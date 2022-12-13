@@ -46,9 +46,3 @@ export class UserFeedback {
 
 	feedbackList: feedbackBoxDto[];
 }
-
-export class DocsGetRequestDto {
-	@IsString()
-	@IsNotEmpty()
-	docsUUID: string;
-}
