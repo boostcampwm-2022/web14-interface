@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import ChatDrawer from '@components/@drawer/ChatDrawer/ChatDrawer';
 import UserDrawer from '@components/@drawer/UserDrawer/UserDrawer';
@@ -24,12 +24,9 @@ import {
 	drawerStyle,
 	drawerHeaderStyle,
 } from './BottomBar.style';
-import { iconBgStyle } from '@styles/commonStyle';
 import { socketEmit } from '@api/socket.api';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
-import useSafeNavigate from '@hooks/useSafeNavigate';
 import { PAGE_TYPE } from '@constants/page.constant';
-import useCleanupRoom from '@hooks/useCleanupRoom';
 import useModal from '@hooks/useModal';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { pageState } from '@store/page.store';
