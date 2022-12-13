@@ -1,4 +1,4 @@
-import { IsString, IsObject, IsNotEmpty, IsBoolean } from 'class-validator';
+import { IsString, IsObject, IsBoolean } from 'class-validator';
 
 export class SocketResponseDto {
 	constructor({ success = true, data = null, message = null }) {
