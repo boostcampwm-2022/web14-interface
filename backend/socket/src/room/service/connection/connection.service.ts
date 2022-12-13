@@ -49,15 +49,17 @@ export class ConnectionService {
 		if (exception) return exception;
 
 		const user = await this.createDefaultUser({ client, roomUUID });
-		const others = await this.roomRepository.getUsersInRoom(roomUUID);
+		const otherUsers = await this.roomRepository.getUsersInRoom(roomUUID);
 
 		client.join(roomUUID);
 		await this.roomRepository.saveUserInRoom(user);
 
-		const userDto = new UserDto(user);
-		client.to(roomUUID).emit(EVENT.ENTER_USER, { user: userDto });
+		const enterUser = new UserDto(user);
+		const others = otherUsers.map((other) => new UserDto(other));
 
-		return { data: { others, me: userDto } };
+		client.to(roomUUID).emit(EVENT.ENTER_USER, { user: enterUser });
+
+		return { data: { others, me: enterUser } };
 	}
 
 	/**
