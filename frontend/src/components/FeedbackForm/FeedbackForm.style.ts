@@ -1,24 +1,33 @@
+import { fbStartTimeStyle } from '@components/FeedbackItem/FeedbackItem.style';
 import { css } from '@emotion/react';
+import { flexRow } from '@styles/globalStyle';
 
-export const fbFormWrapperStyle = (theme) => css`
+export const fbFormWrapperStyle = () => css`
+	${flexRow({ gap: '8px', justifyContent: 'unset', alignItems: 'flex-start' })};
 	width: 100%;
-	display: flex;
-	gap: 10px;
 `;
 
 export const fbFormStyle = css`
 	width: 100%;
 `;
 
+export const fbInputWrapperStyle = (theme) => css`
+	width: calc(100% - 32px - 68px);
+	height: 96px;
+	background-color: ${theme.colors.secondary};
+	padding: 16px;
+
+	border: none;
+	border-radius: ${theme.borderRadius};
+`;
+
 export const fbInputStyle = (theme) => css`
 	width: 100%;
-	height: 120px;
-	border-radius: 5px;
-	border: none;
-	background-color: ${theme.colors.secondary};
-	padding: 15px;
-	box-sizing: border-box;
+	height: 100%;
+	background: rgba(0, 0, 0, 0);
 
+	border: none;
+	border-radius: ${theme.borderRadius};
 	outline: none;
 
 	-ms-overflow-style: none; /* IE and Edge */
@@ -29,13 +38,6 @@ export const fbInputStyle = (theme) => css`
 	}
 `;
 
-export const fbStartTimeStyle = (theme) => css`
-	width: 45px;
-	height: 15px;
-	font-size: 12px;
-	border-radius: 2px;
-	line-height: 15px;
-	text-align: center;
-
-	background-color: ${theme.colors.secondary};
+export const fbFormStartTimeStyle = (theme) => css`
+	${fbStartTimeStyle(theme, true)};
 `;
