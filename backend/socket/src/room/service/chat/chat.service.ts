@@ -23,11 +23,8 @@ export class ChatService {
 		server: Namespace;
 		chatRequestDto: ChatRequestDto;
 	}) {
-		const user = await this.roomRepository.getUserByClientId(client.id);
-		const users = await this.roomRepository.getUsersInRoom(user.roomUUID);
-
-		const targetIds: userUUID[] = this.getChatTargetIds({
-			others: users.filter((member) => user.uuid !== member.uuid),
+		const targetIds: userUUID[] = await this.getChatTargetIds({
+			client,
 			chatRequestDto,
 		});
 
@@ -39,25 +36,32 @@ export class ChatService {
 		return {};
 	}
 
-	getChatTargetIds({
-		others,
+	async getChatTargetIds({
+		client,
 		chatRequestDto,
 	}: {
-		others: User[];
+		client: Socket;
 		chatRequestDto: ChatRequestDto;
 	}) {
 		const { target, role, uuid } = chatRequestDto;
 
+		const sender = await this.roomRepository.getUserByClientId(client.id);
+		const users = await this.roomRepository.getUsersInRoom(sender.roomUUID);
+		const others = users.filter((member) => sender.uuid !== member.uuid);
+
 		switch (target) {
 			case ChatTarget.EVERYONE:
-				return others.map((user) => user.uuid);
+				return others.map((user) => user.clientId);
 			case ChatTarget.ROLE:
 				if (role) {
-					return others.filter((other) => other.role === role).map((user) => user.uuid);
+					return others
+						.filter((other) => other.role === role)
+						.map((user) => user.clientId);
 				}
 			case ChatTarget.DRIECT:
 				if (uuid) {
-					return [uuid];
+					const target = await this.roomRepository.getUserByUserId(uuid);
+					return [target.clientId];
 				}
 			default:
 				throw new WsException(EXCEPTION_MESSAGE.INVALID_CHAT_DATA);
