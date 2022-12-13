@@ -25,7 +25,7 @@ export class InterviewService {
 		userId: string;
 		docsRequestDto: DocsRequestDto;
 	}): Promise<string> {
-		const objectStorageUrl = this.configService.get(OBJECT_STORAGE_ENDPOINT);
+		const objectStorageUrl = OBJECT_STORAGE_ENDPOINT;
 		const docsUUID = docsRequestDto.docsUUID;
 		const videoUrl = [objectStorageUrl, userId, docsUUID].join('/');
 
