@@ -9,9 +9,18 @@ export const docsListQuery = selectorFamily<DocsItemDtoType[], string>({
 	get: (roomUUID) => async () => {
 		try {
 			const params = { 'room-uuid': roomUUID };
-			const res = await axios.get(REST_TYPE.INTERVIEW_DOCS_LIST, { params });
+			const {
+				status,
+				data: { data: DocsItemDtoList },
+			} = await axios.get(REST_TYPE.INTERVIEW_DOCS_LIST, { params });
 
-			if (res.status === SC_TYPE.OK) return res.data.data;
+			if (status === SC_TYPE.OK)
+				return DocsItemDtoList.map((DocsItemDtoItem) => {
+					return {
+						...DocsItemDtoItem,
+						createdAt: new Date(DocsItemDtoItem.createdAt).toLocaleString(),
+					};
+				});
 		} catch (e) {
 			console.log(e);
 		}
@@ -22,9 +31,16 @@ export const docsItemQuery = selectorFamily<DocsResDtoType, string>({
 	key: 'docsItemQuery',
 	get: (docsUUID) => async () => {
 		try {
-			const res = await axios.get(REST_TYPE.INTERVIEW_DOCS + `/${docsUUID}`);
+			const {
+				status,
+				data: { data: DocsDetail },
+			} = await axios.get(REST_TYPE.INTERVIEW_DOCS + `/${docsUUID}`);
 
-			if (res.status === SC_TYPE.OK) return res.data.data;
+			if (status === SC_TYPE.OK)
+				return {
+					...DocsDetail,
+					createdAt: new Date(DocsDetail.createdAt).toLocaleString(),
+				};
 		} catch (e) {
 			console.log(e);
 		}
