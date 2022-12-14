@@ -59,6 +59,4 @@ jobs:
             -e JWT_REFRESH_TOKEN_SECRET=${{ secrets.JWT_REFRESH_TOKEN_SECRET }} \
             -e NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }} \
             -e KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }} \
-            -e CLIENT_ORIGIN_URL=${{ secrets.CLIENT_ORIGIN_URL }} \
-            -e SWAGGER_USER=${{ secrets.SWAGGER_USER }} \
-            -e SWAGGER_PASSWORD=${{ secrets.SWAGGER_PASSWORD }}
+            -e CLIENT_ORIGIN_URL=${{ secrets.CLIENT_ORIGIN_URL }}
