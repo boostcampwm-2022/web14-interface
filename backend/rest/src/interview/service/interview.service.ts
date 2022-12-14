@@ -80,6 +80,7 @@ export class InterviewService {
 			docsUUID: docs.id,
 			createdAt: docs.createdAt,
 			videoPlayTime: docs.videoPlayTime,
+			videoUrl: docs.videoUrl,
 			feedbacks: this.parseFeedbackByUserId(docs.feedbackList),
 		};
 
