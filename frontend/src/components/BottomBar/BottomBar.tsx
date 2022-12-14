@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import ChatDrawer from '@components/@drawer/ChatDrawer/ChatDrawer';
 import UserDrawer from '@components/@drawer/UserDrawer/UserDrawer';
-import RecordDrawer from '@components/@drawer/RecordDrawer/RecordDrawer';
 
 import { ReactComponent as UserIcon } from '@assets/icon/user.svg';
 import { ReactComponent as MicOnIcon } from '@assets/icon/mic_on.svg';
@@ -24,12 +23,7 @@ import {
 	drawerStyle,
 	drawerHeaderStyle,
 } from './BottomBar.style';
-import { iconBgStyle } from '@styles/commonStyle';
-import { socketEmit } from '@api/socket.api';
-import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
-import useSafeNavigate from '@hooks/useSafeNavigate';
 import { PAGE_TYPE } from '@constants/page.constant';
-import useCleanupRoom from '@hooks/useCleanupRoom';
 import useModal from '@hooks/useModal';
 import { useRecoilValue } from 'recoil';
 import { pageState } from '@store/page.store';
@@ -44,7 +38,6 @@ interface Props {
 enum DRAWER_TYPE {
 	CHAT_DRAWER = 'Chat',
 	USER_DRAWER = 'User',
-	RECORD_DRAWER = 'Record',
 }
 
 const BottomBar = ({ mainController }: Props) => {
@@ -97,8 +90,6 @@ const BottomBar = ({ mainController }: Props) => {
 				return <ChatDrawer />;
 			case DRAWER_TYPE.USER_DRAWER:
 				return <UserDrawer />;
-			case DRAWER_TYPE.RECORD_DRAWER:
-				return <RecordDrawer />;
 		}
 	};
 
@@ -149,7 +140,9 @@ const BottomBar = ({ mainController }: Props) => {
 					<BottomBarButtom onClick={() => handleToggleDrawer(DRAWER_TYPE.USER_DRAWER)}>
 						<UsersIcon />
 					</BottomBarButtom>
-					<BottomBarButtom onClick={() => handleToggleDrawer(DRAWER_TYPE.RECORD_DRAWER)}>
+					<BottomBarButtom
+						onClick={() => openModal('InterviewDocsModal', { roomUUID: me.roomUUID })}
+					>
 						<FolderIcon />
 					</BottomBarButtom>
 					<div css={horzLineStyle} />
