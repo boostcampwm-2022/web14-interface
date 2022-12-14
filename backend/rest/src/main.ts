@@ -13,6 +13,7 @@ async function bootstrap() {
 	app.use(cookieParser());
 	app.useGlobalInterceptors(new RestInterceptor());
 	app.useGlobalFilters(new HttpExceptionFilter());
+
 	setupSwagger(app);
 
 	await app.listen(8080);

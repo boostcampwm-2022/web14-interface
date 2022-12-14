@@ -62,7 +62,7 @@ export class ObjectStorageService {
 	}
 
 	/**
-	 *
+	 * 1시간이 경과하면 false를 반환합니다.
 	 * @returns
 	 */
 	handleRunningTimeOver(client: Socket) {
