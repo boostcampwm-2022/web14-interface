@@ -17,5 +17,8 @@ export const envConfig: ConfigModuleOptions = {
 		NAVER_CLIENT_SECRET: Joi.string().required(),
 		KAKAO_CLIENT_SECRET: Joi.string().required(),
 		CLIENT_ORIGIN_URL: Joi.string().required(),
+
+		SWAGGER_USER: Joi.string().required(),
+		SWAGGER_PASSWORD: Joi.string().required(),
 	}),
 };
