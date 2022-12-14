@@ -32,7 +32,6 @@ export const mainStyle = (theme) => css`
 
 	padding: 24px;
 
-	//TODO 화면 줄어들 경우 밑에 안 채워지는 문제 수정
 	background: linear-gradient(
 		to bottom,
 		${theme.colors.white} 0%,

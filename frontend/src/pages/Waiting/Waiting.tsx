@@ -12,7 +12,7 @@ import { waitingWrapperStyle } from './Waiting.style';
 import useCleanupInterview from '@hooks/useCleanupInterview';
 import { othersInRoomState } from '@store/user.store';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
-import useLeaveUser from '@hooks/useLeaveUser';
+import ussCommonSocketEvent from '@hooks/useCommonSocketEvent';
 
 import Tetris from 'react-tetris';
 import './Tetris.style.css';
@@ -22,7 +22,7 @@ import Button from '@components/@shared/Button/Button';
 
 const Waiting = () => {
 	usePreventLeave();
-	useLeaveUser();
+	ussCommonSocketEvent();
 
 	const cleanupInterview = useCleanupInterview();
 	const { safeNavigate } = useSafeNavigate();

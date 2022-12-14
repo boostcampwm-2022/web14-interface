@@ -49,15 +49,17 @@ export class ConnectionService {
 		if (exception) return exception;
 
 		const user = await this.createDefaultUser({ client, roomUUID });
-		const others = await this.roomRepository.getUsersInRoom(roomUUID);
+		const otherUsers = await this.roomRepository.getUsersInRoom(roomUUID);
 
 		client.join(roomUUID);
 		await this.roomRepository.saveUserInRoom(user);
 
-		const userDto = new UserDto(user);
-		client.to(roomUUID).emit(EVENT.ENTER_USER, { user: userDto });
+		const enterUser = new UserDto(user);
+		const others = otherUsers.map((other) => new UserDto(other));
 
-		return { data: { others, me: userDto } };
+		client.to(roomUUID).emit(EVENT.ENTER_USER, { user: enterUser });
+
+		return { data: { others, me: enterUser } };
 	}
 
 	/**
@@ -74,7 +76,7 @@ export class ConnectionService {
 	 * @returns
 	 */
 	async isEnterableRoom(room: Room) {
-		if (room === undefined) {
+		if (!room) {
 			return { success: false, message: SOCKET_MESSAGE.NO_ROOM };
 		}
 
@@ -121,7 +123,8 @@ export class ConnectionService {
 		await this.roomRepository.removeUser(user);
 
 		const usersInRoom = await this.roomRepository.getUsersInRoom(roomUUID);
-		if (!usersInRoom) {
+
+		if (!usersInRoom?.length) {
 			await this.roomRepository.deleteRoom(roomUUID);
 		}
 
@@ -180,8 +183,8 @@ export class ConnectionService {
 			roomUUID,
 			clientId: client.id,
 			authId: client.data.authId,
-			video: true,
-			audio: false,
+			video: 1,
+			audio: 0,
 		};
 	}
 }

@@ -1,90 +1,103 @@
-import React, { useState } from 'react';
-import Modal from '@components/@shared/Modal/Modal';
-import { useRecoilValue } from 'recoil';
-import { docsItemQuery } from '@store/interviewDocs.store';
+import React, { useState, Suspense } from 'react';
 import Button from '@components/@shared/Button/Button';
-import Video from '@components/@shared/Video/Video';
-import FeedbackList from '@components/FeedbackList/FeedbackList';
-import { getFirstLabeledFbList } from '@utils/common.util';
+import useModal from '@hooks/useModal';
+import InterviewDocsList from '@components/InterviewDocsList/InterviewDocsList';
+import InterviewDocsDetail from '@components/InterviewDocsDetail/InterviewDocsDetail';
+import { ReactComponent as BackIcon } from '@assets/icon/back.svg';
+import { ReactComponent as DownloadIcon } from '@assets/icon/download.svg';
+import { ReactComponent as LinkIcon } from '@assets/icon/link.svg';
+import { ReactComponent as SyncDotLine } from '@assets/sync_dot_line.svg';
+import { isFbSyncState } from '@store/feedback.store';
+import RoundButton from '@components/@shared/RoundButton/RoundButton';
+import { useRecoilState } from 'recoil';
 import {
-	docsItemBodyStyle,
-	docsItemBtnsStyle,
-	docsItemFbAreaStyle,
-	docsItemFbBtnsStyle,
-	docsItemHeaderStyle,
-	docsItemWrapperStyle,
-	docsItemVideoAreaStyle,
-	docsItemVideoInfoStyle,
-	docsItemFbListStyle,
+	docsModalContentStyle,
+	docsModalHeaderStyle,
+	docsModalWrapperStyle,
+	modalSyncButtonAreaStyle,
+	modalSyncDotLineStyle,
 } from './InterviewDocsModal.style';
+import { flexRow } from '@styles/globalStyle';
 
-interface Props {
+export interface DocsInfoType {
 	docsUUID: string;
 	idx: number;
 }
 
-const InterviewDocsModal = ({ docsUUID, idx }: Props) => {
-	const docsItem = useRecoilValue(docsItemQuery(docsUUID));
-	const { createdAt, videoPlayTime, feedbacks } = docsItem;
-	const createdAtDate = new Date(createdAt);
-	const [docIdx, setDocIdx] = useState(0);
+interface InterviewDocsModalPropType {
+	roomUUID: string;
+}
 
-	const handleChangeDocIdx = (idx) => {
-		setDocIdx(idx);
+const InterviewDocsModal = ({ roomUUID = '' }: InterviewDocsModalPropType) => {
+	const { closeModal } = useModal();
+	const [section, setSection] = useState('list');
+	const [docsInfo, setDocsInfo] = useState<DocsInfoType | null>(null);
+	const [isFbSync, setIsFbSync] = useRecoilState(isFbSyncState);
+
+	const handleSection = () => {
+		setSection(section === 'list' ? 'detail' : 'list');
+		if (section === 'detail') setDocsInfo(null);
+	};
+
+	const handleClickDocsItem = (docsInfo: DocsInfoType) => {
+		setDocsInfo(docsInfo);
+		handleSection();
 	};
 
 	return (
-		<Modal>
-			<div css={docsItemWrapperStyle}>
-				<div css={docsItemHeaderStyle}>
-					<div>#{idx}</div>
-					<div>Sync</div>
-					<div css={docsItemBtnsStyle}>
-						<Button size="small">다운로드</Button>
-						<Button size="small">닫기</Button>
-					</div>
+		<div css={(theme) => docsModalWrapperStyle(theme, section)}>
+			<div css={docsModalHeaderStyle}>
+				<div css={flexRow({ gap: '8px' })}>
+					{section === 'list' ? (
+						<span>인터뷰 기록</span>
+					) : (
+						<>
+							<Button
+								size="small"
+								color="secondary"
+								style="text"
+								onClick={handleSection}
+							>
+								<BackIcon />
+							</Button>
+							<span>#{docsInfo?.idx}</span>
+						</>
+					)}
 				</div>
-				<div css={docsItemBodyStyle}>
-					<div css={docsItemVideoAreaStyle}>
-						<Video width={'100px'} src="" />
-						<div css={docsItemVideoInfoStyle}>
-							<div>
-								<div>일시</div>
-								<div>{createdAtDate.toLocaleDateString()}</div>
-							</div>
-							<div>
-								<div>면접 시간</div>
-								<div>{videoPlayTime}</div>
-							</div>
-							<div>
-								<div>면접자</div>
-								<div>dummyUUID</div>
-							</div>
-						</div>
+				{section !== 'list' && (
+					<div css={modalSyncButtonAreaStyle}>
+						<SyncDotLine css={modalSyncDotLineStyle} />
+						<RoundButton
+							style={{
+								width: 40,
+								size: 'small',
+								color: isFbSync ? 'primary' : 'secondary',
+							}}
+							onClick={() => setIsFbSync((current) => !current)}
+						>
+							<LinkIcon />
+						</RoundButton>
+						<SyncDotLine css={modalSyncDotLineStyle} />
 					</div>
-					<div css={docsItemFbAreaStyle}>
-						<div css={docsItemFbBtnsStyle}>
-							{feedbacks.map((fb, i) => (
-								<Button size="small" key={i} onClick={() => handleChangeDocIdx(i)}>
-									{fb.nickname}
-								</Button>
-							))}
-						</div>
-						<div css={docsItemFbListStyle}>
-							{feedbacks[docIdx] ? (
-								<FeedbackList
-									feedbackList={getFirstLabeledFbList(
-										feedbacks[docIdx].feedbackList
-									)}
-								/>
-							) : (
-								<div>작성된 피드백이 없습니다.</div>
-							)}
-						</div>
-					</div>
+				)}
+				<div css={flexRow({ gap: '8px' })}>
+					{section !== 'list' && (
+						<Button size="small" color="secondary">
+							<DownloadIcon /> 다운로드
+						</Button>
+					)}
+					<Button size="small" color="red" onClick={closeModal}>
+						닫기
+					</Button>
 				</div>
 			</div>
-		</Modal>
+			<div css={docsModalContentStyle(section)}>
+				<InterviewDocsList roomUUID={roomUUID} handleClickDocsItem={handleClickDocsItem} />
+				<Suspense fallback={<>spinner...</>}>
+					{docsInfo && <InterviewDocsDetail docsUUID={docsInfo?.docsUUID} />}
+				</Suspense>
+			</div>
+		</div>
 	);
 };
 

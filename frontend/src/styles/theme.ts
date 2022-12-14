@@ -1,6 +1,6 @@
 const theme = {
 	colors: {
-		red: '#f45452',
+		red: '#F45452',
 		primary: '#0090DD',
 		secondary: '#DCEEFF',
 		tertiary: '#222B5C',
@@ -15,6 +15,7 @@ const theme = {
 		small: '16px',
 		medium: '20px',
 		large: '24px',
+		xLarge: '28px',
 	},
 	borderRadius: '8px',
 	bottomBarHeight: '64px',

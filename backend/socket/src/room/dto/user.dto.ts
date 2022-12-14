@@ -1,5 +1,5 @@
 import { User } from '@types';
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class UserDto {
 	constructor(user: User) {
@@ -27,11 +27,11 @@ export class UserDto {
 	@IsNotEmpty()
 	roomUUID: string;
 
-	@IsBoolean()
+	@IsNumber()
 	@IsNotEmpty()
-	video: boolean;
+	video: number;
 
-	@IsBoolean()
+	@IsNumber()
 	@IsNotEmpty()
-	audio: boolean;
+	audio: number;
 }

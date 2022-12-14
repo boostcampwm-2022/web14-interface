@@ -5,27 +5,31 @@ import useEditFeedback from '@hooks/useEditFeedback';
 import { isFbClickedState, isFbSyncState } from '@store/feedback.store';
 import { currentVideoTimeState } from '@store/currentVideoTime.store';
 
-import { feedbackBoxStyle, fbTextAreaStyle, fbStartTimeStyle } from './FeedbackItem.style';
+import {
+	fbStartTimeStyle,
+	feedbackBoxStyle,
+	feedbackContentStyle,
+	feedbackContentAreaStyle,
+} from './FeedbackItem.style';
 
 import { FeedbackItemType } from '@customType/feedback';
 import { mmssFormatter } from '@utils/common.util';
 import { ONE_SECOND } from '@constants/time.constant';
 
-export interface Props {
+export interface FeedbackItemPropType {
 	feedback: FeedbackItemType;
-	//TODO ref type any
-	feedbackRef: React.MutableRefObject<any[]>;
+	feedbackRef: React.MutableRefObject<HTMLDivElement[]>;
 	index: number;
 	editableBtns: React.ReactNode;
 }
-const FeedbackItem = ({ feedback, feedbackRef, index, editableBtns }: Props) => {
-	const textareaRef = useRef<HTMLTextAreaElement>(null);
+const FeedbackItem = ({ feedback, feedbackRef, index, editableBtns }: FeedbackItemPropType) => {
 	const isFbSync = useRecoilValue(isFbSyncState);
 	const setIsFbClicked = useSetRecoilState(isFbClickedState);
 	const setCurrentVideoTime = useSetRecoilState(currentVideoTimeState);
 	const { handleFbChange } = useEditFeedback(feedback.id);
 
 	const { startTime, isFirst, content, readOnly } = feedback;
+	const editable = readOnly !== undefined ? (readOnly === true ? false : true) : false;
 
 	const handleClickFeedback = () => {
 		if (!isFbSync) return;
@@ -33,22 +37,25 @@ const FeedbackItem = ({ feedback, feedbackRef, index, editableBtns }: Props) => 
 		setCurrentVideoTime(startTime);
 	};
 
-	if (feedbackRef)
-		feedbackRef.current[index].style.height = textareaRef.current.scrollHeight + 'px';
-
 	return (
-		<div ref={(el) => (feedbackRef.current[index] = el)} css={feedbackBoxStyle}>
-			<div css={fbStartTimeStyle} style={{ visibility: isFirst ? 'visible' : 'hidden' }}>
+		<div
+			ref={(el) => (feedbackRef.current[index] = el)}
+			css={(theme) => feedbackBoxStyle(theme, editable)}
+		>
+			<div
+				css={(theme) => fbStartTimeStyle(theme, editable)}
+				style={{ visibility: isFirst ? 'visible' : 'hidden' }}
+			>
 				{mmssFormatter(startTime * ONE_SECOND)}
 			</div>
-			<textarea
-				ref={textareaRef}
-				value={content}
-				onChange={(e) => handleFbChange(e.target.value)}
-				readOnly={readOnly}
+			<div
+				css={(theme) => feedbackContentAreaStyle(theme, editable)}
 				onClick={handleClickFeedback}
-				css={fbTextAreaStyle}
-			/>
+			>
+				<div css={feedbackContentStyle} contentEditable={editable}>
+					{content}
+				</div>
+			</div>
 			{editableBtns}
 		</div>
 	);

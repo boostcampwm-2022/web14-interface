@@ -13,5 +13,5 @@ export const intervieweeWrapperStyle = (theme) => css`
 export const VideoListAreaStyle = () => css`
 	${flexRow({ gap: '20px', justifyContent: 'center' })};
 	width: 100%;
-	height: 24%;
+	height: 33%;
 `;

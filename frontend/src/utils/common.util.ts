@@ -1,6 +1,15 @@
 import { ONE_MINUTE, ONE_SECOND } from '@constants/time.constant';
 import { EditableFeedbackType, FeedbackItemType, FeedbackType } from '@customType/feedback';
 
+export const secMMSSFormatter = (totalSec: number) => {
+	const min = Math.floor(totalSec / 60)
+		.toString()
+		.padStart(2, '0');
+	const sec = (totalSec % 60).toString().padStart(2, '0');
+
+	return `${min}:${sec}`;
+};
+
 export const mmssFormatter = (ms: number) => {
 	const mm = paddingFormatter(ms / ONE_MINUTE);
 	ms %= ONE_MINUTE;

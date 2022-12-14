@@ -6,7 +6,6 @@ export const docsItemWrapper = (theme, style) =>
 		flex-direction: column;
 		justify-content: space-between;
 		padding: 15px;
-		margin: 20px 0px;
 		width: 100%;
 		gap: 40px;
 		cursor: pointer;
@@ -15,6 +14,10 @@ export const docsItemWrapper = (theme, style) =>
 		div {
 			display: flex;
 			justify-content: space-between;
+		}
+
+		&:hover {
+			background-color: ${theme.colors.primary + '11'};
 		}
 	`;
 
