@@ -25,11 +25,12 @@ import {
 } from './BottomBar.style';
 import { PAGE_TYPE } from '@constants/page.constant';
 import useModal from '@hooks/useModal';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { pageState } from '@store/page.store';
 import BottomBarButtom from '@components/@shared/BottomBarButton/BottomBarButton';
 import Button from '@components/@shared/Button/Button';
 import { meInRoomState, userInfoSelector } from '@store/user.store';
+import { MEDIA_ACTIVE_TYPE } from '@constants/media.constant';
 
 interface Props {
 	mainController?: React.ReactNode;
@@ -43,7 +44,7 @@ enum DRAWER_TYPE {
 const BottomBar = ({ mainController }: Props) => {
 	const { openModal } = useModal();
 	const page = useRecoilValue(pageState);
-	const me = useRecoilValue(meInRoomState);
+	const [me, setMe] = useRecoilState(meInRoomState);
 	const userInfo = useRecoilValue(userInfoSelector);
 
 	const myStream = userInfo.find((user) => user.uuid === me.uuid);
@@ -96,18 +97,22 @@ const BottomBar = ({ mainController }: Props) => {
 	const handleMic = () => {
 		myStream.stream.getAudioTracks().forEach((track) => {
 			track.enabled = !isMicOn;
-			console.log(track.enabled);
+			console.log('오디오', track.enabled);
 		});
 
+		socketEmit(SOCKET_EVENT_TYPE.UPDATE_MEDIA_INFO, { audio: !isMicOn });
+		setMe({ ...me, audio: !isMicOn });
 		setIsMicOn((current) => !current);
 	};
 
 	const handleCamera = () => {
 		myStream.stream.getVideoTracks().forEach((track) => {
 			track.enabled = !isCameraOn;
-			console.log(track.enabled);
+			console.log('비디오', track.enabled);
 		});
 
+		socketEmit(SOCKET_EVENT_TYPE.UPDATE_MEDIA_INFO, { video: !isCameraOn });
+		setMe({ ...me, video: !isCameraOn });
 		setIsCameraOn((current) => !current);
 	};
 
@@ -163,7 +168,7 @@ const BottomBar = ({ mainController }: Props) => {
 						<CloseIcon />
 					</Button>
 				</div>
-				<div>{drawerContentsSwitch()}</div>
+				{drawerContentsSwitch()}
 			</aside>
 		</>
 	);

@@ -6,15 +6,15 @@ const usePreventLeave = () => {
 		e.returnValue = '';
 	};
 
-	useEffect(() => {
-		(() => {
-			window.addEventListener('beforeunload', preventClose);
-		})();
+	// useEffect(() => {
+	// 	(() => {
+	// 		window.addEventListener('beforeunload', preventClose);
+	// 	})();
 
-		return () => {
-			window.removeEventListener('beforeunload', preventClose);
-		};
-	}, []);
+	// 	return () => {
+	// 		window.removeEventListener('beforeunload', preventClose);
+	// 	};
+	// }, []);
 
 	const preventGoBack = () => {
 		history.pushState(null, '', location.href);

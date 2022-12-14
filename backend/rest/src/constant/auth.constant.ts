@@ -1,3 +1,4 @@
+import { CookieOptions } from 'express';
 import { JWT_ACCESS_TOKEN_SECRET, JWT_REFRESH_TOKEN_SECRET } from './env.constant';
 
 export const USER_REPOSITORY_INTERFACE = 'UserRepository';
@@ -44,7 +45,8 @@ export const refreshTokenOptions = {
 	expirationTime: JWT_REFRESH_TOKEN_EXPIRATION_TIME,
 };
 
-export const tokenCookieOptions = {
+export const tokenCookieOptions: CookieOptions = {
 	httpOnly: true,
 	maxAge: MAX_AGE,
+	secure: true,
 } as const;

@@ -12,7 +12,7 @@ export const streamVideoStyle = () => css`
 	transform: rotateY(180deg);
 `;
 
-export const nameTagStyle = (theme, muted) => css`
+export const nameTagStyle = (theme, audio) => css`
 	display: flex;
 	align-items: center;
 	gap: 8px;
@@ -34,6 +34,6 @@ export const nameTagStyle = (theme, muted) => css`
 	svg {
 		width: 16px;
 		height: 16px;
-		fill: ${muted ? theme.colors.red : theme.colors.white};
+		fill: ${audio ? theme.colors.white : theme.colors.red};
 	}
 `;
