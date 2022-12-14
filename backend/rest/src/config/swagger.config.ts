@@ -16,6 +16,15 @@ const swaggerConfig = new DocumentBuilder()
 	.build();
 
 export function setupSwagger(app: INestApplication) {
+	app.use(
+	['/docs/api'],
+	expressBasicAuth({
+		challenge: true,
+		users: {
+			[process.env.SWAGGER_USER]: process.env.SWAGGER_PASSWORD,
+		},
+	    })
+	);
 	const document = SwaggerModule.createDocument(app, swaggerConfig);
 	SwaggerModule.setup('docs/api', app, document);
 }
