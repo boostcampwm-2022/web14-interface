@@ -1,4 +1,9 @@
-import { HTTP_ERROR_MSG, INTERVIEW_REPOSITORY_INTERFACE, OBJECT_STORAGE_ENDPOINT } from '@constant';
+import {
+	HTTP_ERROR_MSG,
+	INTERVIEW_REPOSITORY_INTERFACE,
+	OBJECT_STORAGE_BUCKET,
+	OBJECT_STORAGE_ENDPOINT,
+} from '@constant';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocsRequestDto } from '../dto/request-docs.dto';
@@ -32,7 +37,9 @@ export class InterviewService {
 		docsRequestDto: DocsRequestDto;
 	}): Promise<string> {
 		const docsUUID = docsRequestDto.docsUUID;
-		const videoUrl = [OBJECT_STORAGE_ENDPOINT, userId, docsUUID].join('/');
+		const videoUrl = [OBJECT_STORAGE_ENDPOINT, OBJECT_STORAGE_BUCKET, userId, docsUUID].join(
+			'/'
+		);
 
 		await this.interviewRepository.saveInterviewDocs({
 			userId,
