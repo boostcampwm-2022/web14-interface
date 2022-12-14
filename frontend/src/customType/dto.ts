@@ -34,6 +34,5 @@ export interface DocsItemDtoType {
 
 export interface FeedbackDtoType {
 	docsUUID: string;
-	userUUID: string;
 	feedbackList: FeedbackType[];
 }
