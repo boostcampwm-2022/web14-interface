@@ -61,4 +61,4 @@ jobs:
             -e KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }} \
             -e CLIENT_ORIGIN_URL=${{ secrets.CLIENT_ORIGIN_URL }} \
             -e SWAGGER_USER=${{ secrets.SWAGGER_USER }} \
-            -e SWAGGER_PASSWORD=${{ secrets.SWAGGER_PASSWORD }} \
+            -e SWAGGER_PASSWORD=${{ secrets.SWAGGER_PASSWORD }}
