@@ -1,5 +1,5 @@
 import { EVENT } from '@constant';
-import { Logger, UseFilters, UseInterceptors } from '@nestjs/common';
+import { Logger, UseFilters, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import {
 	ConnectedSocket,
 	MessageBody,
@@ -10,6 +10,7 @@ import {
 	WebSocketServer,
 } from '@nestjs/websockets';
 import { Namespace, Socket } from 'socket.io';
+import { pipeOptions } from 'src/config/pipe.config';
 import { SocketExceptionFilter } from 'src/filter/socket-exception.filter';
 import { SocketResponseInterceptor } from 'src/interceptor/socket-response.interceptor';
 import { setUserIdInClient } from 'util/rest-api.util';
@@ -22,6 +23,7 @@ import { InterviewService } from './service/interview/interview.service';
 import { ObjectStorageService } from './service/objectstorage/objectstorage.service';
 import { WebrtcService } from './service/webRTC/webrtc.service';
 
+@UsePipes(new ValidationPipe(pipeOptions))
 @UseInterceptors(new SocketResponseInterceptor())
 @UseFilters(new SocketExceptionFilter())
 @WebSocketGateway({ namespace: 'socket' })
@@ -55,7 +57,10 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage(EVENT.UPDATE_MEDIA_INFO)
-	handleUpdateMediaInfo(@ConnectedSocket() client: Socket, updateMediaDto: UpdateMediaDto) {
+	handleUpdateMediaInfo(
+		@ConnectedSocket() client: Socket,
+		@MessageBody() updateMediaDto: UpdateMediaDto
+	) {
 		return this.connectionService.updateUserMediaInfo({ client, updateMediaDto });
 	}
 

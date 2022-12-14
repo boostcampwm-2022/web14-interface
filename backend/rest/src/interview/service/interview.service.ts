@@ -15,8 +15,7 @@ import { DocsListResponseDto } from '../dto/docs-list.dto';
 export class InterviewService {
 	constructor(
 		@Inject(INTERVIEW_REPOSITORY_INTERFACE)
-		private readonly interviewRepository: InterviewRepository<InterviewDocs<Feedback>>,
-		private readonly configService: ConfigService
+		private readonly interviewRepository: InterviewRepository<InterviewDocs<Feedback>>
 	) {}
 
 	/**
@@ -32,9 +31,8 @@ export class InterviewService {
 		userId: string;
 		docsRequestDto: DocsRequestDto;
 	}): Promise<string> {
-		const objectStorageUrl = OBJECT_STORAGE_ENDPOINT;
 		const docsUUID = docsRequestDto.docsUUID;
-		const videoUrl = [objectStorageUrl, userId, docsUUID].join('/');
+		const videoUrl = [OBJECT_STORAGE_ENDPOINT, userId, docsUUID].join('/');
 
 		await this.interviewRepository.saveInterviewDocs({
 			userId,

@@ -66,6 +66,7 @@ export class TypeormInterviewRepository implements InterviewRepository<TypeormIn
 		const interviewDocsList = await this.interviewDocsRepository.find({
 			select: { createdAt: true, videoPlayTime: true, id: true },
 			where: whereCondition,
+			order: { createdAt: 'DESC' },
 		});
 		return interviewDocsList;
 	}
