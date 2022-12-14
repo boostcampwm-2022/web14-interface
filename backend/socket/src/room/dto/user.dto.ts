@@ -8,7 +8,7 @@ export class UserDto {
 		this.role = user.role;
 		this.roomUUID = user.roomUUID;
 		this.video = JSON.parse(user.video);
-		this.audio = JSON.parse(user.video);
+		this.audio = JSON.parse(user.audio);
 	}
 
 	@IsString()
