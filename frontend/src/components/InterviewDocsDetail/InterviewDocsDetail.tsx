@@ -15,6 +15,7 @@ import {
 	docsItemWrapperStyle,
 	docsUserTabContainerStyle,
 	docsUserTabStyle,
+	noFeedbackUserStyle,
 } from './InterviewDocsDetail.style';
 
 interface Props {
@@ -42,6 +43,8 @@ const InterviewDocsDetail = ({ docsUUID }: Props) => {
 	};
 
 	useEffect(() => {
+		if (feedbacks.length <= 0 || !feedbacks[docIdx]) return;
+
 		const idList = feedbacks[docIdx].feedbackList.map(({ startTime, innerIndex }) => {
 			return startTime.toString().padStart(6, '0') + innerIndex.toString().padStart(2, '0');
 		});
@@ -70,46 +73,50 @@ const InterviewDocsDetail = ({ docsUUID }: Props) => {
 					</tr>
 				</table>
 			</div>
-			<div css={docsItemFbAreaStyle}>
-				<div css={docsUserTabContainerStyle}>
-					<Button
-						color="secondary"
-						size="small"
-						style="text"
-						disabled={docIdx <= 0 ? true : false}
-						onClick={handleDecreaseDocIdx}
-					>
-						<BackIcon />
-					</Button>
-					<div css={docsUserTabStyle}>
-						{feedbacks.map((fb, i) => (
-							<Button
-								ref={(el) => (tabScrollRef.current[i] = el)}
-								size="small"
-								key={fb.nickname}
-								onClick={() => handleChangeDocIdx(i)}
-								color={docIdx === i ? 'primary' : 'secondary'}
-							>
-								{fb.nickname}
-							</Button>
-						))}
+			{feedbacks.length > 0 && feedbacks[docIdx] ? (
+				<div css={docsItemFbAreaStyle}>
+					<div css={docsUserTabContainerStyle}>
+						<Button
+							color="secondary"
+							size="small"
+							style="text"
+							disabled={docIdx <= 0 ? true : false}
+							onClick={handleDecreaseDocIdx}
+						>
+							<BackIcon />
+						</Button>
+						<div css={docsUserTabStyle}>
+							{feedbacks.map((fb, i) => (
+								<Button
+									ref={(el) => (tabScrollRef.current[i] = el)}
+									size="small"
+									key={fb.nickname}
+									onClick={() => handleChangeDocIdx(i)}
+									color={docIdx === i ? 'primary' : 'secondary'}
+								>
+									{fb.nickname}
+								</Button>
+							))}
+						</div>
+						<Button
+							color="secondary"
+							size="small"
+							style="text"
+							disabled={docIdx >= feedbacks.length - 1 ? true : false}
+							onClick={handleIncreaseDocIdx}
+						>
+							<NextIcon />
+						</Button>
 					</div>
-					<Button
-						color="secondary"
-						size="small"
-						style="text"
-						disabled={docIdx >= feedbacks.length - 1 ? true : false}
-						onClick={handleIncreaseDocIdx}
-					>
-						<NextIcon />
-					</Button>
+					<div css={docsItemFbListStyle}>
+						<FeedbackList
+							feedbackList={getFirstLabeledFbList(feedbacks[docIdx].feedbackList)}
+						/>
+					</div>
 				</div>
-				<div css={docsItemFbListStyle}>
-					<FeedbackList
-						feedbackList={getFirstLabeledFbList(feedbacks[docIdx].feedbackList)}
-					/>
-				</div>
-			</div>
+			) : (
+				<div css={noFeedbackUserStyle}>피드백을 작성한 유저가 없습니다.</div>
+			)}
 		</div>
 	);
 };
