@@ -84,7 +84,7 @@ const Landing = () => {
 					<Button
 						size="small"
 						color="black"
-						onClick={() => openModal('InterviewDocsListModal')}
+						onClick={() => openModal('InterviewDocsModal')}
 					>
 						<FolderIcon />
 						<span>기록</span>
