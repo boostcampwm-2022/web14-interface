@@ -10,6 +10,7 @@ export interface UserDtoType {
 export interface DocsReqDtoType {
 	docsUUID: string;
 	roomUUID: string;
+	videoUrl: string;
 	videoPlayTime: number;
 }
 

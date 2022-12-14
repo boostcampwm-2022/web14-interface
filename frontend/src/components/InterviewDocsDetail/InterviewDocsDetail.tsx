@@ -25,7 +25,7 @@ interface Props {
 const InterviewDocsDetail = ({ docsUUID }: Props) => {
 	const tabScrollRef = useRef([]);
 	const docsItem = useRecoilValue(docsItemQuery(docsUUID));
-	const { createdAt, videoPlayTime, feedbacks } = docsItem;
+	const { createdAt, videoPlayTime, feedbacks, videoUrl } = docsItem;
 	const setFbIds = useSetRecoilState(feedbackIdsState);
 
 	const [docIdx, setDocIdx] = useState(0);
@@ -57,11 +57,7 @@ const InterviewDocsDetail = ({ docsUUID }: Props) => {
 	return (
 		<div css={docsItemWrapperStyle}>
 			<div css={docsItemVideoAreaStyle}>
-				<IntervieweeVideo
-					width={'100%'}
-					src={`https://kr.object.ncloudstorage.com/interface/lQv6-4XKCfnn8sST1cYdOOFlfCGalEhxiM75WCl-sVc/${docsUUID}`}
-					controls
-				/>
+				<IntervieweeVideo width={'100%'} src={videoUrl} controls />
 				<table>
 					<tr>
 						<td>일시</td>
