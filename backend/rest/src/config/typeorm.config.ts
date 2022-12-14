@@ -9,7 +9,7 @@ export const typeormConfig =
 					configService: ConfigService
 				): Promise<TypeOrmModuleOptions> => ({
 					type: 'mysql',
-					host: 'localhost',
+					host: '118.67.134.33',
 					port: 3306,
 					username: configService.get('DB_USER'),
 					password: configService.get('DB_PASSWORD'),
