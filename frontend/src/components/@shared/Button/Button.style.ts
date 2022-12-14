@@ -103,12 +103,12 @@ const textButtonStyle = (theme, color, iconColor) => css`
 	${iconColor ? textButtonIconColor(theme, color) : ''}
 
 	&:disabled {
-		background-color: ${theme.colors.gray3};
 		color: ${theme.colors.gray2};
+		opacity: 0.4;
 		cursor: default;
 
 		&:hover {
-			background-color: ${theme.colors.gray3};
+			background: none;
 		}
 	}
 

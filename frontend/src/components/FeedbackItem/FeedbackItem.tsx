@@ -29,6 +29,7 @@ const FeedbackItem = ({ feedback, feedbackRef, index, editableBtns }: FeedbackIt
 	const { handleFbChange } = useEditFeedback(feedback.id);
 
 	const { startTime, isFirst, content, readOnly } = feedback;
+	const editable = readOnly !== undefined ? (readOnly === true ? false : true) : false;
 
 	const handleClickFeedback = () => {
 		if (!isFbSync) return;
@@ -39,19 +40,19 @@ const FeedbackItem = ({ feedback, feedbackRef, index, editableBtns }: FeedbackIt
 	return (
 		<div
 			ref={(el) => (feedbackRef.current[index] = el)}
-			css={(theme) => feedbackBoxStyle(theme, readOnly)}
+			css={(theme) => feedbackBoxStyle(theme, editable)}
 		>
 			<div
-				css={(theme) => fbStartTimeStyle(theme, readOnly)}
+				css={(theme) => fbStartTimeStyle(theme, editable)}
 				style={{ visibility: isFirst ? 'visible' : 'hidden' }}
 			>
 				{mmssFormatter(startTime * ONE_SECOND)}
 			</div>
 			<div
-				css={(theme) => feedbackContentAreaStyle(theme, readOnly)}
+				css={(theme) => feedbackContentAreaStyle(theme, editable)}
 				onClick={handleClickFeedback}
 			>
-				<div css={feedbackContentStyle} contentEditable={!readOnly}>
+				<div css={feedbackContentStyle} contentEditable={editable}>
 					{content}
 				</div>
 			</div>

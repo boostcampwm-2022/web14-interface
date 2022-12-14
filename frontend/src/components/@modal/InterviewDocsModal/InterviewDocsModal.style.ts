@@ -1,54 +1,47 @@
 import { css } from '@emotion/react';
+import { flexColumn, flexRow } from '@styles/globalStyle';
 
-export const docsItemWrapperStyle = css`
-	display: flex;
-	flex-direction: column;
-	gap: 15px;
-	padding: 10px;
+export const docsModalWrapperStyle = (theme, section) => css`
+	${flexColumn({ justifyContent: 'unset' })};
+
+	width: 840px;
 	height: 80vh;
+
+	background-color: ${section === 'list' ? theme.colors.white : theme.colors.tertiary};
+	color: ${section === 'list' ? theme.colors.black : theme.colors.white};
+	overflow-x: hidden;
+
+	border-radius: ${theme.borderRadius};
+`;
+
+export const docsModalHeaderStyle = () => css`
+	${flexRow({ justifyContent: 'space-between' })};
+
 	width: 100%;
-`;
+	padding: 16px;
 
-export const docsItemHeaderStyle = css`
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-`;
-
-export const docsItemBtnsStyle = css`
-	display: flex;
-`;
-
-export const docsItemBodyStyle = css`
-	display: flex;
-	gap: 15px;
-`;
-
-export const docsItemVideoAreaStyle = css`
-	display: flex;
-	flex-direction: column;
-	gap: 15px;
-`;
-
-export const docsItemVideoInfoStyle = css`
-	display: flex;
-	flex-direction: column;
-	gap: 5px;
-	div {
-		display: 'flex';
+	span {
+		font-size: 24px;
+		line-height: 16px;
 	}
 `;
 
-export const docsItemFbAreaStyle = css`
-	display: flex;
-	flex-direction: column;
-	height: 100%;
+export const docsModalContentStyle = (section) => css`
+	${flexRow({ justifyContent: 'unset', gap: '64px' })};
+
+	width: 100%;
+	height: calc(100% - 72px);
+	padding: 16px 32px;
+
+	transform: translateX(${section === 'list' ? '0%' : '-100%'});
 `;
 
-export const docsItemFbBtnsStyle = css`
-	display: flex;
+export const modalSyncButtonAreaStyle = (theme) => css`
+	${flexRow({ gap: '12px' })};
+
+	padding-left: 96px;
 `;
 
-export const docsItemFbListStyle = css`
-	overflow: scroll;
+export const modalSyncDotLineStyle = (theme) => css`
+	width: 12px;
 `;

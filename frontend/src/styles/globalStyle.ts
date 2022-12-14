@@ -70,9 +70,9 @@ const globalStyle = css`
 		-ms-overflow-style: none;
 		scrollbar-width: none;
 	}
-	div::-webkit-scrollbar {
+	/* div::-webkit-scrollbar {
 		display: none;
-	}
+	} */
 
 	textarea::-webkit-scrollbar {
 		display: none;
@@ -81,8 +81,14 @@ const globalStyle = css`
 
 interface flexPropType {
 	gap?: string;
-	justifyContent?: 'center' | 'space-between' | 'space-around' | 'unset' | 'flex-end';
-	alignItems?: 'center' | 'baseline' | 'flex-start' | 'end';
+	justifyContent?:
+		| 'center'
+		| 'space-between'
+		| 'space-around'
+		| 'unset'
+		| 'flex-end'
+		| 'space-evenly';
+	alignItems?: 'center' | 'baseline' | 'flex-start';
 }
 
 export const flexRow = ({

@@ -15,7 +15,7 @@ export interface DocsReqDtoType {
 
 export interface DocsResDtoType {
 	docsUUID: string;
-	createdAt: Date;
+	createdAt: string;
 	videoPlayTime: number;
 	feedbacks: namedFeedback[];
 }
@@ -27,7 +27,7 @@ interface namedFeedback {
 
 export interface DocsItemDtoType {
 	id: string;
-	createdAt: Date;
+	createdAt: string;
 	videoPlayTime: number;
 }
 
