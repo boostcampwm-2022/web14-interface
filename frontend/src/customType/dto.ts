@@ -10,13 +10,13 @@ export interface UserDtoType {
 export interface DocsReqDtoType {
 	docsUUID: string;
 	roomUUID: string;
-	videoUrl: string;
 	videoPlayTime: number;
 }
 
 export interface DocsResDtoType {
 	docsUUID: string;
 	createdAt: string;
+	videoUrl: string;
 	videoPlayTime: number;
 	feedbacks: namedFeedback[];
 }
