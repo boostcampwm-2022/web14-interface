@@ -39,5 +39,5 @@ export const fbInputStyle = (theme) => css`
 `;
 
 export const fbFormStartTimeStyle = (theme) => css`
-	${fbStartTimeStyle(theme, true)};
+	${fbStartTimeStyle(theme, false)};
 `;
