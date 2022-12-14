@@ -31,6 +31,8 @@ import BottomBarButtom from '@components/@shared/BottomBarButton/BottomBarButton
 import Button from '@components/@shared/Button/Button';
 import { meInRoomState, userInfoSelector } from '@store/user.store';
 import { MEDIA_ACTIVE_TYPE } from '@constants/media.constant';
+import { socketEmit } from '@api/socket.api';
+import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 
 interface Props {
 	mainController?: React.ReactNode;
