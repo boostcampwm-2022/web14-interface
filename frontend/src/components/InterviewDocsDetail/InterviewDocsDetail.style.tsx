@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import { flexColumn, flexRow } from '@styles/globalStyle';
 
 export const docsItemWrapperStyle = (theme) => css`
-	${flexRow({ justifyContent: 'space-evenly', gap: '12px', alignItems: 'flex-start' })};
+	${flexRow({ justifyContent: 'space-between', gap: '12px', alignItems: 'flex-start' })};
 	flex: 0 0 auto;
 
 	width: 100%;
@@ -12,7 +12,7 @@ export const docsItemWrapperStyle = (theme) => css`
 export const docsItemVideoAreaStyle = () => css`
 	${flexColumn({ gap: '32px', justifyContent: 'unset' })};
 
-	width: 440px;
+	width: 388px;
 
 	table {
 		width: 100%;
@@ -52,4 +52,8 @@ export const docsItemFbListStyle = (theme) => css`
 	overflow: auto;
 
 	padding: 12px 0px 12px 12px;
+`;
+
+export const noFeedbackUserStyle = () => css`
+	width: 300px;
 `;
