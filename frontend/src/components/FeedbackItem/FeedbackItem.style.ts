@@ -1,18 +1,18 @@
 import { css } from '@emotion/react';
 import { flexRow } from '@styles/globalStyle';
 
-export const feedbackBoxStyle = (theme, readOnly) => css`
-	${flexRow({ gap: '8px', justifyContent: 'space-between', alignItems: 'flex-start' })};
-	color: ${readOnly ? theme.colors.black : theme.colors.white};
+export const feedbackBoxStyle = (theme, editable) => css`
+	${flexRow({ gap: '8px', justifyContent: 'unset', alignItems: 'flex-start' })};
+	color: ${editable ? theme.colors.white : theme.colors.black};
 
 	width: 100%;
 `;
 
-export const feedbackContentAreaStyle = (theme, readOnly) => css`
+export const feedbackContentAreaStyle = (theme, editable) => css`
 	${flexRow({ gap: '8px', justifyContent: 'space-between', alignItems: 'flex-start' })}
 	width: calc(100% - 32px - 52px);
 	min-height: 96px;
-	background-color: ${readOnly ? theme.colors.secondary : theme.colors.primary};
+	background-color: ${editable ? theme.colors.primary : theme.colors.secondary};
 	padding: 12px;
 
 	border-radius: ${theme.borderRadius};
@@ -36,10 +36,11 @@ export const fbTextAreaStyle = (theme) => css`
 	box-sizing: border-box;
 `;
 
-export const fbStartTimeStyle = (theme, readOnly) => css`
+export const fbStartTimeStyle = (theme, editable) => css`
 	width: 52px;
 	height: 24px;
-	background-color: ${readOnly ? theme.colors.secondary : theme.colors.primary};
+	background-color: ${editable ? theme.colors.primary : theme.colors.secondary};
+	color: ${editable ? theme.colors.white : theme.colors.black};
 
 	font-size: 16px;
 	line-height: 20px;

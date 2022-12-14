@@ -12,11 +12,17 @@ import { feedbackListSelector, isFbSyncState } from '@store/feedback.store';
 import { ReactComponent as LinkIcon } from '@assets/icon/link.svg';
 import { ReactComponent as SyncDotLine } from '@assets/sync_dot_line.svg';
 import { socket } from '../../service/socket';
-import { feedbackWrapperStyle, feedbackContainerStyle, feedbackAreaStyle } from './Feedback.style';
+import {
+	feedbackWrapperStyle,
+	feedbackContainerStyle,
+	feedbackAreaStyle,
+	syncButtonAreaStyle,
+	syncDotLineStyle,
+} from './Feedback.style';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
 import useModal from '@hooks/useModal';
-import useLeaveUser from '@hooks/useLeaveUser';
+import ussCommonSocketEvent from '@hooks/useCommonSocketEvent';
 import { flexRow } from '@styles/globalStyle';
 import { css } from '@emotion/react';
 
@@ -27,7 +33,7 @@ interface endFeedbackResponseType {
 
 const Feedback = () => {
 	usePreventLeave();
-	useLeaveUser();
+	ussCommonSocketEvent();
 
 	const { openModal } = useModal();
 	const cleanupInterview = useCleanupInterview();
@@ -69,14 +75,13 @@ const Feedback = () => {
 	return (
 		<div css={feedbackWrapperStyle}>
 			<div css={feedbackContainerStyle}>
-				<IntervieweeVideo src={videoUrl} width={'40%'} autoplay muted controls />
+				<IntervieweeVideo src={videoUrl} width={'50%'} autoplay muted controls />
 				<div css={syncButtonAreaStyle}>
 					<SyncDotLine css={syncDotLineStyle} />
 					<RoundButton
 						style={{
 							width: 48,
 							size: 'large',
-							style: isFbSync ? 'contained' : 'text',
 							color: isFbSync ? 'primary' : 'secondary',
 						}}
 						onClick={() => setIsFbSync((current) => !current)}
@@ -97,11 +102,3 @@ const Feedback = () => {
 };
 
 export default Feedback;
-
-const syncButtonAreaStyle = (theme) => css`
-	${flexRow({ gap: '16px' })};
-`;
-
-const syncDotLineStyle = () => css`
-	width: 16px;
-`;

@@ -4,7 +4,12 @@ import { useRecoilValue } from 'recoil';
 import { isFbSyncState } from '@store/feedback.store';
 import { focusIndexSelector } from '@store/currentVideoTime.store';
 
-import { emptyFeedbackStyle, feedbackListStyle } from './FeedbackList.style';
+import {
+	emptyFeedbackStyle,
+	fbTimelineStyle,
+	feedbackListStyle,
+	timelineStyle,
+} from './FeedbackList.style';
 import FeedbackEditBtn from '@components/FeedbackEditBtns/FeedbackEditBtns';
 import { FeedbackItemType } from '@customType/feedback';
 
@@ -29,20 +34,25 @@ const FeedbackList = ({ editable = false, feedbackList }: Props) => {
 	const editableBtns = (props) => editable && <FeedbackEditBtn {...props} />;
 
 	return (
-		<div css={feedbackListStyle}>
+		<div css={fbTimelineStyle}>
 			{feedbackList.length > 0 ? (
-				feedbackList.map((feedback, idx) => (
-					<FeedbackItem
-						key={feedback.id}
-						feedback={feedback}
-						feedbackRef={feedbackRef}
-						index={idx}
-						editableBtns={editableBtns({
-							id: feedback.id,
-							readOnly: feedback.readOnly,
-						})}
-					/>
-				))
+				<>
+					<div css={feedbackListStyle}>
+						{feedbackList.map((feedback, idx) => (
+							<FeedbackItem
+								key={feedback.id}
+								feedback={feedback}
+								feedbackRef={feedbackRef}
+								index={idx}
+								editableBtns={editableBtns({
+									id: feedback.id,
+									readOnly: feedback.readOnly,
+								})}
+							/>
+						))}
+					</div>
+					<div css={timelineStyle}></div>
+				</>
 			) : (
 				<div css={emptyFeedbackStyle}>작성된 피드백이 없습니다</div>
 			)}

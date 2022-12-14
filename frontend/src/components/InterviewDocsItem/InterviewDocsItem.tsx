@@ -2,7 +2,6 @@ import React from 'react';
 
 import { DocsItemDtoType } from '@customType/dto';
 import { ReactComponent as DownloadIcon } from '@assets/icon/download.svg';
-import { iconSmStyle } from '@styles/commonStyle';
 import {
 	createdAtStyle,
 	docsItemWrapper,
@@ -11,30 +10,36 @@ import {
 } from './InterviewDocsItem.style';
 import { mmssFormatter } from '@utils/common.util';
 import { ONE_SECOND } from '@constants/time.constant';
-import useModal from '@hooks/useModal';
+import { DocsInfoType } from '@components/@modal/InterviewDocsModal/InterviewDocsModal';
+import Button from '@components/@shared/Button/Button';
 
-export interface Props {
+export interface InterviewDocsItemPropType {
 	docs: DocsItemDtoType;
 	idx: number;
 	style: 'card' | 'list';
+	handleClickDocsItem: (docsInfo: DocsInfoType) => void;
 }
 
-const InterviewDocsItem = ({ docs, idx, style }: Props) => {
-	const { openModal } = useModal();
-	const handleClickDocsItem = () => {
-		openModal('InterviewDocsItemModal', { docsUUID: docs.id, idx });
-	};
+const InterviewDocsItem = ({
+	docs,
+	idx,
+	style,
+	handleClickDocsItem,
+}: InterviewDocsItemPropType) => {
 	return (
-		<article onClick={handleClickDocsItem} css={(theme) => docsItemWrapper(theme, style)}>
+		<article
+			css={(theme) => docsItemWrapper(theme, style)}
+			onClick={() => handleClickDocsItem({ docsUUID: docs.id, idx })}
+		>
 			<div>
 				<div css={indexStyle}>#{idx}</div>
 				<div css={playTimeStyle}>{mmssFormatter(docs.videoPlayTime * ONE_SECOND)}</div>
 			</div>
 			<div>
-				<div css={createdAtStyle}>{docs.createdAt.toLocaleString()}</div>
-				<div>
-					<DownloadIcon {...iconSmStyle} fill={style === 'list' ? 'black' : 'white'} />
-				</div>
+				<div css={createdAtStyle}>{docs.createdAt}</div>
+				<Button color="secondary" size="small">
+					<DownloadIcon />
+				</Button>
 			</div>
 		</article>
 	);

@@ -62,7 +62,7 @@ export class ObjectStorageService {
 	}
 
 	/**
-	 *
+	 * 1시간이 경과하면 false를 반환합니다.
 	 * @returns
 	 */
 	handleRunningTimeOver(client: Socket) {
@@ -120,7 +120,7 @@ export class ObjectStorageService {
 			async () => {
 				this.handleMaxVideoCountByUser(client);
 				const user = await this.roomRepository.getUserByClientId(client.id);
-				const videoUrl = [this.bucketName, this.bucketName, fileName].join('/');
+				const videoUrl = [OBJECT_STORAGE_ENDPOINT, this.bucketName, fileName].join('/');
 
 				client.to(user.roomUUID).emit(EVENT.DOWNLOAD_VIDEO, { videoUrl });
 			}

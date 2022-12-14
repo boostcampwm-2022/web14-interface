@@ -17,12 +17,7 @@ const RoomInfoModal = ({ value }: RoomInfoModelPropType) => {
 		<Modal>
 			<Modal.Title>방 정보</Modal.Title>
 			<Modal.ContentArea flexDirection="row">
-				<Modal.TextField
-					width="100%"
-					textAlign="center"
-					readOnly
-					value={value}
-				></Modal.TextField>
+				<Modal.TextField width="100%" textAlign="center" readOnly value={value} />
 				<Modal.Button onClick={copyValue}>
 					<CopyIcon />
 				</Modal.Button>

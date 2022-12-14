@@ -1,5 +1,5 @@
 import { REST_SERVER_ORIGIN } from '@constant';
-import { WsException } from '@nestjs/websockets';
+import { Logger } from '@nestjs/common';
 import axios from 'axios';
 import { Socket } from 'socket.io';
 
@@ -12,8 +12,7 @@ export const setUserIdInClient = async (client: Socket) => {
 		});
 		client.data.authId = res.data.data.userId;
 	} catch (err) {
-		// not handle http error
-		throw new WsException(err.message);
+		errerLogger(err);
 	}
 };
 
@@ -31,7 +30,12 @@ export const deleteInterviewDocs = async ({
 			},
 		});
 	} catch (err) {
-		// not handle http error
-		throw new WsException(err.message);
+		errerLogger(err);
 	}
+};
+
+const errerLogger = (err) => {
+	const logger = new Logger('Rest Exception');
+	const { message }: any = err.response.data;
+	logger.error(message);
 };

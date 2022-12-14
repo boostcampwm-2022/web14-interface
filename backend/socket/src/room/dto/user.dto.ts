@@ -7,21 +7,21 @@ export class UserDto {
 		this.nickname = user.nickname;
 		this.role = user.role;
 		this.roomUUID = user.roomUUID;
-		this.video = Boolean(user.video);
-		this.audio = Boolean(user.audio);
+		this.video = JSON.parse(user.video);
+		this.audio = JSON.parse(user.video);
 	}
 
 	@IsString()
 	@IsNotEmpty()
-	private uuid: string;
+	uuid: string;
 
 	@IsString()
 	@IsNotEmpty()
-	private nickname: string;
+	nickname: string;
 
 	@IsString()
 	@IsNotEmpty()
-	private role: string;
+	role: string;
 
 	@IsString()
 	@IsNotEmpty()

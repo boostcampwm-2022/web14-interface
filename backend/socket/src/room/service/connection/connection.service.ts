@@ -14,6 +14,7 @@ import { RoomRepository } from '../../repository/room.repository';
 import { getRandomNickname } from '@woowa-babble/random-nickname';
 import { UpdateMediaDto } from 'src/room/dto/update-media-info.dto';
 import { UserDto } from 'src/room/dto/user.dto';
+import { WsException } from '@nestjs/websockets';
 
 @Injectable()
 export class ConnectionService {
@@ -49,15 +50,17 @@ export class ConnectionService {
 		if (exception) return exception;
 
 		const user = await this.createDefaultUser({ client, roomUUID });
-		const others = await this.roomRepository.getUsersInRoom(roomUUID);
+		const otherUsers = await this.roomRepository.getUsersInRoom(roomUUID);
 
 		client.join(roomUUID);
 		await this.roomRepository.saveUserInRoom(user);
 
-		const userDto = new UserDto(user);
-		client.to(roomUUID).emit(EVENT.ENTER_USER, { user: userDto });
+		const enterUser = new UserDto(user);
+		const others = otherUsers.map((other) => new UserDto(other));
 
-		return { data: { others, me: userDto } };
+		client.to(roomUUID).emit(EVENT.ENTER_USER, { user: enterUser });
+
+		return { data: { others, me: enterUser } };
 	}
 
 	/**
@@ -74,7 +77,7 @@ export class ConnectionService {
 	 * @returns
 	 */
 	async isEnterableRoom(room: Room) {
-		if (room === undefined) {
+		if (!room) {
 			return { success: false, message: SOCKET_MESSAGE.NO_ROOM };
 		}
 
@@ -121,13 +124,19 @@ export class ConnectionService {
 		await this.roomRepository.removeUser(user);
 
 		const usersInRoom = await this.roomRepository.getUsersInRoom(roomUUID);
-		if (!usersInRoom) {
+
+		if (!usersInRoom?.length) {
 			await this.roomRepository.deleteRoom(roomUUID);
 		}
 
 		return {};
 	}
 
+	/**
+	 * 현재 user의 audio와 video 상태를 업데이트하고 같은 방의 유저들에게 emit합니다.
+	 * @param client Socket
+	 * @param updateMediaDto video, audio boolean
+	 */
 	async updateUserMediaInfo({
 		client,
 		updateMediaDto,

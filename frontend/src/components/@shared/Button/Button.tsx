@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { buttonStyle } from './Button.style';
 
 export interface buttonPropType {
@@ -13,19 +13,23 @@ export interface buttonPropType {
 	onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const Button = ({
-	children,
-	width,
-	size = 'medium',
-	style = 'contained',
-	color = 'primary',
-	justifyContent = 'center',
-	iconColor = true,
-	disabled = false,
-	onClick,
-}: buttonPropType) => {
+const Button = (
+	{
+		children,
+		width,
+		size = 'medium',
+		style = 'contained',
+		color = 'primary',
+		justifyContent = 'center',
+		iconColor = true,
+		disabled = false,
+		onClick,
+	}: buttonPropType,
+	ref
+) => {
 	return (
 		<button
+			ref={ref}
 			css={(theme) =>
 				buttonStyle(theme, width, size, style, color, iconColor, justifyContent)
 			}
@@ -37,4 +41,4 @@ const Button = ({
 	);
 };
 
-export default Button;
+export default forwardRef(Button);
