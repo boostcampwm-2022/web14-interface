@@ -21,7 +21,7 @@ export function setupSwagger(app: INestApplication) {
 		expressBasicAuth({
 			challenge: true,
 			users: {
-				[process.env.SWAGGER_USER]: process.env.SWAGGER_PASSWORD,
+				[process.env.SWAGGER_USER]: `${process.env.SWAGGER_PASSWORD}`,
 			},
 		})
 	);
