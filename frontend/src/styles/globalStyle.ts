@@ -88,7 +88,7 @@ interface flexPropType {
 		| 'unset'
 		| 'flex-end'
 		| 'space-evenly';
-	alignItems?: 'center' | 'baseline' | 'flex-start';
+	alignItems?: 'center' | 'baseline' | 'flex-start' | 'end';
 }
 
 export const flexRow = ({
