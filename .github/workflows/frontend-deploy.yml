@@ -2,7 +2,7 @@ name: Frontend Deploy
 
 on:
   push:
-    branches: [main] 
+    branches: [ci/cd-test] 
       
 jobs:
   build-push:
@@ -16,6 +16,7 @@ jobs:
         uses: actions/checkout@v3
       
       - name: node 패키지를 caching 합니다.
+        id: cache
         uses: actions/cache@v3
         with:
           path: "**/node_modules"
