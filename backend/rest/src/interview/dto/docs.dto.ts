@@ -27,6 +27,14 @@ export class DocsGetResponseDto {
 	})
 	videoPlayTime: number;
 
+	@IsString()
+	@IsNotEmpty()
+	@ApiProperty({
+		example: 'https://naver.com~',
+		description: 'object storage url',
+	})
+	videoUrl: string;
+
 	@ApiProperty({
 		example:
 			'{ nickname: "엉큼한 거북이", feedbackList: [{ startTime: 0, innerIndex: 0, content: "목소리에서 울림이 느껴지네요." }] }',
