@@ -1,5 +1,11 @@
 import { EVENT } from '@constant';
-import { Catch, ArgumentsHost, InternalServerErrorException, Logger } from '@nestjs/common';
+import {
+	Catch,
+	ArgumentsHost,
+	InternalServerErrorException,
+	Logger,
+	HttpException,
+} from '@nestjs/common';
 import { BaseWsExceptionFilter, WsException } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 
@@ -11,14 +17,29 @@ export class SocketExceptionFilter extends BaseWsExceptionFilter {
 		const ctx = host.switchToWs();
 		const client = ctx.getClient<Socket>();
 
-		logger.error(`[Client ID: ${client.id}] ${exception.message}`);
+		let { message } = exception;
+		if (!(exception instanceof WsException)) {
+			const res: any = (exception as HttpException).getResponse();
+			message = res.message;
+		}
+
+		logger.error(`[Client ID] ${client.id}] `);
+		logger.error(`[Error Message] ${message}`);
+		logger.error(`[Error Stack] ${exception.stack}`);
+
+		const error = { message, stack: exception.stack };
 
 		if (exception instanceof WsException) {
-			client.emit(EVENT.BAD_REQUEST, exception);
+			client.emit(EVENT.BAD_REQUEST, error);
+			return;
+		}
+
+		if (exception instanceof HttpException) {
+			client.emit(EVENT.VALIDATION_EXCEPTION, error);
 			return;
 		}
 
 		exception = new InternalServerErrorException();
-		client.emit('INTERNAL_SERVER_EXCEPTION', exception);
+		client.emit(EVENT.INTERNAL_SERVER_EXCEPTION, error);
 	}
 }

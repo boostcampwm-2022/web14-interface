@@ -9,13 +9,9 @@ const mediaStreamer = () => {
 			mimeType: 'video/webm; codecs=vp9',
 		});
 
-		mediaRecorder.ondataavailable = (e) => {
+		mediaRecorder.ondataavailable = async (e) => {
 			if (!e.data || !e.data.size) return;
-
-			socket.emit('stream_video', {
-				timestamp: new Date().getTime(),
-				data: e.data,
-			});
+			socket.emit('stream_video', await e.data.arrayBuffer());
 		};
 
 		mediaRecorder.onstop = () => {

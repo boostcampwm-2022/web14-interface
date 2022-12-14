@@ -1,4 +1,0 @@
-export enum HTTP_STATUS {
-	HTTP_OK = 200,
-	HTTP_REDIRECT = 301,
-}

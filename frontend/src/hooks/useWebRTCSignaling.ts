@@ -153,12 +153,14 @@ const useWebRTCSignaling = (
 	 * 그 후, connectionListRef과 외부 webRTCUserList를 업데이트합니다.
 	 * @param closeId 서버가 보낸 나간 UserId
 	 */
-	const closeConnection = ({ userUUID: closeId }) => {
+	const closeConnection = ({ uuid: closeId }) => {
 		const oldStream = webRTCUserList.get(closeId).stream;
 		const oldConnection = webRTCUserList.get(closeId).connection;
+
 		oldStream.getTracks().forEach((track) => track.stop());
-		oldConnection.close();
+		oldConnection?.close();
 		connectionListRef.current?.delete(closeId);
+
 		const newUserList = new Map(webRTCUserList);
 		newUserList.delete(closeId);
 		setWebRTCUserList(newUserList);
@@ -172,16 +174,6 @@ const useWebRTCSignaling = (
 			socket.off('icecandidate');
 		};
 	}, []);
-
-	//TODO 더 좋은 방법 없을까?
-	//closeConnection 내부의 webRTCUserState가 catupe되서 업데이트가 안되는 현상 fix
-	useEffect(() => {
-		socket.on('disconnect_webrtc', closeConnection);
-
-		return () => {
-			socket.off('disconnect_webrtc');
-		};
-	}, [webRTCUserList]);
 
 	return { startConnection, closeConnection };
 };

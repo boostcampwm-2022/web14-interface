@@ -1,20 +1,21 @@
 import {
 	accessTokenOptions,
+	HTTP_ERROR_MSG,
 	OAUTH_TYPE,
 	refreshTokenOptions,
 	USER_REPOSITORY_INTERFACE,
 } from '@constant';
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { UserInfo } from '@types';
-import { UserRepository } from 'src/user/repository/interface-user.repository';
+import { UserRepository } from 'src/user/repository/user.repository';
 import { OauthNaverService } from './oauth/naver-oauth.service';
 import { OauthService } from './oauth/interface-oauth.service';
 import { OauthKakaoService } from './oauth/kakao-oauth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { CreateJwtPayloadDto } from '../dto/create-jwt.dto';
-import { JwtPayloadBuiler } from 'src/builder/auth/create-jwt-payload.dto';
-import { UserEntity } from 'src/user/entities/interface-user.entity';
+import { JwtPayloadBuiler } from 'src/auth/dto/create-jwt.builder';
+import { UserEntity } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -52,14 +53,13 @@ export class AuthService {
 	async socialStart({ type, authorizationCode }: { type: string; authorizationCode: string }) {
 		this.setOauthInstanceByType(type);
 
-		if (!authorizationCode) throw new Error('social 인증이 되지 않았습니다.');
-
 		const accessToken = await this.oauthInstance.getAccessTokenByAuthorizationCode(
 			authorizationCode
 		);
 		const userSocialInfo = await this.oauthInstance.getSocialInfoByAccessToken(accessToken);
 
 		const user = await this.userRepository.saveUser(userSocialInfo as UserInfo);
+
 		return user;
 	}
 
@@ -77,15 +77,13 @@ export class AuthService {
 	}: {
 		payload: CreateJwtPayloadDto;
 		secret: string;
-		expirationTime: string;
+		expirationTime: number;
 	}) {
-		const { id, nickname, email } = payload;
-		const createJwtPayload = { id, nickname, email };
 		const token = this.jwtService.sign(
 			{ ...payload },
 			{
 				secret: this.configService.get(secret),
-				expiresIn: `${this.configService.get(expirationTime)}s`,
+				expiresIn: `${expirationTime}s`,
 			}
 		);
 
@@ -98,12 +96,9 @@ export class AuthService {
 	 * @returns {} { accessToken, refreshToken }
 	 */
 	createAccessTokenAndRefreshToken(user: UserInfo) {
-		const { id, nickname, email } = user;
-		const payload = new JwtPayloadBuiler()
-			.setId(id)
-			.setNickname(nickname)
-			.setEmail(email)
-			.build();
+		const { id, email } = user;
+
+		const payload = new JwtPayloadBuiler().setId(id).setEmail(email).build();
 
 		const accessToken = this.createJwt({ payload, ...accessTokenOptions });
 		const refreshToken = this.createJwt({ payload, ...refreshTokenOptions });
@@ -123,7 +118,7 @@ export class AuthService {
 				this.oauthInstance = this.oauthKakaoService;
 				break;
 			default:
-				throw new Error();
+				throw new BadRequestException(HTTP_ERROR_MSG.UNKNOWN_OAUTH_TYPE_ERROR);
 		}
 	}
 }

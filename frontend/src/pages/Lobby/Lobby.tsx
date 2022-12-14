@@ -1,141 +1,117 @@
-import React, { useEffect, useState } from 'react';
-import { PAGE_TYPE } from '@constants/page.constant';
+import React, { useEffect } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+
+import VideoGrid from '@components/@shared/VideoGrid/VideoGrid';
+import BottomBar from '@components/BottomBar/BottomBar';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { webRTCStreamSelector, webRTCUserListState } from '@store/webRTC.atom';
 import useWebRTCSignaling from '@hooks/useWebRTCSignaling';
-import { socket } from '../../service/socket';
-import Video from '@components/@shared/Video/Video';
-import { meInRoomState, othersInRoomState } from '@store/room.atom';
-import { SOCKET_EVENT_TYPE } from '@constants/event.constant';
-import VideoGrid from '@components/@shared/VideoGrid/VideoGrid';
-import { socketEmit } from '@api/socket.api';
-import { UserDTO } from '@customType/user';
-import { css } from '@emotion/react';
+import {
+	meInRoomState,
+	othersInRoomState,
+	userInfoSelector,
+	webRTCUserMapState,
+} from '@store/user.store';
 
-interface joinInterviewResponseType {
-	usersInRoom: UserDTO[];
-}
+import { socket } from '../../service/socket';
+import { UserType } from '@customType/user';
+import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
+import { PAGE_TYPE } from '@constants/page.constant';
+import { iconBgStyle } from '@styles/commonStyle';
+import { lobbyWrapperStyle, VideoAreaStyle } from './Lobby.style';
+import { ReactComponent as BroadcastIcon } from '@assets/icon/broadcast.svg';
+import RoundButton from '@components/@shared/RoundButton/RoundButton';
+import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
+import useModal from '@hooks/useModal';
+import { useUserRole } from '@hooks/useUserRole';
+import ussCommonSocketEvent from '@hooks/useCommonSocketEvent';
 
 const Lobby = () => {
-	const { safeNavigate } = useSafeNavigate();
-	const [me, setMe] = useRecoilState<UserDTO>(meInRoomState);
-	const [others, setOthers] = useRecoilState<UserDTO[]>(othersInRoomState);
-
 	usePreventLeave();
+	const { safeNavigate } = useSafeNavigate();
+	const { openModal } = useModal();
+	ussCommonSocketEvent();
 
-	const [webRTCUserList, setWebRTCUserList] = useRecoilState(webRTCUserListState);
-	const { startConnection } = useWebRTCSignaling(webRTCUserList, setWebRTCUserList);
+	const [me, setMe] = useRecoilState<UserType>(meInRoomState);
+	const [others, setOthers] = useRecoilState<UserType[]>(othersInRoomState);
+	const [webRTCUserList, setWebRTCUserList] = useRecoilState(webRTCUserMapState);
+	const { setUserRole } = useUserRole();
 
-	const streamList = useRecoilValue(webRTCStreamSelector);
+	const { startConnection, closeConnection } = useWebRTCSignaling(
+		webRTCUserList,
+		setWebRTCUserList
+	);
+	const userInfoList = useRecoilValue(userInfoSelector);
 
 	useEffect(() => {
-		//TODO 변경된 부분 BE랑 맞추기
-		socket.on(SOCKET_EVENT_TYPE.JOIN_INTERVIEW, ({ user: interviewee }) => {
-			const newOthers = others.map((user) => {
-				return user.uuid === interviewee.uuid
-					? { ...user, role: 'interviewee' }
-					: { ...user, role: 'interviewer' };
-			});
-
-			setOthers(newOthers);
-			setMe({ ...me, role: 'interviewer' });
-
-			safeNavigate(PAGE_TYPE.INTERVIEWER_PAGE);
-		});
-
 		socket.on(SOCKET_EVENT_TYPE.ENTER_USER, ({ user }) => {
-			setOthers((prevOthers) => [...prevOthers, user]);
+			//TODO BE 대응시 변경
+			setOthers((prevOthers) => [...prevOthers, { ...user, audio: false }]);
 		});
 
-		socket.on(SOCKET_EVENT_TYPE.LEAVE_USER, ({ user }) => {
-			setOthers((prevOhters) => prevOhters.filter((other) => other.uuid !== user.uuid));
+		socket.on(SOCKET_EVENT_TYPE.JOIN_INTERVIEW, ({ user: interviewee }) => {
+			setUserRole(interviewee);
+			safeNavigate(PAGE_TYPE.INTERVIEWER_PAGE);
 		});
 
 		return () => {
 			socket.off(SOCKET_EVENT_TYPE.JOIN_INTERVIEW);
 			socket.off(SOCKET_EVENT_TYPE.ENTER_USER);
-			socket.off(SOCKET_EVENT_TYPE.LEAVE_USER);
 		};
 	}, [others]);
 
 	useEffect(() => {
-		//TODO Lobby 첫 렌더링 시가 아니라 첫 입장 시만 하기
-		startConnection(me.uuid);
+		socket.on(SOCKET_EVENT_TYPE.LEAVE_USER, ({ user }) => {
+			closeConnection(user);
+			setOthers((prevOhters) => prevOhters.filter((other) => other.uuid !== user.uuid));
+		});
+
+		return () => {
+			socket.off(SOCKET_EVENT_TYPE.LEAVE_USER);
+		};
+	}, [others, webRTCUserList]);
+
+	useEffect(() => {
+		if (!webRTCUserList.has(me.uuid)) {
+			startConnection(me.uuid);
+			openModal('RoomInfoModal', { value: me.roomUUID });
+		}
 	}, []);
 
 	const handleStartInterviewee = async () => {
-		//TODO 변경된 부분 BE랑 맞추기
-		await socketEmit<joinInterviewResponseType>(SOCKET_EVENT_TYPE.START_INTERVIEW);
-
-		const newOthers = others.map((user) => {
-			return { ...user, role: 'interviewer' };
-		});
-
-		setMe({ ...me, role: 'interviewee' });
-		setOthers(newOthers);
-		safeNavigate(PAGE_TYPE.INTERVIEWEE_PAGE);
+		openModal('StartInterviewModal', { me, setMe, others, setOthers });
 	};
 
+	const startInterviewBtn = (
+		<RoundButton
+			onClick={handleStartInterviewee}
+			style={{
+				width: 160,
+			}}
+		>
+			<BroadcastIcon {...iconBgStyle} />
+			<span>면접 시작</span>
+		</RoundButton>
+	);
+
 	return (
-		<div css={LobbyWrapperStyle}>
+		<div css={lobbyWrapperStyle}>
 			<div css={VideoAreaStyle}>
 				<VideoGrid>
-					{streamList.map(({ uuid, stream }) => (
-						<Video key={uuid} src={stream} autoplay muted />
+					{userInfoList.map(({ uuid, stream, nickname, audio }) => (
+						<StreamVideo
+							key={uuid}
+							src={stream}
+							nickname={nickname}
+							isMyStream={uuid === me.uuid}
+							audio={audio}
+						/>
 					))}
 				</VideoGrid>
 			</div>
-			<div css={bottomBarStyle}>
-				<div>
-					<button>Profile</button>
-					<button>Mic</button>
-					<button>Camera</button>
-				</div>
-				<div>
-					<button onClick={handleStartInterviewee}>면접 시작</button>
-					<button>중지</button>
-					<button>취소</button>
-				</div>
-				<div>
-					<button>채팅</button>
-					<button>유저</button>
-					<button>기록</button>
-					<button>나가기</button>
-				</div>
-			</div>
+			<BottomBar mainController={startInterviewBtn} />
 		</div>
 	);
 };
 
 export default Lobby;
-
-const LobbyWrapperStyle = (theme) => css`
-	width: 100%;
-	height: 100%;
-	background-color: ${theme.colors.primary3};
-`;
-
-const VideoAreaStyle = () => css`
-	display: flex;
-	justify-content: center;
-	align-content: center;
-
-	width: 100%;
-	height: calc(100% - 72px);
-`;
-
-const bottomBarStyle = (theme) => css`
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-
-	width: 100%;
-	height: 72px;
-	background-color: ${theme.colors.titleActive};
-
-	button {
-		color: ${theme.colors.white};
-	}
-`;
