@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { flexColumn } from '@styles/globalStyle';
+import { flexColumn, flexRow } from '@styles/globalStyle';
 
 export const feedbackWrapperStyle = (theme) => css`
 	width: 100%;
@@ -7,19 +7,27 @@ export const feedbackWrapperStyle = (theme) => css`
 	background-color: ${theme.colors.tertiary};
 `;
 
-export const feedbackContainerStyle = css`
+export const feedbackContainerStyle = (theme) => css`
+	${flexRow({ gap: '24px' })};
+
 	height: 100%;
-	display: flex;
-	gap: 25px;
-	justify-content: center;
-	align-items: center;
 	max-width: 1200px;
 	margin: auto;
+
+	color: ${theme.colors.white};
 `;
 
 export const feedbackAreaStyle = css`
 	${flexColumn({ gap: '24px' })};
 
-	width: 32%;
+	width: 50%;
 	height: 80%;
+`;
+
+export const syncButtonAreaStyle = (theme) => css`
+	${flexRow({ gap: '16px' })};
+`;
+
+export const syncDotLineStyle = () => css`
+	width: 16px;
 `;
