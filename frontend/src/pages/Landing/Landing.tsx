@@ -105,7 +105,7 @@ const Landing = () => {
 			</header>
 			<main css={mainStyle}>
 				<div css={flexColumn({ gap: '32px' })}>
-					<div css={introTextStyle}>interface님, 안녕하세요!</div>
+					<div css={introTextStyle}>실시간 코멘트와 함께하는 면접, 지금 시작하세요!</div>
 					<div css={flexRow({ gap: '16px' })}>
 						<Button onClick={handleCreate} iconColor={true}>
 							<PlusIcon />
