@@ -10,6 +10,7 @@ import CancelInterviewModal from './@modal/CancelInterviewModal';
 import EndInterviewModal from './@modal/EndInterviewModal';
 import EndFeedbackModal from './@modal/EndFeedbackModal';
 import InterviewDocsModal from './@modal/InterviewDocsModal/InterviewDocsModal';
+import TimeOverAlertModal from './@modal/TimeOverAlertModal';
 
 export type MODAL_TYPE = keyof typeof modalStore;
 
@@ -23,6 +24,7 @@ const modalStore = {
 	EndInterviewModal,
 	CancelInterviewModal,
 	EndFeedbackModal,
+	TimeOverAlertModal,
 };
 
 const ModalManager = () => {

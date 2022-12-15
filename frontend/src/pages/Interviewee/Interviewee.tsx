@@ -10,7 +10,7 @@ import { currentVideoTimeState } from '@store/currentVideoTime.store';
 import { docsUUIDState } from '@store/interview.store';
 
 import { socket } from '@service/socket';
-import mediaStreamer from '@service/mediaStreamer';
+import useMediaStreamer from '@hooks/useMediaStreamer';
 import { PAGE_TYPE } from '@constants/page.constant';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { socketEmit } from '@api/socket.api';
@@ -26,13 +26,14 @@ import { ReactComponent as StopIcon } from '@assets/icon/stop.svg';
 import { ReactComponent as CancelIcon } from '@assets/icon/close.svg';
 import { flexRow } from '@styles/globalStyle';
 import { videoAreaStyle, videoListStyle } from '@styles/commonStyle';
+import RecordTimeLabel from '@components/RecordTimeLabel/RecordTimeLabel';
 
 const Interviewee = () => {
 	usePreventLeave();
 	ussCommonSocketEvent();
 	const { openModal } = useModal();
 	const { safeNavigate } = useSafeNavigate();
-	const { startStream, stopStream } = mediaStreamer();
+	const { startStream, stopStream } = useMediaStreamer();
 
 	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);
 	const currentVideoTime = useRecoilValue(currentVideoTimeState);
@@ -102,6 +103,7 @@ const Interviewee = () => {
 
 	return (
 		<div css={intervieweeWrapperStyle}>
+			<RecordTimeLabel />
 			<div css={videoAreaStyle}>
 				<IntervieweeVideo
 					key={interviewee.uuid}

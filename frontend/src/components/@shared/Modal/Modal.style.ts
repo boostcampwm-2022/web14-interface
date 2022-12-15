@@ -12,8 +12,8 @@ export const ModalWrapperStyle = (theme) => css`
 	border-radius: ${theme.borderRadius};
 `;
 
-export const ModalTitleStyle = (theme) => css`
-	color: ${theme.colors.black};
+export const ModalTitleStyle = (theme, color) => css`
+	color: ${theme.colors[color]};
 
 	font-size: ${theme.fontSize.large};
 	font-weight: bold;
@@ -25,8 +25,10 @@ export const ModalButtonAreaStyle = (isArray) => css`
 	width: 100%;
 `;
 
-export const ModalContentAreaStyle = (flexDirection) => css`
-	${flexDirection === 'row' ? flexRow({ gap: '16px' }) : flexColumn({ gap: '16px' })}
+export const ModalContentAreaStyle = (gap = '16px', flexDirection) => css`
+	${flexDirection === 'row'
+		? flexRow({ gap, justifyContent: 'center' })
+		: flexColumn({ gap, justifyContent: 'center' })}
 
 	width: 100%;
 `;
