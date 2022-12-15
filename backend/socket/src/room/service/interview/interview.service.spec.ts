@@ -183,4 +183,56 @@ describe('InterviewService', () => {
 			expect(users[1].role).toBe(USER_ROLE.INTERVIEWER);
 		});
 	});
+
+	describe('면접 종료', () => {
+		it('면접 종료 시 room phase 업데이트', async () => {
+			await connectionService.enterRoom({
+				roomUUID: testRoomUUID,
+				client: sockets[0],
+			});
+
+			await connectionService.enterRoom({
+				roomUUID: testRoomUUID,
+				client: sockets[1],
+			});
+
+			await interviewService.startInterview(sockets[0]);
+
+			await interviewService.endInterview({ client: sockets[0], server: sockets[0] });
+
+			expect(rooms.get(testRoomUUID).phase).toBe(ROOM_PHASE.FEEDBACK);
+		});
+	});
+
+	describe('피드백 종료', () => {
+		it('모든 면접관이 피드백을 마침', async () => {
+			await connectionService.enterRoom({
+				roomUUID: testRoomUUID,
+				client: sockets[0],
+			});
+
+			await connectionService.enterRoom({
+				roomUUID: testRoomUUID,
+				client: sockets[1],
+			});
+
+			await connectionService.enterRoom({
+				roomUUID: testRoomUUID,
+				client: sockets[2],
+			});
+
+			await interviewService.startInterview(sockets[0]);
+
+			await interviewService.endInterview({ client: sockets[0], server: sockets[0] });
+
+			await interviewService.endFeedback({ client: sockets[1], server: sockets[1] });
+			await interviewService.endFeedback({ client: sockets[2], server: sockets[2] });
+
+			expect(rooms.get(testRoomUUID).phase).toBe(ROOM_PHASE.LOBBY);
+			const userSet = usersInRoom.get(testRoomUUID);
+			const users = [...userSet].map((userUUID) => userMap.get(userUUID));
+			expect(users[1].role).toBe(USER_ROLE.NONE);
+			expect(users[2].role).toBe(USER_ROLE.NONE);
+		});
+	});
 });
