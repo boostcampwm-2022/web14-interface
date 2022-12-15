@@ -87,6 +87,7 @@
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "babel-plugin-named-exports-order": "^0.0.2",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
