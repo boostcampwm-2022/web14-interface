@@ -225,14 +225,23 @@ describe('InterviewService', () => {
 
 			await interviewService.endInterview({ client: sockets[0], server: sockets[0] });
 
-			await interviewService.endFeedback({ client: sockets[1], server: sockets[1] });
-			await interviewService.endFeedback({ client: sockets[2], server: sockets[2] });
+			const inProgressCycle = await interviewService.endFeedback({
+				client: sockets[1],
+				server: sockets[1],
+			});
+			const terminateCycle = await interviewService.endFeedback({
+				client: sockets[2],
+				server: sockets[2],
+			});
 
 			expect(rooms.get(testRoomUUID).phase).toBe(ROOM_PHASE.LOBBY);
 			const userSet = usersInRoom.get(testRoomUUID);
 			const users = [...userSet].map((userUUID) => userMap.get(userUUID));
 			expect(users[1].role).toBe(USER_ROLE.NONE);
 			expect(users[2].role).toBe(USER_ROLE.NONE);
+
+			expect(inProgressCycle.data.isLastFeedback).toBe(false);
+			expect(terminateCycle.data.isLastFeedback).toBe(true);
 		});
 	});
 });
