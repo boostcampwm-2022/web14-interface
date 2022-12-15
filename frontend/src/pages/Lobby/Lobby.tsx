@@ -44,8 +44,7 @@ const Lobby = () => {
 
 	useEffect(() => {
 		socket.on(SOCKET_EVENT_TYPE.ENTER_USER, ({ user }) => {
-			//TODO BE 대응시 변경
-			setOthers((prevOthers) => [...prevOthers, { ...user, audio: false }]);
+			setOthers((prevOthers) => [...prevOthers, user]);
 		});
 
 		socket.on(SOCKET_EVENT_TYPE.JOIN_INTERVIEW, ({ user: interviewee }) => {
@@ -73,7 +72,7 @@ const Lobby = () => {
 	useEffect(() => {
 		if (!webRTCUserList.has(me.uuid)) {
 			startConnection(me.uuid);
-			openModal('RoomInfoModal', { value: me.roomUUID });
+			if (!others.length) openModal('RoomInfoModal', { value: me.roomUUID });
 		}
 	}, []);
 
