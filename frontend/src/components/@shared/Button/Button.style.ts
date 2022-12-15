@@ -92,7 +92,7 @@ const containedButtonStyle = (theme, color, iconColor) => css`
 		filter: ${color === 'black'
 			? `brightness(200%)`
 			: color === 'secondary'
-			? `brightness(103%)`
+			? `brightness(102%)`
 			: `brightness(110%)`};
 	}
 
