@@ -25,7 +25,6 @@ import { ReactComponent as StopIcon } from '@assets/icon/stop.svg';
 import { ReactComponent as CancelIcon } from '@assets/icon/close.svg';
 import { flexRow } from '@styles/globalStyle';
 import { videoAreaStyle, videoListStyle } from '@styles/commonStyle';
-import RecordTimeLabel from '@components/RecordTimeLabel/RecordTimeLabel';
 
 const Interviewer = () => {
 	const { openModal } = useModal();
@@ -83,7 +82,6 @@ const Interviewer = () => {
 
 	return (
 		<div css={interviewerWrapperStyle}>
-			<RecordTimeLabel />
 			<div css={interviewerContainerStyle}>
 				<div css={videoAreaStyle}>
 					<IntervieweeVideo
