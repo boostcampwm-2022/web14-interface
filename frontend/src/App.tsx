@@ -3,7 +3,7 @@ import { RecoilRoot } from 'recoil';
 import { Global, ThemeProvider } from '@emotion/react';
 import { BrowserRouter } from 'react-router-dom';
 
-import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.min.css';
 import { ToastContainer } from 'react-toastify';
 
 import RootRoutes from '@routes/RootRoutes';
