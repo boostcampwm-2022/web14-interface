@@ -6,11 +6,18 @@ module.exports = {
 			plugin: CracoAlias,
 			options: {
 				source: 'tsconfig',
-				tsConfigPath: 'tsconfig.paths.json'
+				tsConfigPath: 'tsconfig.paths.json',
 			},
 		},
 	],
 	babel: {
+		plugins: ['transform-remove-console'],
 		presets: ['@emotion/babel-preset-css-prop'],
+		rules: [
+			{
+				test: /\.css$/,
+				use: ['style-loader', 'css-loader'],
+			},
+		],
 	},
 };
