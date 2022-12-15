@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import axios from 'axios';
 
-import { socketEmit } from '@api/socket.api';
+import useSocket from '@hooks/useSocket';
 import Modal from '@components/@shared/Modal/Modal';
 import { PAGE_TYPE } from '@constants/page.constant';
 import { REST_TYPE } from '@constants/rest.constant';
@@ -11,7 +11,7 @@ import useModal from '@hooks/useModal';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import { feedbackDtoSelector } from '@store/feedback.store';
 import { completedFbCntState, docsUUIDState } from '@store/interview.store';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 interface endFeedbackResponseType {
 	isLastFeedback: boolean;
@@ -21,6 +21,7 @@ interface endFeedbackResponseType {
 const EndFeedbackModal = () => {
 	const { closeModal } = useModal();
 	const { safeNavigate } = useSafeNavigate();
+	const { socketEmit } = useSocket();
 
 	const setCompletedFbCnt = useSetRecoilState(completedFbCntState);
 	const docsUUID = useRecoilValue(docsUUIDState);

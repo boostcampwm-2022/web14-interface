@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { flexColumn, flexRow } from '@styles/globalStyle';
 
-export const chatDrawerStyle = (theme) => css`
+export const chatDrawerStyle = () => css`
 	${flexColumn({ justifyContent: 'space-between' })};
 	width: 100%;
 	height: calc(100% - 56px);

@@ -30,7 +30,7 @@ import { pageState } from '@store/page.store';
 import BottomBarButtom from '@components/@shared/BottomBarButton/BottomBarButton';
 import Button from '@components/@shared/Button/Button';
 import { meInRoomState, userInfoSelector } from '@store/user.store';
-import { socketEmit } from '@api/socket.api';
+import useSocket from '@hooks/useSocket';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 
 interface Props {
@@ -44,6 +44,7 @@ enum DRAWER_TYPE {
 
 const BottomBar = ({ mainController }: Props) => {
 	const { openModal } = useModal();
+	const { socketEmit } = useSocket();
 	const page = useRecoilValue(pageState);
 	const [me, setMe] = useRecoilState(meInRoomState);
 	const userInfo = useRecoilValue(userInfoSelector);

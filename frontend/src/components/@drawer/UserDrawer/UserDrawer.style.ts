@@ -14,9 +14,15 @@ export const userItemStyle = () => css`
 	${flexRow({ justifyContent: 'space-between' })};
 `;
 
-export const userIconStyle = () => css`
+export const userIconStyle = (theme) => css`
 	${flexRow({ gap: '16px' })};
 	padding-right: 12px;
+
+	svg {
+		width: 20px;
+		height: 20px;
+		fill: ${theme.colors.white};
+	}
 `;
 
 export const drawerBottomBoxStyle = css`

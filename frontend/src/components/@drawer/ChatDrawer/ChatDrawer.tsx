@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { socketEmit } from '@api/socket.api';
+import useSocket from '@hooks/useSocket';
 import TextField from '@components/@shared/TextField/TextField';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -25,6 +25,8 @@ const ChatDrawer = () => {
 	const me = useRecoilValue(meInRoomState);
 	const [chatContent, setChatContent] = useState('');
 	const [chatList, setChatList] = useRecoilState(chatListState);
+
+	const { socketEmit } = useSocket();
 
 	const checkMe = (nickname) => me.nickname === nickname;
 	const handleChangeChatContent = (e) => {

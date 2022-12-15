@@ -1,5 +1,5 @@
 import React from 'react';
-import { socketEmit } from '@api/socket.api';
+import useSocket from '@hooks/useSocket';
 import Modal from '@components/@shared/Modal/Modal';
 import { PAGE_TYPE } from '@constants/page.constant';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
@@ -19,6 +19,7 @@ const ExitRoomModal = ({ content }: ExitRoomModalPropType) => {
 	const { closeModal } = useModal();
 	const cleanupRoom = useCleanupRoom();
 	const { safeNavigate } = useSafeNavigate();
+	const { socketEmit } = useSocket();
 
 	const me = useRecoilValue(meInRoomState);
 	const [webRTCUserList, setWebRTCUserList] = useRecoilState(webRTCUserMapState);
