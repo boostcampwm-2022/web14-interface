@@ -10,13 +10,13 @@ import { currentVideoTimeState } from '@store/currentVideoTime.store';
 import { docsUUIDState } from '@store/interview.store';
 
 import { socket } from '@service/socket';
-import mediaStreamer from '@service/mediaStreamer';
+import useMediaStreamer from '@hooks/useMediaStreamer';
 import { PAGE_TYPE } from '@constants/page.constant';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { socketEmit } from '@api/socket.api';
 import { REST_TYPE } from '@constants/rest.constant';
 import { DocsReqDtoType } from '@customType/dto';
-import { intervieweeWrapperStyle, VideoListAreaStyle } from './Interviewee.style';
+import { intervieweeWrapperStyle } from './Interviewee.style';
 import BottomBar from '@components/BottomBar/BottomBar';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
@@ -25,13 +25,15 @@ import ussCommonSocketEvent from '@hooks/useCommonSocketEvent';
 import { ReactComponent as StopIcon } from '@assets/icon/stop.svg';
 import { ReactComponent as CancelIcon } from '@assets/icon/close.svg';
 import { flexRow } from '@styles/globalStyle';
+import { videoAreaStyle, videoListStyle } from '@styles/commonStyle';
+import RecordTimeLabel from '@components/RecordTimeLabel/RecordTimeLabel';
 
 const Interviewee = () => {
 	usePreventLeave();
 	ussCommonSocketEvent();
 	const { openModal } = useModal();
 	const { safeNavigate } = useSafeNavigate();
-	const { startStream, stopStream } = mediaStreamer();
+	const { startStream, stopStream } = useMediaStreamer();
 
 	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);
 	const currentVideoTime = useRecoilValue(currentVideoTimeState);
@@ -101,28 +103,30 @@ const Interviewee = () => {
 
 	return (
 		<div css={intervieweeWrapperStyle}>
-			<div css={VideoListAreaStyle}>
-				{interviewerList.map((interviewer) => (
-					<StreamVideo
-						key={interviewer.uuid}
-						src={interviewer.stream}
-						nickname={interviewer.nickname}
-						height={'100%'}
-						audio={interviewer.audio}
-						isMyStream={interviewer.uuid === me.uuid}
-					/>
-				))}
+			<RecordTimeLabel />
+			<div css={videoAreaStyle}>
+				<IntervieweeVideo
+					key={interviewee.uuid}
+					src={interviewee.stream}
+					nickname={interviewee.nickname}
+					autoplay
+					audio={interviewee.audio}
+					width={'100%'}
+					isMyStream={interviewee.uuid === me.uuid}
+				/>
+				<div css={videoListStyle}>
+					{interviewerList.map((interviewer) => (
+						<StreamVideo
+							key={interviewer.uuid}
+							src={interviewer.stream}
+							nickname={interviewer.nickname}
+							audio={interviewer.audio}
+							width={'33%'}
+							isMyStream={interviewer.uuid === me.uuid}
+						/>
+					))}
+				</div>
 			</div>
-			<IntervieweeVideo
-				key={interviewee.uuid}
-				src={interviewee.stream}
-				nickname={interviewee.nickname}
-				height="64%"
-				autoplay
-				audio={interviewee.audio}
-				isMyStream={interviewee.uuid === me.uuid}
-			/>
-
 			<BottomBar mainController={endInterviewBtn} />
 		</div>
 	);

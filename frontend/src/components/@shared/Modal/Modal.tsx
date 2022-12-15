@@ -15,6 +15,7 @@ export interface ModalPropType {
 
 export interface ModalContentAreaPropType {
 	children: React.ReactNode | React.ReactNode[];
+	gap?: string;
 	flexDirection?: 'column' | 'row';
 }
 
@@ -22,12 +23,20 @@ export interface ModalCloseButtonPropType extends buttonPropType {
 	children: React.ReactNode | React.ReactNode[];
 }
 
-const ModalTitle = ({ children }: any) => {
-	return <span css={ModalTitleStyle}>{children}</span>;
+export interface ModalTitlePropTYpe extends ModalPropType {
+	color?: 'red' | 'black' | 'primary';
+}
+
+const ModalTitle = ({ children, color = 'black' }: ModalTitlePropTYpe) => {
+	return <span css={(theme) => ModalTitleStyle(theme, color)}>{children}</span>;
 };
 
-const ModalContentArea = ({ children, flexDirection = 'column' }: ModalContentAreaPropType) => {
-	return <div css={ModalContentAreaStyle(flexDirection)}>{children}</div>;
+const ModalContentArea = ({
+	children,
+	gap,
+	flexDirection = 'column',
+}: ModalContentAreaPropType) => {
+	return <div css={ModalContentAreaStyle(gap, flexDirection)}>{children}</div>;
 };
 
 const ModalButtonArea = ({ children }: ModalPropType) => {

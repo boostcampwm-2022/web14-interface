@@ -56,7 +56,7 @@ TextModal.args = {};
 
 const TextFieldModalTemplate: Story = (args) => (
 	<Modal>
-		<Modal.Title textAlign="center">타이틀</Modal.Title>
+		<Modal.Title>타이틀</Modal.Title>
 		<Modal.ContentArea>
 			<Modal.TextField width={'100%'} textAlign={'center'} />
 		</Modal.ContentArea>

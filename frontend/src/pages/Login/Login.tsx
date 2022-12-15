@@ -3,7 +3,7 @@ import axios from 'axios';
 import { OAUTH_TYPE } from '@constants/oauth.constant';
 
 import Button from '@components/@shared/Button/Button';
-import { ReactComponent as InterfacePreview } from '@assets/preview.svg';
+import { ReactComponent as InterfaceSyncPreview } from '@assets/preview_sync.svg';
 import { ReactComponent as Logo } from '@assets/logo_white.svg';
 import { ReactComponent as NaverIcon } from '@assets/icon/naver.svg';
 import { ReactComponent as KakaoIcon } from '@assets/icon/kakao.svg';
@@ -25,7 +25,7 @@ const Login = () => {
 	return (
 		<>
 			<div css={LoginWrapper}>
-				<InterfacePreview css={previewStyle} />
+				<InterfaceSyncPreview css={previewStyle} />
 				<div css={flexColumn({ gap: '32px' })}>
 					<div css={flexColumn({ gap: '16px' })}>
 						<Logo css={logoStyle} />

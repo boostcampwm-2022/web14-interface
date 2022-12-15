@@ -12,7 +12,7 @@ export const LoginWrapper = (theme) => css`
 	height: 100%;
 	background: ${theme.colors.tertiary};
 
-	gap: 64px;
+	gap: 128px;
 	color: ${theme.colors.white};
 
 	span {

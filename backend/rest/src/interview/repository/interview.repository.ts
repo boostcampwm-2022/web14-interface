@@ -1,6 +1,6 @@
 import { DocsWhereCondition } from 'src/types/query.type';
 import { DocsRequestDto } from '../dto/request-docs.dto';
-import { feedbackBoxDto } from '../dto/request-feedback.dto';
+import { FeedbackVO } from '@types';
 
 export interface InterviewRepository<T> {
 	/**
@@ -50,19 +50,8 @@ export interface InterviewRepository<T> {
 	deleteInterviewDocs(docsUUID: string): Promise<string>;
 
 	/**
-	 * feedback을 저장합니다.
-	 * @param userId user id
-	 * @param docs docs Entity
-	 * @param feedbackBoxDto startTime, innerIndex, content
-	 * @returns feedback id
+	 * feedback list를 저장합니다.
+	 * @param feedbackVO
 	 */
-	saveFeedback({
-		userId,
-		docs,
-		feedbackBoxDto,
-	}: {
-		userId: string;
-		docs: T;
-		feedbackBoxDto: feedbackBoxDto;
-	}): Promise<number>;
+	saveFeedbackList(feedbackVO: FeedbackVO<T>[]): Promise<void>;
 }

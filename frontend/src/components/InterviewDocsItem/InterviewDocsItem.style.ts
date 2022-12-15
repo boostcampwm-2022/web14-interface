@@ -19,6 +19,10 @@ export const docsItemWrapper = (theme, style) =>
 		&:hover {
 			background-color: ${theme.colors.primary + '11'};
 		}
+
+		&:has(button:hover) {
+			background: none;
+		}
 	`;
 
 const cardDocsStyle = (theme) => css`

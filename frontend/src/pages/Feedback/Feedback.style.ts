@@ -10,6 +10,7 @@ export const feedbackWrapperStyle = (theme) => css`
 export const feedbackContainerStyle = (theme) => css`
 	${flexRow({ gap: '24px' })};
 
+	width: 80%;
 	height: 100%;
 	max-width: 1200px;
 	margin: auto;

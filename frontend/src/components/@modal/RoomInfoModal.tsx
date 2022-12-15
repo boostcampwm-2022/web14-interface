@@ -1,16 +1,25 @@
 import React from 'react';
 import Modal from '@components/@shared/Modal/Modal';
 import { ReactComponent as CopyIcon } from '@assets/icon/copy.svg';
+import { toast } from 'react-toastify';
 
 export interface RoomInfoModelPropType {
 	value: string;
 }
 
 const RoomInfoModal = ({ value }: RoomInfoModelPropType) => {
-	const copyValue = async () => {
+	const copyRoomInfo = async () => {
 		await navigator.clipboard.writeText(value);
-		//TODO Toast로 변경
-		alert('복사 완료');
+		toast('복사 완료', {
+			position: 'bottom-center',
+			autoClose: 5000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+			theme: 'colored',
+		});
 	};
 
 	return (
@@ -18,7 +27,7 @@ const RoomInfoModal = ({ value }: RoomInfoModelPropType) => {
 			<Modal.Title>방 정보</Modal.Title>
 			<Modal.ContentArea flexDirection="row">
 				<Modal.TextField width="100%" textAlign="center" readOnly value={value} />
-				<Modal.Button onClick={copyValue}>
+				<Modal.Button onClick={copyRoomInfo}>
 					<CopyIcon />
 				</Modal.Button>
 			</Modal.ContentArea>

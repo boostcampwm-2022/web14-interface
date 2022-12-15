@@ -23,25 +23,24 @@ import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
 import useModal from '@hooks/useModal';
 import ussCommonSocketEvent from '@hooks/useCommonSocketEvent';
-import { flexRow } from '@styles/globalStyle';
-import { css } from '@emotion/react';
-
-interface endFeedbackResponseType {
-	isLastFeedback: boolean;
-	count: number;
-}
+import { meInRoomState, userRoleSelector } from '@store/user.store';
+import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
+import { videoAreaStyle, videoListStyle } from '@styles/commonStyle';
+import Loading from '@components/Loading/Loading';
 
 const Feedback = () => {
 	usePreventLeave();
 	ussCommonSocketEvent();
-
 	const { openModal } = useModal();
-	const cleanupInterview = useCleanupInterview();
 
 	const [isFbSync, setIsFbSync] = useRecoilState(isFbSyncState);
 	const feedbackList = useRecoilValue(feedbackListSelector);
 
 	const [videoUrl, setVideoUrl] = useState('');
+	const isVideoLoad = videoUrl.length > 0;
+
+	const { interviewerList } = useRecoilValue(userRoleSelector);
+	const me = useRecoilValue(meInRoomState);
 
 	const handleEndFeedback = () => {
 		openModal('EndFeedbackModal');
@@ -55,10 +54,6 @@ const Feedback = () => {
 		return () => {
 			socket.off(SOCKET_EVENT_TYPE.DOWNLOAD_VIDEO);
 		};
-	}, []);
-
-	useEffect(() => {
-		return cleanupInterview;
 	}, []);
 
 	const finishFeedbackBtn = (
@@ -75,7 +70,25 @@ const Feedback = () => {
 	return (
 		<div css={feedbackWrapperStyle}>
 			<div css={feedbackContainerStyle}>
-				<IntervieweeVideo src={videoUrl} width={'50%'} autoplay muted controls />
+				<div css={videoAreaStyle}>
+					{isVideoLoad ? (
+						<IntervieweeVideo src={videoUrl} width={'100%'} autoplay muted controls />
+					) : (
+						<Loading />
+					)}
+					<div css={videoListStyle}>
+						{interviewerList.map((interviewer) => (
+							<StreamVideo
+								key={interviewer.uuid}
+								src={interviewer.stream}
+								nickname={interviewer.nickname}
+								audio={interviewer.audio}
+								width={'33%'}
+								isMyStream={interviewer.uuid === me.uuid}
+							/>
+						))}
+					</div>
+				</div>
 				<div css={syncButtonAreaStyle}>
 					<SyncDotLine css={syncDotLineStyle} />
 					<RoundButton

@@ -17,20 +17,22 @@ import { socket } from '../../service/socket';
 import { UserType } from '@customType/user';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { PAGE_TYPE } from '@constants/page.constant';
-import { iconBgStyle } from '@styles/commonStyle';
-import { lobbyWrapperStyle, VideoAreaStyle } from './Lobby.style';
+import { lobbyWrapperStyle, lobbyVideoAreaStyle } from './Lobby.style';
 import { ReactComponent as BroadcastIcon } from '@assets/icon/broadcast.svg';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
 import useModal from '@hooks/useModal';
 import { useUserRole } from '@hooks/useUserRole';
 import ussCommonSocketEvent from '@hooks/useCommonSocketEvent';
+import useCleanupInterview from '@hooks/useCleanupInterview';
 
 const Lobby = () => {
 	usePreventLeave();
+	ussCommonSocketEvent();
+
 	const { safeNavigate } = useSafeNavigate();
 	const { openModal } = useModal();
-	ussCommonSocketEvent();
+	const cleanupInterview = useCleanupInterview();
 
 	const [me, setMe] = useRecoilState<UserType>(meInRoomState);
 	const [others, setOthers] = useRecoilState<UserType[]>(othersInRoomState);
@@ -45,8 +47,7 @@ const Lobby = () => {
 
 	useEffect(() => {
 		socket.on(SOCKET_EVENT_TYPE.ENTER_USER, ({ user }) => {
-			//TODO BE 대응시 변경
-			setOthers((prevOthers) => [...prevOthers, { ...user, audio: false }]);
+			setOthers((prevOthers) => [...prevOthers, user]);
 		});
 
 		socket.on(SOCKET_EVENT_TYPE.JOIN_INTERVIEW, ({ user: interviewee }) => {
@@ -63,7 +64,7 @@ const Lobby = () => {
 	useEffect(() => {
 		socket.on(SOCKET_EVENT_TYPE.LEAVE_USER, ({ user }) => {
 			closeConnection(user);
-			setOthers((prevOhters) => prevOhters.filter((other) => other.uuid !== user.uuid));
+			setOthers((prevOthers) => prevOthers.filter((other) => other.uuid !== user.uuid));
 		});
 
 		return () => {
@@ -72,9 +73,10 @@ const Lobby = () => {
 	}, [others, webRTCUserList]);
 
 	useEffect(() => {
+		cleanupInterview();
 		if (!webRTCUserList.has(me.uuid)) {
 			startConnection(me.uuid);
-			openModal('RoomInfoModal', { value: me.roomUUID });
+			if (!others.length) openModal('RoomInfoModal', { value: me.roomUUID });
 		}
 	}, []);
 
@@ -89,14 +91,14 @@ const Lobby = () => {
 				width: 160,
 			}}
 		>
-			<BroadcastIcon {...iconBgStyle} />
+			<BroadcastIcon />
 			<span>면접 시작</span>
 		</RoundButton>
 	);
 
 	return (
 		<div css={lobbyWrapperStyle}>
-			<div css={VideoAreaStyle}>
+			<div css={lobbyVideoAreaStyle}>
 				<VideoGrid>
 					{userInfoList.map(({ uuid, stream, nickname, audio }) => (
 						<StreamVideo

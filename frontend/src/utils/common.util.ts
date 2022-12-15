@@ -1,5 +1,7 @@
+import { SOCKET_RES_MESSAGE, SOCKET_TOAST_MESSAGE } from '@constants/socket.constant';
 import { ONE_MINUTE, ONE_SECOND } from '@constants/time.constant';
 import { EditableFeedbackType, FeedbackItemType, FeedbackType } from '@customType/feedback';
+import { toast } from 'react-toastify';
 
 export const secMMSSFormatter = (totalSec: number) => {
 	const min = Math.floor(totalSec / 60)
@@ -39,4 +41,37 @@ export const getFirstLabeledFbList = (
 
 		return fb;
 	});
+};
+
+export const findToastMessage = (message) => {
+	switch (message) {
+		case SOCKET_RES_MESSAGE.NO_ROOM:
+			return SOCKET_TOAST_MESSAGE.NO_ROOM;
+		case SOCKET_RES_MESSAGE.BUSY_ROOM:
+			return SOCKET_TOAST_MESSAGE.BUSY_ROOM;
+		case SOCKET_RES_MESSAGE.EXIST_SAME_AUTH_ID:
+			return SOCKET_TOAST_MESSAGE.EXIST_SAME_AUTH_ID;
+		case SOCKET_RES_MESSAGE.FULL_ROOM:
+			return SOCKET_TOAST_MESSAGE.FULL_ROOM;
+		case SOCKET_RES_MESSAGE.NOT_ENOUGHT_USER:
+			return SOCKET_TOAST_MESSAGE.NOT_ENOUGHT_USER;
+		default:
+			return null;
+	}
+};
+
+export const getToatMessage = (message) => {
+	const toastMessage = findToastMessage(message);
+
+	if (toastMessage)
+		toast.error(toastMessage, {
+			position: 'bottom-center',
+			autoClose: 5000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+			theme: 'colored',
+		});
 };

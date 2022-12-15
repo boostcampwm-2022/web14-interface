@@ -14,7 +14,6 @@ import { RoomRepository } from '../../repository/room.repository';
 import { getRandomNickname } from '@woowa-babble/random-nickname';
 import { UpdateMediaDto } from 'src/room/dto/update-media-info.dto';
 import { UserDto } from 'src/room/dto/user.dto';
-import { WsException } from '@nestjs/websockets';
 
 @Injectable()
 export class ConnectionService {
@@ -27,7 +26,12 @@ export class ConnectionService {
 	 * uuid를 기반으로 방을 생성하고 저장하는 메서드입니다.
 	 * @returns uuid - 방의 uuid
 	 */
-	async createRoom() {
+	async createRoom(client: Socket) {
+		const exception = await this.isEnterableClient(client.data.authId);
+		if (exception) {
+			return exception;
+		}
+
 		const defaultRoom = this.createDefaultRoom();
 		const room = await this.roomRepository.createRoom({
 			roomUUID: defaultRoom.roomUUID,
@@ -46,7 +50,7 @@ export class ConnectionService {
 	async enterRoom({ client, roomUUID }: { client: Socket; roomUUID: string }) {
 		const room = await this.roomRepository.getRoom(roomUUID);
 
-		const exception = await this.isEnterable({ client, room });
+		const exception = await this.isEnterable({ authId: client.data.userId, room });
 		if (exception) return exception;
 
 		const user = await this.createDefaultUser({ client, roomUUID });
@@ -67,8 +71,8 @@ export class ConnectionService {
 	 * client가 들어갈 수 있는지 & room이 현재 들어갈 수 있는 상황인지 체크하는 메서드입니다.
 	 * @returns
 	 */
-	async isEnterable({ client, room }: { client: Socket; room: Room }) {
-		return (await this.isEnterableClient(client)) ?? (await this.isEnterableRoom(room)) ?? null;
+	async isEnterable({ authId, room }: { authId: string; room: Room }) {
+		return (await this.isEnterableClient(authId)) ?? (await this.isEnterableRoom(room)) ?? null;
 	}
 
 	/**
@@ -95,12 +99,12 @@ export class ConnectionService {
 	}
 
 	/**
-	 * 해당 socket client가 interview에 참석할 수 있는지 체크하는 메서드입니다.
-	 * @param client
+	 * 회원이 interview에 참석할 수 있는지 체크하는 메서드입니다.
+	 * @param authId
 	 * @returns
 	 */
-	async isEnterableClient(client: Socket) {
-		const prevUser = await this.roomRepository.getUserIdByAuthId(client.data.authId);
+	async isEnterableClient(authId: string) {
+		const prevUser = await this.roomRepository.getUserIdByAuthId(authId);
 		if (prevUser) {
 			return { success: false, message: SOCKET_MESSAGE.EXIST_SAME_AUTH_ID };
 		}
@@ -114,7 +118,7 @@ export class ConnectionService {
 	 */
 	async leaveRoom(client: Socket) {
 		const user = await this.roomRepository.getUserByClientId(client.id);
-		if (!user) return;
+		if (!user) return {};
 
 		const roomUUID = user.roomUUID;
 

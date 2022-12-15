@@ -7,14 +7,14 @@ import useCleanupInterview from './useCleanupInterview';
 const useCleanupRoom = () => {
 	const cleanupInterview = useCleanupInterview();
 	const roomUUIDRefresher = useResetRecoilState(roomUUIDState);
-	const ohtersRefresher = useResetRecoilState(othersInRoomState);
+	const othersRefresher = useResetRecoilState(othersInRoomState);
 	const meRefresher = useResetRecoilState(meInRoomState);
 	const webRTCUserMapRefresher = useResetRecoilState(webRTCUserMapState);
 
 	const cleanupRoom = useCallback(() => {
 		console.log('cleanup room');
 		roomUUIDRefresher();
-		ohtersRefresher();
+		othersRefresher();
 		meRefresher();
 		webRTCUserMapRefresher();
 

@@ -57,4 +57,5 @@ export enum EXCEPTION_MESSAGE {
 	INVALID_USER_ROLE = '해당하는 유저의 역할이 없습니다.',
 	INVALID_CHANGE_PHASE = 'interview 진행 단계가 옳바르지 않습니다.',
 	INVALID_CHAT_DATA = '비정상적인 채팅 데이터입니다.',
+	NOT_FOUND_USER = '유저가 존재하지 않습니다.',
 }

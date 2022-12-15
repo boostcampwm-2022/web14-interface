@@ -9,6 +9,7 @@ import { UserType } from '@customType/user';
 import { useUserRole } from '@hooks/useUserRole';
 import { useRecoilValue } from 'recoil';
 import { meInRoomState } from '@store/user.store';
+import { css } from '@emotion/react';
 
 interface joinInterviewResponseType {
 	usersInRoom: UserType[];
@@ -31,6 +32,9 @@ const StartInterviewModal = () => {
 	return (
 		<Modal>
 			<Modal.Title>면접자로 시작하시겠습니까?</Modal.Title>
+			<Modal.ContentArea>
+				<span css={timeLimitMessage}>최대 녹화 가능 시간은 1시간입니다.</span>
+			</Modal.ContentArea>
 			<Modal.ButtonArea>
 				<Modal.CloseButton>취소</Modal.CloseButton>
 				<Modal.Button onClick={handleStartInterviewee}>시작</Modal.Button>
@@ -40,3 +44,7 @@ const StartInterviewModal = () => {
 };
 
 export default StartInterviewModal;
+
+const timeLimitMessage = (theme) => css`
+	color: ${theme.colors.red};
+`;
