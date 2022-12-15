@@ -8,16 +8,19 @@ import { PAGE_TYPE } from '@constants/page.constant';
 
 import { socket } from '../../service/socket';
 import BottomBar from '@components/BottomBar/BottomBar';
-import { waitingWrapperStyle } from './Waiting.style';
+import {
+	loseStyle,
+	notiSideStyle,
+	tetrisLeftStyle,
+	tetrisWrapperStyle,
+	waitingWrapperStyle,
+} from './Waiting.style';
 import useCleanupInterview from '@hooks/useCleanupInterview';
 import { othersInRoomState } from '@store/user.store';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import ussCommonSocketEvent from '@hooks/useCommonSocketEvent';
 
 import Tetris from 'react-tetris';
-import './Tetris.style.css';
-import { css } from '@emotion/react';
-import { flexColumn, flexRow } from '@styles/globalStyle';
 import Button from '@components/@shared/Button/Button';
 
 const Waiting = () => {
@@ -110,25 +113,3 @@ const Waiting = () => {
 };
 
 export default Waiting;
-
-const notiSideStyle = () => css`
-	${flexColumn({ gap: '32px' })}
-`;
-
-const tetrisWrapperStyle = () => css`
-	${flexRow({ gap: '32px' })};
-`;
-
-const tetrisLeftStyle = () => css`
-	${flexColumn({})};
-
-	p {
-		font-size: 20px;
-	}
-`;
-
-const loseStyle = () => css`
-	p {
-		font-size: 16px;
-	}
-`;
