@@ -6,15 +6,14 @@ import { ConnectionService } from './connection.service';
 import MockedSocket from 'socket.io-mock';
 import { InternalServerErrorException } from '@nestjs/common';
 
-const sockets = [];
-
 const testRoomUUID = 'testRoomUUID';
+const testBusyRoomUUID = 'testBusyRoomUUID';
 
-const rooms = new Map<roomUUID, Room>();
-const usersInRoom = new Map<roomUUID, Set<userUUID>>();
-const clientUserIdMap = new Map<clientId, userUUID>();
-const authIdUserIdMap = new Map<authId, userUUID>();
-const userMap = new Map<userUUID, User>();
+let rooms;
+let usersInRoom;
+let clientUserIdMap;
+let authIdUserIdMap;
+let userMap;
 
 const mockRoomRepository = () => ({
 	createRoom: jest.fn(({ roomUUID, room }) => {
@@ -48,16 +47,43 @@ const mockRoomRepository = () => ({
 	}),
 });
 
+const createMockSockets = (count) => {
+	const sockets = [];
+	for (let i = 0; i < count; i++) {
+		const socket = new MockedSocket();
+		socket.data = { authId: `testAuthId${i}` };
+		socket.to = function (uuid) {
+			return this;
+		};
+
+		sockets.push(socket);
+	}
+
+	return sockets;
+};
+
 describe('ConnectionService', () => {
 	let connectionService: ConnectionService;
 	let roomRepository: MockRepository<RoomRepository>;
+	let sockets;
 
 	beforeAll(() => {
-		rooms.set(testRoomUUID, { roomUUID: testRoomUUID, phase: ROOM_PHASE.LOBBY });
-		usersInRoom.set(testRoomUUID, new Set());
+		sockets = createMockSockets(5);
 	});
 
 	beforeEach(async () => {
+		rooms = new Map<roomUUID, Room>();
+		usersInRoom = new Map<roomUUID, Set<userUUID>>();
+		clientUserIdMap = new Map<clientId, userUUID>();
+		authIdUserIdMap = new Map<authId, userUUID>();
+		userMap = new Map<userUUID, User>();
+
+		rooms.set(testRoomUUID, { roomUUID: testRoomUUID, phase: ROOM_PHASE.LOBBY });
+		usersInRoom.set(testRoomUUID, new Set());
+
+		rooms.set(testBusyRoomUUID, { roomUUID: testBusyRoomUUID, phase: ROOM_PHASE.INTERVIEW });
+		usersInRoom.set(testBusyRoomUUID, new Set());
+
 		const module: TestingModule = await Test.createTestingModule({
 			providers: [
 				ConnectionService,
@@ -87,13 +113,11 @@ describe('ConnectionService', () => {
 	describe('방 참가 테스트', () => {
 		it('없는 방에 참가', async () => {
 			const socket = new MockedSocket();
-			socket.socketClient.data = { authId: 'testAuthId' };
-
-			console.log(rooms.get(testRoomUUID));
+			socket.data = { authId: 'testAuthId' };
 
 			const result = await connectionService.enterRoom({
 				roomUUID: 'unknownUUID',
-				client: socket.socketClient,
+				client: socket,
 			});
 
 			if (!('success' in result)) {
@@ -113,8 +137,6 @@ describe('ConnectionService', () => {
 			};
 			socket.data = { authId: 'testAuthId' };
 
-			console.log(rooms.get(testRoomUUID));
-
 			await connectionService.enterRoom({
 				roomUUID: testRoomUUID,
 				client: socket,
@@ -133,6 +155,57 @@ describe('ConnectionService', () => {
 			}
 			const { message } = result;
 			expect(message).toBe(SOCKET_MESSAGE.EXIST_SAME_AUTH_ID);
+		});
+
+		it('인터뷰가 진행중일 때 참가', async () => {
+			const socket = new MockedSocket();
+			socket.data = { authId: 'testAuthId' };
+
+			const result = await connectionService.enterRoom({
+				roomUUID: testBusyRoomUUID,
+				client: socket,
+			});
+
+			if (!('success' in result)) {
+				throw new InternalServerErrorException();
+			}
+			if (result.success) {
+				throw new InternalServerErrorException();
+			}
+			const { message } = result;
+			expect(message).toBe(SOCKET_MESSAGE.BUSY_ROOM);
+		});
+
+		it('참가 허용 인원 초과', async () => {
+			await connectionService.enterRoom({
+				roomUUID: testRoomUUID,
+				client: sockets[0],
+			});
+			await connectionService.enterRoom({
+				roomUUID: testRoomUUID,
+				client: sockets[1],
+			});
+			await connectionService.enterRoom({
+				roomUUID: testRoomUUID,
+				client: sockets[2],
+			});
+			await connectionService.enterRoom({
+				roomUUID: testRoomUUID,
+				client: sockets[3],
+			});
+			const result = await connectionService.enterRoom({
+				roomUUID: testRoomUUID,
+				client: sockets[4],
+			});
+
+			if (!('success' in result)) {
+				throw new InternalServerErrorException();
+			}
+			if (result.success) {
+				throw new InternalServerErrorException();
+			}
+			const { message } = result;
+			expect(message).toBe(SOCKET_MESSAGE.FULL_ROOM);
 		});
 	});
 });
