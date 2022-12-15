@@ -40,7 +40,7 @@ export class OauthKakaoService implements OauthService {
 		const { access_token } = await axios
 			.get(KAKAO_ACCESS_TOKEN_URL + queryString)
 			.then((res) => res.data);
-		console.log(access_token);
+
 		return access_token;
 	}
 
