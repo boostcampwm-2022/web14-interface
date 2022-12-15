@@ -70,9 +70,6 @@ const globalStyle = css`
 		-ms-overflow-style: none;
 		scrollbar-width: none;
 	}
-	/* div::-webkit-scrollbar {
-		display: none;
-	} */
 
 	textarea::-webkit-scrollbar {
 		display: none;
