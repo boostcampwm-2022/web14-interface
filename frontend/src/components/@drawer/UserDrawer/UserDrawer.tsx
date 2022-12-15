@@ -18,10 +18,25 @@ import {
 import { iconSmStyle } from '@styles/commonStyle';
 import { meInRoomState, othersInRoomState } from '@store/user.store';
 import Button from '@components/@shared/Button/Button';
+import { toast } from 'react-toastify';
 
 const UserDrawer = () => {
 	const others = useRecoilValue(othersInRoomState);
 	const me = useRecoilValue(meInRoomState);
+
+	const copyRoomCode = async (roomInfo) => {
+		await navigator.clipboard.writeText(roomInfo);
+		toast('복사 완료', {
+			position: 'bottom-center',
+			autoClose: 5000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+			theme: 'colored',
+		});
+	};
 
 	return (
 		<>
@@ -67,7 +82,7 @@ const UserDrawer = () => {
 						size="small"
 						style="text"
 						color="secondary"
-						onClick={() => navigator.clipboard.writeText(me.roomUUID)}
+						onClick={() => copyRoomCode(me.roomUUID)}
 					>
 						<CopyIcon />
 					</Button>

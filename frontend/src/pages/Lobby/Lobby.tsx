@@ -24,12 +24,15 @@ import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
 import useModal from '@hooks/useModal';
 import { useUserRole } from '@hooks/useUserRole';
 import ussCommonSocketEvent from '@hooks/useCommonSocketEvent';
+import useCleanupInterview from '@hooks/useCleanupInterview';
 
 const Lobby = () => {
 	usePreventLeave();
+	ussCommonSocketEvent();
+
 	const { safeNavigate } = useSafeNavigate();
 	const { openModal } = useModal();
-	ussCommonSocketEvent();
+	const cleanupInterview = useCleanupInterview();
 
 	const [me, setMe] = useRecoilState<UserType>(meInRoomState);
 	const [others, setOthers] = useRecoilState<UserType[]>(othersInRoomState);
@@ -61,7 +64,7 @@ const Lobby = () => {
 	useEffect(() => {
 		socket.on(SOCKET_EVENT_TYPE.LEAVE_USER, ({ user }) => {
 			closeConnection(user);
-			setOthers((prevOhters) => prevOhters.filter((other) => other.uuid !== user.uuid));
+			setOthers((prevOthers) => prevOthers.filter((other) => other.uuid !== user.uuid));
 		});
 
 		return () => {
@@ -70,6 +73,7 @@ const Lobby = () => {
 	}, [others, webRTCUserList]);
 
 	useEffect(() => {
+		cleanupInterview();
 		if (!webRTCUserList.has(me.uuid)) {
 			startConnection(me.uuid);
 			if (!others.length) openModal('RoomInfoModal', { value: me.roomUUID });

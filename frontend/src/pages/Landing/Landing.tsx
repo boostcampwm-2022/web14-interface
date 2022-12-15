@@ -30,6 +30,7 @@ import {
 import Button from '@components/@shared/Button/Button';
 import useModal from '@hooks/useModal';
 import { meInRoomState, othersInRoomState } from '@store/user.store';
+import { toast } from 'react-toastify';
 
 interface createRoomResponseType {
 	uuid: string;
@@ -54,7 +55,16 @@ const Landing = () => {
 	const handleSignOut = async () => {
 		//TODO TOAST로 교체
 		await axios.get('/api/auth/logout');
-		alert('로그아웃 되었습니다.');
+		toast.success('로그아웃 되었습니다.', {
+			position: 'bottom-center',
+			autoClose: 5000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+			theme: 'colored',
+		});
 		refreshAuth();
 		naviagte(ROUTE_TYPE.LOGIN_ROUTE);
 	};

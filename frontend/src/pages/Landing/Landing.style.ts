@@ -35,8 +35,8 @@ export const mainStyle = (theme) => css`
 	background: linear-gradient(
 		to bottom,
 		${theme.colors.white} 0%,
-		${theme.colors.white} 65%,
-		${theme.colors.tertiary} 65%,
+		${theme.colors.white} 60%,
+		${theme.colors.tertiary} 60%,
 		${theme.colors.tertiary} 100%
 	);
 `;

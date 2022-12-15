@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 
 import { socketEmit } from '@api/socket.api';
@@ -11,8 +11,7 @@ import useModal from '@hooks/useModal';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import { feedbackDtoSelector } from '@store/feedback.store';
 import { completedFbCntState, docsUUIDState } from '@store/interview.store';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { meInRoomState } from '@store/user.store';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 interface endFeedbackResponseType {
 	isLastFeedback: boolean;
@@ -25,14 +24,12 @@ const EndFeedbackModal = () => {
 
 	const setCompletedFbCnt = useSetRecoilState(completedFbCntState);
 	const docsUUID = useRecoilValue(docsUUIDState);
-	const me = useRecoilValue(meInRoomState);
 	const feedbackListDto = useRecoilValue(feedbackDtoSelector);
 
 	const handleEndFeedback = async () => {
 		const { isLastFeedback, count } = await socketEmit<endFeedbackResponseType>(
 			SOCKET_EVENT_TYPE.END_FEEDBACK
 		);
-		setCompletedFbCnt(count);
 
 		const feedbackDto: FeedbackDtoType = {
 			docsUUID,
@@ -40,6 +37,8 @@ const EndFeedbackModal = () => {
 		};
 
 		axios.post(REST_TYPE.FEEDBACK, feedbackDto);
+
+		setCompletedFbCnt(count);
 
 		closeModal();
 

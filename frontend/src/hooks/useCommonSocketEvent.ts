@@ -16,7 +16,7 @@ const ussCommonSocketEvent = () => {
 	useEffect(() => {
 		socket.on(SOCKET_EVENT_TYPE.LEAVE_USER, ({ user }) => {
 			closeConnection(user);
-			setOthers((prevOhters) => prevOhters.filter((other) => other.uuid !== user.uuid));
+			setOthers((prevOthers) => prevOthers.filter((other) => other.uuid !== user.uuid));
 		});
 
 		return () => {

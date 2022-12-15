@@ -32,7 +32,6 @@ const Feedback = () => {
 	usePreventLeave();
 	ussCommonSocketEvent();
 	const { openModal } = useModal();
-	const cleanupInterview = useCleanupInterview();
 
 	const [isFbSync, setIsFbSync] = useRecoilState(isFbSyncState);
 	const feedbackList = useRecoilValue(feedbackListSelector);
@@ -55,10 +54,6 @@ const Feedback = () => {
 		return () => {
 			socket.off(SOCKET_EVENT_TYPE.DOWNLOAD_VIDEO);
 		};
-	}, []);
-
-	useEffect(() => {
-		return cleanupInterview;
 	}, []);
 
 	const finishFeedbackBtn = (
@@ -120,9 +115,3 @@ const Feedback = () => {
 };
 
 export default Feedback;
-
-const WRAPPER_STYLE = {
-	margin: '30px auto',
-	height: 700,
-	width: 700,
-};

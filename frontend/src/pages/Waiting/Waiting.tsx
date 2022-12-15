@@ -27,14 +27,12 @@ const Waiting = () => {
 	usePreventLeave();
 	ussCommonSocketEvent();
 
-	const cleanupInterview = useCleanupInterview();
 	const { safeNavigate } = useSafeNavigate();
 	const totalUser = useRecoilValue(othersInRoomState);
 	const [completedFbCnt, setCompletedFbCnt] = useRecoilState(completedFbCntState);
 
 	useEffect(() => {
-		socket.on(SOCKET_EVENT_TYPE.COUNT_FEEDBACK, (res) => {
-			const { count } = res;
+		socket.on(SOCKET_EVENT_TYPE.COUNT_FEEDBACK, ({ count }) => {
 			setCompletedFbCnt(count);
 		});
 
@@ -49,9 +47,6 @@ const Waiting = () => {
 		};
 	}, []);
 
-	useEffect(() => {
-		return cleanupInterview;
-	}, []);
 
 	return (
 		<>

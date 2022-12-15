@@ -20,7 +20,7 @@ const InterviewDocsList = ({ roomUUID = '', handleClickDocsItem }: InterviewDocs
 					<DocsItem
 						key={docs.id}
 						docs={docs}
-						idx={idx}
+						idx={idx + 1}
 						style="list"
 						handleClickDocsItem={handleClickDocsItem}
 					/>

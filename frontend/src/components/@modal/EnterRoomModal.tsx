@@ -19,7 +19,7 @@ interface attendRoomResponseType {
 
 const EnterRoomModal = () => {
 	const [roomUUID, setRoomUUID] = useState('');
-	const [errorMsg, setErrorMsg] = useState('');
+	const [inputError, setInputError] = useState(false);
 	const setOthers = useSetRecoilState(othersInRoomState);
 	const setMe = useSetRecoilState(meInRoomState);
 	const setRoom = useSetRecoilState(roomUUIDState);
@@ -28,7 +28,7 @@ const EnterRoomModal = () => {
 	const { safeNavigate } = useSafeNavigate();
 
 	const handleChange = (e) => {
-		setErrorMsg('');
+		setInputError(false);
 		setRoomUUID(e.target.value);
 	};
 
@@ -46,7 +46,7 @@ const EnterRoomModal = () => {
 			closeModal();
 			safeNavigate(PAGE_TYPE.LOBBY_PAGE);
 		} catch (e) {
-			setErrorMsg(e.message);
+			setInputError(true);
 		}
 	};
 
@@ -57,10 +57,9 @@ const EnterRoomModal = () => {
 				<Modal.TextField
 					width={'100%'}
 					textAlign="center"
-					error={errorMsg?.length > 0}
+					error={inputError}
 					value={roomUUID}
 					onChange={handleChange}
-					helperText={errorMsg}
 				/>
 			</Modal.ContentArea>
 			<Modal.ButtonArea>
