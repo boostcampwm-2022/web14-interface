@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import { RedirectUrlResponseDto } from 'src/auth/dto/redirect-url.dto';
 import { UserIdResponseDto } from 'src/auth/dto/user-id.dto';
 import { DocsListResponseDto } from 'src/interview/dto/docs-list.dto';
-import { DocsGetResponseDto } from 'src/interview/dto/docs.dto';
+import { DocsResponseDto } from 'src/interview/dto/docs.dto';
 import { DocsRequestDto } from 'src/interview/dto/request-docs.dto';
 import { FeedbackRequestDto } from 'src/interview/dto/feedback.dto';
 
@@ -87,7 +87,7 @@ export const GET_INTERVIEW_DOCS_SWAGGER = {
 	SUCCESS: {
 		status: HttpStatus.OK,
 		description: '성공',
-		type: DocsGetResponseDto,
+		type: DocsResponseDto,
 	},
 	FAIL: {
 		status: HttpStatus.UNAUTHORIZED,
