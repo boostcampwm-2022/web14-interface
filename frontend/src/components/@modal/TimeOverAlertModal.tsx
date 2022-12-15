@@ -15,9 +15,10 @@ const TimeOverAlertModal = () => {
 
 	return (
 		<Modal>
-			<Modal.Title color="red">1시간이 경과하였습니다.</Modal.Title>
-			<Modal.ContentArea>
+			<Modal.Title color="red">녹화 제한 시간 초과</Modal.Title>
+			<Modal.ContentArea gap={'0px'}>
 				<span>현재 시점부터는 영상이 녹화되지 않습니다.</span>
+				<span>면접을 종료해주십시오.</span>
 			</Modal.ContentArea>
 			<Modal.ButtonArea>
 				<Modal.Button onClick={hadleEndInterview}>면접 종료</Modal.Button>
