@@ -6,7 +6,7 @@ export const recordLabelStyle = (theme) => css`
 
 	background-color: ${theme.colors.white};
 	border-radius: 100px;
-	padding: 2px 8px;
+	padding: 2px 8px 2px 2px;
 
 	position: absolute;
 	left: 24px;

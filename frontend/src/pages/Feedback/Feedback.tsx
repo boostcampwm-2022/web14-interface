@@ -26,11 +26,7 @@ import ussCommonSocketEvent from '@hooks/useCommonSocketEvent';
 import { meInRoomState, userRoleSelector } from '@store/user.store';
 import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
 import { videoAreaStyle, videoListStyle } from '@styles/commonStyle';
-
-interface endFeedbackResponseType {
-	isLastFeedback: boolean;
-	count: number;
-}
+import Loading from '@components/Loading/Loading';
 
 const Feedback = () => {
 	usePreventLeave();
@@ -42,8 +38,9 @@ const Feedback = () => {
 	const feedbackList = useRecoilValue(feedbackListSelector);
 
 	const [videoUrl, setVideoUrl] = useState('');
+	const isVideoLoad = videoUrl.length > 0;
 
-	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);
+	const { interviewerList } = useRecoilValue(userRoleSelector);
 	const me = useRecoilValue(meInRoomState);
 
 	const handleEndFeedback = () => {
@@ -79,7 +76,11 @@ const Feedback = () => {
 		<div css={feedbackWrapperStyle}>
 			<div css={feedbackContainerStyle}>
 				<div css={videoAreaStyle}>
-					<IntervieweeVideo src={videoUrl} width={'100%'} autoplay muted controls />
+					{isVideoLoad ? (
+						<IntervieweeVideo src={videoUrl} width={'100%'} autoplay muted controls />
+					) : (
+						<Loading />
+					)}
 					<div css={videoListStyle}>
 						{interviewerList.map((interviewer) => (
 							<StreamVideo
@@ -119,3 +120,9 @@ const Feedback = () => {
 };
 
 export default Feedback;
+
+const WRAPPER_STYLE = {
+	margin: '30px auto',
+	height: 700,
+	width: 700,
+};
