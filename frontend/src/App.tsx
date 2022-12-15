@@ -2,8 +2,9 @@ import React, { Suspense } from 'react';
 import { RecoilRoot } from 'recoil';
 import { Global, ThemeProvider } from '@emotion/react';
 import { BrowserRouter } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
+
 import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 import RootRoutes from '@routes/RootRoutes';
 import globalStyle from '@styles/globalStyle';
