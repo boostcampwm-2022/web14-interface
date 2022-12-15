@@ -2,6 +2,8 @@ import React, { Suspense } from 'react';
 import { RecoilRoot } from 'recoil';
 import { Global, ThemeProvider } from '@emotion/react';
 import { BrowserRouter } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import RootRoutes from '@routes/RootRoutes';
 import globalStyle from '@styles/globalStyle';
@@ -20,6 +22,18 @@ function App() {
 							<RootRoutes />
 							<ModalManager />
 						</Suspense>
+						<ToastContainer
+							position="bottom-center"
+							autoClose={5000}
+							hideProgressBar={false}
+							newestOnTop={false}
+							closeOnClick
+							rtl={false}
+							pauseOnFocusLoss
+							draggable
+							pauseOnHover
+							theme="colored"
+						/>
 					</div>
 					<div id="popup-root"></div>
 				</ThemeProvider>
