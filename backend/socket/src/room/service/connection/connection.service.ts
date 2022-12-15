@@ -113,7 +113,7 @@ export class ConnectionService {
 	 */
 	async leaveRoom(client: Socket) {
 		const user = await this.roomRepository.getUserByClientId(client.id);
-		if (!user) return;
+		if (!user) return {};
 
 		const roomUUID = user.roomUUID;
 
