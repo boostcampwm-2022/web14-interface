@@ -71,15 +71,6 @@ const Landing = () => {
 			roomUUID
 		);
 
-		// //TODO BE 대응 시 변경
-		// const newOthers = others.map((user) => {
-		// 	return { ...user, video: true, audio: false };
-		// });
-		// console.log('newOthers', newOthers);
-		// setOthers(newOthers);
-		// //TODO BE 대응 시 변경
-		// setMe({ ...me, audio: false });
-
 		setOthers(others);
 		setMe(me);
 		safeNavigate(PAGE_TYPE.LOBBY_PAGE);
@@ -104,14 +95,18 @@ const Landing = () => {
 				</div>
 			</header>
 			<main css={mainStyle}>
-				<div css={flexColumn({ gap: '32px' })}>
-					<div css={introTextStyle}>interface님, 안녕하세요!</div>
+				<div css={flexColumn({ gap: '48px' })}>
+					<div css={introTextStyle}>실시간 피드백과 함께하는 면접, 지금 시작하세요!</div>
 					<div css={flexRow({ gap: '16px' })}>
-						<Button onClick={handleCreate} iconColor={true}>
+						<Button width="144px" onClick={handleCreate} iconColor={true}>
 							<PlusIcon />
 							<span>방 만들기</span>
 						</Button>
-						<Button color="secondary" onClick={() => openModal('EnterRoomModal')}>
+						<Button
+							width="136px"
+							color="secondary"
+							onClick={() => openModal('EnterRoomModal')}
+						>
 							<span>참가하기</span>
 						</Button>
 					</div>

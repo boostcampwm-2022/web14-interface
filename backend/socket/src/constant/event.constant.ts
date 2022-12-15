@@ -40,6 +40,8 @@ export enum EVENT {
 
 	// error
 	BAD_REQUEST = 'bad_request',
+	INTERNAL_SERVER_EXCEPTION = 'server_down',
+	VALIDATION_EXCEPTION = 'validation_exception',
 }
 
 export enum SOCKET_MESSAGE {

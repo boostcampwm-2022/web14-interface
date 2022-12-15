@@ -44,7 +44,7 @@ export class TypeormInterviewRepository implements InterviewRepository<TypeormIn
 		return docs.id;
 	}
 
-	async getInterviewDocsListByUserId(docsUUID: string): Promise<TypeormInterviewDocsEntity> {
+	async getInterviewDocs(docsUUID: string): Promise<TypeormInterviewDocsEntity> {
 		const interviewDocsList = await this.interviewDocsRepository
 			.createQueryBuilder('docs')
 			.leftJoinAndSelect('docs.feedbackList', 'fb')
@@ -66,6 +66,7 @@ export class TypeormInterviewRepository implements InterviewRepository<TypeormIn
 		const interviewDocsList = await this.interviewDocsRepository.find({
 			select: { createdAt: true, videoPlayTime: true, id: true },
 			where: whereCondition,
+			order: { createdAt: 'DESC' },
 		});
 		return interviewDocsList;
 	}

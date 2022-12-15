@@ -29,7 +29,7 @@ jobs:
         with:
           context: ./backend/socket
           push: true
-          tags: ${{ secrets.DOCKER_SOCKET_IMAGE }}:${{ secrets.VERSION }}
+          tags: ${{ secrets.DOCKER_SOCKET_IMAGE }}:${{ secrets.VERSION }},${{ secrets.DOCKER_SOCKET_IMAGE }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
           
@@ -47,7 +47,7 @@ jobs:
           port: ${{ secrets.SOCKET_SERVER_PORT }}
           
           script: |
-            export CURRENT_CONTAINER=$(docker ps -aq -f "name=socket-server")
-            docker stop $(echo $CURRENT_CONTAINER) && docker rm $(echo $CURRENT_CONTAINER)
-            docker pull ${{ secrets.DOCKER_SOCKET_IMAGE }}:${{ secrets.VERSION }} 
-            docker run --name socket-server --restart always -d -p 8081:8081 ${{ secrets.DOCKER_SOCKET_IMAGE }}:${{ secrets.VERSION }}
+            docker-compose down
+            docker pull ${{ secrets.DOCKER_SOCKET_IMAGE }}
+            docker rmi $(docker images -f "dangling=true" -q)
+            docker-compose up -d

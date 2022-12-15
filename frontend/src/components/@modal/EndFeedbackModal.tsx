@@ -36,7 +36,6 @@ const EndFeedbackModal = () => {
 
 		const feedbackDto: FeedbackDtoType = {
 			docsUUID,
-			userUUID: me.uuid,
 			feedbackList: feedbackListDto,
 		};
 

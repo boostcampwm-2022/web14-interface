@@ -23,8 +23,9 @@ import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import FeedbackForm from '@components/FeedbackForm/FeedbackForm';
 import useModal from '@hooks/useModal';
 import ussCommonSocketEvent from '@hooks/useCommonSocketEvent';
-import { flexRow } from '@styles/globalStyle';
-import { css } from '@emotion/react';
+import { meInRoomState, userRoleSelector } from '@store/user.store';
+import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
+import { videoAreaStyle, videoListStyle } from '@styles/commonStyle';
 
 interface endFeedbackResponseType {
 	isLastFeedback: boolean;
@@ -34,7 +35,6 @@ interface endFeedbackResponseType {
 const Feedback = () => {
 	usePreventLeave();
 	ussCommonSocketEvent();
-
 	const { openModal } = useModal();
 	const cleanupInterview = useCleanupInterview();
 
@@ -42,6 +42,9 @@ const Feedback = () => {
 	const feedbackList = useRecoilValue(feedbackListSelector);
 
 	const [videoUrl, setVideoUrl] = useState('');
+
+	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);
+	const me = useRecoilValue(meInRoomState);
 
 	const handleEndFeedback = () => {
 		openModal('EndFeedbackModal');
@@ -75,7 +78,21 @@ const Feedback = () => {
 	return (
 		<div css={feedbackWrapperStyle}>
 			<div css={feedbackContainerStyle}>
-				<IntervieweeVideo src={videoUrl} width={'50%'} autoplay muted controls />
+				<div css={videoAreaStyle}>
+					<IntervieweeVideo src={videoUrl} width={'100%'} autoplay muted controls />
+					<div css={videoListStyle}>
+						{interviewerList.map((interviewer) => (
+							<StreamVideo
+								key={interviewer.uuid}
+								src={interviewer.stream}
+								nickname={interviewer.nickname}
+								audio={interviewer.audio}
+								width={'33%'}
+								isMyStream={interviewer.uuid === me.uuid}
+							/>
+						))}
+					</div>
+				</div>
 				<div css={syncButtonAreaStyle}>
 					<SyncDotLine css={syncDotLineStyle} />
 					<RoundButton

@@ -53,6 +53,6 @@ export const logoutBtn = (theme) => css`
 
 export const introTextStyle = (theme) => css`
 	color: ${theme.colors.black};
-	font-size: 48px;
+	font-size: 32px;
 	font-weight: bold;
 `;

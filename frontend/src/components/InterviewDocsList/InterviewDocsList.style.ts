@@ -8,7 +8,7 @@ export const docsListWrapperStyle = (theme) => css`
 	width: 100%;
 	height: 100%;
 
-	overflow-y: scroll;
+	overflow-y: auto;
 
 	&::-webkit-scrollbar {
 		width: 6px;

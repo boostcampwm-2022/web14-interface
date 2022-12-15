@@ -26,6 +26,10 @@ const useWebRTCSignaling = (
 				video: true,
 			});
 
+			newStream.getAudioTracks().forEach((track) => {
+				track.enabled = false;
+			});
+
 			myStreamRef.current = newStream;
 			setWebRTCUserList((prev) =>
 				new Map(prev).set(myId, { connection: null, stream: newStream })

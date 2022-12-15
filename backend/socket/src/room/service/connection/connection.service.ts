@@ -14,6 +14,7 @@ import { RoomRepository } from '../../repository/room.repository';
 import { getRandomNickname } from '@woowa-babble/random-nickname';
 import { UpdateMediaDto } from 'src/room/dto/update-media-info.dto';
 import { UserDto } from 'src/room/dto/user.dto';
+import { WsException } from '@nestjs/websockets';
 
 @Injectable()
 export class ConnectionService {
@@ -131,6 +132,11 @@ export class ConnectionService {
 		return {};
 	}
 
+	/**
+	 * 현재 user의 audio와 video 상태를 업데이트하고 같은 방의 유저들에게 emit합니다.
+	 * @param client Socket
+	 * @param updateMediaDto video, audio boolean
+	 */
 	async updateUserMediaInfo({
 		client,
 		updateMediaDto,
@@ -183,8 +189,8 @@ export class ConnectionService {
 			roomUUID,
 			clientId: client.id,
 			authId: client.data.authId,
-			video: 1,
-			audio: 0,
+			video: 'true',
+			audio: 'false',
 		};
 	}
 }
