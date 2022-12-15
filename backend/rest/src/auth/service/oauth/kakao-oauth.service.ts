@@ -54,7 +54,7 @@ export class OauthKakaoService implements OauthService {
 		const res = await axios.get(KAKAO_PROFILE_API_URL, { headers }).then((res) => res.data);
 
 		const user = res['kakao_account'] as UserSocialInfo;
-		user.id = res.id;
+		user.id = `${res.id}`;
 		user.oauthType = OAUTH_TYPE.KAKAO;
 		return user;
 	}
