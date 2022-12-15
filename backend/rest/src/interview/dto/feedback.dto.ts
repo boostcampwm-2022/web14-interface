@@ -19,10 +19,10 @@ export class FeedbackRequestDto {
 			type: 'feedbackBoxDto',
 		},
 	})
-	feedbackList: feedbackBoxDto[];
+	feedbackList: FeedbackBoxDto[];
 }
 
-export class feedbackBoxDto {
+export class FeedbackBoxDto {
 	@IsNumber()
 	@IsNotEmpty()
 	startTime: number;

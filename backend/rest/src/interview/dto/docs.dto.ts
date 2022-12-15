@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { FeedbackBoxDto } from './feedback.dto';
 
-export class DocsGetResponseDto {
+export class DocsResponseDto {
 	@IsString()
 	@IsNotEmpty()
 	@ApiProperty({

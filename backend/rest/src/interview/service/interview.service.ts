@@ -5,16 +5,16 @@ import {
 	OBJECT_STORAGE_ENDPOINT,
 } from '@constant';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { DocsRequestDto } from '../dto/request-docs.dto';
-import { feedbackBoxDto, FeedbackRequestDto } from '../dto/request-feedback.dto';
+import { FeedbackBoxDto, FeedbackRequestDto } from '../dto/feedback.dto';
 import { Feedback } from '../entities/feedback.entity';
 import { InterviewDocs } from '../entities/interview-docs.entity';
 import { InterviewRepository } from '../repository/interview.repository';
 import { getRandomNickname } from '@woowa-babble/random-nickname';
 import { DocsWhereCondition } from 'src/types/query.type';
-import { DocsGetResponseDto, UserFeedback } from '../dto/docs.dto';
+import { DocsResponseDto, UserFeedback } from '../dto/docs.dto';
 import { DocsListResponseDto } from '../dto/docs-list.dto';
+import { DocsResponseDtoBuilder } from '../dto/response-docs.builder';
 
 @Injectable()
 export class InterviewService {
@@ -61,18 +61,15 @@ export class InterviewService {
 	}: {
 		userId: string;
 		feedbackRequestDto: FeedbackRequestDto;
-	}): Promise<string> {
+	}): Promise<void> {
 		const { docsUUID, feedbackList } = feedbackRequestDto;
 		const docs = await this.interviewRepository.getInterviewDocsByDocsUUID(docsUUID);
 		if (!docs) throw new BadRequestException(HTTP_ERROR_MSG.NOT_FOUND_MATCHED_DOCS);
 
-		await Promise.all(
-			feedbackList.map((feedbackBoxDto: feedbackBoxDto) => {
-				return this.interviewRepository.saveFeedback({ userId, docs, feedbackBoxDto });
-			})
-		);
-
-		return userId;
+		const feedbackVoList = feedbackList.map((feedbackBoxDto: FeedbackBoxDto) => {
+			return { userId, docs, feedbackBoxDto };
+		});
+		await this.interviewRepository.saveFeedbackList(feedbackVoList);
 	}
 
 	/**
@@ -80,18 +77,19 @@ export class InterviewService {
 	 * @param docsUUID docs UUID
 	 * @returns DocsResponseDto
 	 */
-	async getInterviewDocs(docsUUID: string): Promise<DocsGetResponseDto> {
+	async getInterviewDocs(docsUUID: string): Promise<DocsResponseDto> {
 		const docs = await this.interviewRepository.getInterviewDocs(docsUUID);
+		const { id, createdAt, videoPlayTime, videoUrl, feedbackList } = docs;
 
-		const result: DocsGetResponseDto = {
-			docsUUID: docs.id,
-			createdAt: docs.createdAt,
-			videoPlayTime: docs.videoPlayTime,
-			videoUrl: docs.videoUrl,
-			feedbacks: this.parseFeedbackByUserId(docs.feedbackList),
-		};
+		const docsResponseDto = new DocsResponseDtoBuilder()
+			.setDocsUUID(id)
+			.setCreatedAt(createdAt)
+			.setVideoPlayTime(videoPlayTime)
+			.setVideoUrl(videoUrl)
+			.setFeedback(this.parseFeedbackByUserId(feedbackList))
+			.build();
 
-		return result;
+		return docsResponseDto;
 	}
 
 	/**
@@ -101,7 +99,7 @@ export class InterviewService {
 	 */
 	parseFeedbackByUserId(feedbackList: Feedback[]) {
 		const result: UserFeedback[] = [];
-		const userFeedbackMap = new Map<string, feedbackBoxDto[]>();
+		const userFeedbackMap = new Map<string, FeedbackBoxDto[]>();
 		feedbackList.forEach(({ userId, startTime, innerIndex, content }: Feedback) => {
 			if (!userFeedbackMap.has(userId)) {
 				userFeedbackMap.set(userId, []);
@@ -148,7 +146,7 @@ export class InterviewService {
 	 */
 	async deleteInterviewDocs({ userId, docsUUID }: { userId: string; docsUUID: string }) {
 		const docs = await this.interviewRepository.getInterviewDocsByDocsUUID(docsUUID);
-		if (docs.userId !== userId) {
+		if (!docs || docs.userId !== userId) {
 			throw new BadRequestException(HTTP_ERROR_MSG.CANT_DELETE_ANOTHER_DOCS);
 		}
 
