@@ -48,9 +48,15 @@ export class AuthService {
 	 * user info를 얻은 후, 가입이 되어있지 않다면 회원 가입을 합니다.
 	 * @param type 해당 social oauth 이름
 	 * @param authorizationCode 해당 social oauth의 인증으로 얻은 authorizationCode
-	 * @returns 가입 된 user의 id
+	 * @returns 가입 된 user info
 	 */
-	async socialStart({ type, authorizationCode }: { type: string; authorizationCode: string }) {
+	async socialStart({
+		type,
+		authorizationCode,
+	}: {
+		type: string;
+		authorizationCode: string;
+	}): Promise<UserInfo> {
 		this.setOauthInstanceByType(type);
 
 		const accessToken = await this.oauthInstance.getAccessTokenByAuthorizationCode(
