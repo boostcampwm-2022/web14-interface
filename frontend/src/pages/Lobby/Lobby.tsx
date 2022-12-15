@@ -17,8 +17,7 @@ import { socket } from '../../service/socket';
 import { UserType } from '@customType/user';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import { PAGE_TYPE } from '@constants/page.constant';
-import { iconBgStyle } from '@styles/commonStyle';
-import { lobbyWrapperStyle, VideoAreaStyle } from './Lobby.style';
+import { lobbyWrapperStyle, lobbyVideoAreaStyle } from './Lobby.style';
 import { ReactComponent as BroadcastIcon } from '@assets/icon/broadcast.svg';
 import RoundButton from '@components/@shared/RoundButton/RoundButton';
 import StreamVideo from '@components/@shared/StreamingVideo/StreamVideo';
@@ -89,14 +88,14 @@ const Lobby = () => {
 				width: 160,
 			}}
 		>
-			<BroadcastIcon {...iconBgStyle} />
+			<BroadcastIcon />
 			<span>면접 시작</span>
 		</RoundButton>
 	);
 
 	return (
 		<div css={lobbyWrapperStyle}>
-			<div css={VideoAreaStyle}>
+			<div css={lobbyVideoAreaStyle}>
 				<VideoGrid>
 					{userInfoList.map(({ uuid, stream, nickname, audio }) => (
 						<StreamVideo
