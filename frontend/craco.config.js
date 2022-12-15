@@ -13,11 +13,5 @@ module.exports = {
 	babel: {
 		plugins: ['transform-remove-console'],
 		presets: ['@emotion/babel-preset-css-prop'],
-		rules: [
-			{
-				test: /\.css$/,
-				use: ['style-loader', 'css-loader'],
-			},
-		],
 	},
 };
