@@ -8,7 +8,6 @@ import { roomUUIDState } from '@store/room.store';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 import usePreventLeave from '@hooks/usePreventLeave';
 
-import { socketEmit } from '../../api/socket.api';
 import { PAGE_TYPE } from '@constants/page.constant';
 import { ROUTE_TYPE } from '@constants/route.constant';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
@@ -30,7 +29,8 @@ import {
 import Button from '@components/@shared/Button/Button';
 import useModal from '@hooks/useModal';
 import { meInRoomState, othersInRoomState } from '@store/user.store';
-import { toast } from 'react-toastify';
+import useToast, { TOAST_TYPE } from '@hooks/useToast';
+import useSocket from '@hooks/useSocket';
 
 interface createRoomResponseType {
 	uuid: string;
@@ -52,19 +52,13 @@ const Landing = () => {
 	const { openModal } = useModal();
 	const naviagte = useNavigate();
 
+	const { socketEmit } = useSocket();
+	const { popToast } = useToast();
+
 	const handleSignOut = async () => {
 		//TODO TOAST로 교체
 		await axios.get('/api/auth/logout');
-		toast.success('로그아웃 되었습니다.', {
-			position: 'bottom-center',
-			autoClose: 5000,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-			progress: undefined,
-			theme: 'colored',
-		});
+		popToast('로그아웃 되었습니다', TOAST_TYPE.SUCCESS);
 		refreshAuth();
 		naviagte(ROUTE_TYPE.LOGIN_ROUTE);
 	};

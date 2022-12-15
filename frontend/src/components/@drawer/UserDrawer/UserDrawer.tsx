@@ -15,27 +15,19 @@ import {
 	userItemStyle,
 	userListStyle,
 } from './UserDrawer.style';
-import { iconSmStyle } from '@styles/commonStyle';
 import { meInRoomState, othersInRoomState } from '@store/user.store';
 import Button from '@components/@shared/Button/Button';
-import { toast } from 'react-toastify';
+import useToast from '@hooks/useToast';
 
 const UserDrawer = () => {
 	const others = useRecoilValue(othersInRoomState);
 	const me = useRecoilValue(meInRoomState);
 
+	const { popToast } = useToast();
+
 	const copyRoomCode = async (roomInfo) => {
 		await navigator.clipboard.writeText(roomInfo);
-		toast('복사 완료', {
-			position: 'bottom-center',
-			autoClose: 5000,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-			progress: undefined,
-			theme: 'colored',
-		});
+		popToast('복사 완료');
 	};
 
 	return (
@@ -44,32 +36,16 @@ const UserDrawer = () => {
 				<div css={userItemStyle}>
 					<div>{me.nickname}</div>
 					<div css={userIconStyle}>
-						{me.audio ? (
-							<MicOnIcon {...iconSmStyle} />
-						) : (
-							<MicOffIcon css={offIconStyle} {...iconSmStyle} />
-						)}
-						{me.video ? (
-							<CameraOnIcon {...iconSmStyle} />
-						) : (
-							<CameraOffIcon css={offIconStyle} {...iconSmStyle} />
-						)}
+						{me.audio ? <MicOnIcon /> : <MicOffIcon css={offIconStyle} />}
+						{me.video ? <CameraOnIcon /> : <CameraOffIcon css={offIconStyle} ㅇ />}
 					</div>
 				</div>
 				{others.map((other, i) => (
 					<div css={userItemStyle} key={i}>
 						<div>{other.nickname}</div>
 						<div css={userIconStyle}>
-							{other.audio ? (
-								<MicOnIcon {...iconSmStyle} />
-							) : (
-								<MicOffIcon css={offIconStyle} {...iconSmStyle} />
-							)}
-							{other.video ? (
-								<CameraOnIcon {...iconSmStyle} />
-							) : (
-								<CameraOffIcon css={offIconStyle} {...iconSmStyle} />
-							)}
+							{other.audio ? <MicOnIcon /> : <MicOffIcon css={offIconStyle} />}
+							{other.video ? <CameraOnIcon /> : <CameraOffIcon css={offIconStyle} />}
 						</div>
 					</div>
 				))}

@@ -1,7 +1,6 @@
-import { socket } from '../service/socket';
 import { ONE_SECOND } from '@constants/time.constant';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
-import { socketEmit } from '@api/socket.api';
+import useSocket from '@hooks/useSocket';
 import useModal from '@hooks/useModal';
 
 interface socketResponseType {
@@ -11,6 +10,7 @@ interface socketResponseType {
 
 const useMediaStreamer = () => {
 	const { openModal } = useModal();
+	const { socketEmit } = useSocket();
 	let mediaRecorder: MediaRecorder;
 
 	const stopStream = () => {

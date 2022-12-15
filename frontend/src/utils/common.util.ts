@@ -1,7 +1,7 @@
 import { SOCKET_RES_MESSAGE, SOCKET_TOAST_MESSAGE } from '@constants/socket.constant';
 import { ONE_MINUTE, ONE_SECOND } from '@constants/time.constant';
 import { EditableFeedbackType, FeedbackItemType, FeedbackType } from '@customType/feedback';
-import { toast } from 'react-toastify';
+import useToast, { TOAST_TYPE } from '@hooks/useToast';
 
 export const secMMSSFormatter = (totalSec: number) => {
 	const min = Math.floor(totalSec / 60)
@@ -58,20 +58,4 @@ export const findToastMessage = (message) => {
 		default:
 			return null;
 	}
-};
-
-export const getToatMessage = (message) => {
-	const toastMessage = findToastMessage(message);
-
-	if (toastMessage)
-		toast.error(toastMessage, {
-			position: 'bottom-center',
-			autoClose: 5000,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-			progress: undefined,
-			theme: 'colored',
-		});
 };
