@@ -5,8 +5,6 @@ export const interviewerWrapperStyle = (theme) => css`
 	width: 100%;
 	height: calc(100% - ${theme.bottomBarHeight});
 	background-color: ${theme.colors.tertiary};
-
-	padding: 56px;
 `;
 
 export const interviewerContainerStyle = (theme) => css`
@@ -14,4 +12,6 @@ export const interviewerContainerStyle = (theme) => css`
 
 	height: 100%;
 	color: ${theme.colors.white};
+
+	padding: 0px 160px;
 `;
