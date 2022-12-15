@@ -45,6 +45,26 @@ const mockRoomRepository = () => ({
 		authIdUserIdMap.set(user.authId, user.uuid);
 		clientUserIdMap.set(user.clientId, user.uuid);
 	}),
+
+	getUserByClientId: jest.fn((clientId) => {
+		const uuid = clientUserIdMap.get(clientId);
+		return userMap.get(uuid);
+	}),
+
+	removeUser: jest.fn((user) => {
+		const userSet = usersInRoom.get(user.roomUUID);
+		userSet.delete(user.uuid);
+
+		// cascading
+		userMap.delete(user.uuid);
+		clientUserIdMap.delete(user.clientId);
+		authIdUserIdMap.delete(user.authId);
+	}),
+
+	deleteRoom: jest.fn((roomUUID) => {
+		rooms.delete(roomUUID);
+		usersInRoom.delete(roomUUID);
+	}),
 });
 
 const createMockSockets = (count) => {
@@ -55,6 +75,7 @@ const createMockSockets = (count) => {
 		socket.to = function (uuid) {
 			return this;
 		};
+		socket.id = `testClientId${i}`;
 
 		sockets.push(socket);
 	}
@@ -206,6 +227,21 @@ describe('ConnectionService', () => {
 			}
 			const { message } = result;
 			expect(message).toBe(SOCKET_MESSAGE.FULL_ROOM);
+		});
+	});
+
+	describe('방 떠나기', () => {
+		it('모든 유저가 방을 떠났을 때 방 삭제', async () => {
+			await connectionService.enterRoom({
+				roomUUID: testRoomUUID,
+				client: sockets[0],
+			});
+
+			expect(rooms.get(testRoomUUID)).toBeDefined();
+
+			await connectionService.leaveRoom(sockets[0]);
+
+			expect(rooms.get(testRoomUUID)).toBeUndefined();
 		});
 	});
 });
