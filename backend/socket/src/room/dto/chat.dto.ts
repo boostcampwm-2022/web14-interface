@@ -1,5 +1,5 @@
 import { USER_ROLE } from '@constant';
-import { IsDate, IsNotEmpty, IsString } from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export enum ChatTarget {
 	EVERYONE = 'everyone',
@@ -21,12 +21,12 @@ export class ChatRequestDto {
 	target: ChatTarget;
 
 	@IsString()
-	@IsNotEmpty()
-	uuid?: string;
+	@IsOptional()
+	uuid: string;
 
 	@IsString()
-	@IsNotEmpty()
-	role?: USER_ROLE;
+	@IsOptional()
+	role: USER_ROLE;
 }
 
 export class ChatResponseDto {
