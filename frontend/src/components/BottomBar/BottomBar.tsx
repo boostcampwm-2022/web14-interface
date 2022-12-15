@@ -30,7 +30,6 @@ import { pageState } from '@store/page.store';
 import BottomBarButtom from '@components/@shared/BottomBarButton/BottomBarButton';
 import Button from '@components/@shared/Button/Button';
 import { meInRoomState, userInfoSelector } from '@store/user.store';
-import { MEDIA_ACTIVE_TYPE } from '@constants/media.constant';
 import { socketEmit } from '@api/socket.api';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 
@@ -51,8 +50,8 @@ const BottomBar = ({ mainController }: Props) => {
 
 	const myStream = userInfo.find((user) => user.uuid === me.uuid);
 
-	const [isMicOn, setIsMicOn] = useState(false);
-	const [isCameraOn, setIsCameraOn] = useState(true);
+	const [isMicOn, setIsMicOn] = useState(me.audio);
+	const [isCameraOn, setIsCameraOn] = useState(me.video);
 
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [drawerCategory, setDrawerCategory] = useState<DRAWER_TYPE>(null);
