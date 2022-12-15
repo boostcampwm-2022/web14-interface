@@ -42,8 +42,8 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	// connection
 
 	@SubscribeMessage(EVENT.CREATE_ROOM)
-	handleCreateRoom() {
-		return this.connectionService.createRoom();
+	handleCreateRoom(@ConnectedSocket() client: Socket) {
+		return this.connectionService.createRoom(client);
 	}
 
 	@SubscribeMessage(EVENT.ENTER_ROOM)
