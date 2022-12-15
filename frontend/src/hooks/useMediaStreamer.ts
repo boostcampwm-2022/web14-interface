@@ -13,22 +13,24 @@ const useMediaStreamer = () => {
 	const { openModal } = useModal();
 	let mediaRecorder: MediaRecorder;
 
+	const stopStream = () => {
+		if (mediaRecorder) mediaRecorder.stop();
+	};
+
 	const startStream = (mediaStream: MediaStream) => {
 		mediaRecorder = new MediaRecorder(mediaStream, {
 			mimeType: 'video/webm; codecs=vp9',
 		});
 
 		mediaRecorder.ondataavailable = async (e) => {
-			let alertFlag = false;
-
 			if (!e.data || !e.data.size) return;
-			const { success } = await socketEmit<socketResponseType>(
-				SOCKET_EVENT_TYPE.STREAM_VIDEO,
-				await e.data.arrayBuffer()
-			);
-
-			if (!alertFlag && !success) {
-				alertFlag = true;
+			try {
+				await socketEmit<socketResponseType>(
+					SOCKET_EVENT_TYPE.STREAM_VIDEO,
+					await e.data.arrayBuffer()
+				);
+			} catch (e) {
+				stopStream();
 				openModal('TimeOverAlertModal');
 			}
 		};
@@ -38,10 +40,6 @@ const useMediaStreamer = () => {
 		};
 
 		mediaRecorder.start(ONE_SECOND);
-	};
-
-	const stopStream = () => {
-		if (mediaRecorder) mediaRecorder.stop();
 	};
 
 	return { startStream, stopStream };
