@@ -7,7 +7,7 @@ import theme from '@styles/theme';
 const Loading = () => {
 	return (
 		<div css={loadingWrapperStyle}>
-			<ReactLoading type="spin" color={theme.colors.primary} />
+			<ReactLoading type="spokes" color={theme.colors.primary} />
 		</div>
 	);
 };
