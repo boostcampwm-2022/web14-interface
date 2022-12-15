@@ -38,12 +38,12 @@ const toastStyle = (theme, type) => css`
 	box-shadow: 0px 5px 24px ${theme.colors.black + 55};
 
 	padding: 12px 24px;
-	background-color: ${type === 'SUCCESS'
+	background-color: ${type === TOAST_TYPE.SUCCESS
 		? theme.colors.primary
-		: type === 'ERROR'
+		: type === TOAST_TYPE.ERROR
 		? theme.colors.red
-		: theme.colors.black};
-	color: ${theme.colors.white};
+		: theme.colors.secondary};
+	color: ${type === TOAST_TYPE.NORMAL ? theme.colors.tertiary : theme.colors.white};
 
 	border-radius: ${theme.borderRadius};
 
