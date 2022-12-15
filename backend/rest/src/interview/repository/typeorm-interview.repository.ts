@@ -4,12 +4,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DocsWhereCondition } from 'src/types/query.type';
 import { Repository } from 'typeorm';
 import { DocsRequestDto } from '../dto/request-docs.dto';
-import { feedbackBoxDto } from '../dto/request-feedback.dto';
 import { FeedbackBuilder } from '../entities/typeorm-feedback.builder';
 import { TypeormFeedbackEntity } from '../entities/typeorm-feedback.entity';
 import { InterviewDocsBuilder } from '../entities/typeorm-interview-docs.builder';
 import { TypeormInterviewDocsEntity } from '../entities/typeorm-interview-docs.entity';
 import { InterviewRepository } from './interview.repository';
+import { FeedbackVO } from '@types';
 
 @Injectable()
 export class TypeormInterviewRepository implements InterviewRepository<TypeormInterviewDocsEntity> {
@@ -80,25 +80,28 @@ export class TypeormInterviewRepository implements InterviewRepository<TypeormIn
 		return docsUUID;
 	}
 
-	async saveFeedback({
-		userId,
-		docs,
-		feedbackBoxDto,
-	}: {
-		userId: string;
-		docs: TypeormInterviewDocsEntity;
-		feedbackBoxDto: feedbackBoxDto;
-	}): Promise<number> {
-		const { startTime, innerIndex, content } = feedbackBoxDto;
-		const feedback = new FeedbackBuilder()
-			.setUserId(userId)
-			.setDocs(docs)
-			.setStartTime(startTime)
-			.setInnerIndex(innerIndex)
-			.setContent(content)
-			.build();
+	async saveFeedbackList(feedbackVoList: FeedbackVO<TypeormInterviewDocsEntity>[]) {
+		const feedbackList = feedbackVoList.map((feedbackVO) => {
+			const { userId, docs, feedbackBoxDto } = feedbackVO;
+			const { startTime, innerIndex, content } = feedbackBoxDto;
 
-		const result = await this.feedbackRepository.save(feedback);
-		return result.id;
+			const feedback = new FeedbackBuilder()
+				.setUserId(userId)
+				.setDocs(docs)
+				.setStartTime(startTime)
+				.setInnerIndex(innerIndex)
+				.setContent(content)
+				.build();
+
+			return feedback;
+		});
+
+		await this.feedbackRepository
+			.createQueryBuilder()
+			.insert()
+			.into(TypeormFeedbackEntity)
+			.values(feedbackList)
+			.updateEntity(false)
+			.execute();
 	}
 }

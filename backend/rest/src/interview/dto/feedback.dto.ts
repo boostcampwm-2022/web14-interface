@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
 
 export class FeedbackRequestDto {
 	@IsString()
@@ -11,6 +12,8 @@ export class FeedbackRequestDto {
 	docsUUID: string;
 
 	@IsNotEmpty()
+	@ValidateNested({ each: true })
+	@Type(() => FeedbackBoxDto)
 	@ApiProperty({
 		example: '{ startTime: 0, innerIndex: 0, content: "목소리에서 울림이 느껴지네요." }',
 		description: 'feedbackbox (startTime, innerIndex, content)',
@@ -19,10 +22,10 @@ export class FeedbackRequestDto {
 			type: 'feedbackBoxDto',
 		},
 	})
-	feedbackList: feedbackBoxDto[];
+	feedbackList: FeedbackBoxDto[];
 }
 
-export class feedbackBoxDto {
+export class FeedbackBoxDto {
 	@IsNumber()
 	@IsNotEmpty()
 	startTime: number;

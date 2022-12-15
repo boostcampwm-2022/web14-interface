@@ -9,13 +9,14 @@ export class RestInterceptor implements NestInterceptor {
 		const ctx = context.switchToHttp();
 		const req = ctx.getRequest<Request>();
 
+		logger.log(`[Request URL] ${req.method} ${req.url}`);
+
 		const start = new Date().getTime();
 		return next
 			.handle()
 			.pipe(
 				tap(() => {
 					const end = new Date();
-					logger.log(`[Request URL] ${req.url}`);
 					logger.log(`[Process Time] ${end.getTime() - start}ms`);
 				})
 			)
