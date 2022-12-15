@@ -124,11 +124,13 @@ describe('ConnectionService', () => {
 		expect(roomRepository).toBeDefined();
 	});
 
-	it('방 만들기 테스트', async () => {
-		const { data } = await connectionService.createRoom();
-		const { uuid } = data;
+	describe('방 만들기 테스트', () => {
+		it('기본 방 만들기', async () => {
+			const { data } = await connectionService.createRoom();
+			const { uuid } = data;
 
-		expect(uuid).toBe(testRoomUUID);
+			expect(uuid).toBe(testRoomUUID);
+		});
 	});
 
 	describe('방 참가 테스트', () => {
