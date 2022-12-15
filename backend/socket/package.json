@@ -88,6 +88,12 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "@config": "<rootDir>/config/index",
+      "@constant": "<rootDir>/constant/index",
+      "@types": "<rootDir>/types/index",
+      "^src(.*)$": "<rootDir>/$1"
+    }
   }
 }
