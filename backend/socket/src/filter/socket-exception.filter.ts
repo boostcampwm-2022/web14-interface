@@ -17,15 +17,17 @@ export class SocketExceptionFilter extends BaseWsExceptionFilter {
 		const ctx = host.switchToWs();
 		const client = ctx.getClient<Socket>();
 
+		const { name, stack } = exception;
 		let { message } = exception;
 		if (!(exception instanceof WsException)) {
-			const res: any = (exception as HttpException).getResponse();
+			const res: any = (exception as HttpException)?.getResponse();
 			message = res.message;
 		}
 
 		logger.error(`[Client ID] ${client.id}] `);
-		logger.error(`[Error Message] ${message}`);
-		logger.error(`[Error Stack] ${exception.stack}`);
+		logger.error(`[Exception Name] ${name}`);
+		logger.error(`[Exception Message] ${message}`);
+		logger.error(`[Exception Stack] ${stack}`);
 
 		const error = { message, stack: exception.stack };
 
