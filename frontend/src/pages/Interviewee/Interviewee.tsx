@@ -26,6 +26,7 @@ import { ReactComponent as StopIcon } from '@assets/icon/stop.svg';
 import { ReactComponent as CancelIcon } from '@assets/icon/close.svg';
 import { flexRow } from '@styles/globalStyle';
 import { videoAreaStyle, videoListStyle } from '@styles/commonStyle';
+import RecordTimeLabel from '@components/RecordTimeLabel/RecordTimeLabel';
 
 const Interviewee = () => {
 	usePreventLeave();
@@ -102,6 +103,7 @@ const Interviewee = () => {
 
 	return (
 		<div css={intervieweeWrapperStyle}>
+			<RecordTimeLabel />
 			<div css={videoAreaStyle}>
 				<IntervieweeVideo
 					key={interviewee.uuid}
