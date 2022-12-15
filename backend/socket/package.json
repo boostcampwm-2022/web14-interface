@@ -47,6 +47,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "socket.io": "^4.5.4",
+    "socket.io-mock": "^1.3.2",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
@@ -88,6 +89,12 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "@config": "<rootDir>/config/index",
+      "@constant": "<rootDir>/constant/index",
+      "@types": "<rootDir>/types/index",
+      "^src(.*)$": "<rootDir>/$1"
+    }
   }
 }
