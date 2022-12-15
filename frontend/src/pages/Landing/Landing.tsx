@@ -71,15 +71,6 @@ const Landing = () => {
 			roomUUID
 		);
 
-		// //TODO BE 대응 시 변경
-		// const newOthers = others.map((user) => {
-		// 	return { ...user, video: true, audio: false };
-		// });
-		// console.log('newOthers', newOthers);
-		// setOthers(newOthers);
-		// //TODO BE 대응 시 변경
-		// setMe({ ...me, audio: false });
-
 		setOthers(others);
 		setMe(me);
 		safeNavigate(PAGE_TYPE.LOBBY_PAGE);
@@ -105,7 +96,7 @@ const Landing = () => {
 			</header>
 			<main css={mainStyle}>
 				<div css={flexColumn({ gap: '48px' })}>
-					<div css={introTextStyle}>실시간 코멘트와 함께하는 면접, 지금 시작하세요!</div>
+					<div css={introTextStyle}>실시간 피드백과 함께하는 면접, 지금 시작하세요!</div>
 					<div css={flexRow({ gap: '16px' })}>
 						<Button width="144px" onClick={handleCreate} iconColor={true}>
 							<PlusIcon />

@@ -6,7 +6,7 @@ export const lobbyWrapperStyle = (theme) => css`
 	background-color: ${theme.colors.tertiary};
 `;
 
-export const VideoAreaStyle = () => css`
+export const lobbyVideoAreaStyle = () => css`
 	display: flex;
 	justify-content: center;
 	align-content: center;

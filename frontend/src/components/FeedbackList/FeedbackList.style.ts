@@ -15,6 +15,7 @@ export const timelineStyle = (theme) => css`
 
 	background-color: ${theme.colors.secondary};
 	border-radius: ${theme.borderRadius};
+	opacity: 0.5;
 `;
 
 export const feedbackListStyle = css`
