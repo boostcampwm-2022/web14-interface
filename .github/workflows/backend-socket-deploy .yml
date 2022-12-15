@@ -48,4 +48,6 @@ jobs:
           
           script: |
             docker-compose down
+            docker pull ${{ secrets.DOCKER_SOCKET_IMAGE }}
+            docker rmi $(docker images -f "dangling=true" -q)
             docker-compose up -d
