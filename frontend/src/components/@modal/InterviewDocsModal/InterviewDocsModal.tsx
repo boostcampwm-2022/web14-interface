@@ -18,6 +18,7 @@ import {
 	modalSyncDotLineStyle,
 } from './InterviewDocsModal.style';
 import { flexRow } from '@styles/globalStyle';
+import Loading from '@components/Loading/Loading';
 
 export interface DocsInfoType {
 	docsUUID: string;
@@ -91,12 +92,15 @@ const InterviewDocsModal = ({ roomUUID = '' }: InterviewDocsModalPropType) => {
 					</Button>
 				</div>
 			</div>
-			<div css={docsModalContentStyle(section)}>
-				<InterviewDocsList roomUUID={roomUUID} handleClickDocsItem={handleClickDocsItem} />
-				<Suspense fallback={<>spinner...</>}>
+			<Suspense fallback={<Loading />}>
+				<div css={docsModalContentStyle(section)}>
+					<InterviewDocsList
+						roomUUID={roomUUID}
+						handleClickDocsItem={handleClickDocsItem}
+					/>
 					{docsInfo && <InterviewDocsDetail docsUUID={docsInfo?.docsUUID} />}
-				</Suspense>
-			</div>
+				</div>
+			</Suspense>
 		</div>
 	);
 };

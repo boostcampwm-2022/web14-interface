@@ -104,14 +104,18 @@ const Landing = () => {
 				</div>
 			</header>
 			<main css={mainStyle}>
-				<div css={flexColumn({ gap: '32px' })}>
-					<div css={introTextStyle}>interface님, 안녕하세요!</div>
+				<div css={flexColumn({ gap: '48px' })}>
+					<div css={introTextStyle}>실시간 코멘트와 함께하는 면접, 지금 시작하세요!</div>
 					<div css={flexRow({ gap: '16px' })}>
-						<Button onClick={handleCreate} iconColor={true}>
+						<Button width="144px" onClick={handleCreate} iconColor={true}>
 							<PlusIcon />
 							<span>방 만들기</span>
 						</Button>
-						<Button color="secondary" onClick={() => openModal('EnterRoomModal')}>
+						<Button
+							width="136px"
+							color="secondary"
+							onClick={() => openModal('EnterRoomModal')}
+						>
 							<span>참가하기</span>
 						</Button>
 					</div>
