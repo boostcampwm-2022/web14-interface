@@ -14,7 +14,6 @@ import { RoomRepository } from '../../repository/room.repository';
 import { getRandomNickname } from '@woowa-babble/random-nickname';
 import { UpdateMediaDto } from 'src/room/dto/update-media-info.dto';
 import { UserDto } from 'src/room/dto/user.dto';
-import { WsException } from '@nestjs/websockets';
 
 @Injectable()
 export class ConnectionService {
