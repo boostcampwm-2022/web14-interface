@@ -25,10 +25,10 @@ export const ModalButtonAreaStyle = (isArray) => css`
 	width: 100%;
 `;
 
-export const ModalContentAreaStyle = (flexDirection) => css`
+export const ModalContentAreaStyle = (gap = '16px', flexDirection) => css`
 	${flexDirection === 'row'
-		? flexRow({ gap: '16px', justifyContent: 'center' })
-		: flexColumn({ gap: '16px', justifyContent: 'center' })}
+		? flexRow({ gap, justifyContent: 'center' })
+		: flexColumn({ gap, justifyContent: 'center' })}
 
 	width: 100%;
 `;
