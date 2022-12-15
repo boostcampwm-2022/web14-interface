@@ -13,7 +13,7 @@ import { socket } from '@service/socket';
 import useMediaStreamer from '@hooks/useMediaStreamer';
 import { PAGE_TYPE } from '@constants/page.constant';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
-import { socketEmit } from '@api/socket.api';
+import useSocket from '@hooks/useSocket';
 import { REST_TYPE } from '@constants/rest.constant';
 import { DocsReqDtoType } from '@customType/dto';
 import { intervieweeWrapperStyle } from './Interviewee.style';
@@ -34,6 +34,7 @@ const Interviewee = () => {
 	const { openModal } = useModal();
 	const { safeNavigate } = useSafeNavigate();
 	const { startStream, stopStream } = useMediaStreamer();
+	const { socketEmit } = useSocket();
 
 	const { interviewee, interviewerList } = useRecoilValue(userRoleSelector);
 	const currentVideoTime = useRecoilValue(currentVideoTimeState);

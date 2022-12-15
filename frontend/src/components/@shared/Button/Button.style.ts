@@ -75,7 +75,7 @@ const largeButtonStyle = (theme, width) => css`
 
 const containedButtonStyle = (theme, color, iconColor) => css`
 	background-color: ${theme.colors[color]};
-	color: ${color === 'secondary' ? theme.colors.primary : theme.colors.white};
+	color: ${color === 'secondary' ? theme.colors.tertiary : theme.colors.white};
 
 	${iconColor ? constrainedButtonIconColor(theme, color) : ''}
 
@@ -127,7 +127,7 @@ const textButtonStyle = (theme, color, iconColor) => css`
 
 const constrainedButtonIconColor = (theme, color) => css`
 	svg {
-		fill: ${color === 'secondary' ? theme.colors.primary : theme.colors.white};
+		fill: ${color === 'secondary' ? theme.colors.tertiary : theme.colors.white};
 	}
 `;
 

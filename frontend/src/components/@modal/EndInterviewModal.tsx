@@ -1,11 +1,12 @@
 import React from 'react';
-import { socketEmit } from '@api/socket.api';
+import useSocket from '@hooks/useSocket';
 import Modal from '@components/@shared/Modal/Modal';
 import { SOCKET_EVENT_TYPE } from '@constants/socket.constant';
 import useModal from '@hooks/useModal';
 
 const EndInterviewModal = () => {
 	const { closeModal } = useModal();
+	const { socketEmit } = useSocket();
 
 	const hadleEndInterview = () => {
 		socketEmit(SOCKET_EVENT_TYPE.END_INTERVIEW);
