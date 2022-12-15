@@ -23,7 +23,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 			exception = new InternalServerErrorException();
 		}
 
-		const { statusCode, message, name }: any = (exception as HttpException).getResponse();
+		const { statusCode, message, name }: any = (exception as HttpException)?.getResponse();
 		const { stack } = exception;
 
 		logger.error(`[Request URL] ${req.url}`);

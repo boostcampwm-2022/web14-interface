@@ -40,7 +40,7 @@ export class OauthKakaoService implements OauthService {
 		const { access_token } = await axios
 			.get(KAKAO_ACCESS_TOKEN_URL + queryString)
 			.then((res) => res.data);
-		console.log(access_token);
+
 		return access_token;
 	}
 
@@ -54,7 +54,7 @@ export class OauthKakaoService implements OauthService {
 		const res = await axios.get(KAKAO_PROFILE_API_URL, { headers }).then((res) => res.data);
 
 		const user = res['kakao_account'] as UserSocialInfo;
-		user.id = res.id;
+		user.id = `${res.id}`;
 		user.oauthType = OAUTH_TYPE.KAKAO;
 		return user;
 	}
