@@ -89,7 +89,11 @@ const containedButtonStyle = (theme, color, iconColor) => css`
 	}
 
 	&:hover {
-		filter: ${color === 'black' ? `brightness(200%)` : `brightness(110%)`};
+		filter: ${color === 'black'
+			? `brightness(200%)`
+			: color === 'secondary'
+			? `brightness(103%)`
+			: `brightness(110%)`};
 	}
 
 	&:active {
