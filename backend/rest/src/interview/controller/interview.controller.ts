@@ -16,7 +16,7 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { DocsRequestDto } from '../dto/request-docs.dto';
 import { InterviewService } from '../service/interview.service';
 import { Request } from 'express';
-import { FeedbackRequestDto } from '../dto/request-feedback.dto';
+import { FeedbackRequestDto } from '../dto/feedback.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
 	CREATE_FEEDBACK_DOCS_SWAGGER,

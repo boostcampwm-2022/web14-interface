@@ -4,7 +4,7 @@ import { UserIdResponseDto } from 'src/auth/dto/user-id.dto';
 import { DocsListResponseDto } from 'src/interview/dto/docs-list.dto';
 import { DocsGetResponseDto } from 'src/interview/dto/docs.dto';
 import { DocsRequestDto } from 'src/interview/dto/request-docs.dto';
-import { FeedbackRequestDto } from 'src/interview/dto/request-feedback.dto';
+import { FeedbackRequestDto } from 'src/interview/dto/feedback.dto';
 
 export const REDIRECT_URL_SWAGGER = {
 	SUMMARY: { summary: 'type별 oauth URL 가져오기' },
