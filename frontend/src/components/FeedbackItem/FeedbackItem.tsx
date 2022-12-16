@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import useEditFeedback from '@hooks/useEditFeedback';

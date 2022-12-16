@@ -1,7 +1,6 @@
 import { SOCKET_RES_MESSAGE, SOCKET_TOAST_MESSAGE } from '@constants/socket.constant';
 import { ONE_MINUTE, ONE_SECOND } from '@constants/time.constant';
 import { EditableFeedbackType, FeedbackItemType, FeedbackType } from '@customType/feedback';
-import useToast, { TOAST_TYPE } from '@hooks/useToast';
 
 export const secMMSSFormatter = (totalSec: number) => {
 	const min = Math.floor(totalSec / 60)
