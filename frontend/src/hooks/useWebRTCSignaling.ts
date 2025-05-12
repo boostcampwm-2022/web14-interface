@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { SetterOrUpdater } from 'recoil';
 
 import { socket } from '../service/socket';
+import useModal from './useModal';
 
 export interface WebRTCUserType {
 	connection: RTCPeerConnection;
@@ -12,6 +13,7 @@ const useWebRTCSignaling = (
 	webRTCUserList: Map<string, WebRTCUserType>,
 	setWebRTCUserList: SetterOrUpdater<Map<string, WebRTCUserType>>
 ) => {
+	const { openModal } = useModal();
 	const myStreamRef = useRef(null);
 	const connectionListRef = useRef(new Map());
 
@@ -35,7 +37,7 @@ const useWebRTCSignaling = (
 				new Map(prev).set(myId, { connection: null, stream: newStream })
 			);
 		} catch (e) {
-			console.log(e);
+			openModal('NotStreamModal');
 		}
 	}
 
